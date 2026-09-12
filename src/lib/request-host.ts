@@ -127,3 +127,13 @@ export function requestWithPublicOrigin(req: Request): Request {
     return req;
   }
 }
+
+export function requestOrigin(req: Request): string {
+  return requestPublicOrigin(req) ?? new URL(req.url).origin;
+}
+
+export function requestAbsolute(req: Request, path: string): string {
+  const origin = requestOrigin(req);
+  if (!path.startsWith("/")) return path;
+  return `${origin}${path}`;
+}

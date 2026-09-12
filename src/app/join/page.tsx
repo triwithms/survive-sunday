@@ -20,26 +20,39 @@ export default function JoinPage() {
     e.preventDefault();
     setBusy(true);
     setErr("");
-    const res = await fetch("/api/join", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ inviteCode, email, password, nickname, realName }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
+    try {
+      const res = await fetch("/api/join", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ inviteCode, email, password, nickname, realName }),
+      });
+      let data: { error?: string; ok?: boolean } = {};
+      try {
+        data = await res.json();
+      } catch {
+        setErr(`Join failed (HTTP ${res.status}). Try again on this same link.`);
+        return;
+      }
+      if (!res.ok) {
+        setErr(data.error || `Join failed (HTTP ${res.status})`);
+        return;
+      }
+      const login = await signInCredentials(email, password);
+      if (!login.ok) {
+        setErr(
+          `Account created, but sign-in failed (${login.error || "unknown"}). Use Sign in on this same link.`
+        );
+        router.push("/login");
+        return;
+      }
+      afterAuthNavigate("/pool");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "network";
+      setErr(`Join failed: ${msg}`);
+    } finally {
       setBusy(false);
-      setErr(data.error || "Join failed");
-      return;
     }
-    const login = await signInCredentials(email, password);
-    setBusy(false);
-    if (!login.ok) {
-      setErr("Account created — please sign in");
-      router.push("/login");
-      return;
-    }
-    router.refresh();
-    afterAuthNavigate("/pool");
   }
 
   return (

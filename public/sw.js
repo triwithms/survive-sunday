@@ -1,4 +1,4 @@
-const CACHE = "survive-sunday-shell-v2";
+const CACHE = "survive-sunday-shell-v3";
 const SHELL = ["/manifest.webmanifest", "/icons/icon.svg"];
 
 self.addEventListener("install", (event) => {
