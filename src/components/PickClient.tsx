@@ -96,6 +96,21 @@ export function PickClient({
         )}
       </div>
 
+      {locked && !eliminated && (
+        <div
+          role="status"
+          className="card-glass border border-gold-400/40 p-3 text-sm space-y-1"
+        >
+          <p className="font-semibold text-gold-400">
+            Week {weekNumber} is locked (season in progress).
+          </p>
+          <p className="text-[var(--text-muted)]">
+            Picks cannot change. Commissioner can reopen for demo from the
+            Admin page (&quot;Reopen week for picks&quot;).
+          </p>
+        </div>
+      )}
+
       {msg && (
         <p
           className={`text-sm ${

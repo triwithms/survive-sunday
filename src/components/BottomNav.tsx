@@ -19,22 +19,22 @@ export function BottomNav({ isAdmin }: { isAdmin?: boolean }) {
     : items;
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-stadium-border bg-stadium-900/95 backdrop-blur pb-[env(safe-area-inset-bottom)]">
-      <ul className="mx-auto flex max-w-pool justify-around px-2 py-2">
+    <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-stadium-border bg-stadium-900/95 backdrop-blur pb-[env(safe-area-inset-bottom)] overflow-x-hidden">
+      <ul className="mx-auto flex max-w-pool w-full justify-between sm:justify-around px-1 sm:px-2 py-2 min-w-0">
         {nav.map(({ href, label, icon: Icon }) => {
           const active = path === href || path.startsWith(href + "/");
           return (
-            <li key={href}>
+            <li key={href} className="min-w-0 flex-1">
               <Link
                 href={href}
-                className={`flex flex-col items-center gap-0.5 px-2 py-1 text-[11px] ${
+                className={`flex flex-col items-center gap-0.5 px-0.5 sm:px-2 py-1 text-[10px] sm:text-[11px] min-w-0 ${
                   active ? "text-gold-400" : "text-[var(--text-muted)]"
                 }`}
               >
                 <Icon size={20} strokeWidth={active ? 2.4 : 1.75} />
-                {label}
+                <span className="truncate max-w-full">{label}</span>
                 {active && (
-                  <span className="h-0.5 w-6 rounded-full bg-gold-400" />
+                  <span className="h-0.5 w-5 sm:w-6 rounded-full bg-gold-400" />
                 )}
               </Link>
             </li>

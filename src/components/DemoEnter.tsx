@@ -26,14 +26,34 @@ export function DemoEnter() {
   async function enter(nextEmail: string, button: "commissioner" | "selected") {
     setBusy(button);
     setErr("");
-    const res = await signIn("credentials", {
-      email: nextEmail,
-      password: "demo1234",
-      redirect: false,
-    });
+    let res;
+    try {
+      res = await signIn("credentials", {
+        email: nextEmail,
+        password: "demo1234",
+        redirect: false,
+      });
+    } catch (e) {
+      setBusy(null);
+      setErr(
+        "Demo login failed (network/CSRF). Try again, or open the app on the same host you started from (localhost vs tunnel)."
+      );
+      return;
+    }
     setBusy(null);
     if (res?.error) {
-      setErr("Demo login failed — did you run the seed?");
+      const code = res.error;
+      if (code === "CredentialsSignin") {
+        setErr("Demo login failed — wrong password or seed not run (npm run seed).");
+      } else if (/csrf/i.test(code)) {
+        setErr("CSRF check failed on this host. Refresh and try again (tunnel + localhost need AUTH_TRUST_HOST).");
+      } else {
+        setErr(`Demo login failed: ${code}`);
+      }
+      return;
+    }
+    if (!res?.ok) {
+      setErr("Demo login failed — no session created. Check AUTH_SECRET / seed.");
       return;
     }
     router.push("/pool");

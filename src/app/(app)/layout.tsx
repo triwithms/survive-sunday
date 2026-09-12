@@ -31,36 +31,51 @@ export default async function AppLayout({
   const lockIso = week ? effectiveLockAt(week).toISOString() : null;
 
   return (
-    <div className="min-h-dvh flex flex-col pb-24">
+    <div className="min-h-dvh flex flex-col pb-24 overflow-x-hidden max-w-full">
       <header className="sticky top-0 z-30 border-b border-stadium-border bg-stadium-900/95 backdrop-blur">
-        <div className="mx-auto max-w-pool px-4 py-3 flex items-center justify-between gap-3">
-          <Link href="/pool" className="font-display text-lg tracking-wide text-gold-400">
+        <div className="mx-auto max-w-pool w-full px-3 sm:px-4 py-3 flex items-center gap-2 min-w-0">
+          <Link
+            href="/pool"
+            className="font-display text-base sm:text-lg tracking-wide text-gold-400 shrink-0"
+          >
             SURVIVE
           </Link>
-          <div className="flex items-center gap-3 text-sm">
-            <span className="chip chip-gold">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-sm min-w-0 flex-1 justify-center overflow-hidden">
+            <span className="chip chip-gold shrink-0">
               W{membership.pool.currentWeek}
             </span>
-            {lockIso && <Countdown lockAt={lockIso} />}
+            {lockIso && (
+              <span className="min-w-0 overflow-hidden">
+                <Countdown lockAt={lockIso} />
+              </span>
+            )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 max-w-[42%]">
             {membership.role === "admin" && (
-              <Link href="/admin" className="text-xs text-gold-400 underline underline-offset-2">
+              <Link
+                href="/admin"
+                className="text-xs text-gold-400 underline underline-offset-2 shrink-0"
+              >
                 Admin
               </Link>
             )}
-            <div className="text-right text-xs">
-              <div className="text-[var(--text-primary)] font-medium">
-              {membership.nickname}
+            <div className="text-right text-xs min-w-0 overflow-hidden">
+              <div
+                className="text-[var(--text-primary)] font-medium truncate max-w-[7.5rem] sm:max-w-[10rem]"
+                title={membership.nickname}
+              >
+                {membership.nickname}
               </div>
-              <div className="text-[var(--text-muted)] capitalize">
+              <div className="text-[var(--text-muted)] capitalize truncate">
                 {membership.status.replace("_", " ")}
               </div>
             </div>
           </div>
         </div>
       </header>
-      <div className="flex-1 mx-auto w-full max-w-pool px-4 py-5">{children}</div>
+      <div className="flex-1 mx-auto w-full max-w-pool px-3 sm:px-4 py-5 min-w-0 overflow-x-hidden">
+        {children}
+      </div>
       <FooterDisclaimer />
       <BottomNav isAdmin={membership.role === "admin"} />
     </div>

@@ -18,14 +18,29 @@ function LoginForm() {
     e.preventDefault();
     setBusy(true);
     setErr("");
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    let res;
+    try {
+      res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+    } catch {
+      setBusy(false);
+      setErr("Sign-in failed (network/CSRF). Refresh and try again on this same host.");
+      return;
+    }
     setBusy(false);
     if (res?.error) {
-      setErr("Invalid email or password");
+      setErr(
+        res.error === "CredentialsSignin"
+          ? "Invalid email or password"
+          : `Sign-in failed: ${res.error}`
+      );
+      return;
+    }
+    if (!res?.ok) {
+      setErr("Sign-in failed — no session created.");
       return;
     }
     router.push("/pool");

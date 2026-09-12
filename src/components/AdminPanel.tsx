@@ -47,6 +47,16 @@ export function AdminPanel({
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
+            className="btn-primary"
+            disabled={busy}
+            onClick={() =>
+              call("/api/admin/lock", { weekNumber, action: "reopen" })
+            }
+          >
+            Reopen week for picks
+          </button>
+          <button
+            type="button"
             className="btn-secondary"
             disabled={busy}
             onClick={() =>
@@ -76,6 +86,11 @@ export function AdminPanel({
             Clear override
           </button>
         </div>
+        <p className="text-xs text-[var(--text-muted)]">
+          Reopen (demo): sets lockAt to now+7 days, clears override +
+          missedPicksAppliedAt, removes MISS picks and undoes those losses.
+          Real/imported picks stay.
+        </p>
       </section>
 
       <section className="card-glass p-4 space-y-2">

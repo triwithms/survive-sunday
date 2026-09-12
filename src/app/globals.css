@@ -22,12 +22,16 @@
 
 html {
   color-scheme: dark;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
   background: var(--stadium-950);
   color: var(--text-primary);
   min-height: 100dvh;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 @layer utilities {

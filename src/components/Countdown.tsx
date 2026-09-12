@@ -14,7 +14,7 @@ export function Countdown({ lockAt }: { lockAt: string }) {
 
   if (diff <= 0) {
     return (
-      <span className="font-display tracking-wide text-crimson-400 text-sm uppercase">
+      <span className="font-display tracking-wide text-crimson-400 text-xs sm:text-sm uppercase shrink-0">
         Locked
       </span>
     );
@@ -26,16 +26,22 @@ export function Countdown({ lockAt }: { lockAt: string }) {
   const m = Math.floor((s % 3600) / 60);
   const sec = s % 60;
 
-  const parts = [
+  // Narrow phones: drop seconds to reduce header width
+  const compact = [
     d > 0 ? `${d}d` : null,
     `${h.toString().padStart(2, "0")}h`,
     `${m.toString().padStart(2, "0")}m`,
-    `${sec.toString().padStart(2, "0")}s`,
   ].filter(Boolean);
 
+  const full = [...compact, `${sec.toString().padStart(2, "0")}s`];
+
   return (
-    <span className="font-mono text-gold-400 text-sm tabular-nums" aria-live="polite">
-      {parts.join(" ")}
+    <span
+      className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap"
+      aria-live="polite"
+    >
+      <span className="sm:hidden">{compact.join(" ")}</span>
+      <span className="hidden sm:inline">{full.join(" ")}</span>
     </span>
   );
 }

@@ -19,8 +19,9 @@ export default function LandingPage() {
         </p>
         <p className="text-[var(--text-muted)] mb-8">
           Lock is first kickoff. Others&apos; picks stay hidden until then. Week 1
-          is already in progress — commissioners can import picks the group made
-          outside the app.
+          is locked history; the demo is on{" "}
+          <span className="text-[var(--text-primary)]">Week 2</span> with an open
+          lock — make your pick before Thursday night.
         </p>
 
         <div className="flex flex-col gap-3 mb-10">

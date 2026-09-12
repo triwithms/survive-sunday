@@ -137,18 +137,24 @@ async function main() {
     schedule: SlateGame[];
   }>("week1-slate.json");
 
+  const slate2 = loadJson<{
+    week: number;
+    schedule: SlateGame[];
+  }>("week2-slate.json");
+
   const demo = loadJson<{
     participants: DemoPart[];
     poolName: string;
     season: string;
   }>("demo-participants.json");
 
+  // Demo acts as Week 2 in progress — Week 1 is locked historical
   const pool = await prisma.pool.create({
     data: {
       name: demo.poolName || "Survive Sunday — Friends Pool",
       season: demo.season || "2026/27",
       inviteCode: "SUNDAY26",
-      currentWeek: 1,
+      currentWeek: 2,
     },
   });
 
@@ -161,14 +167,27 @@ async function main() {
       number: 1,
       label: "Week 1",
       lockAt,
-      status: new Date() >= lockAt ? "locked" : "open",
+      status: "locked",
     },
   });
 
-  // Placeholder weeks 2–18
-  for (let n = 2; n <= 18; n++) {
-    const approx = new Date(lockAt);
-    approx.setDate(approx.getDate() + 7 * (n - 1));
+  const kickoffs2 = slate2.schedule.map((g) => new Date(g.kickoff_et));
+  const lockAt2 = new Date(Math.min(...kickoffs2.map((d) => d.getTime())));
+
+  const week2 = await prisma.week.create({
+    data: {
+      poolId: pool.id,
+      number: 2,
+      label: "Week 2",
+      lockAt: lockAt2,
+      status: new Date() >= lockAt2 ? "locked" : "open",
+    },
+  });
+
+  // Placeholder weeks 3–18 from Week 2 lock
+  for (let n = 3; n <= 18; n++) {
+    const approx = new Date(lockAt2);
+    approx.setDate(approx.getDate() + 7 * (n - 2));
     await prisma.week.create({
       data: {
         poolId: pool.id,
@@ -180,41 +199,48 @@ async function main() {
     });
   }
 
-  const playing = new Set<string>();
-  let gi = 0;
-  for (const g of slate.schedule) {
-    gi++;
-    const awayAbbr = NAME_TO_ABBR[g.away];
-    const homeAbbr = NAME_TO_ABBR[g.home];
-    if (!awayAbbr || !homeAbbr) {
-      console.warn("  skip unknown team", g.away, g.home);
-      continue;
+  async function seedGames(
+    weekId: string,
+    schedule: SlateGame[],
+    idPrefix: string
+  ) {
+    let gi = 0;
+    for (const g of schedule) {
+      gi++;
+      const awayAbbr = NAME_TO_ABBR[g.away];
+      const homeAbbr = NAME_TO_ABBR[g.home];
+      if (!awayAbbr || !homeAbbr) {
+        console.warn("  skip unknown team", g.away, g.home);
+        continue;
+      }
+      const status =
+        g.status === "final" ? "final" : g.status === "live" ? "live" : "scheduled";
+      await prisma.game.create({
+        data: {
+          id: `${idPrefix}-${String(gi).padStart(2, "0")}`,
+          weekId,
+          awayAbbr,
+          homeAbbr,
+          kickoff: new Date(g.kickoff_et),
+          network: g.network,
+          status,
+          scoreAway: g.score?.away ?? null,
+          scoreHome: g.score?.home ?? null,
+          note: g.venue_note ?? null,
+          spreadHome: -3,
+          spreadAway: 3,
+          mlHome: -150,
+          mlAway: 130,
+        },
+      });
     }
-    playing.add(awayAbbr);
-    playing.add(homeAbbr);
-    const status =
-      g.status === "final" ? "final" : g.status === "live" ? "live" : "scheduled";
-    await prisma.game.create({
-      data: {
-        id: `2026-w1-${String(gi).padStart(2, "0")}`,
-        weekId: week1.id,
-        awayAbbr,
-        homeAbbr,
-        kickoff: new Date(g.kickoff_et),
-        network: g.network,
-        status,
-        scoreAway: g.score?.away ?? null,
-        scoreHome: g.score?.home ?? null,
-        note: g.venue_note ?? null,
-        // demo odds snapshots
-        spreadHome: -3,
-        spreadAway: 3,
-        mlHome: -150,
-        mlAway: 130,
-      },
-    });
+    return gi;
   }
-  console.log(`  Week 1: ${gi} games, lock ${lockAt.toISOString()}`);
+
+  const gi1 = await seedGames(week1.id, slate.schedule, "2026-w1");
+  console.log(`  Week 1: ${gi1} games, lock ${lockAt.toISOString()} (historical)`);
+  const gi2 = await seedGames(week2.id, slate2.schedule, "2026-w2");
+  console.log(`  Week 2: ${gi2} games, lock ${lockAt2.toISOString()} (current)`);
 
   const passwordHash = await bcrypt.hash("demo1234", 10);
 
@@ -290,6 +316,43 @@ async function main() {
     }
   }
 
+  // Sample Week 2 pick (Aurora) so privacy/hidden-picks UX is visible
+  const auroraMem = await prisma.membership.findFirst({
+    where: { poolId: pool.id, nickname: "Aurora" },
+  });
+  if (auroraMem) {
+    const sampleTeam = "PHI"; // KC @ PHI — different from Aurora W1 KC
+    const g2 = await prisma.game.findFirst({
+      where: {
+        weekId: week2.id,
+        OR: [{ awayAbbr: sampleTeam }, { homeAbbr: sampleTeam }],
+      },
+    });
+    if (g2) {
+      await prisma.pick.create({
+        data: {
+          membershipId: auroraMem.id,
+          weekId: week2.id,
+          teamAbbr: sampleTeam,
+          gameId: g2.id,
+          source: "user",
+          result: "pending",
+          submittedAt: new Date(),
+        },
+      });
+      console.log("  Sample Week 2 pick: Aurora → PHI");
+    }
+  }
+
+  // Rebuild usedTeams from W1 picks + seed extras (DAL etc.)
+  const { rebuildUsedTeams } = await import("../src/lib/grading");
+  const allMembers = await prisma.membership.findMany({
+    where: { poolId: pool.id, role: "member" },
+  });
+  for (const m of allMembers) {
+    await rebuildUsedTeams(m.id);
+  }
+
   // Grade any imported picks whose games are already final
   const pending = await prisma.pick.findMany({
     where: { weekId: week1.id },
@@ -350,13 +413,16 @@ async function main() {
       actorId: adminUser.id,
       action: "seed",
       details: JSON.stringify({
-        note: "Initial seed from week1-slate + demo-participants; Week 1 picks marked imported",
+        note: "Seed: Week 1 historical + Week 2 open (currentWeek=2); W1 picks imported",
+        currentWeek: 2,
+        week2LockAt: lockAt2.toISOString(),
         missedPicks: lockEffects.missed.length,
       }),
     },
   });
 
-  console.log("✅ Seed complete");
+  console.log("✅ Seed complete — pool at Week 2");
+  console.log(`   Week 2 lockAt: ${lockAt2.toISOString()}`);
   console.log("   Invite code: SUNDAY26");
   console.log("   Demo password: demo1234");
   console.log("   Demo emails: aurora@survivesunday.demo … jasper@…");
