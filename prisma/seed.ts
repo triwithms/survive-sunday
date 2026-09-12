@@ -66,6 +66,31 @@ type TeamRow = {
   logo_urls?: { espn?: string };
 };
 
+type PowerRankingsFile = {
+  rankings: { rank: number; team_abbreviation: string }[];
+};
+
+type Week2Standing = {
+  abbr: string;
+  w: number;
+  l: number;
+  t: number;
+  divisionRank: number;
+  conference: string;
+  division: string;
+};
+
+type OddsGame = {
+  away: string;
+  home: string;
+  spread?: { home: number; away: number };
+  moneyline?: { home: number; away: number };
+  spreadHome?: number;
+  spreadAway?: number;
+  mlHome?: number;
+  mlAway?: number;
+};
+
 type SlateGame = {
   away: string;
   home: string;
@@ -115,8 +140,18 @@ async function main() {
   await prisma.pool.deleteMany();
 
   const teams = loadJson<TeamRow[]>("teams.json");
+  const power = loadJson<PowerRankingsFile>("power_rankings.json");
+  const priorRank = new Map<string, number>();
+  for (const r of power.rankings) {
+    const ab = r.team_abbreviation === "WSH" ? "WAS" : r.team_abbreviation;
+    priorRank.set(ab, r.rank);
+  }
+  const standingsFile = loadJson<{ teams: Week2Standing[] }>("week2-standings.json");
+  const standingBy = new Map(standingsFile.teams.map((s) => [s.abbr, s]));
+
   for (const t of teams) {
     const abbr = t.abbreviation === "WSH" ? "WAS" : t.abbreviation;
+    const st = standingBy.get(abbr);
     await prisma.team.create({
       data: {
         abbr,
@@ -127,10 +162,15 @@ async function main() {
         division: t.division,
         primaryColor: t.primary_color ?? null,
         logoUrl: t.logo_urls?.espn ?? null,
+        priorYearRank: priorRank.get(abbr) ?? null,
+        wins: st?.w ?? 0,
+        losses: st?.l ?? 0,
+        ties: st?.t ?? 0,
+        divisionRank: st?.divisionRank ?? null,
       },
     });
   }
-  console.log(`  ${teams.length} teams`);
+  console.log(`  ${teams.length} teams (prior-year ranks + Week 2 standings)`);
 
   const slate = loadJson<{
     week: number;
@@ -141,6 +181,9 @@ async function main() {
     week: number;
     schedule: SlateGame[];
   }>("week2-slate.json");
+
+  const week1Odds = loadJson<{ games: OddsGame[] }>("week1-games.json");
+  const week2Odds = loadJson<{ games: OddsGame[] }>("week2-odds.json");
 
   const demo = loadJson<{
     participants: DemoPart[];
@@ -199,10 +242,26 @@ async function main() {
     });
   }
 
+  function oddsLookup(list: OddsGame[], away: string, home: string) {
+    return list.find((o) => o.away === away && o.home === home);
+  }
+
+  function resolveOdds(o: OddsGame | undefined) {
+    if (!o) {
+      return { spreadHome: -3, spreadAway: 3, mlHome: -150, mlAway: 130 };
+    }
+    const spreadHome = o.spreadHome ?? o.spread?.home ?? -3;
+    const spreadAway = o.spreadAway ?? o.spread?.away ?? -spreadHome;
+    const mlHome = o.mlHome ?? o.moneyline?.home ?? -150;
+    const mlAway = o.mlAway ?? o.moneyline?.away ?? 130;
+    return { spreadHome, spreadAway, mlHome, mlAway };
+  }
+
   async function seedGames(
     weekId: string,
     schedule: SlateGame[],
-    idPrefix: string
+    idPrefix: string,
+    oddsList: OddsGame[]
   ) {
     let gi = 0;
     for (const g of schedule) {
@@ -215,6 +274,7 @@ async function main() {
       }
       const status =
         g.status === "final" ? "final" : g.status === "live" ? "live" : "scheduled";
+      const odds = resolveOdds(oddsLookup(oddsList, awayAbbr, homeAbbr));
       await prisma.game.create({
         data: {
           id: `${idPrefix}-${String(gi).padStart(2, "0")}`,
@@ -227,19 +287,19 @@ async function main() {
           scoreAway: g.score?.away ?? null,
           scoreHome: g.score?.home ?? null,
           note: g.venue_note ?? null,
-          spreadHome: -3,
-          spreadAway: 3,
-          mlHome: -150,
-          mlAway: 130,
+          spreadHome: odds.spreadHome,
+          spreadAway: odds.spreadAway,
+          mlHome: odds.mlHome,
+          mlAway: odds.mlAway,
         },
       });
     }
     return gi;
   }
 
-  const gi1 = await seedGames(week1.id, slate.schedule, "2026-w1");
+  const gi1 = await seedGames(week1.id, slate.schedule, "2026-w1", week1Odds.games);
   console.log(`  Week 1: ${gi1} games, lock ${lockAt.toISOString()} (historical)`);
-  const gi2 = await seedGames(week2.id, slate2.schedule, "2026-w2");
+  const gi2 = await seedGames(week2.id, slate2.schedule, "2026-w2", week2Odds.games);
   console.log(`  Week 2: ${gi2} games, lock ${lockAt2.toISOString()} (current)`);
 
   const passwordHash = await bcrypt.hash("demo1234", 10);

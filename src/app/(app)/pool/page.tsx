@@ -5,6 +5,11 @@ import { sortParticipants } from "@/lib/tiebreak";
 import { effectiveLockAt, isWeekLocked, ensureWeekLockedEffects, MISSED_TEAM } from "@/lib/grading";
 import { StatusChip } from "@/components/StatusChip";
 import { formatKickoff } from "@/lib/utils";
+import {
+  formatCurrentStanding,
+  formatPriorYearRank,
+  resolveFavourite,
+} from "@/lib/matchup-meta";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -48,6 +53,30 @@ export default async function PoolPage() {
       ? myPickRaw
       : undefined;
 
+  const myTeam = myPick
+    ? await prisma.team.findUnique({ where: { abbr: myPick.teamAbbr } })
+    : null;
+  const myFav =
+    myPick?.game
+      ? resolveFavourite({
+          homeAbbr: myPick.game.homeAbbr,
+          awayAbbr: myPick.game.awayAbbr,
+          spreadHome: myPick.game.spreadHome,
+          spreadAway: myPick.game.spreadAway,
+        })
+      : null;
+  const myPrior = formatPriorYearRank(myTeam?.priorYearRank);
+  const myStanding = myTeam
+    ? formatCurrentStanding({
+        wins: myTeam.wins,
+        losses: myTeam.losses,
+        ties: myTeam.ties,
+        divisionRank: myTeam.divisionRank,
+        conference: myTeam.conference,
+        division: myTeam.division,
+      })
+    : null;
+
   const groups = [
     { key: "undefeated", label: "Undefeated" },
     { key: "one_loss", label: "One loss" },
@@ -76,12 +105,22 @@ export default async function PoolPage() {
               <p className="text-xl font-semibold text-gold-400">
                 {myPick.teamAbbr}
               </p>
+              {(myPrior || myStanding) && (
+                <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                  {[myPrior, myStanding].filter(Boolean).join(" · ")}
+                </p>
+              )}
               {myPick.game && (
                 <p className="text-sm text-[var(--text-muted)]">
                   {myPick.game.awayAbbr} @ {myPick.game.homeAbbr}
                   {myPick.game.status === "final" &&
                     myPick.game.scoreAway != null &&
                     ` · ${myPick.game.scoreAway}–${myPick.game.scoreHome}`}
+                </p>
+              )}
+              {myFav && (
+                <p className="text-xs font-mono text-[var(--text-muted)] mt-0.5">
+                  {myFav.label}
                 </p>
               )}
               {myPick.source === "imported" && (

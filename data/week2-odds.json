@@ -1,0 +1,21 @@
+{
+  "oddsDisclaimer": "Spreads and moneylines are demo/informational only — not for wagering.",
+  "games": [
+    { "away": "DAL", "home": "NYG", "spreadHome": 3.5, "spreadAway": -3.5, "mlHome": 155, "mlAway": -175 },
+    { "away": "KC", "home": "PHI", "spreadHome": -2.5, "spreadAway": 2.5, "mlHome": -140, "mlAway": 120 },
+    { "away": "BUF", "home": "MIA", "spreadHome": 6.5, "spreadAway": -6.5, "mlHome": 240, "mlAway": -290 },
+    { "away": "BAL", "home": "CLE", "spreadHome": 4.5, "spreadAway": -4.5, "mlHome": 180, "mlAway": -215 },
+    { "away": "GB", "home": "DET", "spreadHome": -1.5, "spreadAway": 1.5, "mlHome": -120, "mlAway": 100 },
+    { "away": "MIN", "home": "CHI", "spreadHome": -3.0, "spreadAway": 3.0, "mlHome": -155, "mlAway": 135 },
+    { "away": "ATL", "home": "TB", "spreadHome": -2.5, "spreadAway": 2.5, "mlHome": -140, "mlAway": 120 },
+    { "away": "CAR", "home": "NO", "spreadHome": 1.5, "spreadAway": -1.5, "mlHome": 105, "mlAway": -125 },
+    { "away": "HOU", "home": "IND", "spreadHome": 2.5, "spreadAway": -2.5, "mlHome": 125, "mlAway": -145 },
+    { "away": "JAX", "home": "TEN", "spreadHome": 7.0, "spreadAway": -7.0, "mlHome": 280, "mlAway": -350 },
+    { "away": "NYJ", "home": "NE", "spreadHome": -9.5, "spreadAway": 9.5, "mlHome": -450, "mlAway": 350 },
+    { "away": "LV", "home": "DEN", "spreadHome": -10.5, "spreadAway": 10.5, "mlHome": -550, "mlAway": 400 },
+    { "away": "LAC", "home": "ARI", "spreadHome": 3.5, "spreadAway": -3.5, "mlHome": 155, "mlAway": -175 },
+    { "away": "SEA", "home": "PIT", "spreadHome": 3.0, "spreadAway": -3.0, "mlHome": 145, "mlAway": -165 },
+    { "away": "LAR", "home": "SF", "spreadHome": -2.5, "spreadAway": 2.5, "mlHome": -140, "mlAway": 120 },
+    { "away": "WAS", "home": "CIN", "spreadHome": -3.0, "spreadAway": 3.0, "mlHome": -155, "mlAway": 135 }
+  ]
+}

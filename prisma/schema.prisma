@@ -89,14 +89,19 @@ model Membership {
 }
 
 model Team {
-  abbr         String  @id
-  name         String
-  city         String
-  nickname     String
-  conference   String
-  division     String
-  primaryColor String?
-  logoUrl      String?
+  abbr          String  @id
+  name          String
+  city          String
+  nickname      String
+  conference    String
+  division      String
+  primaryColor  String?
+  logoUrl       String?
+  priorYearRank Int?
+  wins          Int     @default(0)
+  losses        Int     @default(0)
+  ties          Int     @default(0)
+  divisionRank  Int?
 }
 
 model Week {

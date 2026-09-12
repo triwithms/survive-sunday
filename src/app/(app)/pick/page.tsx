@@ -61,34 +61,41 @@ export default async function PickPage() {
   const teams = await prisma.team.findMany({ orderBy: { abbr: "asc" } });
   const teamByAbbr = new Map(teams.map((t) => [t.abbr, t]));
 
-  const games = week.games.map((g) => {
-    const away = teamByAbbr.get(g.awayAbbr);
-    const home = teamByAbbr.get(g.homeAbbr);
+  function sidePayload(abbr: string) {
+    const t = teamByAbbr.get(abbr);
     return {
-      id: g.id,
-      kickoff:
-        g.kickoff instanceof Date && !Number.isNaN(g.kickoff.getTime())
-          ? g.kickoff.toISOString()
-          : "",
-      network: g.network,
-      spreadHome: g.spreadHome,
-      spreadAway: g.spreadAway,
-      mlHome: g.mlHome,
-      mlAway: g.mlAway,
-      away: {
-        abbr: g.awayAbbr,
-        name: away?.name ?? g.awayAbbr,
-        logoUrl: away?.logoUrl ?? null,
-        alreadyUsed: used.includes(g.awayAbbr),
-      },
-      home: {
-        abbr: g.homeAbbr,
-        name: home?.name ?? g.homeAbbr,
-        logoUrl: home?.logoUrl ?? null,
-        alreadyUsed: used.includes(g.homeAbbr),
-      },
+      abbr,
+      name: t?.name ?? abbr,
+      logoUrl: t?.logoUrl ?? null,
+      alreadyUsed: used.includes(abbr),
+      priorYearRank: t?.priorYearRank ?? null,
+      standing: t
+        ? {
+            wins: t.wins,
+            losses: t.losses,
+            ties: t.ties,
+            divisionRank: t.divisionRank,
+            conference: t.conference,
+            division: t.division,
+          }
+        : null,
     };
-  });
+  }
+
+  const games = week.games.map((g) => ({
+    id: g.id,
+    kickoff:
+      g.kickoff instanceof Date && !Number.isNaN(g.kickoff.getTime())
+        ? g.kickoff.toISOString()
+        : "",
+    network: g.network,
+    spreadHome: g.spreadHome,
+    spreadAway: g.spreadAway,
+    mlHome: g.mlHome,
+    mlAway: g.mlAway,
+    away: sidePayload(g.awayAbbr),
+    home: sidePayload(g.homeAbbr),
+  }));
 
   return (
     <PickClient
