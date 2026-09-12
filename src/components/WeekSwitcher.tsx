@@ -9,30 +9,46 @@ export type WeekSwitcherOption = {
   hasGames: boolean;
 };
 
+/**
+ * Week nav for Pool/Scores. By default only current + past weeks are
+ * selectable (future weeks stay on Schedule for research).
+ */
 export function WeekSwitcher({
   weeks,
   selectedWeek,
   currentWeek,
   basePath,
+  allowFuture = false,
 }: {
   weeks: WeekSwitcherOption[];
   selectedWeek: number;
   currentWeek: number;
   basePath: string;
+  /** When true, future weeks with games are selectable (Schedule-style). */
+  allowFuture?: boolean;
 }) {
   const router = useRouter();
-  const gameWeeks = weeks.filter((week) => week.hasGames);
+  const selectable = weeks.filter(
+    (week) =>
+      week.hasGames && (allowFuture || week.number <= currentWeek)
+  );
   const selected = weeks.find((week) => week.number === selectedWeek);
-  const options = selected && !gameWeeks.some((week) => week.number === selectedWeek)
-    ? [...gameWeeks, selected].sort((a, b) => a.number - b.number)
-    : gameWeeks;
-  const selectedIndex = gameWeeks.findIndex((week) => week.number === selectedWeek);
-  const previous = selectedIndex > 0 ? gameWeeks[selectedIndex - 1] : null;
+  const options =
+    selected && !selectable.some((week) => week.number === selectedWeek)
+      ? [...selectable, selected].sort((a, b) => a.number - b.number)
+      : selectable;
+  const selectedIndex = selectable.findIndex(
+    (week) => week.number === selectedWeek
+  );
+  const previous = selectedIndex > 0 ? selectable[selectedIndex - 1] : null;
   const next =
-    selectedIndex >= 0 && selectedIndex < gameWeeks.length - 1
-      ? gameWeeks[selectedIndex + 1]
+    selectedIndex >= 0 && selectedIndex < selectable.length - 1
+      ? selectable[selectedIndex + 1]
       : null;
-  const goTo = (week: number) => router.push(`${basePath}?week=${week}`);
+  const goTo = (week: number) => {
+    if (!allowFuture && week > currentWeek) return;
+    router.push(`${basePath}?week=${week}`);
+  };
 
   if (!weeks.length) return null;
 
@@ -50,13 +66,22 @@ export function WeekSwitcher({
         <label className="flex-1 min-w-0">
           <span className="sr-only">Select week</span>
           <select
-            value={selectedWeek}
+            value={
+              selectable.some((w) => w.number === selectedWeek)
+                ? selectedWeek
+                : currentWeek
+            }
             onChange={(event) => goTo(Number(event.target.value))}
             className="text-sm py-2 min-h-0"
           >
             {options.map((week) => (
-              <option key={week.number} value={week.number}>
-                {week.label}{week.number === currentWeek ? " · This week" : ""}
+              <option
+                key={week.number}
+                value={week.number}
+                disabled={!allowFuture && week.number > currentWeek}
+              >
+                {week.label}
+                {week.number === currentWeek ? " · This week" : ""}
                 {!week.hasGames ? " · TBA" : ""}
               </option>
             ))}
@@ -72,7 +97,7 @@ export function WeekSwitcher({
         </button>
       </div>
       <div className="flex gap-1.5 overflow-x-auto pb-0.5" role="list">
-        {gameWeeks.map((week) => {
+        {selectable.map((week) => {
           const active = week.number === selectedWeek;
           return (
             <Link
@@ -92,6 +117,11 @@ export function WeekSwitcher({
           );
         })}
       </div>
+      {!allowFuture && (
+        <p className="text-[10px] text-[var(--text-muted)]">
+          Future weeks are on Schedule — picks stay on the current week.
+        </p>
+      )}
     </nav>
   );
 }

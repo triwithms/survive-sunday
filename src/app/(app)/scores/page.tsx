@@ -33,7 +33,9 @@ export default async function ScoresPage({
     include: { games: { select: { id: true } } },
   });
   const requestedIsValid =
-    Number.isInteger(parsedWeek) && weeks.some((week) => week.number === parsedWeek);
+    Number.isInteger(parsedWeek) &&
+    parsedWeek <= me.pool.currentWeek &&
+    weeks.some((week) => w.number === parsedWeek);
   const selectedNumber = requestedIsValid ? parsedWeek : me.pool.currentWeek;
   const selectedRef =
     weeks.find((week) => week.number === selectedNumber) ??
