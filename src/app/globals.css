@@ -144,13 +144,13 @@ a:focus-visible, button:focus-visible {
 }
 
 
-/* Mobile: a bit larger still than the desktop base */
+/* Mobile: a couple steps smaller than the prior bump (denser phone UI) */
 @media (max-width: 640px) {
   html {
-    font-size: 118.75%; /* ~19px when browser default is 16px */
+    font-size: 106.25%; /* ~17px when browser default is 16px */
   }
   .team-research {
-    font-size: 1.125rem;
+    font-size: 1rem;
   }
 }
 
