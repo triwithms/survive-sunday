@@ -106,6 +106,12 @@ export default async function StandingsPage() {
               <div className="font-medium truncate">
                 {m.nickname}
                 {m.id === me.id ? " (you)" : ""}
+                {m.realName ? (
+                  <span className="text-xs font-normal text-[var(--text-muted)]">
+                    {" "}
+                    ({m.realName})
+                  </span>
+                ) : null}
               </div>
               <div className="text-xs text-[var(--text-muted)] truncate">
                 Losses: {m.losses} · Weeks survived: {m.weeksSurvived}

@@ -253,17 +253,18 @@ export default async function PoolPage({
                       >
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-medium">
+                            <span className="font-medium min-w-0">
                               {m.nickname}
                               {isSelf ? " (you)" : ""}
+                              {m.realName ? (
+                                <span className="text-xs font-normal text-[var(--text-muted)]">
+                                  {" "}
+                                  ({m.realName})
+                                </span>
+                              ) : null}
                             </span>
                             <StatusChip status={m.status} />
                           </div>
-                          {m.realName ? (
-                            <div className="text-xs text-[var(--text-muted)]">
-                              {m.realName}
-                            </div>
-                          ) : null}
                           {show && pick ? (
                             <div className="mt-1 text-sm">
                               <span className="font-mono text-gold-400">

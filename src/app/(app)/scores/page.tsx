@@ -172,7 +172,14 @@ export default async function ScoresPage({
               <li key={member.id} className="card-glass p-3">
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-medium min-w-0 truncate">
-                    {member.nickname}{isSelf ? " (you)" : ""}
+                    {member.nickname}
+                    {isSelf ? " (you)" : ""}
+                    {member.realName ? (
+                      <span className="text-xs font-normal text-[var(--text-muted)]">
+                        {" "}
+                        ({member.realName})
+                      </span>
+                    ) : null}
                   </span>
                   {showPick ? (
                     <span className="text-sm text-right shrink-0">
