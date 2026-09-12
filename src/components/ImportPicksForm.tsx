@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type PreviewRow = {
   input: string;
@@ -15,6 +16,24 @@ type PreviewRow = {
   existingResult?: string | null;
 };
 
+type Feedback =
+  | {
+      kind: "success";
+      weekNumber: number;
+      imported: number;
+      failed: number;
+      details: unknown;
+    }
+  | { kind: "error"; message: string; details?: unknown };
+
+function errorMessage(data: unknown, fallback: string) {
+  if (typeof data === "object" && data !== null && "error" in data) {
+    const error = data.error;
+    if (typeof error === "string" && error) return error;
+  }
+  return fallback;
+}
+
 export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
   const [weekNumber, setWeekNumber] = useState(defaultWeek);
   const [csv, setCsv] = useState(
@@ -23,18 +42,19 @@ export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
   const [overrideReuse, setOverrideReuse] = useState(false);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState<PreviewRow[] | null>(null);
-  const [result, setResult] = useState<string>("");
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
   const router = useRouter();
 
   async function onFile(file: File) {
     const text = await file.text();
     setCsv(text);
     setPreview(null);
+    setFeedback(null);
   }
 
   async function runPreview() {
     setBusy(true);
-    setResult("");
+    setFeedback(null);
     const res = await fetch("/api/admin/import-picks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -43,17 +63,20 @@ export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
     const data = await res.json();
     setBusy(false);
     if (!res.ok) {
-      setResult(JSON.stringify(data, null, 2));
+      setFeedback({
+        kind: "error",
+        message: errorMessage(data, "Could not preview these picks."),
+        details: data,
+      });
       setPreview(null);
       return;
     }
     setPreview(data.preview || []);
-    setResult("");
   }
 
   async function commit() {
     setBusy(true);
-    setResult("");
+    setFeedback(null);
     const res = await fetch("/api/admin/import-picks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -61,11 +84,23 @@ export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
     });
     const data = await res.json();
     setBusy(false);
-    setResult(JSON.stringify(data, null, 2));
-    if (res.ok) {
-      setPreview(null);
-      router.refresh();
+    if (!res.ok) {
+      setFeedback({
+        kind: "error",
+        message: errorMessage(data, "Could not import these picks."),
+        details: data,
+      });
+      return;
     }
+    setFeedback({
+      kind: "success",
+      weekNumber: data.weekNumber ?? weekNumber,
+      imported: data.imported ?? 0,
+      failed: data.failed ?? 0,
+      details: data,
+    });
+    setPreview(null);
+    router.refresh();
   }
 
   return (
@@ -76,7 +111,7 @@ export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
       </p>
 
       <label className="block text-sm">
-        <span className="text-[var(--text-muted)]">Week number</span>
+        <span className="text-[var(--text-muted)]">Week to import into</span>
         <input
           type="number"
           min={1}
@@ -85,6 +120,7 @@ export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
           onChange={(e) => {
             setWeekNumber(Number(e.target.value));
             setPreview(null);
+            setFeedback(null);
           }}
           className="mt-1"
         />
@@ -111,6 +147,7 @@ export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
           onChange={(e) => {
             setCsv(e.target.value);
             setPreview(null);
+            setFeedback(null);
           }}
           className="mt-1 font-mono text-xs"
           spellCheck={false}
@@ -124,6 +161,7 @@ export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
           onChange={(e) => {
             setOverrideReuse(e.target.checked);
             setPreview(null);
+            setFeedback(null);
           }}
           className="w-4 h-4"
         />
@@ -179,10 +217,59 @@ export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
         </div>
       )}
 
-      {result && (
-        <pre className="text-xs font-mono bg-stadium-950 p-3 rounded-lg overflow-x-auto max-h-80">
-          {result}
-        </pre>
+      {feedback?.kind === "success" && (
+        <div className="rounded-lg border border-emerald-500/40 bg-emerald-950/30 p-4 space-y-3" role="status">
+          <div>
+            <h3 className="font-semibold text-emerald-300">
+              Imported {feedback.imported} picks for Week {feedback.weekNumber}
+            </h3>
+            {feedback.imported === 0 ? (
+              <p className="text-sm text-[var(--text-muted)] mt-1">
+                Nothing new imported — rows may already match.
+              </p>
+            ) : feedback.failed > 0 ? (
+              <p className="text-sm text-[var(--text-muted)] mt-1">
+                {feedback.failed} row{feedback.failed === 1 ? "" : "s"} could not be imported.
+              </p>
+            ) : null}
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Link
+              href={`/pool?week=${feedback.weekNumber}`}
+              prefetch={false}
+              className="btn-primary flex-1 text-center"
+            >
+              Open Pool · Week {feedback.weekNumber}
+            </Link>
+            <Link
+              href={`/scores?week=${feedback.weekNumber}`}
+              prefetch={false}
+              className="btn-secondary flex-1 text-center"
+            >
+              Open Scores · Week {feedback.weekNumber}
+            </Link>
+          </div>
+          <details className="text-xs">
+            <summary className="cursor-pointer text-[var(--text-muted)]">Import details</summary>
+            <pre className="mt-2 font-mono bg-stadium-950 p-3 rounded-lg overflow-x-auto max-h-80">
+              {JSON.stringify(feedback.details, null, 2)}
+            </pre>
+          </details>
+        </div>
+      )}
+
+      {feedback?.kind === "error" && (
+        <div className="rounded-lg border border-crimson-500/40 bg-crimson-950/30 p-4" role="alert">
+          <p className="text-sm text-crimson-300">{feedback.message}</p>
+          {feedback.details !== undefined && (
+            <details className="text-xs mt-2">
+              <summary className="cursor-pointer text-[var(--text-muted)]">Error details</summary>
+              <pre className="mt-2 font-mono bg-stadium-950 p-3 rounded-lg overflow-x-auto max-h-80">
+                {JSON.stringify(feedback.details, null, 2)}
+              </pre>
+            </details>
+          )}
+        </div>
       )}
     </div>
   );

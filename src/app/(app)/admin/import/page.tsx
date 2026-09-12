@@ -30,6 +30,8 @@ export default async function ImportPicksPage() {
     );
   }
 
+  const suggestedWeek = me.pool.currentWeek > 1 ? 1 : me.pool.currentWeek;
+
   return (
     <div className="space-y-6">
       <div>
@@ -45,9 +47,13 @@ export default async function ImportPicksPage() {
           team reuse. Source is marked <span className="font-mono">imported</span>{" "}
           and every change is audited.
         </p>
+        <p className="text-sm text-[var(--text-muted)] mt-2">
+          Demo Week 1 may already be seeded; set the week number to the week you’re importing,
+          then open Pool or Scores for that week.
+        </p>
       </div>
 
-      <ImportPicksForm defaultWeek={me.pool.currentWeek} />
+      <ImportPicksForm defaultWeek={suggestedWeek} />
 
       <section className="card-glass p-4 text-sm space-y-2">
         <h2 className="font-semibold">Format</h2>
