@@ -1,10 +1,9 @@
 {
-  "poolId": "demo-bm-boys-2026",
-  "poolName": "BM Boys 26/27",
+  "poolName": "BM Boys 26/27 NFL Survivor",
   "season": "2026/27",
-  "currentWeek": 2,
-  "lockAt": "2026-09-18T00:15:00.000Z",
-  "locale": "en-CA",
+  "source": "screenshot standings Overall (all T1 / total 1 after week 1)",
+  "capturedNote": "Deep and Delicious had no real name on screen \u2014 set to Kent Richmond per Robert. Gams showed as Your team \u2014 mapped to Robert Gama.",
+  "count": 10,
   "participants": [
     {
       "id": "bm01",
@@ -14,11 +13,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "SEA",
-        "submittedAt": "2026-09-09T12:00:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm02",
@@ -28,11 +23,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "SF",
-        "submittedAt": "2026-09-09T13:07:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm03",
@@ -42,11 +33,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "CAR",
-        "submittedAt": "2026-09-09T14:14:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm04",
@@ -56,11 +43,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "TB",
-        "submittedAt": "2026-09-09T15:21:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm05",
@@ -70,11 +53,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "IND",
-        "submittedAt": "2026-09-09T16:28:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm06",
@@ -84,11 +63,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "DET",
-        "submittedAt": "2026-09-09T17:35:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm07",
@@ -98,11 +73,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "HOU",
-        "submittedAt": "2026-09-09T18:42:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm08",
@@ -112,11 +83,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "NYJ",
-        "submittedAt": "2026-09-09T19:49:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm09",
@@ -126,11 +93,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "ATL",
-        "submittedAt": "2026-09-09T20:56:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     },
     {
       "id": "bm10",
@@ -140,39 +103,7 @@
       "mulliganRemaining": true,
       "usedTeams": [],
       "pickHistory": [],
-      "week1Pick": {
-        "team": "KC",
-        "submittedAt": "2026-09-09T21:03:00.000Z",
-        "visibleAfterLock": true
-      }
+      "week1Pick": null
     }
-  ],
-  "defaultPostLockSort": {
-    "groups": [
-      "undefeated",
-      "one_loss",
-      "eliminated"
-    ],
-    "withinGroup": "nickname_asc_en_CA",
-    "expectedOrderNicknamesAfterLock": [
-      "Black Cobra",
-      "Cannoli Stuffer",
-      "Colin",
-      "Daddy Chill",
-      "Deep and Delicious",
-      "Gams",
-      "Gdogss",
-      "JimmyC",
-      "Long Snapper",
-      "Steve"
-    ]
-  },
-  "notificationDefaults": {
-    "banterWeekly": true,
-    "banterSeason": true,
-    "weeklyPicksDigest": true,
-    "smsLatePickReminder": true,
-    "closeGameAlerts": false,
-    "whatsappGroupBanterStub": false
-  }
+  ]
 }

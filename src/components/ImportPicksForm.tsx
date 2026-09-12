@@ -37,7 +37,7 @@ function errorMessage(data: unknown, fallback: string) {
 export function ImportPicksForm({ defaultWeek }: { defaultWeek: number }) {
   const [weekNumber, setWeekNumber] = useState(defaultWeek);
   const [csv, setCsv] = useState(
-    "nickname,team\nAurora,KC\nBeacon,BUF\nCedar,PHI\nDrift,DET\nEmber,HOU\nFrost,BAL\nGrove,SF\nIris,GB\n"
+    "nickname,team\nGams,DET\nBlack Cobra,SEA\nCannoli Stuffer,SF\nColin,CAR\nDaddy Chill,TB\nDeep and Delicious,IND\nGdogss,HOU\nJimmyC,NYJ\nLong Snapper,ATL\nSteve,KC\n"
   );
   const [overrideReuse, setOverrideReuse] = useState(false);
   const [busy, setBusy] = useState(false);

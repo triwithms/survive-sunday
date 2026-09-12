@@ -5,7 +5,7 @@ import { AuthError } from "next-auth";
 export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const email =
-    (body.email as string) || "aurora@survivesunday.demo";
+    (body.email as string) || "gams@survivesunday.demo";
   const password = (body.password as string) || "demo1234";
   try {
     await signIn("credentials", {

@@ -27,11 +27,11 @@ npm install && npx prisma db push && npm run seed && npm run build
 
 | Account | Email | Password |
 |---------|-------|----------|
-| Aurora (undefeated) | `aurora@survivesunday.demo` | `demo1234` |
-| Frost | `frost@survivesunday.demo` | `demo1234` |
-| Ember (one loss) | `ember@survivesunday.demo` | `demo1234` |
-| Jasper (no pick) | `jasper@survivesunday.demo` | `demo1234` |
-| Harbor (eliminated) | `harbor@survivesunday.demo` | `demo1234` |
+| Gams (default / Robert) | `gams@survivesunday.demo` | `demo1234` |
+| Black Cobra | `black-cobra@survivesunday.demo` | `demo1234` |
+| Cannoli Stuffer | `cannoli-stuffer@survivesunday.demo` | `demo1234` |
+| …other BM Boys (see DemoEnter) | `slug@survivesunday.demo` | `demo1234` |
+| Steve | `steve@survivesunday.demo` | `demo1234` |
 | **Commissioner** | `admin@survivesunday.demo` | `demo1234` |
 
 - Invite code: **`SUNDAY26`**

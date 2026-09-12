@@ -10,7 +10,7 @@ import { requestAbsolute } from "@/lib/request-host";
  */
 export async function POST(req: Request) {
   const wantsJson = (req.headers.get("accept") ?? "").includes("application/json");
-  let email = "aurora@survivesunday.demo";
+  let email = "gams@survivesunday.demo";
   let password = "demo1234";
   try {
     const ct = req.headers.get("content-type") ?? "";

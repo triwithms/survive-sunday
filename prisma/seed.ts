@@ -113,19 +113,27 @@ type DemoPart = {
   week1Pick: { team: string } | null;
 };
 
-/** Remap demo picks onto the real 2026 Week 1 slate teams. */
+/** Week 1 picks → simulated/real slate winners so all BM Boys grade as wins. */
 const SLATE_PICKS: Record<string, string | null> = {
-  Aurora: "KC", // DEN @ KC (Mon)
-  Beacon: "BUF", // BUF @ HOU
-  Cedar: "PHI", // WAS @ PHI
-  Drift: "DET", // NO @ DET
-  Ember: "HOU", // BUF @ HOU
-  Frost: "BAL", // BAL @ IND — H2H-ish rivalry energy with Beacon/Ember games
-  Grove: "SF", // SF @ LAR (already final — win)
-  Harbor: null, // eliminated
-  Iris: "GB", // GB @ MIN
-  Jasper: null, // late pick risk / no pick
+  "Black Cobra": "SEA", // NE @ SEA (final)
+  "Cannoli Stuffer": "SF", // SF @ LAR (final)
+  Colin: "CAR", // CHI @ CAR
+  "Daddy Chill": "TB", // TB @ CIN
+  "Deep and Delicious": "IND", // BAL @ IND
+  Gams: "DET", // NO @ DET
+  Gdogss: "HOU", // BUF @ HOU
+  JimmyC: "NYJ", // NYJ @ TEN
+  "Long Snapper": "ATL", // ATL @ PIT
+  Steve: "KC", // DEN @ KC
 };
+
+/** Slug nickname → valid demo email local-part (e.g. Deep and Delicious → deep-and-delicious). */
+function demoEmailLocal(nickname: string): string {
+  return nickname
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 async function main() {
   console.log("🌱 Seeding Survive Sunday…");
@@ -189,6 +197,7 @@ async function main() {
   const week1Odds = loadJson<{ games: OddsGame[] }>("week1-games.json");
   const week2Odds = loadJson<{ games: OddsGame[] }>("week2-odds.json");
 
+  // BM Boys roster lives in demo-participants.json (synced from bm-boys-2026-participants.json)
   const demo = loadJson<{
     participants: DemoPart[];
     poolName: string;
@@ -329,7 +338,7 @@ async function main() {
   });
 
   for (const p of demo.participants) {
-    const email = `${p.nickname.toLowerCase()}@survivesunday.demo`;
+    const email = `${demoEmailLocal(p.nickname)}@survivesunday.demo`;
     const user = await prisma.user.create({
       data: {
         email,
@@ -380,12 +389,12 @@ async function main() {
     }
   }
 
-  // Sample Week 2 pick (Aurora) so privacy/hidden-picks UX is visible
-  const auroraMem = await prisma.membership.findFirst({
-    where: { poolId: pool.id, nickname: "Aurora" },
+  // Sample Week 2 pick (Gams) so privacy/hidden-picks UX is visible
+  const gamsMem = await prisma.membership.findFirst({
+    where: { poolId: pool.id, nickname: "Gams" },
   });
-  if (auroraMem) {
-    const sampleTeam = "PHI"; // KC @ PHI — different from Aurora W1 KC
+  if (gamsMem) {
+    const sampleTeam = "PHI"; // KC @ PHI — different from Gams W1 DET
     const g2 = await prisma.game.findFirst({
       where: {
         weekId: week2.id,
@@ -395,7 +404,7 @@ async function main() {
     if (g2) {
       await prisma.pick.create({
         data: {
-          membershipId: auroraMem.id,
+          membershipId: gamsMem.id,
           weekId: week2.id,
           teamAbbr: sampleTeam,
           gameId: g2.id,
@@ -404,7 +413,7 @@ async function main() {
           submittedAt: new Date(),
         },
       });
-      console.log("  Sample Week 2 pick: Aurora → PHI");
+      console.log("  Sample Week 2 pick: Gams → PHI");
     }
   }
 
@@ -457,11 +466,12 @@ async function main() {
     },
   });
 
-  console.log("✅ Seed complete — pool at Week 2");
+  console.log("✅ Seed complete — pool at Week 2 (BM Boys)");
   console.log(`   Week 2 lockAt: ${lockAt2.toISOString()}`);
   console.log("   Invite code: SUNDAY26");
   console.log("   Demo password: demo1234");
-  console.log("   Demo emails: aurora@survivesunday.demo … jasper@…");
+  console.log("   Default seat: gams@survivesunday.demo (Robert Gama)");
+  console.log("   Demo emails: black-cobra@… cannoli-stuffer@… … steve@survivesunday.demo");
   console.log("   Admin: admin@survivesunday.demo");
 }
 

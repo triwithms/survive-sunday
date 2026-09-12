@@ -5,9 +5,9 @@
  *
  * Client-side (router cache) steps after this passes:
  *   1. Open http://localhost:3000
- *   2. Enter as Frost → header says Frost, /pool is Frost
- *   3. Tap Pick (bottom nav) → still Frost (not Aurora / PHI)
- *   4. Back → Enter as Aurora → header + /pick Current: PHI
+ *   2. Enter as Black Cobra → header says Black Cobra, /pool is Black Cobra
+ *   3. Tap Pick (bottom nav) → still Black Cobra (not Gams / PHI)
+ *   4. Back → Enter as Gams → header + /pick Current: PHI
  *   5. Switch commissioner → /admin stays Commissioner
  *   6. /pick has no red Next.js "1 Error" toast
  */
@@ -105,61 +105,57 @@ function check(name, cond, detail) {
 async function main() {
   console.log(`verify-session-identity against ${BASE}\n`);
 
-  const frost = await signIn("frost@survivesunday.demo", "demo1234");
+  const other = await signIn("black-cobra@survivesunday.demo", "demo1234");
   check(
-    "Frost session email",
-    frost.session?.user?.email === "frost@survivesunday.demo",
-    JSON.stringify(frost.session?.user)
+    "Black Cobra session email",
+    other.session?.user?.email === "black-cobra@survivesunday.demo",
+    JSON.stringify(other.session?.user)
   );
 
-  const frostPool = await page(frost.jar, "/pool");
-  check("Frost /pool 200", frostPool.status === 200, String(frostPool.status));
+  const otherPool = await page(other.jar, "/pool");
+  check("Black Cobra /pool 200", otherPool.status === 200, String(otherPool.status));
   check(
-    "Frost /pool header",
-    /data-testid="session-nickname"[^>]*>\s*Frost/.test(frostPool.html),
-    "missing Frost nickname on /pool"
+    "Black Cobra /pool header",
+    /data-testid="session-nickname"[^>]*>\s*Black Cobra/.test(otherPool.html),
+    "missing Black Cobra nickname on /pool"
   );
 
-  const frostPick = await page(frost.jar, "/pick");
-  check("Frost /pick 200", frostPick.status === 200, String(frostPick.status));
+  const otherPick = await page(other.jar, "/pick");
+  check("Black Cobra /pick 200", otherPick.status === 200, String(otherPick.status));
   check(
-    "Frost /pick is Frost not Aurora PHI",
-    frostPick.html.includes("Frost") &&
-      !frostPick.html.includes("Current:</") &&
-      !frostPick.html.includes(">PHI</") ||
-      (frostPick.html.includes("Frost") && !frostPick.html.includes("Aurora")),
+    "Black Cobra /pick is not Gams PHI",
+    otherPick.html.includes("Black Cobra") && !otherPick.html.includes("Gams"),
     "identity leak"
   );
-  // More precise: header nickname Frost, current pick is not PHI unless Frost picked PHI
-  const frostCurrent = frostPick.html.match(/Current:[\s\S]{0,80}font-mono[^>]*>([A-Z]{2,3})</);
-  const frostCurrentAbbr = frostCurrent?.[1] || null;
+  const otherCurrent = otherPick.html.match(/Current:[\s\S]{0,80}font-mono[^>]*>([A-Z]{2,3})</);
+  const otherCurrentAbbr = otherCurrent?.[1] || null;
   check(
-    "Frost /pick current is not Aurora PHI (unless Frost picked PHI)",
-    frostCurrentAbbr !== "PHI" || frostPick.html.includes("data-testid=\"session-nickname\"") && frostPick.html.includes("Frost"),
-    `current=${frostCurrentAbbr}`
+    "Black Cobra /pick current is not Gams PHI",
+    otherCurrentAbbr !== "PHI",
+    `current=${otherCurrentAbbr}`
   );
   check(
-    "Frost /pick header nickname",
-    /data-testid="session-nickname"[^>]*>\s*Frost/.test(frostPick.html),
-    "missing Frost nickname"
+    "Black Cobra /pick header nickname",
+    /data-testid="session-nickname"[^>]*>\s*Black Cobra/.test(otherPick.html),
+    "missing Black Cobra nickname"
   );
 
-  const aurora = await signIn("aurora@survivesunday.demo", "demo1234");
+  const gams = await signIn("gams@survivesunday.demo", "demo1234");
   check(
-    "Aurora session email",
-    aurora.session?.user?.email === "aurora@survivesunday.demo",
-    JSON.stringify(aurora.session?.user)
+    "Gams session email",
+    gams.session?.user?.email === "gams@survivesunday.demo",
+    JSON.stringify(gams.session?.user)
   );
-  const auroraPick = await page(aurora.jar, "/pick");
-  check("Aurora /pick 200", auroraPick.status === 200, String(auroraPick.status));
+  const gamsPick = await page(gams.jar, "/pick");
+  check("Gams /pick 200", gamsPick.status === 200, String(gamsPick.status));
   check(
-    "Aurora /pick header",
-    /data-testid="session-nickname"[^>]*>\s*Aurora/.test(auroraPick.html),
-    "missing Aurora nickname"
+    "Gams /pick header",
+    /data-testid="session-nickname"[^>]*>\s*Gams/.test(gamsPick.html),
+    "missing Gams nickname"
   );
   check(
-    "Aurora /pick Current PHI",
-    auroraPick.html.includes("PHI"),
+    "Gams /pick Current PHI",
+    gamsPick.html.includes("PHI"),
     "expected Current: PHI"
   );
 

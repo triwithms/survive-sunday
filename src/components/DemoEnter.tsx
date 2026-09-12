@@ -7,12 +7,18 @@ const COMMISSIONER = {
   label: "Commissioner (admin)",
 };
 
+/** BM Boys 26/27 — default seat is Gams (Robert). */
 const DEMOS = [
-  { email: "aurora@survivesunday.demo", label: "Aurora (undefeated)" },
-  { email: "frost@survivesunday.demo", label: "Frost (undefeated)" },
-  { email: "ember@survivesunday.demo", label: "Ember (one loss)" },
-  { email: "jasper@survivesunday.demo", label: "Jasper (no pick yet)" },
-  { email: "harbor@survivesunday.demo", label: "Harbor (eliminated)" },
+  { email: "gams@survivesunday.demo", label: "Gams — Robert Gama (you)" },
+  { email: "black-cobra@survivesunday.demo", label: "Black Cobra — Justin John" },
+  { email: "cannoli-stuffer@survivesunday.demo", label: "Cannoli Stuffer — Michael Frigo" },
+  { email: "colin@survivesunday.demo", label: "Colin — Colin Malone" },
+  { email: "daddy-chill@survivesunday.demo", label: "Daddy Chill — Joachim Kuzel" },
+  { email: "deep-and-delicious@survivesunday.demo", label: "Deep and Delicious — Kent Richmond" },
+  { email: "gdogss@survivesunday.demo", label: "Gdogss — Tony Gyuro" },
+  { email: "jimmyc@survivesunday.demo", label: "JimmyC — Jim Coulson" },
+  { email: "long-snapper@survivesunday.demo", label: "Long Snapper — J S" },
+  { email: "steve@survivesunday.demo", label: "Steve — Steve" },
 ];
 
 function friendlyError(code: string): string {
@@ -46,7 +52,7 @@ export function DemoEnter() {
       <div>
         <p className="text-sm font-semibold text-gold-400">Enter demo pool</p>
         <p className="text-xs text-[var(--text-muted)] mt-1">
-          Pick a player to try the pool. No password box — demo password is built in (
+          Pick a BM Boys player to try the pool. No password box — demo password is built in (
           <span className="font-mono text-[var(--text-primary)]">demo1234</span>
           ).
         </p>

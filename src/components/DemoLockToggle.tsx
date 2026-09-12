@@ -5,7 +5,7 @@ import { useState } from "react";
 
 /**
  * Visible demo/testing control: Before lock | After lock.
- * Available to any demo-pool member (e.g. Aurora), not just commissioner.
+ * Available to any demo-pool member (e.g. Gams), not just commissioner.
  */
 export function DemoLockToggle({
   locked,
