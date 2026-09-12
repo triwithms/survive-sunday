@@ -142,10 +142,16 @@ a:focus-visible, button:focus-visible {
 }
 
 
-/* Team research: slightly larger default; rem so browser/OS text size scales */
-.team-research {
-  font-size: 1.0625rem;
+/* Mobile-only: slightly larger root type (desktop stays browser default ~16px) */
+@media (max-width: 640px) {
+  html {
+    font-size: 112.5%; /* ~18px when browser default is 16px */
+  }
+  .team-research {
+    font-size: 1.125rem;
+  }
 }
+
 .team-research h1 {
   line-height: 1.2;
 }
