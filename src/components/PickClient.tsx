@@ -73,7 +73,7 @@ export function PickClient({
     }
     setSelected(abbr);
     setConfirm(null);
-    setMsg("Locked in — nice one.");
+    setMsg(currentPick && currentPick !== abbr ? "Pick updated." : "Locked in — nice one.");
     router.refresh();
   }
 
@@ -100,10 +100,17 @@ export function PickClient({
             : "One team. No reuse. Bye teams disabled."}
         </p>
         {currentPick && (
-          <p className="mt-2 text-sm">
-            Current:{" "}
-            <span className="font-mono text-gold-400">{currentPick}</span>
-          </p>
+          <div className="mt-2 space-y-1 text-sm">
+            <p>
+              Current:{" "}
+              <span className="font-mono text-gold-400">{currentPick}</span>
+            </p>
+            {!locked && (
+              <p className="text-[var(--text-muted)]">
+                Tap another team to change your pick before lock.
+              </p>
+            )}
+          </div>
         )}
       </div>
 
@@ -209,7 +216,7 @@ export function PickClient({
                 disabled={busy || locked}
                 onClick={() => submit(confirm.abbr)}
               >
-                {busy ? "Saving…" : "Lock in"}
+                {busy ? "Saving…" : currentPick ? "Change pick" : "Lock in"}
               </button>
             </div>
           </div>

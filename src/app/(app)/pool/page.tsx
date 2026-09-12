@@ -71,7 +71,7 @@ export default async function PoolPage() {
           Your pick
         </p>
         {myPick ? (
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <p className="text-xl font-semibold text-gold-400">
                 {myPick.teamAbbr}
@@ -102,6 +102,15 @@ export default async function PoolPage() {
                 </p>
               )}
             </div>
+            {!locked && self.status !== "eliminated" && (
+              <Link
+                href="/pick"
+                prefetch={false}
+                className="btn-primary text-center text-sm shrink-0 sm:ml-auto"
+              >
+                Change pick
+              </Link>
+            )}
           </div>
         ) : self.status === "eliminated" ? (
           <p className="text-[var(--text-muted)]">You&apos;re eliminated — still welcome to hang out.</p>
