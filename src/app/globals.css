@@ -22,6 +22,8 @@
 
 html {
   color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   overflow-x: hidden;
   max-width: 100%;
 }
@@ -98,7 +100,7 @@ body {
   gap: 0.25rem;
   border-radius: 999px;
   padding: 0.15rem 0.65rem;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
@@ -137,4 +139,16 @@ input:focus, textarea:focus, select:focus {
 a:focus-visible, button:focus-visible {
   outline: 2px solid var(--gold-400);
   outline-offset: 2px;
+}
+
+
+/* Team research: slightly larger default; rem so browser/OS text size scales */
+.team-research {
+  font-size: 1.0625rem;
+}
+.team-research h1 {
+  line-height: 1.2;
+}
+.team-research a {
+  overflow-wrap: anywhere;
 }

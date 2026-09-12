@@ -27,16 +27,16 @@ function PlayerRows({ players }: { players: RosterPlayer[] }) {
       {players.map((p) => (
         <li
           key={`${p.role}-${p.number}-${p.name}-${p.position}`}
-          className="py-2 flex items-baseline gap-2 text-sm min-w-0"
+          className="py-2.5 flex items-baseline gap-2 text-base min-w-0"
         >
           <span className="font-mono text-[var(--text-muted)] w-8 shrink-0">
             {p.number != null ? `#${p.number}` : "—"}
           </span>
-          <span className="font-mono text-xs text-gold-400 w-8 shrink-0">
+          <span className="font-mono text-sm text-gold-400 w-10 shrink-0">
             {p.position}
           </span>
           <span className="min-w-0 flex-1 truncate font-medium">{p.name}</span>
-          <span className="text-xs text-[var(--text-muted)] truncate max-w-[40%]">
+          <span className="text-sm text-[var(--text-muted)] truncate max-w-[40%]">
             {p.college || "—"}
           </span>
         </li>
@@ -57,8 +57,8 @@ function SideSections({
   if (players.length === 0) {
     return (
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-gold-400">{title}</h3>
-        <p className="text-sm text-[var(--text-muted)]">None listed.</p>
+        <h3 className="text-lg font-medium text-gold-400">{title}</h3>
+        <p className="text-base text-[var(--text-muted)]">None listed.</p>
       </div>
     );
   }
@@ -69,9 +69,9 @@ function SideSections({
   if (!hasRoleSplit) {
     return (
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
+        <h3 className="text-lg font-medium text-gold-400 flex items-center gap-2">
           {title}
-          <span className="chip chip-gold text-[10px]">{players.length}</span>
+          <span className="chip chip-gold text-xs">{players.length}</span>
         </h3>
         <PlayerRows players={players} />
       </div>
@@ -81,11 +81,11 @@ function SideSections({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
+        <h3 className="text-lg font-medium text-gold-400 flex items-center gap-2">
           Starting {title.toLowerCase()}
-          <span className="chip chip-gold text-[10px]">{starters.length}</span>
+          <span className="chip chip-gold text-xs">{starters.length}</span>
           {rolesApproximate && (
-            <span className="text-[10px] font-normal text-[var(--text-muted)]">
+            <span className="text-xs font-normal text-[var(--text-muted)]">
               approx
             </span>
           )}
@@ -93,9 +93,9 @@ function SideSections({
         <PlayerRows players={starters} />
       </div>
       <div className="space-y-2 pt-2 border-t border-stadium-border">
-        <h3 className="text-sm font-medium text-[var(--text-muted)] flex items-center gap-2">
+        <h3 className="text-base font-medium text-[var(--text-muted)] flex items-center gap-2">
           {title} depth
-          <span className="chip chip-one-loss text-[10px]">{depth.length}</span>
+          <span className="chip chip-one-loss text-xs">{depth.length}</span>
         </h3>
         <PlayerRows players={depth} />
       </div>
@@ -124,7 +124,7 @@ function formatNewsDate(iso: string | null | undefined): string | null {
 
 function NewsList({ items }: { items: TeamNewsItem[] }) {
   return (
-    <ul className="space-y-2 text-sm">
+    <ul className="space-y-3 text-base">
       {items.map((n, i) => {
         const when = formatNewsDate(n.published);
         return (
@@ -140,8 +140,8 @@ function NewsList({ items }: { items: TeamNewsItem[] }) {
             >
               {n.headline}
             </a>
-            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] uppercase tracking-wide text-[var(--text-muted)]">
-              <span className="chip chip-one-loss text-[10px] normal-case tracking-normal">
+            <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs uppercase tracking-wide text-[var(--text-muted)]">
+              <span className="chip chip-one-loss text-xs normal-case tracking-normal">
                 {n.source}
               </span>
               {when && <span className="normal-case tracking-normal">{when}</span>}
@@ -190,8 +190,8 @@ export default async function TeamResearchPage({
   const totalPlayers = oCount + dCount + stCount;
 
   return (
-    <div className="space-y-5 min-w-0">
-      <div className="flex flex-wrap gap-3 text-sm">
+    <div className="team-research space-y-5 min-w-0 text-base leading-relaxed">
+      <div className="flex flex-wrap gap-3 text-base">
         <Link
           href="/nfl"
           prefetch={false}
@@ -218,14 +218,14 @@ export default async function TeamResearchPage({
       <header className="card-glass p-4 flex items-start gap-3 min-w-0">
         <TeamLogo abbr={team.abbr} logoUrl={team.logoUrl} size={64} />
         <div className="min-w-0 flex-1">
-          <h1 className="font-display text-2xl text-gold-400 tracking-wide break-words">
+          <h1 className="font-display text-3xl sm:text-4xl text-gold-400 tracking-wide break-words">
             {team.name}
           </h1>
-          <p className="text-sm text-[var(--text-muted)]">
+          <p className="text-base text-[var(--text-muted)]">
             {team.conference} {team.division} ·{" "}
             <span className="font-mono text-[var(--text-primary)]">{team.abbr}</span>
           </p>
-          <div className="mt-2 flex flex-wrap gap-2 text-xs">
+          <div className="mt-2 flex flex-wrap gap-2 text-sm">
             <span className="chip chip-gold">{record}</span>
             <span className="chip chip-one-loss">
               {formatWinPct(team.wins, team.losses, team.ties)} pct
@@ -241,7 +241,7 @@ export default async function TeamResearchPage({
               </span>
             )}
           </div>
-          <p className="mt-2 text-xs text-[var(--text-muted)]">
+          <p className="mt-2 text-sm text-[var(--text-muted)]">
             PF {team.pointsFor} · PA {team.pointsAgainst} ·{" "}
             <span className="text-gold-400">Demo standings</span>
           </p>
@@ -250,8 +250,8 @@ export default async function TeamResearchPage({
 
       {profile && (
         <section className="card-glass p-4 space-y-2">
-          <h2 className="font-semibold text-gold-400">Style summary</h2>
-          <ul className="text-sm space-y-1">
+          <h2 className="text-xl font-semibold text-gold-400">Style summary</h2>
+          <ul className="text-base space-y-1.5">
             <li>
               <span className="text-[var(--text-muted)]">Offence:</span>{" "}
               {profile.offence_lean}
@@ -266,7 +266,7 @@ export default async function TeamResearchPage({
             </li>
           </ul>
           {profile.lean_basis && (
-            <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
               {profile.lean_basis}
             </p>
           )}
@@ -275,18 +275,18 @@ export default async function TeamResearchPage({
 
       <section className="card-glass p-4 space-y-4">
         <div>
-          <h2 className="font-semibold text-gold-400 flex items-center gap-2 flex-wrap">
+          <h2 className="text-xl font-semibold text-gold-400 flex items-center gap-2 flex-wrap">
             Roster
             {totalPlayers > 0 && (
-              <span className="chip chip-gold text-[10px]">{totalPlayers}</span>
+              <span className="chip chip-gold text-xs">{totalPlayers}</span>
             )}
             {roster?.rolesApproximate && (
-              <span className="chip chip-one-loss text-[10px]">
+              <span className="chip chip-one-loss text-xs">
                 Roster · roles approximate
               </span>
             )}
           </h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
+          <p className="text-sm text-[var(--text-muted)] mt-0.5 leading-relaxed">
             {roster?.fromFullFile
               ? `Full roster from ${roster.source || "team_rosters.json"}${
                   roster.asOf ? ` · as of ${roster.asOf}` : ""
@@ -294,14 +294,14 @@ export default async function TeamResearchPage({
               : "Seeded key players from team profiles — not a full depth chart."}
           </p>
           {roster?.sourceNote && (
-            <p className="text-[10px] text-[var(--text-muted)] mt-1 leading-relaxed">
+            <p className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">
               {roster.sourceNote}
             </p>
           )}
         </div>
 
         {!roster || totalPlayers === 0 ? (
-          <p className="text-sm text-[var(--text-muted)]">No roster data yet.</p>
+          <p className="text-base text-[var(--text-muted)]">No roster data yet.</p>
         ) : (
           <>
             <SideSections
@@ -317,12 +317,12 @@ export default async function TeamResearchPage({
               />
             </div>
             <div className="border-t border-stadium-border pt-4 space-y-2">
-              <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
+              <h3 className="text-lg font-medium text-gold-400 flex items-center gap-2">
                 Special teams
-                <span className="chip chip-gold text-[10px]">{stCount}</span>
+                <span className="chip chip-gold text-xs">{stCount}</span>
               </h3>
               {stCount === 0 ? (
-                <p className="text-sm text-[var(--text-muted)]">
+                <p className="text-base text-[var(--text-muted)]">
                   None listed (ESPN often omits KR/PR as distinct positions).
                 </p>
               ) : (
@@ -335,24 +335,24 @@ export default async function TeamResearchPage({
 
       <section className="card-glass p-4 space-y-3">
         <div className="flex items-center gap-2 flex-wrap">
-          <h2 className="font-semibold text-gold-400">Team news</h2>
+          <h2 className="text-xl font-semibold text-gold-400">Team news</h2>
           {!news.failed && news.items.length > 0 && (
-            <span className="chip chip-gold text-[10px]">Live · ESPN</span>
+            <span className="chip chip-gold text-xs">Live · ESPN</span>
           )}
         </div>
-        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
           Headlines from ESPN&apos;s public team news feed, newest first. Opens
           on ESPN in a new tab. Not affiliated with the NFL or ESPN.
         </p>
         {news.failed || news.items.length === 0 ? (
-          <div className="space-y-2 text-sm text-[var(--text-muted)]">
+          <div className="space-y-2 text-base text-[var(--text-muted)]">
             <p>
               {news.failed
                 ? "Live headlines are unavailable right now."
                 : "No recent headlines returned for this team."}{" "}
               Check the team pages directly:
             </p>
-            <ul className="flex flex-wrap gap-3 text-sm">
+            <ul className="flex flex-wrap gap-3 text-base">
               <li>
                 <a
                   href={news.espnTeamUrl}
@@ -378,7 +378,7 @@ export default async function TeamResearchPage({
         ) : (
           <>
             <NewsList items={news.items} />
-            <p className="text-[10px] text-[var(--text-muted)] pt-1">
+            <p className="text-sm text-[var(--text-muted)] pt-1">
               More coverage:{" "}
               <a
                 href={news.espnTeamUrl}

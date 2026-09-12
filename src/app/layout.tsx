@@ -38,7 +38,7 @@ export const viewport: Viewport = {
   themeColor: "#0B0E12",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  // Allow pinch-zoom / system text size — do not lock maximumScale
   viewportFit: "cover",
 };
 
