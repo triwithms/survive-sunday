@@ -2,15 +2,20 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * Header countdown to the week's pick deadline (first kickoff / effective lock).
+ */
 export function Countdown({ lockAt }: { lockAt: string }) {
-  // Render a stable placeholder on the server so Date.now() cannot
-  // mismatch between RSC HTML and hydration (Next.js red "1 Error" toast).
+  // Stable placeholder on the server so Date.now() cannot mismatch hydration.
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
     setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
+
+  const hint =
+    "Pick deadline — locks at this week's first kickoff. After that you can't change picks and everyone else's picks reveal.";
 
   const target = new Date(lockAt).getTime();
   if (!Number.isFinite(target)) {
@@ -23,8 +28,16 @@ export function Countdown({ lockAt }: { lockAt: string }) {
 
   if (now === null) {
     return (
-      <span className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap">
-        <span className="opacity-0">00h 00m</span>
+      <span
+        className="inline-flex flex-col items-center sm:items-start gap-0 min-w-0"
+        title={hint}
+      >
+        <span className="text-[9px] sm:text-[10px] uppercase tracking-wide text-[var(--text-muted)] leading-none">
+          Locks in
+        </span>
+        <span className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap">
+          <span className="opacity-0">00h 00m</span>
+        </span>
       </span>
     );
   }
@@ -33,8 +46,16 @@ export function Countdown({ lockAt }: { lockAt: string }) {
 
   if (diff <= 0) {
     return (
-      <span className="font-display tracking-wide text-crimson-400 text-xs sm:text-sm uppercase shrink-0">
-        Locked
+      <span
+        className="inline-flex flex-col items-center sm:items-start gap-0 min-w-0"
+        title={hint}
+      >
+        <span className="font-display tracking-wide text-crimson-400 text-xs sm:text-sm uppercase shrink-0">
+          Picks locked
+        </span>
+        <span className="hidden sm:block text-[10px] text-[var(--text-muted)] leading-none mt-0.5">
+          First kickoff passed
+        </span>
       </span>
     );
   }
@@ -45,7 +66,6 @@ export function Countdown({ lockAt }: { lockAt: string }) {
   const m = Math.floor((s % 3600) / 60);
   const sec = s % 60;
 
-  // Narrow phones: drop seconds to reduce header width
   const compact = [
     d > 0 ? `${d}d` : null,
     `${h.toString().padStart(2, "0")}h`,
@@ -56,11 +76,18 @@ export function Countdown({ lockAt }: { lockAt: string }) {
 
   return (
     <span
-      className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap"
+      className="inline-flex flex-col items-center sm:items-start gap-0 min-w-0"
+      title={hint}
+      aria-label={`Picks lock in ${full.join(" ")}. ${hint}`}
       aria-live="polite"
     >
-      <span className="sm:hidden">{compact.join(" ")}</span>
-      <span className="hidden sm:inline">{full.join(" ")}</span>
+      <span className="text-[9px] sm:text-[10px] uppercase tracking-wide text-[var(--text-muted)] leading-none">
+        Locks in
+      </span>
+      <span className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap">
+        <span className="sm:hidden">{compact.join(" ")}</span>
+        <span className="hidden sm:inline">{full.join(" ")}</span>
+      </span>
     </span>
   );
 }
