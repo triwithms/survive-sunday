@@ -277,7 +277,7 @@ export function plausibleFinalScores(gameId: string): {
 } {
   const seed = gameId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   let homeScore = 17 + (seed % 14);
-  let awayScore = 14 + ((seed * 3) % 17);
+  const awayScore = 14 + ((seed * 3) % 17);
   // Avoid ties (ties grade as loss)
   if (homeScore === awayScore) homeScore += 1;
   return { scoreHome: homeScore, scoreAway: awayScore };
