@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 /**
- * Visible demo/testing control: Before lock | After lock.
- * Available to any demo-pool member (e.g. Gams), not just commissioner.
+ * Visible demo/testing control: Before deadline | After deadline.
+ * API modes remain before_lock / after_lock. Available to any demo-pool member.
  */
 export function DemoLockToggle({
   locked,
@@ -65,7 +65,7 @@ export function DemoLockToggle({
             ].join(" ")}
             aria-pressed={!locked}
           >
-            Before lock
+            Before deadline
           </button>
           <button
             type="button"
@@ -79,9 +79,14 @@ export function DemoLockToggle({
             ].join(" ")}
             aria-pressed={locked}
           >
-            After lock
+            After deadline
           </button>
         </div>
+        {locked && (
+          <span className="text-[10px] text-[var(--text-muted)] basis-full sm:basis-auto">
+            Demo picks for testing — not real BM Boys picks
+          </span>
+        )}
         {busy && (
           <span className="text-[10px] text-[var(--text-muted)]">Updating…</span>
         )}
