@@ -122,7 +122,7 @@ export function PickClient({
               ? "You're eliminated — matchups are read-only."
               : locked
                 ? "Week locked — picks are read-only."
-                : "Tap a side to pick that team. One team. No reuse."}
+                : "Use Pick on a side to choose that team. One team. No reuse."}
           </p>
           {currentPick && (
             <div className="mt-2 space-y-1 text-sm">
@@ -132,7 +132,7 @@ export function PickClient({
               </p>
               {!readOnly && (
                 <p className="text-[var(--text-muted)]">
-                  Tap another side to change your pick before lock.
+                  Pick another side to change before lock.
                 </p>
               )}
             </div>
@@ -342,7 +342,7 @@ function SideButton({
 
   return (
     <div
-      className={`flex min-h-[88px] flex-col gap-1 rounded-lg border p-2 transition sm:p-3 ${
+      className={`flex min-h-[88px] flex-col gap-1.5 rounded-lg border p-2 transition sm:p-3 ${
         isAway ? "items-start text-left" : "items-end text-right"
       } ${
         selected
@@ -350,14 +350,11 @@ function SideButton({
           : "border-transparent bg-[var(--stadium-700)]/40"
       } ${side.alreadyUsed && !selected ? "opacity-40" : ""}`}
     >
-      <Link
-        href={`/team/${side.abbr}`}
-        prefetch={false}
-        onClick={(e) => e.stopPropagation()}
-        className={`flex items-center gap-2 min-w-0 hover:opacity-90 ${
+      {/* Display only — no navigation */}
+      <div
+        className={`flex items-center gap-2 min-w-0 ${
           isAway ? "" : "flex-row-reverse"
         }`}
-        aria-label={`${side.name} team info`}
       >
         <TeamLogo abbr={side.abbr} logoUrl={side.logoUrl} size={40} />
         <div className="min-w-0">
@@ -366,7 +363,7 @@ function SideButton({
               isAway ? "" : "justify-end"
             }`}
           >
-            <span className="font-mono text-sm font-semibold text-gold-400 underline underline-offset-2 decoration-gold-400/40">
+            <span className="font-mono text-sm font-semibold text-gold-400">
               {side.abbr}
             </span>
             {favSpread != null && (
@@ -375,47 +372,53 @@ function SideButton({
               </span>
             )}
           </div>
-          <div className="truncate text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-transparent hover:decoration-[var(--text-muted)]">
+          <div className="truncate text-xs text-[var(--text-muted)]">
             {side.name}
           </div>
         </div>
-      </Link>
-      <button
-        type="button"
-        disabled={disabled && !selected}
-        onClick={() => {
-          if (readOnly || side.alreadyUsed) return;
-          onPick();
-        }}
-        aria-pressed={selected}
-        aria-label={`Pick ${side.name} (${side.abbr})`}
-        className={`w-full space-y-0.5 text-[10px] leading-tight text-[var(--text-muted)] rounded-md px-1 py-1 ${
-          isAway ? "text-left" : "text-right"
-        } ${
-          side.alreadyUsed && !selected
-            ? "cursor-not-allowed"
-            : readOnly
-              ? "cursor-default"
-              : "hover:bg-gold-400/10 cursor-pointer"
-        } ${!disabled && !selected ? "active:scale-[0.98]" : ""}`}
-      >
-        {prior && <div>{prior}</div>}
-        {current && <div>{current}</div>}
-        {side.alreadyUsed ? (
-          <div className="text-crimson-400">Already used</div>
-        ) : !readOnly ? (
-          <div className="text-gold-400/80 font-medium">
-            {selected ? "Selected · tap to confirm" : "Tap to pick"}
-          </div>
-        ) : null}
-      </button>
+      </div>
+
+      {(prior || current) && (
+        <div
+          className={`w-full space-y-0.5 text-[10px] leading-tight text-[var(--text-muted)] ${
+            isAway ? "text-left" : "text-right"
+          }`}
+        >
+          {prior && <div>{prior}</div>}
+          {current && <div>{current}</div>}
+        </div>
+      )}
+
+      {side.alreadyUsed ? (
+        <div className="text-[10px] font-medium text-crimson-400">Already used</div>
+      ) : !readOnly ? (
+        <button
+          type="button"
+          disabled={disabled && !selected}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (readOnly || side.alreadyUsed) return;
+            onPick();
+          }}
+          aria-pressed={selected}
+          aria-label={`Pick ${side.name} (${side.abbr})`}
+          className={`btn-primary w-full text-xs py-1.5 ${
+            selected ? "ring-1 ring-gold-400" : ""
+          }`}
+        >
+          {selected ? "Selected · confirm" : "Pick"}
+        </button>
+      ) : selected ? (
+        <div className="text-[10px] font-medium text-gold-400">Your pick</div>
+      ) : null}
+
       <Link
         href={`/team/${side.abbr}`}
         prefetch={false}
         onClick={(e) => e.stopPropagation()}
-        className="text-[10px] text-sky-400 underline underline-offset-2"
+        className="text-[10px] text-sky-400 underline underline-offset-2 hover:text-sky-300"
       >
-        Info
+        Research
       </Link>
     </div>
   );

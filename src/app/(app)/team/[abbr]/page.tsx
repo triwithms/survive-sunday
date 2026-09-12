@@ -11,20 +11,21 @@ import {
 import {
   getSampleInjuryNews,
   getTeamProfile,
-  splitRosterBySide,
-  type ProfilePlayer,
+  getTeamRoster,
+  splitRosterPlayers,
+  type RosterPlayer,
 } from "@/lib/team-research";
 import { formatWinPct } from "@/lib/standings-format";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function PlayerRows({ players }: { players: ProfilePlayer[] }) {
+function PlayerRows({ players }: { players: RosterPlayer[] }) {
   return (
     <ul className="divide-y divide-stadium-border">
       {players.map((p) => (
         <li
-          key={`${p.number}-${p.name}`}
+          key={`${p.role}-${p.number}-${p.name}-${p.position}`}
           className="py-2 flex items-baseline gap-2 text-sm min-w-0"
         >
           <span className="font-mono text-[var(--text-muted)] w-8 shrink-0">
@@ -40,6 +41,64 @@ function PlayerRows({ players }: { players: ProfilePlayer[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+function SideSections({
+  title,
+  players,
+  rolesApproximate,
+}: {
+  title: string;
+  players: RosterPlayer[];
+  rolesApproximate: boolean;
+}) {
+  if (players.length === 0) {
+    return (
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-gold-400">{title}</h3>
+        <p className="text-sm text-[var(--text-muted)]">None listed.</p>
+      </div>
+    );
+  }
+
+  const { starters, depth } = splitRosterPlayers(players);
+  const hasRoleSplit = starters.length > 0 && depth.length > 0;
+
+  if (!hasRoleSplit) {
+    return (
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
+          {title}
+          <span className="chip chip-gold text-[10px]">{players.length}</span>
+        </h3>
+        <PlayerRows players={players} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
+          Starting {title.toLowerCase()}
+          <span className="chip chip-gold text-[10px]">{starters.length}</span>
+          {rolesApproximate && (
+            <span className="text-[10px] font-normal text-[var(--text-muted)]">
+              approx
+            </span>
+          )}
+        </h3>
+        <PlayerRows players={starters} />
+      </div>
+      <div className="space-y-2 pt-2 border-t border-stadium-border">
+        <h3 className="text-sm font-medium text-[var(--text-muted)] flex items-center gap-2">
+          {title} depth
+          <span className="chip chip-one-loss text-[10px]">{depth.length}</span>
+        </h3>
+        <PlayerRows players={depth} />
+      </div>
+    </div>
   );
 }
 
@@ -59,6 +118,7 @@ export default async function TeamResearchPage({
   if (!team) notFound();
 
   const profile = getTeamProfile(abbr);
+  const roster = getTeamRoster(abbr);
   const sample = getSampleInjuryNews(abbr);
   const standing = {
     wins: team.wins,
@@ -72,8 +132,11 @@ export default async function TeamResearchPage({
     team.ties > 0
       ? `${team.wins}-${team.losses}-${team.ties}`
       : `${team.wins}-${team.losses}`;
-  const players = profile?.top_players ?? [];
-  const sides = splitRosterBySide(players);
+
+  const oCount = roster?.offence.length ?? 0;
+  const dCount = roster?.defence.length ?? 0;
+  const stCount = roster?.special_teams.length ?? 0;
+  const totalPlayers = oCount + dCount + stCount;
 
   return (
     <div className="space-y-5 min-w-0">
@@ -161,57 +224,60 @@ export default async function TeamResearchPage({
 
       <section className="card-glass p-4 space-y-4">
         <div>
-          <h2 className="font-semibold text-gold-400">
-            Demo starters / key players
+          <h2 className="font-semibold text-gold-400 flex items-center gap-2 flex-wrap">
+            Roster
+            {totalPlayers > 0 && (
+              <span className="chip chip-gold text-[10px]">{totalPlayers}</span>
+            )}
+            {roster?.rolesApproximate && (
+              <span className="chip chip-one-loss text-[10px]">
+                Roster · roles approximate
+              </span>
+            )}
           </h2>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">
-            Seeded starting units from team profiles — not a full depth chart.
+          <p className="text-xs text-[var(--text-muted)] mt-0.5 leading-relaxed">
+            {roster?.fromFullFile
+              ? `Full roster from ${roster.source || "team_rosters.json"}${
+                  roster.asOf ? ` · as of ${roster.asOf}` : ""
+                }. Demo research only — not official NFL depth charts for wagering.`
+              : "Seeded key players from team profiles — not a full depth chart."}
           </p>
+          {roster?.sourceNote && (
+            <p className="text-[10px] text-[var(--text-muted)] mt-1 leading-relaxed">
+              {roster.sourceNote}
+            </p>
+          )}
         </div>
 
-        {players.length === 0 ? (
-          <p className="text-sm text-[var(--text-muted)]">No profile seed yet.</p>
+        {!roster || totalPlayers === 0 ? (
+          <p className="text-sm text-[var(--text-muted)]">No roster data yet.</p>
         ) : (
           <>
-            <div className="space-y-2">
+            <SideSections
+              title="Offence"
+              players={roster.offence}
+              rolesApproximate={roster.rolesApproximate}
+            />
+            <div className="border-t border-stadium-border pt-4">
+              <SideSections
+                title="Defence"
+                players={roster.defence}
+                rolesApproximate={roster.rolesApproximate}
+              />
+            </div>
+            <div className="border-t border-stadium-border pt-4 space-y-2">
               <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
-                Starting offence
-                <span className="chip chip-gold text-[10px]">
-                  {sides.offence.length}
-                </span>
+                Special teams
+                <span className="chip chip-gold text-[10px]">{stCount}</span>
               </h3>
-              {sides.offence.length === 0 ? (
-                <p className="text-sm text-[var(--text-muted)]">None in seed.</p>
+              {stCount === 0 ? (
+                <p className="text-sm text-[var(--text-muted)]">
+                  None listed (ESPN often omits KR/PR as distinct positions).
+                </p>
               ) : (
-                <PlayerRows players={sides.offence} />
+                <PlayerRows players={roster.special_teams} />
               )}
             </div>
-
-            <div className="space-y-2 pt-2 border-t border-stadium-border">
-              <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
-                Starting defence
-                <span className="chip chip-gold text-[10px]">
-                  {sides.defence.length}
-                </span>
-              </h3>
-              {sides.defence.length === 0 ? (
-                <p className="text-sm text-[var(--text-muted)]">None in seed.</p>
-              ) : (
-                <PlayerRows players={sides.defence} />
-              )}
-            </div>
-
-            {sides.other.length > 0 && (
-              <div className="space-y-2 pt-2 border-t border-stadium-border">
-                <h3 className="text-sm font-medium text-[var(--text-muted)] flex items-center gap-2">
-                  Other
-                  <span className="chip chip-one-loss text-[10px]">
-                    {sides.other.length}
-                  </span>
-                </h3>
-                <PlayerRows players={sides.other} />
-              </div>
-            )}
           </>
         )}
       </section>

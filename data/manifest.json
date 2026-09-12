@@ -10,7 +10,8 @@
     "team_profiles.json": "32 teams: offence/defence/run-pass leans + 8 top players (ESPN jersey/college)",
     "team_profiles_meta.json": "sources + gaps for team_profiles",
     "sample_injury_news.json": "SAMPLE SHAPES ONLY \u2014 not live injury/news",
-    "data_sources.json": "live scores / odds / recap video APIs + free tiers + must_stub"
+    "data_sources.json": "live scores / odds / recap video APIs + free tiers + must_stub",
+    "team_rosters.json": "32 teams: full ESPN offence/defence/special_teams rosters (jersey/college/role; WSH\u2192WAS; includes PS/IR when present)"
   },
   "also_present_other_agents": [
     "demo-participants.json",
