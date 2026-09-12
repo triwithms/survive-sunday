@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export type WeekSwitcherOption = {
   number: number;
@@ -10,8 +10,8 @@ export type WeekSwitcherOption = {
 };
 
 /**
- * Week nav for Pool/Scores. By default only current + past weeks are
- * selectable (future weeks stay on Schedule for research).
+ * Week nav for Pool/Scores: dropdown + prev/next arrows only.
+ * Future weeks stay on Schedule unless allowFuture is set.
  */
 export function WeekSwitcher({
   weeks,
@@ -24,7 +24,6 @@ export function WeekSwitcher({
   selectedWeek: number;
   currentWeek: number;
   basePath: string;
-  /** When true, future weeks with games are selectable (Schedule-style). */
   allowFuture?: boolean;
 }) {
   const router = useRouter();
@@ -45,6 +44,10 @@ export function WeekSwitcher({
     selectedIndex >= 0 && selectedIndex < selectable.length - 1
       ? selectable[selectedIndex + 1]
       : null;
+  const value = selectable.some((w) => w.number === selectedWeek)
+    ? selectedWeek
+    : currentWeek;
+
   const goTo = (week: number) => {
     if (!allowFuture && week > currentWeek) return;
     router.push(`${basePath}?week=${week}`);
@@ -53,26 +56,25 @@ export function WeekSwitcher({
   if (!weeks.length) return null;
 
   return (
-    <nav aria-label="Week navigation" className="card-glass p-2.5 space-y-2">
-      <div className="flex items-center gap-2">
+    <nav aria-label="Week navigation" className="card-glass p-2.5 space-y-1.5">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <button
           type="button"
           onClick={() => previous && goTo(previous.number)}
           disabled={!previous}
-          className="btn-secondary text-xs px-3 py-2 min-h-0"
+          aria-label={
+            previous ? `Previous week, ${previous.label}` : "No previous week"
+          }
+          className="btn-secondary inline-flex items-center justify-center min-h-11 min-w-11 px-2 py-2 shrink-0"
         >
-          Prev
+          <ChevronLeft className="h-5 w-5" aria-hidden />
         </button>
         <label className="flex-1 min-w-0">
           <span className="sr-only">Select week</span>
           <select
-            value={
-              selectable.some((w) => w.number === selectedWeek)
-                ? selectedWeek
-                : currentWeek
-            }
+            value={value}
             onChange={(event) => goTo(Number(event.target.value))}
-            className="text-sm py-2 min-h-0"
+            className="text-sm py-2 min-h-11"
           >
             {options.map((week) => (
               <option
@@ -91,34 +93,14 @@ export function WeekSwitcher({
           type="button"
           onClick={() => next && goTo(next.number)}
           disabled={!next}
-          className="btn-secondary text-xs px-3 py-2 min-h-0"
+          aria-label={next ? `Next week, ${next.label}` : "No next week"}
+          className="btn-secondary inline-flex items-center justify-center min-h-11 min-w-11 px-2 py-2 shrink-0"
         >
-          Next
+          <ChevronRight className="h-5 w-5" aria-hidden />
         </button>
       </div>
-      <div className="flex gap-1.5 overflow-x-auto pb-0.5" role="list">
-        {selectable.map((week) => {
-          const active = week.number === selectedWeek;
-          return (
-            <Link
-              key={week.number}
-              href={`${basePath}?week=${week.number}`}
-              prefetch={false}
-              aria-current={active ? "page" : undefined}
-              className={`chip shrink-0 text-xs ${
-                active ? "chip-gold" : "chip-one-loss"
-              }`}
-            >
-              {week.label}
-              {week.number === currentWeek && (
-                <span className="text-[10px]">This week</span>
-              )}
-            </Link>
-          );
-        })}
-      </div>
       {!allowFuture && (
-        <p className="text-[10px] text-[var(--text-muted)]">
+        <p className="text-[10px] text-[var(--text-muted)] px-0.5">
           Future weeks are on Schedule — picks stay on the current week.
         </p>
       )}
