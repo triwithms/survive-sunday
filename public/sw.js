@@ -1,4 +1,4 @@
-const CACHE = "survive-sunday-shell-v3";
+const CACHE = "survive-sunday-shell-v4";
 const SHELL = ["/manifest.webmanifest", "/icons/icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -27,6 +27,10 @@ function isAuthSensitive(url) {
     p.startsWith("/admin") ||
     p.startsWith("/scores") ||
     p.startsWith("/standings") ||
+    p.startsWith("/nfl") ||
+    p.startsWith("/schedule") ||
+    p.startsWith("/team") ||
+    p.startsWith("/signed-in") ||
     p.startsWith("/login") ||
     p.startsWith("/join") ||
     p.startsWith("/help") ||

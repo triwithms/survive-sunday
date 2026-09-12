@@ -49,7 +49,11 @@ export default async function ScoresPage({
   }
 
   // Auto-grade finals + missed picks when lock has passed (idempotent).
-  await ensureWeekLockedEffects(selectedRef.id);
+  try {
+    await ensureWeekLockedEffects(selectedRef.id);
+  } catch (e) {
+    console.error("scores lock effects skipped", e);
+  }
 
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: selectedRef.id },
