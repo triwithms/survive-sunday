@@ -41,7 +41,9 @@ export default async function PoolPage({
     include: { games: { select: { id: true } } },
   });
   const requestedIsValid =
-    Number.isInteger(parsedWeek) && weeks.some((candidate) => candidate.number === parsedWeek);
+    Number.isInteger(parsedWeek) &&
+    parsedWeek <= me.pool.currentWeek &&
+    weeks.some((candidate) => candidate.number === parsedWeek);
   const selectedNumber = requestedIsValid ? parsedWeek : me.pool.currentWeek;
   const selectedRef =
     weeks.find((candidate) => candidate.number === selectedNumber) ??
