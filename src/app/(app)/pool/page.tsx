@@ -8,6 +8,9 @@ import { formatKickoff } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function PoolPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
@@ -115,7 +118,7 @@ export default async function PoolPage() {
             <p className="text-[var(--text-muted)]">
               Make your pick before kickoff—don&apos;t leave your mates hanging.
             </p>
-            <Link href="/pick" className="btn-primary text-sm shrink-0">
+            <Link href="/pick" prefetch={false} className="btn-primary text-sm shrink-0">
               Pick now
             </Link>
           </div>

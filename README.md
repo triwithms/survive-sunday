@@ -88,6 +88,10 @@ Wave 1 Pool QA (critical):
 6. **Auto-grade on load** — scores/pool (and other ensure paths) grade pending picks whose games are FINAL.
 7. **App Router error boundaries** — `src/app/not-found.tsx`, `error.tsx`, `global-error.tsx`, and `(app)/error.tsx` so a reload on `/admin` or `/help` no longer 404/500 with “missing required error components”.
 8. **Commissioner session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. Demo `admin@survivesunday.demo` / `demo1234` keeps admin membership for `/admin` and `/admin/import`.
+9. **Session identity drift** — demo login `signOut`s first, `await getSession()` before navigate, then hard-loads `/pool`. Authenticated routes are `force-dynamic` + `revalidate = 0`; BottomNav prefetch is off; SW is network-only for HTML/RSC. `SessionProvider` remounts on user id (`refetchOnWindowFocus`, `refetchInterval={60}`).
+10. **/pick red “1 Error” toast** — `Countdown` no longer hydrates `Date.now()` from the server; kickoff/logo/undefined guards in `PickClient`.
+
+Server identity check: `node scripts/verify-session-identity.mjs`
 
 ## Env
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
 
 export function CommissionerSwitch() {
   const [busy, setBusy] = useState(false);
@@ -12,18 +12,22 @@ export function CommissionerSwitch() {
   async function enter() {
     setBusy(true);
     setError("");
-    const res = await signIn("credentials", {
-      email: "admin@survivesunday.demo",
-      password: "demo1234",
-      redirect: false,
-    });
-    setBusy(false);
-    if (res?.error) {
+    try {
+      const res = await signInCredentials(
+        "admin@survivesunday.demo",
+        "demo1234"
+      );
+      if (!res.ok) {
+        setError("Demo login failed — did you run the seed?");
+        return;
+      }
+      router.refresh();
+      afterAuthNavigate("/admin");
+    } catch {
       setError("Demo login failed — did you run the seed?");
-      return;
+    } finally {
+      setBusy(false);
     }
-    router.push("/admin");
-    router.refresh();
   }
 
   return (

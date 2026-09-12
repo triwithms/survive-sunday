@@ -5,6 +5,9 @@ import { isWeekLocked, ensureWeekLockedEffects, parseUsedTeams, MISSED_TEAM } fr
 import { redirect } from "next/navigation";
 import { PickClient } from "@/components/PickClient";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function PickPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
@@ -16,7 +19,11 @@ export default async function PickPage() {
       poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },
     },
   });
-  await ensureWeekLockedEffects(weekRef.id);
+  try {
+    await ensureWeekLockedEffects(weekRef.id);
+  } catch (e) {
+    console.error("pick lock effects skipped", e);
+  }
 
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: weekRef.id },
@@ -64,7 +71,7 @@ export default async function PickPage() {
     return {
       abbr: t.abbr,
       name: t.name,
-      logoUrl: t.logoUrl,
+      logoUrl: t.logoUrl ?? null,
       onBye,
       alreadyUsed,
       disabled: onBye || alreadyUsed || locked || me.status === "eliminated",
@@ -73,7 +80,9 @@ export default async function PickPage() {
             id: game.id,
             awayAbbr: game.awayAbbr,
             homeAbbr: game.homeAbbr,
-            kickoff: game.kickoff.toISOString(),
+            kickoff: game.kickoff instanceof Date && !Number.isNaN(game.kickoff.getTime())
+              ? game.kickoff.toISOString()
+              : "",
             spreadHome: game.spreadHome,
             spreadAway: game.spreadAway,
             mlHome: game.mlHome,

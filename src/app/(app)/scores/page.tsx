@@ -5,6 +5,9 @@ import { ensureWeekLockedEffects } from "@/lib/grading";
 import { formatKickoff } from "@/lib/utils";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function ScoresPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");

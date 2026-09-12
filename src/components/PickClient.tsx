@@ -24,6 +24,15 @@ type TeamOpt = {
   } | null;
 };
 
+function spreadLabel(team: TeamOpt): string {
+  const game = team.game;
+  if (!game) return "";
+  const raw =
+    team.abbr === game.homeAbbr ? game.spreadHome : game.spreadAway;
+  if (raw == null || Number.isNaN(Number(raw))) return "";
+  return ` · ${raw}`;
+}
+
 export function PickClient({
   weekNumber,
   locked,
@@ -37,7 +46,7 @@ export function PickClient({
   currentPick: string | null;
   teams: TeamOpt[];
 }) {
-  const [selected, setSelected] = useState<string | null>(currentPick);
+  const [selected, setSelected] = useState<string | null>(currentPick ?? null);
   const [confirm, setConfirm] = useState<TeamOpt | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
@@ -51,7 +60,7 @@ export function PickClient({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ weekNumber, teamAbbr: abbr }),
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
     setBusy(false);
     if (!res.ok) {
       if (res.status === 403 && (data.locked || /locked/i.test(data.error || ""))) {
@@ -76,6 +85,8 @@ export function PickClient({
       </p>
     );
   }
+
+  const list = Array.isArray(teams) ? teams : [];
 
   return (
     <div className="space-y-4">
@@ -122,8 +133,8 @@ export function PickClient({
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {teams
-          .filter((t) => t.game || t.onBye || t.alreadyUsed)
+        {list
+          .filter((t) => t && (t.game || t.onBye || t.alreadyUsed))
           .map((t) => {
             const isSel = selected === t.abbr;
             return (
@@ -158,12 +169,7 @@ export function PickClient({
                     {t.abbr === t.game.homeAbbr
                       ? t.game.awayAbbr
                       : t.game.homeAbbr}
-                    {t.game.spreadHome != null &&
-                      ` · ${
-                        t.abbr === t.game.homeAbbr
-                          ? t.game.spreadHome
-                          : t.game.spreadAway
-                      }`}
+                    {spreadLabel(t)}
                   </div>
                 )}
               </button>
@@ -181,10 +187,10 @@ export function PickClient({
             </p>
             <p className="text-sm">{formatKickoff(confirm.game.kickoff)}</p>
             <p className="text-xs font-mono text-[var(--text-muted)]">
-              Spread: home {confirm.game.spreadHome} / away{" "}
-              {confirm.game.spreadAway}
+              Spread: home {confirm.game.spreadHome ?? "—"} / away{" "}
+              {confirm.game.spreadAway ?? "—"}
               {confirm.game.mlHome != null &&
-                ` · ML ${confirm.game.mlHome} / ${confirm.game.mlAway}`}
+                ` · ML ${confirm.game.mlHome} / ${confirm.game.mlAway ?? "—"}`}
             </p>
             <p className="text-xs text-[var(--text-muted)]">
               Odds are informational only — not for wagering.

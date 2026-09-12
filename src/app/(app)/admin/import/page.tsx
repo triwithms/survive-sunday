@@ -5,6 +5,9 @@ import Link from "next/link";
 import { ImportPicksForm } from "@/components/ImportPicksForm";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function ImportPicksPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");

@@ -4,8 +4,10 @@ export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
 
-export function formatKickoff(d: Date | string) {
+export function formatKickoff(d: Date | string | null | undefined) {
+  if (d == null) return "";
   const date = typeof d === "string" ? new Date(d) : d;
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
   return date.toLocaleString("en-CA", {
     weekday: "short",
     month: "short",

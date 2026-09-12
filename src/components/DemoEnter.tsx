@@ -1,8 +1,8 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
 
 const COMMISSIONER = {
   email: "admin@survivesunday.demo",
@@ -26,38 +26,31 @@ export function DemoEnter() {
   async function enter(nextEmail: string, button: "commissioner" | "selected") {
     setBusy(button);
     setErr("");
-    let res;
     try {
-      res = await signIn("credentials", {
-        email: nextEmail,
-        password: "demo1234",
-        redirect: false,
-      });
-    } catch (e) {
-      setBusy(null);
+      const res = await signInCredentials(nextEmail, "demo1234");
+      if (!res.ok) {
+        const code = res.error || "";
+        if (code === "CredentialsSignin") {
+          setErr("Demo login failed — wrong password or seed not run (npm run seed).");
+        } else if (/csrf/i.test(code)) {
+          setErr("CSRF check failed on this host. Refresh and try again (tunnel + localhost need AUTH_TRUST_HOST).");
+        } else if (code === "NoSession") {
+          setErr("Demo login failed — no session created. Check AUTH_SECRET / seed.");
+        } else {
+          setErr(`Demo login failed: ${code}`);
+        }
+        return;
+      }
+      // Invalidate RSC cache, then hard-navigate so /pick cannot reuse Aurora.
+      router.refresh();
+      afterAuthNavigate("/pool");
+    } catch {
       setErr(
         "Demo login failed (network/CSRF). Try again, or open the app on the same host you started from (localhost vs tunnel)."
       );
-      return;
+    } finally {
+      setBusy(null);
     }
-    setBusy(null);
-    if (res?.error) {
-      const code = res.error;
-      if (code === "CredentialsSignin") {
-        setErr("Demo login failed — wrong password or seed not run (npm run seed).");
-      } else if (/csrf/i.test(code)) {
-        setErr("CSRF check failed on this host. Refresh and try again (tunnel + localhost need AUTH_TRUST_HOST).");
-      } else {
-        setErr(`Demo login failed: ${code}`);
-      }
-      return;
-    }
-    if (!res?.ok) {
-      setErr("Demo login failed — no session created. Check AUTH_SECRET / seed.");
-      return;
-    }
-    router.push("/pool");
-    router.refresh();
   }
 
   return (

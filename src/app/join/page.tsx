@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { INVITE_CODE } from "@/lib/constants";
+import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
 
 export default function JoinPage() {
   const [inviteCode, setInviteCode] = useState(INVITE_CODE);
@@ -31,19 +31,15 @@ export default function JoinPage() {
       setErr(data.error || "Join failed");
       return;
     }
-    const login = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    const login = await signInCredentials(email, password);
     setBusy(false);
-    if (login?.error) {
+    if (!login.ok) {
       setErr("Account created — please sign in");
       router.push("/login");
       return;
     }
-    router.push("/pool");
     router.refresh();
+    afterAuthNavigate("/pool");
   }
 
   return (

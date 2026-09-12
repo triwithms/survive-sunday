@@ -6,6 +6,9 @@ import Link from "next/link";
 import { AdminPanel } from "@/components/AdminPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");

@@ -8,6 +8,10 @@ import { prisma } from "@/lib/db";
 import { effectiveLockAt } from "@/lib/grading";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 export default async function AppLayout({
   children,
 }: {
@@ -31,11 +35,12 @@ export default async function AppLayout({
   const lockIso = week ? effectiveLockAt(week).toISOString() : null;
 
   return (
-    <div className="min-h-dvh flex flex-col pb-24 overflow-x-hidden max-w-full">
+    <div key={session.user.id} className="min-h-dvh flex flex-col pb-24 overflow-x-hidden max-w-full">
       <header className="sticky top-0 z-30 border-b border-stadium-border bg-stadium-900/95 backdrop-blur">
         <div className="mx-auto max-w-pool w-full px-3 sm:px-4 py-3 flex items-center gap-2 min-w-0">
           <Link
             href="/pool"
+            prefetch={false}
             className="font-display text-base sm:text-lg tracking-wide text-gold-400 shrink-0"
           >
             SURVIVE
@@ -54,6 +59,7 @@ export default async function AppLayout({
             {membership.role === "admin" && (
               <Link
                 href="/admin"
+                prefetch={false}
                 className="text-xs text-gold-400 underline underline-offset-2 shrink-0"
               >
                 Admin
@@ -63,6 +69,9 @@ export default async function AppLayout({
               <div
                 className="text-[var(--text-primary)] font-medium truncate max-w-[7.5rem] sm:max-w-[10rem]"
                 title={membership.nickname}
+                data-testid="session-nickname"
+                data-user-id={session.user.id}
+                data-user-role={membership.role}
               >
                 {membership.nickname}
               </div>

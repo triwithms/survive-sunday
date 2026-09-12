@@ -5,6 +5,9 @@ import { HelpContent } from "@/components/HelpContent";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { BottomNav } from "@/components/BottomNav";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function HelpPage() {
   const session = await auth();
   const membership = session?.user?.id

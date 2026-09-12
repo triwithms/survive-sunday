@@ -3,13 +3,32 @@
 import { useEffect, useState } from "react";
 
 export function Countdown({ lockAt }: { lockAt: string }) {
-  const [now, setNow] = useState(() => Date.now());
+  // Render a stable placeholder on the server so Date.now() cannot
+  // mismatch between RSC HTML and hydration (Next.js red "1 Error" toast).
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
+    setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
 
   const target = new Date(lockAt).getTime();
+  if (!Number.isFinite(target)) {
+    return (
+      <span className="font-mono text-[var(--text-muted)] text-xs sm:text-sm">
+        —
+      </span>
+    );
+  }
+
+  if (now === null) {
+    return (
+      <span className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap">
+        <span className="opacity-0">00h 00m</span>
+      </span>
+    );
+  }
+
   const diff = target - now;
 
   if (diff <= 0) {

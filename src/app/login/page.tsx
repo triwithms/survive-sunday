@@ -1,10 +1,11 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import { signIn } from "next-auth/react";
 import { DemoEnter } from "@/components/DemoEnter";
+import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -18,33 +19,25 @@ function LoginForm() {
     e.preventDefault();
     setBusy(true);
     setErr("");
-    let res;
     try {
-      res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
+      const res = await signInCredentials(email, password);
+      if (!res.ok) {
+        setErr(
+          res.error === "CredentialsSignin"
+            ? "Invalid email or password"
+            : res.error === "NoSession"
+              ? "Sign-in failed — no session created."
+              : `Sign-in failed: ${res.error}`
+        );
+        return;
+      }
+      router.refresh();
+      afterAuthNavigate("/pool");
     } catch {
-      setBusy(false);
       setErr("Sign-in failed (network/CSRF). Refresh and try again on this same host.");
-      return;
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
-    if (res?.error) {
-      setErr(
-        res.error === "CredentialsSignin"
-          ? "Invalid email or password"
-          : `Sign-in failed: ${res.error}`
-      );
-      return;
-    }
-    if (!res?.ok) {
-      setErr("Sign-in failed — no session created.");
-      return;
-    }
-    router.push("/pool");
-    router.refresh();
   }
 
   return (

@@ -120,13 +120,18 @@ function authConfig(req?: NextRequest): NextAuthConfig {
     callbacks: {
       async jwt({ token, user }) {
         if (user) {
+          // Always replace identity — never merge onto a previous demo JWT.
           token.sub = user.id;
+          token.email = user.email;
+          token.name = user.name;
         }
         return token;
       },
       async session({ session, token }) {
         if (session.user && token.sub) {
           session.user.id = token.sub;
+          if (typeof token.email === "string") session.user.email = token.email;
+          if (typeof token.name === "string") session.user.name = token.name;
         }
         return session;
       },

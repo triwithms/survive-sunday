@@ -12,7 +12,8 @@
     "seed": "tsx prisma/seed.ts",
     "db:seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate",
-    "setup": "prisma generate && prisma db push && tsx prisma/seed.ts"
+    "setup": "prisma generate && prisma db push && tsx prisma/seed.ts",
+    "verify:session": "node scripts/verify-session-identity.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",

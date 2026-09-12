@@ -27,6 +27,7 @@ export function BottomNav({ isAdmin }: { isAdmin?: boolean }) {
             <li key={href} className="min-w-0 flex-1">
               <Link
                 href={href}
+                prefetch={false}
                 className={`flex flex-col items-center gap-0.5 px-0.5 sm:px-2 py-1 text-[10px] sm:text-[11px] min-w-0 ${
                   active ? "text-gold-400" : "text-[var(--text-muted)]"
                 }`}
