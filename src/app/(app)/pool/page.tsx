@@ -12,25 +12,54 @@ import {
 } from "@/lib/matchup-meta";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { WeekSwitcher } from "@/components/WeekSwitcher";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function PoolPage() {
+type PoolSearchParams = {
+  week?: string | string[];
+};
+
+export default async function PoolPage({
+  searchParams,
+}: {
+  searchParams?: Promise<PoolSearchParams>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
   const me = await getMembershipForUser(session.user.id);
   if (!me) redirect("/join");
 
-  const weekRef = await prisma.week.findUniqueOrThrow({
-    where: {
-      poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },
-    },
+  const params = await searchParams;
+  const rawWeek = params?.week;
+  const requestedWeek = Array.isArray(rawWeek) ? rawWeek[0] : rawWeek;
+  const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
+  const weeks = await prisma.week.findMany({
+    where: { poolId: me.poolId },
+    orderBy: { number: "asc" },
+    include: { games: { select: { id: true } } },
   });
-  await ensureWeekLockedEffects(weekRef.id);
+  const requestedIsValid =
+    Number.isInteger(parsedWeek) && weeks.some((candidate) => candidate.number === parsedWeek);
+  const selectedNumber = requestedIsValid ? parsedWeek : me.pool.currentWeek;
+  const selectedRef =
+    weeks.find((candidate) => candidate.number === selectedNumber) ??
+    weeks.find((candidate) => candidate.number === me.pool.currentWeek) ??
+    weeks[0];
+
+  if (!selectedRef) {
+    return (
+      <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
+        No weeks have been seeded for this pool yet.
+      </div>
+    );
+  }
+
+  await ensureWeekLockedEffects(selectedRef.id);
 
   const week = await prisma.week.findUniqueOrThrow({
-    where: { id: weekRef.id },
+    where: { id: selectedRef.id },
     include: { games: true, picks: true },
   });
 
@@ -39,6 +68,13 @@ export default async function PoolPage() {
   const self = meFresh ?? me;
 
   const locked = isWeekLocked(week);
+  const isCurrentWeek = week.number === me.pool.currentWeek;
+  const revealAllPicks = locked || week.number < me.pool.currentWeek;
+  const weekOptions = weeks.map((candidate) => ({
+    number: candidate.number,
+    label: candidate.label,
+    hasGames: candidate.games.length > 0,
+  }));
   const members = await prisma.membership.findMany({
     where: { poolId: me.poolId },
     include: {
@@ -91,9 +127,16 @@ export default async function PoolPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           Lock: {formatKickoff(effectiveLockAt(week))}
-          {locked ? " · Picks revealed" : " · Others' picks hidden"}
+          {revealAllPicks ? " · Picks revealed" : " · Others' picks hidden"}
         </p>
       </div>
+
+      <WeekSwitcher
+        weeks={weekOptions}
+        selectedWeek={week.number}
+        currentWeek={me.pool.currentWeek}
+        basePath="/pool"
+      />
 
       <section className="card-glass p-4">
         <p className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">
@@ -129,19 +172,21 @@ export default async function PoolPage() {
             </div>
             <div className="text-right">
               <StatusChip status={self.status} />
-              {myPick.result && myPick.result !== "pending" && (
+              {myPick.result && (
                 <p
                   className={`text-sm mt-1 font-medium ${
                     myPick.result === "win"
                       ? "text-field-400"
-                      : "text-crimson-400"
+                      : myPick.result === "loss"
+                        ? "text-crimson-400"
+                        : "text-[var(--text-muted)]"
                   }`}
                 >
-                  {myPick.result === "win" ? "Win" : "Loss"}
+                  {myPick.result}
                 </p>
               )}
             </div>
-            {!locked && self.status !== "eliminated" && (
+            {!locked && isCurrentWeek && self.status !== "eliminated" && (
               <Link
                 href="/pick"
                 prefetch={false}
@@ -161,7 +206,7 @@ export default async function PoolPage() {
           <p className="text-crimson-400">
             Missed pick — automatic loss at lock.
           </p>
-        ) : (
+        ) : isCurrentWeek ? (
           <div className="flex items-center justify-between gap-3">
             <p className="text-[var(--text-muted)]">
               Make your pick before kickoff—don&apos;t leave your mates hanging.
@@ -170,6 +215,8 @@ export default async function PoolPage() {
               Pick now
             </Link>
           </div>
+        ) : (
+          <p className="text-[var(--text-muted)]">No pick recorded for this week.</p>
         )}
       </section>
 
@@ -194,7 +241,7 @@ export default async function PoolPage() {
                         ? pickRaw
                         : undefined;
                     const isSelf = m.id === self.id;
-                    const show = locked || isSelf;
+                    const show = revealAllPicks || isSelf;
                     const faded = m.status === "eliminated" ? "opacity-60" : "";
                     return (
                       <li
@@ -225,12 +272,14 @@ export default async function PoolPage() {
                                   · {pick.game.awayAbbr} @ {pick.game.homeAbbr}
                                 </span>
                               )}
-                              {pick.result && pick.result !== "pending" && (
+                              {pick.result && (
                                 <span
                                   className={
                                     pick.result === "win"
                                       ? " text-field-400"
-                                      : " text-crimson-400"
+                                      : pick.result === "loss"
+                                        ? " text-crimson-400"
+                                        : " text-[var(--text-muted)]"
                                   }
                                 >
                                   {" "}
