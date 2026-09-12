@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { ensureWeekLockedEffects, isWeekLocked } from "@/lib/grading";
 import { formatKickoff } from "@/lib/utils";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -185,9 +186,13 @@ export default async function ScoresPage({
                     <span className="text-sm text-right shrink-0">
                       {pick ? (
                         <>
-                          <span className="font-mono text-gold-400">
+                          <Link
+                            href={`/team/${pick.teamAbbr}`}
+                            prefetch={false}
+                            className="font-mono text-gold-400 underline underline-offset-2 decoration-gold-400/40"
+                          >
                             {pick.teamAbbr}
-                          </span>{" "}
+                          </Link>{" "}
                           <span
                             className={
                               result === "win"

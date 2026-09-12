@@ -66,7 +66,7 @@ function StandingTable({
                 <Link
                   href={`/team/${t.abbr}`}
                   prefetch={false}
-                  className="inline-flex items-center gap-2 min-w-0 hover:text-gold-400"
+                  className="inline-flex items-center gap-2 min-h-11 min-w-0 py-1 hover:text-gold-400"
                 >
                   <TeamLogo abbr={t.abbr} logoUrl={t.logoUrl} size={28} />
                   <span className="font-mono font-semibold text-gold-400">

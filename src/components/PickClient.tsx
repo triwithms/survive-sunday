@@ -416,9 +416,10 @@ function SideButton({
         href={`/team/${side.abbr}`}
         prefetch={false}
         onClick={(e) => e.stopPropagation()}
-        className="text-[10px] text-sky-400 underline underline-offset-2 hover:text-sky-300"
+        aria-label={`Team details for ${side.name}`}
+        className="inline-flex items-center justify-center min-h-11 w-full rounded-md border border-sky-400/40 px-3 py-2 text-sm font-medium text-sky-300 hover:bg-sky-400/10 active:bg-sky-400/20"
       >
-        Research
+        Team details
       </Link>
     </div>
   );

@@ -267,9 +267,13 @@ export default async function PoolPage({
                           </div>
                           {show && pick ? (
                             <div className="mt-1 text-sm">
-                              <span className="font-mono text-gold-400">
+                              <Link
+                                href={`/team/${pick.teamAbbr}`}
+                                prefetch={false}
+                                className="font-mono text-gold-400 underline underline-offset-2 decoration-gold-400/40 hover:decoration-gold-400"
+                              >
                                 {pick.teamAbbr}
-                              </span>
+                              </Link>
                               {pick.game && (
                                 <span className="text-[var(--text-muted)]">
                                   {" "}

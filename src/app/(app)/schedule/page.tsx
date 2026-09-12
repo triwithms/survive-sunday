@@ -71,7 +71,7 @@ export default async function SchedulePage() {
                       <Link
                         href={`/team/${g.awayAbbr}`}
                         prefetch={false}
-                        className="font-semibold text-gold-400 hover:underline underline-offset-2"
+                        className="inline-flex items-center min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
                       >
                         {g.awayAbbr}
                       </Link>
@@ -79,7 +79,7 @@ export default async function SchedulePage() {
                       <Link
                         href={`/team/${g.homeAbbr}`}
                         prefetch={false}
-                        className="font-semibold text-gold-400 hover:underline underline-offset-2"
+                        className="inline-flex items-center min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
                       >
                         {g.homeAbbr}
                       </Link>
@@ -142,7 +142,7 @@ export default async function SchedulePage() {
                         <Link
                           href={`/team/${g.awayAbbr}`}
                           prefetch={false}
-                          className="text-gold-400 hover:underline"
+                          className="inline-flex items-center min-h-10 px-1 text-gold-400 hover:underline"
                         >
                           {g.awayAbbr}
                         </Link>
@@ -150,7 +150,7 @@ export default async function SchedulePage() {
                         <Link
                           href={`/team/${g.homeAbbr}`}
                           prefetch={false}
-                          className="text-gold-400 hover:underline"
+                          className="inline-flex items-center min-h-10 px-1 text-gold-400 hover:underline"
                         >
                           {g.homeAbbr}
                         </Link>
