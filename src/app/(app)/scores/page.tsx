@@ -68,6 +68,7 @@ export default async function ScoresPage({
       picks: { where: { weekId: week.id } },
     },
   });
+  const participants = members.filter((member) => member.role !== "admin");
 
   const weekOptions = weeks.map((candidate) => ({
     number: candidate.number,
@@ -156,7 +157,7 @@ export default async function ScoresPage({
           </span>
         </div>
         <ul className="space-y-2">
-          {members.map((member) => {
+          {participants.map((member) => {
             const rawPick = member.picks[0];
             const isSelf = member.id === me.id;
             const showPick = revealAllPicks || isSelf;

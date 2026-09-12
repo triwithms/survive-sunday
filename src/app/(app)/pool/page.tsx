@@ -82,7 +82,8 @@ export default async function PoolPage({
     },
   });
 
-  const sorted = sortParticipants(members);
+  const participants = members.filter((m) => m.role !== "admin");
+  const sorted = sortParticipants(participants);
   const myPickRaw = members.find((m) => m.id === self.id)?.picks[0];
   const myPick =
     myPickRaw && myPickRaw.source !== "missed" && myPickRaw.teamAbbr !== MISSED_TEAM

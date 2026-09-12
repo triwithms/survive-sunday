@@ -40,9 +40,9 @@ export default async function StandingsPage() {
   const members = await prisma.membership.findMany({
     where: { poolId: me.poolId },
   });
-  // Commissioner is a spectator — keep on board but sort after participants
-  const sorted = sortParticipants(members);
-  const winners = resolveSeasonWinners(members.filter((m) => m.role !== "admin"));
+  const participants = members.filter((m) => m.role !== "admin");
+  const sorted = sortParticipants(participants);
+  const winners = resolveSeasonWinners(participants);
 
   const locked = week ? isWeekLocked(week) : true;
   const weekLabel = week?.label ?? `Week ${me.pool.currentWeek}`;
@@ -106,7 +106,6 @@ export default async function StandingsPage() {
               <div className="font-medium truncate">
                 {m.nickname}
                 {m.id === me.id ? " (you)" : ""}
-                {m.role === "admin" ? " · admin" : ""}
               </div>
               <div className="text-xs text-[var(--text-muted)] truncate">
                 Losses: {m.losses} · Weeks survived: {m.weeksSurvived}
