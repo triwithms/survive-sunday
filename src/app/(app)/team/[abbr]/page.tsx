@@ -23,20 +23,22 @@ export const revalidate = 0;
 
 function PlayerRows({ players }: { players: RosterPlayer[] }) {
   return (
-    <ul className="divide-y divide-stadium-border">
+    <ul className="divide-y divide-stadium-border text-sm">
       {players.map((p) => (
         <li
           key={`${p.role}-${p.number}-${p.name}-${p.position}`}
-          className="py-2.5 flex items-baseline gap-2 text-base min-w-0"
+          className="py-2 flex items-baseline gap-2 min-w-0"
         >
-          <span className="font-mono text-[var(--text-muted)] w-8 shrink-0">
+          <span className="font-mono text-[var(--text-muted)] w-8 shrink-0 text-xs">
             {p.number != null ? `#${p.number}` : "—"}
           </span>
-          <span className="font-mono text-sm text-gold-400 w-10 shrink-0">
+          <span className="font-mono text-xs text-gold-400 w-8 shrink-0">
             {p.position}
           </span>
-          <span className="min-w-0 flex-1 truncate font-medium">{p.name}</span>
-          <span className="text-sm text-[var(--text-muted)] truncate max-w-[40%]">
+          <span className="min-w-0 flex-1 font-medium break-words">
+            {p.name}
+          </span>
+          <span className="text-xs text-[var(--text-muted)] shrink-0 max-w-[35%] text-right break-words">
             {p.college || "—"}
           </span>
         </li>
@@ -57,7 +59,7 @@ function SideSections({
   if (players.length === 0) {
     return (
       <div className="space-y-2">
-        <h3 className="text-lg font-medium text-gold-400">{title}</h3>
+        <h3 className="text-sm font-medium text-gold-400">{title}</h3>
         <p className="text-base text-[var(--text-muted)]">None listed.</p>
       </div>
     );
@@ -69,7 +71,7 @@ function SideSections({
   if (!hasRoleSplit) {
     return (
       <div className="space-y-2">
-        <h3 className="text-lg font-medium text-gold-400 flex items-center gap-2">
+        <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
           {title}
           <span className="chip chip-gold text-xs">{players.length}</span>
         </h3>
@@ -81,7 +83,7 @@ function SideSections({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <h3 className="text-lg font-medium text-gold-400 flex items-center gap-2">
+        <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
           Starting {title.toLowerCase()}
           <span className="chip chip-gold text-xs">{starters.length}</span>
           {rolesApproximate && (
@@ -93,7 +95,7 @@ function SideSections({
         <PlayerRows players={starters} />
       </div>
       <div className="space-y-2 pt-2 border-t border-stadium-border">
-        <h3 className="text-base font-medium text-[var(--text-muted)] flex items-center gap-2">
+        <h3 className="text-sm font-medium text-[var(--text-muted)] flex items-center gap-2">
           {title} depth
           <span className="chip chip-one-loss text-xs">{depth.length}</span>
         </h3>
@@ -273,9 +275,9 @@ export default async function TeamResearchPage({
         </section>
       )}
 
-      <section className="card-glass p-4 space-y-4">
+      <section className="card-glass p-4 space-y-4 text-sm">
         <div>
-          <h2 className="text-xl font-semibold text-gold-400 flex items-center gap-2 flex-wrap">
+          <h2 className="text-lg font-semibold text-gold-400 flex items-center gap-2 flex-wrap">
             Roster
             {totalPlayers > 0 && (
               <span className="chip chip-gold text-xs">{totalPlayers}</span>
@@ -317,7 +319,7 @@ export default async function TeamResearchPage({
               />
             </div>
             <div className="border-t border-stadium-border pt-4 space-y-2">
-              <h3 className="text-lg font-medium text-gold-400 flex items-center gap-2">
+              <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
                 Special teams
                 <span className="chip chip-gold text-xs">{stCount}</span>
               </h3>
