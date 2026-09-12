@@ -1,9 +1,13 @@
-const CACHE = "survive-sunday-shell-v5";
+const CACHE = "survive-sunday-shell-v6";
+/** Only these never-change shell assets — never Next chunks (stable names in next dev). */
 const SHELL = ["/manifest.webmanifest", "/icons/icon.svg"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())
+    caches
+      .open(CACHE)
+      .then((c) => c.addAll(SHELL))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -11,15 +15,28 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) =>
-        Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-      )
+      .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+      .then(() => caches.open(CACHE).then((c) => c.addAll(SHELL)))
       .then(() => self.clients.claim())
   );
 });
 
-function isAuthSensitive(url) {
+function shouldBypass(url, request) {
   const p = url.pathname;
+  // Next bundler assets use stable paths in `next dev` (e.g. app/page.js).
+  // Caching them causes hydration mismatches (server HTML vs stale chunk) —
+  // the red Next "1 error" toast on first landing after a code change.
+  if (p.startsWith("/_next/")) return true;
+
+  if (
+    request.mode === "navigate" ||
+    request.destination === "document" ||
+    request.headers.get("RSC") === "1" ||
+    url.searchParams.has("_rsc")
+  ) {
+    return true;
+  }
+
   return (
     p === "/" ||
     p.startsWith("/pool") ||
@@ -49,17 +66,14 @@ self.addEventListener("fetch", (event) => {
   }
   if (url.origin !== self.location.origin) return;
 
-  // Auth HTML / RSC / API: do NOT intercept. Letting the browser fetch avoids
-  // SW "Failed to fetch" rejections that blanked Scores in Safari when the
-  // tunnel/dev server briefly hiccuped.
-  const documentLike =
-    request.mode === "navigate" ||
-    request.destination === "document" ||
-    request.headers.get("RSC") === "1" ||
-    url.searchParams.has("_rsc") ||
-    isAuthSensitive(url);
+  // Do not intercept auth HTML / RSC / API / Next bundles. Letting the browser
+  // fetch avoids SW "Failed to fetch" blanks and stale-chunk hydration toasts.
+  if (shouldBypass(url, request)) {
+    return;
+  }
 
-  if (documentLike) {
+  // Allowlist-only cache: shell icons/manifest. Never open-cache arbitrary GETs.
+  if (!SHELL.includes(url.pathname)) {
     return;
   }
 

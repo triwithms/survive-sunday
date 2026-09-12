@@ -2,6 +2,9 @@ import Link from "next/link";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default function LandingPage() {
   return (
     <main className="min-h-dvh flex flex-col">

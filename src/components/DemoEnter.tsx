@@ -36,10 +36,11 @@ function friendlyError(code: string): string {
 
 /**
  * Native form POST to /api/demo-enter — no client CSRF / fetch.
- * That path sets cookies and redirects on the request Host (works on the tunnel).
+ * Uncontrolled select (defaultValue) so SSR HTML and hydration always match;
+ * a controlled value= was unnecessary for native POST and could toast on
+ * stale SW chunks after landing copy/roster changes.
  */
 export function DemoEnter() {
-  const [email, setEmail] = useState(DEMOS[0].email);
   const [err, setErr] = useState("");
 
   useEffect(() => {
@@ -59,8 +60,7 @@ export function DemoEnter() {
       </div>
       <select
         name="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        defaultValue={DEMOS[0].email}
         aria-label="Demo account"
       >
         {DEMOS.map((d) => (
