@@ -1,0 +1,19 @@
+{
+  "name": "Survive Sunday",
+  "short_name": "Survive",
+  "description": "Private NFL survivor pool for friends",
+  "start_url": "/pool",
+  "display": "standalone",
+  "background_color": "#0B0E12",
+  "theme_color": "#0B0E12",
+  "lang": "en-CA",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

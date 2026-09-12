@@ -1,0 +1,1196 @@
+{
+  "season": "2026/27",
+  "priorYearSeasonLabel": "2025 (plausible demo ranking)",
+  "teams": [
+    {
+      "abbr": "ARI",
+      "city": "Arizona",
+      "name": "Cardinals",
+      "conference": "NFC",
+      "division": "West",
+      "priorYearRank": 27,
+      "offenceLean": "average",
+      "defenceLean": "below_average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Kyler Murray",
+          "number": 1,
+          "position": "QB",
+          "college": "Oklahoma"
+        },
+        {
+          "name": "Marvin Harrison Jr.",
+          "number": 18,
+          "position": "WR",
+          "college": "Ohio State"
+        },
+        {
+          "name": "James Conner",
+          "number": 6,
+          "position": "RB",
+          "college": "Pittsburgh"
+        },
+        {
+          "name": "Budda Baker",
+          "number": 3,
+          "position": "S",
+          "college": "Washington"
+        }
+      ]
+    },
+    {
+      "abbr": "ATL",
+      "city": "Atlanta",
+      "name": "Falcons",
+      "conference": "NFC",
+      "division": "South",
+      "priorYearRank": 18,
+      "offenceLean": "above_average",
+      "defenceLean": "average",
+      "runPassLean": "run",
+      "topPlayers": [
+        {
+          "name": "Kirk Cousins",
+          "number": 18,
+          "position": "QB",
+          "college": "Michigan State"
+        },
+        {
+          "name": "Bijan Robinson",
+          "number": 7,
+          "position": "RB",
+          "college": "Texas"
+        },
+        {
+          "name": "Drake London",
+          "number": 5,
+          "position": "WR",
+          "college": "USC"
+        },
+        {
+          "name": "Jessie Bates III",
+          "number": 3,
+          "position": "S",
+          "college": "Western Kentucky"
+        }
+      ]
+    },
+    {
+      "abbr": "BAL",
+      "city": "Baltimore",
+      "name": "Ravens",
+      "conference": "AFC",
+      "division": "North",
+      "priorYearRank": 4,
+      "offenceLean": "elite",
+      "defenceLean": "above_average",
+      "runPassLean": "run",
+      "topPlayers": [
+        {
+          "name": "Lamar Jackson",
+          "number": 8,
+          "position": "QB",
+          "college": "Louisville"
+        },
+        {
+          "name": "Derrick Henry",
+          "number": 22,
+          "position": "RB",
+          "college": "Alabama"
+        },
+        {
+          "name": "Zay Flowers",
+          "number": 4,
+          "position": "WR",
+          "college": "Boston College"
+        },
+        {
+          "name": "Roquan Smith",
+          "number": 0,
+          "position": "LB",
+          "college": "Georgia"
+        }
+      ]
+    },
+    {
+      "abbr": "BUF",
+      "city": "Buffalo",
+      "name": "Bills",
+      "conference": "AFC",
+      "division": "East",
+      "priorYearRank": 3,
+      "offenceLean": "elite",
+      "defenceLean": "above_average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Josh Allen",
+          "number": 17,
+          "position": "QB",
+          "college": "Wyoming"
+        },
+        {
+          "name": "James Cook",
+          "number": 4,
+          "position": "RB",
+          "college": "Georgia"
+        },
+        {
+          "name": "Keon Coleman",
+          "number": 0,
+          "position": "WR",
+          "college": "Florida State"
+        },
+        {
+          "name": "Matt Milano",
+          "number": 58,
+          "position": "LB",
+          "college": "Boston College"
+        }
+      ]
+    },
+    {
+      "abbr": "CAR",
+      "city": "Carolina",
+      "name": "Panthers",
+      "conference": "NFC",
+      "division": "South",
+      "priorYearRank": 32,
+      "offenceLean": "below_average",
+      "defenceLean": "below_average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Bryce Young",
+          "number": 9,
+          "position": "QB",
+          "college": "Alabama"
+        },
+        {
+          "name": "Chuba Hubbard",
+          "number": 30,
+          "position": "RB",
+          "college": "Oklahoma State"
+        },
+        {
+          "name": "Xavier Legette",
+          "number": 17,
+          "position": "WR",
+          "college": "South Carolina"
+        },
+        {
+          "name": "Derrick Brown",
+          "number": 95,
+          "position": "DT",
+          "college": "Auburn"
+        }
+      ]
+    },
+    {
+      "abbr": "CHI",
+      "city": "Chicago",
+      "name": "Bears",
+      "conference": "NFC",
+      "division": "North",
+      "priorYearRank": 20,
+      "offenceLean": "average",
+      "defenceLean": "above_average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Caleb Williams",
+          "number": 18,
+          "position": "QB",
+          "college": "USC"
+        },
+        {
+          "name": "DJ Moore",
+          "number": 2,
+          "position": "WR",
+          "college": "Maryland"
+        },
+        {
+          "name": "Rome Odunze",
+          "number": 15,
+          "position": "WR",
+          "college": "Washington"
+        },
+        {
+          "name": "Montez Sweat",
+          "number": 98,
+          "position": "DE",
+          "college": "Mississippi State"
+        }
+      ]
+    },
+    {
+      "abbr": "CIN",
+      "city": "Cincinnati",
+      "name": "Bengals",
+      "conference": "AFC",
+      "division": "North",
+      "priorYearRank": 12,
+      "offenceLean": "elite",
+      "defenceLean": "average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Joe Burrow",
+          "number": 9,
+          "position": "QB",
+          "college": "LSU"
+        },
+        {
+          "name": "Ja'Marr Chase",
+          "number": 1,
+          "position": "WR",
+          "college": "LSU"
+        },
+        {
+          "name": "Tee Higgins",
+          "number": 5,
+          "position": "WR",
+          "college": "Clemson"
+        },
+        {
+          "name": "Trey Hendrickson",
+          "number": 91,
+          "position": "DE",
+          "college": "Florida Atlantic"
+        }
+      ]
+    },
+    {
+      "abbr": "CLE",
+      "city": "Cleveland",
+      "name": "Browns",
+      "conference": "AFC",
+      "division": "North",
+      "priorYearRank": 26,
+      "offenceLean": "below_average",
+      "defenceLean": "elite",
+      "runPassLean": "run",
+      "topPlayers": [
+        {
+          "name": "Deshaun Watson",
+          "number": 4,
+          "position": "QB",
+          "college": "Clemson"
+        },
+        {
+          "name": "Nick Chubb",
+          "number": 24,
+          "position": "RB",
+          "college": "Georgia"
+        },
+        {
+          "name": "Jerry Jeudy",
+          "number": 3,
+          "position": "WR",
+          "college": "Alabama"
+        },
+        {
+          "name": "Myles Garrett",
+          "number": 95,
+          "position": "DE",
+          "college": "Texas A&M"
+        }
+      ]
+    },
+    {
+      "abbr": "DAL",
+      "city": "Dallas",
+      "name": "Cowboys",
+      "conference": "NFC",
+      "division": "East",
+      "priorYearRank": 19,
+      "offenceLean": "above_average",
+      "defenceLean": "average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Dak Prescott",
+          "number": 4,
+          "position": "QB",
+          "college": "Mississippi State"
+        },
+        {
+          "name": "CeeDee Lamb",
+          "number": 88,
+          "position": "WR",
+          "college": "Oklahoma"
+        },
+        {
+          "name": "Micah Parsons",
+          "number": 11,
+          "position": "LB",
+          "college": "Penn State"
+        },
+        {
+          "name": "Brandin Cooks",
+          "number": 3,
+          "position": "WR",
+          "college": "Oregon State"
+        }
+      ]
+    },
+    {
+      "abbr": "DEN",
+      "city": "Denver",
+      "name": "Broncos",
+      "conference": "AFC",
+      "division": "West",
+      "priorYearRank": 13,
+      "offenceLean": "average",
+      "defenceLean": "elite",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Bo Nix",
+          "number": 10,
+          "position": "QB",
+          "college": "Oregon"
+        },
+        {
+          "name": "Courtland Sutton",
+          "number": 14,
+          "position": "WR",
+          "college": "SMU"
+        },
+        {
+          "name": "Patrick Surtain II",
+          "number": 2,
+          "position": "CB",
+          "college": "Alabama"
+        },
+        {
+          "name": "Nik Bonitto",
+          "number": 0,
+          "position": "LB",
+          "college": "Oklahoma"
+        }
+      ]
+    },
+    {
+      "abbr": "DET",
+      "city": "Detroit",
+      "name": "Lions",
+      "conference": "NFC",
+      "division": "North",
+      "priorYearRank": 5,
+      "offenceLean": "elite",
+      "defenceLean": "above_average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Jared Goff",
+          "number": 16,
+          "position": "QB",
+          "college": "California"
+        },
+        {
+          "name": "Amon-Ra St. Brown",
+          "number": 14,
+          "position": "WR",
+          "college": "USC"
+        },
+        {
+          "name": "Jahmyr Gibbs",
+          "number": 0,
+          "position": "RB",
+          "college": "Alabama"
+        },
+        {
+          "name": "Aidan Hutchinson",
+          "number": 97,
+          "position": "DE",
+          "college": "Michigan"
+        }
+      ]
+    },
+    {
+      "abbr": "GB",
+      "city": "Green Bay",
+      "name": "Packers",
+      "conference": "NFC",
+      "division": "North",
+      "priorYearRank": 8,
+      "offenceLean": "above_average",
+      "defenceLean": "above_average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Jordan Love",
+          "number": 10,
+          "position": "QB",
+          "college": "Utah State"
+        },
+        {
+          "name": "Josh Jacobs",
+          "number": 8,
+          "position": "RB",
+          "college": "Alabama"
+        },
+        {
+          "name": "Jayden Reed",
+          "number": 11,
+          "position": "WR",
+          "college": "Michigan State"
+        },
+        {
+          "name": "Kenny Clark",
+          "number": 97,
+          "position": "DT",
+          "college": "UCLA"
+        }
+      ]
+    },
+    {
+      "abbr": "HOU",
+      "city": "Houston",
+      "name": "Texans",
+      "conference": "AFC",
+      "division": "South",
+      "priorYearRank": 7,
+      "offenceLean": "above_average",
+      "defenceLean": "elite",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "C.J. Stroud",
+          "number": 7,
+          "position": "QB",
+          "college": "Ohio State"
+        },
+        {
+          "name": "Nico Collins",
+          "number": 12,
+          "position": "WR",
+          "college": "Michigan"
+        },
+        {
+          "name": "Joe Mixon",
+          "number": 28,
+          "position": "RB",
+          "college": "Oklahoma"
+        },
+        {
+          "name": "Will Anderson Jr.",
+          "number": 51,
+          "position": "DE",
+          "college": "Alabama"
+        }
+      ]
+    },
+    {
+      "abbr": "IND",
+      "city": "Indianapolis",
+      "name": "Colts",
+      "conference": "AFC",
+      "division": "South",
+      "priorYearRank": 23,
+      "offenceLean": "average",
+      "defenceLean": "average",
+      "runPassLean": "run",
+      "topPlayers": [
+        {
+          "name": "Anthony Richardson",
+          "number": 5,
+          "position": "QB",
+          "college": "Florida"
+        },
+        {
+          "name": "Jonathan Taylor",
+          "number": 28,
+          "position": "RB",
+          "college": "Wisconsin"
+        },
+        {
+          "name": "Michael Pittman Jr.",
+          "number": 11,
+          "position": "WR",
+          "college": "USC"
+        },
+        {
+          "name": "DeForest Buckner",
+          "number": 99,
+          "position": "DT",
+          "college": "Oregon"
+        }
+      ]
+    },
+    {
+      "abbr": "JAX",
+      "city": "Jacksonville",
+      "name": "Jaguars",
+      "conference": "AFC",
+      "division": "South",
+      "priorYearRank": 24,
+      "offenceLean": "average",
+      "defenceLean": "average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Trevor Lawrence",
+          "number": 16,
+          "position": "QB",
+          "college": "Clemson"
+        },
+        {
+          "name": "Brian Thomas Jr.",
+          "number": 7,
+          "position": "WR",
+          "college": "LSU"
+        },
+        {
+          "name": "Travis Etienne Jr.",
+          "number": 1,
+          "position": "RB",
+          "college": "Clemson"
+        },
+        {
+          "name": "Josh Hines-Allen",
+          "number": 41,
+          "position": "DE",
+          "college": "Kentucky"
+        }
+      ]
+    },
+    {
+      "abbr": "KC",
+      "city": "Kansas City",
+      "name": "Chiefs",
+      "conference": "AFC",
+      "division": "West",
+      "priorYearRank": 2,
+      "offenceLean": "elite",
+      "defenceLean": "above_average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Patrick Mahomes",
+          "number": 15,
+          "position": "QB",
+          "college": "Texas Tech"
+        },
+        {
+          "name": "Travis Kelce",
+          "number": 87,
+          "position": "TE",
+          "college": "Cincinnati"
+        },
+        {
+          "name": "Xavier Worthy",
+          "number": 1,
+          "position": "WR",
+          "college": "Texas"
+        },
+        {
+          "name": "Chris Jones",
+          "number": 95,
+          "position": "DT",
+          "college": "Mississippi State"
+        }
+      ]
+    },
+    {
+      "abbr": "LAC",
+      "city": "Los Angeles",
+      "name": "Chargers",
+      "conference": "AFC",
+      "division": "West",
+      "priorYearRank": 10,
+      "offenceLean": "above_average",
+      "defenceLean": "above_average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Justin Herbert",
+          "number": 10,
+          "position": "QB",
+          "college": "Oregon"
+        },
+        {
+          "name": "Ladd McConkey",
+          "number": 15,
+          "position": "WR",
+          "college": "Georgia"
+        },
+        {
+          "name": "Khalil Mack",
+          "number": 52,
+          "position": "LB",
+          "college": "Buffalo"
+        },
+        {
+          "name": "Derwin James Jr.",
+          "number": 3,
+          "position": "S",
+          "college": "Florida State"
+        }
+      ]
+    },
+    {
+      "abbr": "LAR",
+      "city": "Los Angeles",
+      "name": "Rams",
+      "conference": "NFC",
+      "division": "West",
+      "priorYearRank": 14,
+      "offenceLean": "above_average",
+      "defenceLean": "above_average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Matthew Stafford",
+          "number": 9,
+          "position": "QB",
+          "college": "Georgia"
+        },
+        {
+          "name": "Puka Nacua",
+          "number": 17,
+          "position": "WR",
+          "college": "BYU"
+        },
+        {
+          "name": "Cooper Kupp",
+          "number": 10,
+          "position": "WR",
+          "college": "Eastern Washington"
+        },
+        {
+          "name": "Byron Young",
+          "number": 0,
+          "position": "DE",
+          "college": "Tennessee"
+        }
+      ]
+    },
+    {
+      "abbr": "LV",
+      "city": "Las Vegas",
+      "name": "Raiders",
+      "conference": "AFC",
+      "division": "West",
+      "priorYearRank": 28,
+      "offenceLean": "below_average",
+      "defenceLean": "average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Gardner Minshew",
+          "number": 15,
+          "position": "QB",
+          "college": "Washington State"
+        },
+        {
+          "name": "Davante Adams",
+          "number": 17,
+          "position": "WR",
+          "college": "Fresno State"
+        },
+        {
+          "name": "Brock Bowers",
+          "number": 89,
+          "position": "TE",
+          "college": "Georgia"
+        },
+        {
+          "name": "Maxx Crosby",
+          "number": 98,
+          "position": "DE",
+          "college": "Eastern Michigan"
+        }
+      ]
+    },
+    {
+      "abbr": "MIA",
+      "city": "Miami",
+      "name": "Dolphins",
+      "conference": "AFC",
+      "division": "East",
+      "priorYearRank": 15,
+      "offenceLean": "above_average",
+      "defenceLean": "average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Tua Tagovailoa",
+          "number": 1,
+          "position": "QB",
+          "college": "Alabama"
+        },
+        {
+          "name": "Tyreek Hill",
+          "number": 10,
+          "position": "WR",
+          "college": "West Alabama"
+        },
+        {
+          "name": "Jaylen Waddle",
+          "number": 17,
+          "position": "WR",
+          "college": "Alabama"
+        },
+        {
+          "name": "Jalen Ramsey",
+          "number": 5,
+          "position": "CB",
+          "college": "Florida State"
+        }
+      ]
+    },
+    {
+      "abbr": "MIN",
+      "city": "Minnesota",
+      "name": "Vikings",
+      "conference": "NFC",
+      "division": "North",
+      "priorYearRank": 9,
+      "offenceLean": "above_average",
+      "defenceLean": "elite",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "J.J. McCarthy",
+          "number": 9,
+          "position": "QB",
+          "college": "Michigan"
+        },
+        {
+          "name": "Justin Jefferson",
+          "number": 18,
+          "position": "WR",
+          "college": "LSU"
+        },
+        {
+          "name": "Aaron Jones",
+          "number": 33,
+          "position": "RB",
+          "college": "UTEP"
+        },
+        {
+          "name": "Harrison Smith",
+          "number": 22,
+          "position": "S",
+          "college": "Notre Dame"
+        }
+      ]
+    },
+    {
+      "abbr": "NE",
+      "city": "New England",
+      "name": "Patriots",
+      "conference": "AFC",
+      "division": "East",
+      "priorYearRank": 30,
+      "offenceLean": "below_average",
+      "defenceLean": "average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Drake Maye",
+          "number": 10,
+          "position": "QB",
+          "college": "North Carolina"
+        },
+        {
+          "name": "Rhamondre Stevenson",
+          "number": 38,
+          "position": "RB",
+          "college": "Oklahoma"
+        },
+        {
+          "name": "Hunter Henry",
+          "number": 85,
+          "position": "TE",
+          "college": "Arkansas"
+        },
+        {
+          "name": "Christian Gonzalez",
+          "number": 0,
+          "position": "CB",
+          "college": "Oregon"
+        }
+      ]
+    },
+    {
+      "abbr": "NO",
+      "city": "New Orleans",
+      "name": "Saints",
+      "conference": "NFC",
+      "division": "South",
+      "priorYearRank": 25,
+      "offenceLean": "average",
+      "defenceLean": "above_average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Derek Carr",
+          "number": 4,
+          "position": "QB",
+          "college": "Fresno State"
+        },
+        {
+          "name": "Alvin Kamara",
+          "number": 41,
+          "position": "RB",
+          "college": "Tennessee"
+        },
+        {
+          "name": "Chris Olave",
+          "number": 12,
+          "position": "WR",
+          "college": "Ohio State"
+        },
+        {
+          "name": "Demario Davis",
+          "number": 56,
+          "position": "LB",
+          "college": "Arkansas State"
+        }
+      ]
+    },
+    {
+      "abbr": "NYG",
+      "city": "New York",
+      "name": "Giants",
+      "conference": "NFC",
+      "division": "East",
+      "priorYearRank": 31,
+      "offenceLean": "below_average",
+      "defenceLean": "average",
+      "runPassLean": "run",
+      "topPlayers": [
+        {
+          "name": "Daniel Jones",
+          "number": 8,
+          "position": "QB",
+          "college": "Duke"
+        },
+        {
+          "name": "Malik Nabers",
+          "number": 1,
+          "position": "WR",
+          "college": "LSU"
+        },
+        {
+          "name": "Tyrone Tracy Jr.",
+          "number": 29,
+          "position": "RB",
+          "college": "Purdue"
+        },
+        {
+          "name": "Dexter Lawrence",
+          "number": 97,
+          "position": "DT",
+          "college": "Clemson"
+        }
+      ]
+    },
+    {
+      "abbr": "NYJ",
+      "city": "New York",
+      "name": "Jets",
+      "conference": "AFC",
+      "division": "East",
+      "priorYearRank": 21,
+      "offenceLean": "average",
+      "defenceLean": "elite",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Aaron Rodgers",
+          "number": 8,
+          "position": "QB",
+          "college": "California"
+        },
+        {
+          "name": "Garrett Wilson",
+          "number": 5,
+          "position": "WR",
+          "college": "Ohio State"
+        },
+        {
+          "name": "Breece Hall",
+          "number": 20,
+          "position": "RB",
+          "college": "Iowa State"
+        },
+        {
+          "name": "Sauce Gardner",
+          "number": 1,
+          "position": "CB",
+          "college": "Cincinnati"
+        }
+      ]
+    },
+    {
+      "abbr": "PHI",
+      "city": "Philadelphia",
+      "name": "Eagles",
+      "conference": "NFC",
+      "division": "East",
+      "priorYearRank": 1,
+      "offenceLean": "elite",
+      "defenceLean": "elite",
+      "runPassLean": "run",
+      "topPlayers": [
+        {
+          "name": "Jalen Hurts",
+          "number": 1,
+          "position": "QB",
+          "college": "Oklahoma"
+        },
+        {
+          "name": "A.J. Brown",
+          "number": 11,
+          "position": "WR",
+          "college": "Ole Miss"
+        },
+        {
+          "name": "Saquon Barkley",
+          "number": 26,
+          "position": "RB",
+          "college": "Penn State"
+        },
+        {
+          "name": "Zack Baun",
+          "number": 53,
+          "position": "LB",
+          "college": "Wisconsin"
+        }
+      ]
+    },
+    {
+      "abbr": "PIT",
+      "city": "Pittsburgh",
+      "name": "Steelers",
+      "conference": "AFC",
+      "division": "North",
+      "priorYearRank": 16,
+      "offenceLean": "average",
+      "defenceLean": "above_average",
+      "runPassLean": "run",
+      "topPlayers": [
+        {
+          "name": "Russell Wilson",
+          "number": 3,
+          "position": "QB",
+          "college": "Wisconsin"
+        },
+        {
+          "name": "Najee Harris",
+          "number": 22,
+          "position": "RB",
+          "college": "Alabama"
+        },
+        {
+          "name": "George Pickens",
+          "number": 14,
+          "position": "WR",
+          "college": "Georgia"
+        },
+        {
+          "name": "T.J. Watt",
+          "number": 90,
+          "position": "LB",
+          "college": "Wisconsin"
+        }
+      ]
+    },
+    {
+      "abbr": "SEA",
+      "city": "Seattle",
+      "name": "Seahawks",
+      "conference": "NFC",
+      "division": "West",
+      "priorYearRank": 22,
+      "offenceLean": "average",
+      "defenceLean": "above_average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Geno Smith",
+          "number": 7,
+          "position": "QB",
+          "college": "Idaho"
+        },
+        {
+          "name": "DK Metcalf",
+          "number": 14,
+          "position": "WR",
+          "college": "Ole Miss"
+        },
+        {
+          "name": "Kenneth Walker III",
+          "number": 9,
+          "position": "RB",
+          "college": "Michigan State"
+        },
+        {
+          "name": "Devon Witherspoon",
+          "number": 21,
+          "position": "CB",
+          "college": "Illinois"
+        }
+      ]
+    },
+    {
+      "abbr": "SF",
+      "city": "San Francisco",
+      "name": "49ers",
+      "conference": "NFC",
+      "division": "West",
+      "priorYearRank": 11,
+      "offenceLean": "elite",
+      "defenceLean": "above_average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Brock Purdy",
+          "number": 13,
+          "position": "QB",
+          "college": "Iowa State"
+        },
+        {
+          "name": "Christian McCaffrey",
+          "number": 23,
+          "position": "RB",
+          "college": "Stanford"
+        },
+        {
+          "name": "George Kittle",
+          "number": 85,
+          "position": "TE",
+          "college": "Iowa"
+        },
+        {
+          "name": "Nick Bosa",
+          "number": 97,
+          "position": "DE",
+          "college": "Ohio State"
+        }
+      ]
+    },
+    {
+      "abbr": "TB",
+      "city": "Tampa Bay",
+      "name": "Buccaneers",
+      "conference": "NFC",
+      "division": "South",
+      "priorYearRank": 17,
+      "offenceLean": "above_average",
+      "defenceLean": "average",
+      "runPassLean": "pass",
+      "topPlayers": [
+        {
+          "name": "Baker Mayfield",
+          "number": 6,
+          "position": "QB",
+          "college": "Oklahoma"
+        },
+        {
+          "name": "Mike Evans",
+          "number": 13,
+          "position": "WR",
+          "college": "Texas A&M"
+        },
+        {
+          "name": "Chris Godwin",
+          "number": 14,
+          "position": "WR",
+          "college": "Penn State"
+        },
+        {
+          "name": "Vita Vea",
+          "number": 50,
+          "position": "DT",
+          "college": "Washington"
+        }
+      ]
+    },
+    {
+      "abbr": "TEN",
+      "city": "Tennessee",
+      "name": "Titans",
+      "conference": "AFC",
+      "division": "South",
+      "priorYearRank": 29,
+      "offenceLean": "below_average",
+      "defenceLean": "average",
+      "runPassLean": "run",
+      "topPlayers": [
+        {
+          "name": "Will Levis",
+          "number": 8,
+          "position": "QB",
+          "college": "Kentucky"
+        },
+        {
+          "name": "Calvin Ridley",
+          "number": 0,
+          "position": "WR",
+          "college": "Alabama"
+        },
+        {
+          "name": "Tony Pollard",
+          "number": 20,
+          "position": "RB",
+          "college": "Memphis"
+        },
+        {
+          "name": "Jeffery Simmons",
+          "number": 98,
+          "position": "DT",
+          "college": "Mississippi State"
+        }
+      ]
+    },
+    {
+      "abbr": "WAS",
+      "city": "Washington",
+      "name": "Commanders",
+      "conference": "NFC",
+      "division": "East",
+      "priorYearRank": 6,
+      "offenceLean": "above_average",
+      "defenceLean": "average",
+      "runPassLean": "balanced",
+      "topPlayers": [
+        {
+          "name": "Jayden Daniels",
+          "number": 5,
+          "position": "QB",
+          "college": "LSU"
+        },
+        {
+          "name": "Terry McLaurin",
+          "number": 17,
+          "position": "WR",
+          "college": "Ohio State"
+        },
+        {
+          "name": "Brian Robinson Jr.",
+          "number": 8,
+          "position": "RB",
+          "college": "Alabama"
+        },
+        {
+          "name": "Bobby Wagner",
+          "number": 45,
+          "position": "LB",
+          "college": "Utah State"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "priorYearRank is a unique plausible 2025-style composite (1 = strongest) for demo sorting.",
+    "Roster/college facts are public-knowledge approximations for demo UX; verify before production.",
+    "Lean fields are categorical UI hints (offenceLean/defenceLean/runPassLean), not betting advice.",
+    "Canadian English spelling used in field names where applicable (offence, defence)."
+  ]
+}

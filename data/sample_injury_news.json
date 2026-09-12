@@ -1,0 +1,93 @@
+{
+  "_warning": "SAMPLE SHAPES ONLY — not live data",
+  "_generated_at": "2026-09-12",
+  "_notes": [
+    "All injury and news rows below are FICTIONAL stubs OR clearly labeled HISTORICAL examples for schema/UI wiring.",
+    "Do NOT treat any status, injury, or headline as current fact for the 2026 NFL season.",
+    "Builders should replace this file with live feeds once API keys and scrapers exist."
+  ],
+  "injuries": [
+    {
+      "team": "KC",
+      "player": "Alex Sample (FICTIONAL)",
+      "position": "WR",
+      "status": "Questionable",
+      "injury": "Ankle — SAMPLE STUB only",
+      "updated": "2025-11-03T18:00:00Z",
+      "source_url_example": "https://www.nfl.com/injuries/",
+      "_label": "fictional_stub"
+    },
+    {
+      "team": "BUF",
+      "player": "Jordan Example (FICTIONAL)",
+      "position": "CB",
+      "status": "Doubtful",
+      "injury": "Hamstring — SAMPLE STUB only",
+      "updated": "2025-10-12T16:30:00Z",
+      "source_url_example": "https://www.espn.com/nfl/injuries",
+      "_label": "fictional_stub"
+    },
+    {
+      "team": "SF",
+      "player": "Casey Placeholder (FICTIONAL)",
+      "position": "RB",
+      "status": "Out",
+      "injury": "Knee — SAMPLE STUB only",
+      "updated": "2025-09-28T14:00:00Z",
+      "source_url_example": "https://www.nfl.com/injuries/",
+      "_label": "fictional_stub"
+    },
+    {
+      "team": "DAL",
+      "player": "Riley Mock (FICTIONAL)",
+      "position": "OT",
+      "status": "IR",
+      "injury": "Shoulder — SAMPLE STUB only (IR shape demo)",
+      "updated": "2025-09-15T12:00:00Z",
+      "source_url_example": "https://www.nfl.com/injuries/",
+      "_label": "fictional_stub"
+    },
+    {
+      "team": "PHI",
+      "player": "HISTORICAL SHAPE ONLY — not a current 2026 report",
+      "position": "QB",
+      "status": "Questionable",
+      "injury": "Schema demo using historical-season date stamp; not live status",
+      "updated": "2024-12-15T17:00:00Z",
+      "source_url_example": "https://www.nfl.com/injuries/league/2024/reg15",
+      "_label": "historical_shape_example"
+    }
+  ],
+  "news": [
+    {
+      "id": "news-sample-001",
+      "headline": "[SAMPLE] Team X lists starter as Questionable — stub headline",
+      "summary": "Fictional summary for UI cards. Not a real injury or lineup update. Replace with API/RSS content.",
+      "team": "KC",
+      "published_at": "2025-11-03T19:00:00Z",
+      "url": "https://example.com/sample/injury-stub-001",
+      "tags": ["injury", "sample", "stub"],
+      "_label": "fictional_stub"
+    },
+    {
+      "id": "news-sample-002",
+      "headline": "[SAMPLE] Depth chart shuffle ahead of Week N — stub",
+      "summary": "Placeholder blurb demonstrating news object shape for Survive Sunday seed data.",
+      "team": "BUF",
+      "published_at": "2025-10-12T20:15:00Z",
+      "url": "https://example.com/sample/news-stub-002",
+      "tags": ["depth-chart", "sample", "stub"],
+      "_label": "fictional_stub"
+    },
+    {
+      "id": "news-historical-shape-001",
+      "headline": "[HISTORICAL SHAPE] Example recap-style headline from a prior season — not current 2026 news",
+      "summary": "Labeled historical-shape example only. Dates intentionally pre-2026. Do not present as live.",
+      "team": "SF",
+      "published_at": "2024-01-28T22:00:00Z",
+      "url": "https://www.nfl.com/news/",
+      "tags": ["historical-shape", "recap", "sample"],
+      "_label": "historical_shape_example"
+    }
+  ]
+}

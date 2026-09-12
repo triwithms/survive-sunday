@@ -1,0 +1,2114 @@
+[
+  {
+    "abbreviation": "ARI",
+    "name": "Arizona Cardinals",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "balanced",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 65.92%; FTN defensive pressure 25.4%; ESPN PRWR rank 13, RSWR rank 12; FOX rush yards allowed rank ~25",
+    "top_players": [
+      {
+        "name": "Jacoby Brissett",
+        "number": 7,
+        "position": "QB",
+        "college": "NC State"
+      },
+      {
+        "name": "Jeremiyah Love",
+        "number": 4,
+        "position": "RB",
+        "college": "Notre Dame"
+      },
+      {
+        "name": "Michael Wilson",
+        "number": 14,
+        "position": "WR",
+        "college": "Stanford"
+      },
+      {
+        "name": "Trey McBride",
+        "number": 85,
+        "position": "TE",
+        "college": "Colorado State"
+      },
+      {
+        "name": "Isaac Seumalo",
+        "number": 73,
+        "position": "G",
+        "college": "Oregon State"
+      },
+      {
+        "name": "Darius Robinson",
+        "number": 56,
+        "position": "DE",
+        "college": "Missouri"
+      },
+      {
+        "name": "Josh Sweat",
+        "number": 10,
+        "position": "LB",
+        "college": "Florida State"
+      },
+      {
+        "name": "Garrett Williams",
+        "number": 21,
+        "position": "CB",
+        "college": "Syracuse"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/ari/arizona-cardinals",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "ATL",
+    "name": "Atlanta Falcons",
+    "offence_lean": "balanced",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 54.48%; FTN defensive pressure 31.2%; ESPN PRWR rank 6, RSWR rank 9; FOX rush yards allowed rank ~24",
+    "top_players": [
+      {
+        "name": "Michael Penix Jr.",
+        "number": 9,
+        "position": "QB",
+        "college": "Washington"
+      },
+      {
+        "name": "Bijan Robinson",
+        "number": 7,
+        "position": "RB",
+        "college": "Texas"
+      },
+      {
+        "name": "Drake London",
+        "number": 5,
+        "position": "WR",
+        "college": "USC"
+      },
+      {
+        "name": "Kyle Pitts Sr.",
+        "number": 8,
+        "position": "TE",
+        "college": "Florida"
+      },
+      {
+        "name": "Matthew Bergeron",
+        "number": 65,
+        "position": "G",
+        "college": "Syracuse"
+      },
+      {
+        "name": "Za'Darius Smith",
+        "number": 91,
+        "position": "DE",
+        "college": "Kentucky"
+      },
+      {
+        "name": "Divine Deablo",
+        "number": 0,
+        "position": "LB",
+        "college": "Virginia Tech"
+      },
+      {
+        "name": "A.J. Terrell Jr.",
+        "number": 24,
+        "position": "CB",
+        "college": "Clemson"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/atl/atlanta-falcons",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "BAL",
+    "name": "Baltimore Ravens",
+    "offence_lean": "run-heavy",
+    "defence_lean": "balanced",
+    "run_pass_lean": "run",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 47.95%; FTN defensive pressure 27.4%; ESPN PRWR rank 28, RSWR rank 14; FOX rush yards allowed rank ~10",
+    "top_players": [
+      {
+        "name": "Lamar Jackson",
+        "number": 8,
+        "position": "QB",
+        "college": "Louisville"
+      },
+      {
+        "name": "Derrick Henry",
+        "number": 22,
+        "position": "RB",
+        "college": "Alabama"
+      },
+      {
+        "name": "Zay Flowers",
+        "number": 4,
+        "position": "WR",
+        "college": "Boston College"
+      },
+      {
+        "name": "Mark Andrews",
+        "number": 89,
+        "position": "TE",
+        "college": "Oklahoma"
+      },
+      {
+        "name": "Ronnie Stanley",
+        "number": 79,
+        "position": "OT",
+        "college": "Notre Dame"
+      },
+      {
+        "name": "Calais Campbell",
+        "number": 93,
+        "position": "DE",
+        "college": "Miami"
+      },
+      {
+        "name": "Trey Hendrickson",
+        "number": 91,
+        "position": "LB",
+        "college": "Florida Atlantic"
+      },
+      {
+        "name": "Marlon Humphrey",
+        "number": 44,
+        "position": "CB",
+        "college": "Alabama"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/bal/baltimore-ravens",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "BUF",
+    "name": "Buffalo Bills",
+    "offence_lean": "run-heavy",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "run",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 50.16%; FTN defensive pressure 33.8%; ESPN PRWR rank 27, RSWR rank 22; FOX rush yards allowed rank ~28",
+    "top_players": [
+      {
+        "name": "Josh Allen",
+        "number": 17,
+        "position": "QB",
+        "college": "Wyoming"
+      },
+      {
+        "name": "James Cook III",
+        "number": 4,
+        "position": "RB",
+        "college": "Georgia"
+      },
+      {
+        "name": "DJ Moore",
+        "number": 2,
+        "position": "WR",
+        "college": "Maryland"
+      },
+      {
+        "name": "Dawson Knox",
+        "number": 88,
+        "position": "TE",
+        "college": "Ole Miss"
+      },
+      {
+        "name": "Dion Dawkins",
+        "number": 73,
+        "position": "OT",
+        "college": "Temple"
+      },
+      {
+        "name": "Michael Hoecht",
+        "number": 55,
+        "position": "DE",
+        "college": "Brown"
+      },
+      {
+        "name": "Greg Rousseau",
+        "number": 15,
+        "position": "LB",
+        "college": "Miami"
+      },
+      {
+        "name": "Christian Benford",
+        "number": 47,
+        "position": "CB",
+        "college": "Villanova"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/buf/buffalo-bills",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "CAR",
+    "name": "Carolina Panthers",
+    "offence_lean": "balanced",
+    "defence_lean": "balanced",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 55.07%; FTN defensive pressure 21.4%; ESPN PRWR rank 24, RSWR rank 32; FOX rush yards allowed rank ~20",
+    "top_players": [
+      {
+        "name": "Bryce Young",
+        "number": 9,
+        "position": "QB",
+        "college": "Alabama"
+      },
+      {
+        "name": "Chuba Hubbard",
+        "number": 30,
+        "position": "RB",
+        "college": "Oklahoma State"
+      },
+      {
+        "name": "Jalen Coker",
+        "number": 18,
+        "position": "WR",
+        "college": "Holy Cross"
+      },
+      {
+        "name": "Tommy Tremble",
+        "number": 82,
+        "position": "TE",
+        "college": "Notre Dame"
+      },
+      {
+        "name": "Robert Hunt",
+        "number": 50,
+        "position": "G",
+        "college": "Louisiana"
+      },
+      {
+        "name": "Jaelan Phillips",
+        "number": 5,
+        "position": "LB",
+        "college": "Miami"
+      },
+      {
+        "name": "Jaycee Horn",
+        "number": 8,
+        "position": "CB",
+        "college": "South Carolina"
+      },
+      {
+        "name": "Derrick Brown",
+        "number": 95,
+        "position": "DT",
+        "college": "Auburn"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/car/carolina-panthers",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "CHI",
+    "name": "Chicago Bears",
+    "offence_lean": "balanced",
+    "defence_lean": "balanced",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 54.64%; FTN defensive pressure 28.1%; ESPN PRWR rank 31, RSWR rank 26; FOX rush yards allowed rank ~27",
+    "top_players": [
+      {
+        "name": "Caleb Williams",
+        "number": 18,
+        "position": "QB",
+        "college": "USC"
+      },
+      {
+        "name": "D'Andre Swift",
+        "number": 4,
+        "position": "RB",
+        "college": "Georgia"
+      },
+      {
+        "name": "Kalif Raymond",
+        "number": 14,
+        "position": "WR",
+        "college": "Holy Cross"
+      },
+      {
+        "name": "Cole Kmet",
+        "number": 85,
+        "position": "TE",
+        "college": "Notre Dame"
+      },
+      {
+        "name": "Darnell Wright",
+        "number": 58,
+        "position": "OT",
+        "college": "Tennessee"
+      },
+      {
+        "name": "Montez Sweat",
+        "number": 98,
+        "position": "DE",
+        "college": "Mississippi State"
+      },
+      {
+        "name": "Devin Bush",
+        "number": 12,
+        "position": "LB",
+        "college": "Michigan"
+      },
+      {
+        "name": "Jaylon Johnson",
+        "number": 1,
+        "position": "CB",
+        "college": "Utah"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/chi/chicago-bears",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "CIN",
+    "name": "Cincinnati Bengals",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "balanced",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 63.95%; FTN defensive pressure 29.8%; ESPN PRWR rank 32, RSWR rank 23; FOX rush yards allowed rank ~32",
+    "top_players": [
+      {
+        "name": "Joe Burrow",
+        "number": 9,
+        "position": "QB",
+        "college": "LSU"
+      },
+      {
+        "name": "Chase Brown",
+        "number": 30,
+        "position": "RB",
+        "college": "Illinois"
+      },
+      {
+        "name": "Ja'Marr Chase",
+        "number": 1,
+        "position": "WR",
+        "college": "LSU"
+      },
+      {
+        "name": "Mike Gesicki",
+        "number": 88,
+        "position": "TE",
+        "college": "Penn State"
+      },
+      {
+        "name": "Ted Karras",
+        "number": 64,
+        "position": "C",
+        "college": "Illinois"
+      },
+      {
+        "name": "Boye Mafe",
+        "number": 53,
+        "position": "DE",
+        "college": "Minnesota"
+      },
+      {
+        "name": "Oren Burks",
+        "number": 42,
+        "position": "LB",
+        "college": "Vanderbilt"
+      },
+      {
+        "name": "Dax Hill",
+        "number": 23,
+        "position": "CB",
+        "college": "Michigan"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/cin/cincinnati-bengals",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "CLE",
+    "name": "Cleveland Browns",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 59.13%; FTN defensive pressure 34.9%; ESPN PRWR rank 2, RSWR rank 2; FOX rush yards allowed rank ~16",
+    "top_players": [
+      {
+        "name": "Deshaun Watson",
+        "number": 4,
+        "position": "QB",
+        "college": "Clemson"
+      },
+      {
+        "name": "Quinshon Judkins",
+        "number": 10,
+        "position": "RB",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Jerry Jeudy",
+        "number": 3,
+        "position": "WR",
+        "college": "Alabama"
+      },
+      {
+        "name": "Harold Fannin Jr.",
+        "number": 44,
+        "position": "TE",
+        "college": "Bowling Green"
+      },
+      {
+        "name": "Tytus Howard",
+        "number": 71,
+        "position": "OT",
+        "college": "Alabama State"
+      },
+      {
+        "name": "Isaiah McGuire",
+        "number": 57,
+        "position": "DE",
+        "college": "Missouri"
+      },
+      {
+        "name": "Quincy Williams",
+        "number": 5,
+        "position": "LB",
+        "college": "Murray State"
+      },
+      {
+        "name": "Denzel Ward",
+        "number": 21,
+        "position": "CB",
+        "college": "Ohio State"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/cle/cleveland-browns",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "DAL",
+    "name": "Dallas Cowboys",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 58.48%; FTN defensive pressure 31.9%; ESPN PRWR rank 9, RSWR rank 5; FOX rush yards allowed rank ~23",
+    "top_players": [
+      {
+        "name": "Dak Prescott",
+        "number": 4,
+        "position": "QB",
+        "college": "Mississippi State"
+      },
+      {
+        "name": "Javonte Williams",
+        "number": 33,
+        "position": "RB",
+        "college": "North Carolina"
+      },
+      {
+        "name": "George Pickens",
+        "number": 3,
+        "position": "WR",
+        "college": "Georgia"
+      },
+      {
+        "name": "Jake Ferguson",
+        "number": 87,
+        "position": "TE",
+        "college": "Wisconsin"
+      },
+      {
+        "name": "Tyler Smith",
+        "number": 73,
+        "position": "G",
+        "college": "Tulsa"
+      },
+      {
+        "name": "Rashan Gary",
+        "number": 7,
+        "position": "LB",
+        "college": "Michigan"
+      },
+      {
+        "name": "DaRon Bland",
+        "number": 26,
+        "position": "CB",
+        "college": "Fresno State"
+      },
+      {
+        "name": "Quinnen Williams",
+        "number": 92,
+        "position": "DT",
+        "college": "Alabama"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/dal/dallas-cowboys",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "DEN",
+    "name": "Denver Broncos",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 58.78%; FTN defensive pressure 34.2%; ESPN PRWR rank 3, RSWR rank 4; FOX rush yards allowed rank ~2",
+    "top_players": [
+      {
+        "name": "Jarrett Stidham",
+        "number": 8,
+        "position": "QB",
+        "college": "Auburn"
+      },
+      {
+        "name": "J.K. Dobbins",
+        "number": 27,
+        "position": "RB",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Courtland Sutton",
+        "number": 14,
+        "position": "WR",
+        "college": "SMU"
+      },
+      {
+        "name": "Evan Engram",
+        "number": 1,
+        "position": "TE",
+        "college": "Ole Miss"
+      },
+      {
+        "name": "Garett Bolles",
+        "number": 72,
+        "position": "OT",
+        "college": "Utah"
+      },
+      {
+        "name": "Zach Allen",
+        "number": 99,
+        "position": "DE",
+        "college": "Boston College"
+      },
+      {
+        "name": "Nik Bonitto",
+        "number": 15,
+        "position": "LB",
+        "college": "Oklahoma"
+      },
+      {
+        "name": "Pat Surtain II",
+        "number": 2,
+        "position": "CB",
+        "college": "Alabama"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/den/denver-broncos",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "DET",
+    "name": "Detroit Lions",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "balanced",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 58.42%; FTN defensive pressure 30.6%; ESPN PRWR rank 26, RSWR rank 29; FOX rush yards allowed rank ~14",
+    "top_players": [
+      {
+        "name": "Jared Goff",
+        "number": 16,
+        "position": "QB",
+        "college": "California"
+      },
+      {
+        "name": "Jahmyr Gibbs",
+        "number": 0,
+        "position": "RB",
+        "college": "Alabama"
+      },
+      {
+        "name": "Amon-Ra St. Brown",
+        "number": 14,
+        "position": "WR",
+        "college": "USC"
+      },
+      {
+        "name": "Sam LaPorta",
+        "number": 87,
+        "position": "TE",
+        "college": "Iowa"
+      },
+      {
+        "name": "Penei Sewell",
+        "number": 58,
+        "position": "OT",
+        "college": "Oregon"
+      },
+      {
+        "name": "Aidan Hutchinson",
+        "number": 97,
+        "position": "DE",
+        "college": "Michigan"
+      },
+      {
+        "name": "Jack Campbell",
+        "number": 46,
+        "position": "LB",
+        "college": "Iowa"
+      },
+      {
+        "name": "D.J. Reed",
+        "number": 4,
+        "position": "CB",
+        "college": "Kansas State"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/det/detroit-lions",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "GB",
+    "name": "Green Bay Packers",
+    "offence_lean": "balanced",
+    "defence_lean": "balanced",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 52.31%; FTN defensive pressure 30.5%; ESPN PRWR rank 12, RSWR rank 24; FOX rush yards allowed rank ~18",
+    "top_players": [
+      {
+        "name": "Micah Parsons",
+        "number": 1,
+        "position": "DE",
+        "college": "Penn State"
+      },
+      {
+        "name": "Jordan Love",
+        "number": 10,
+        "position": "QB",
+        "college": "Utah State"
+      },
+      {
+        "name": "Josh Jacobs",
+        "number": 8,
+        "position": "RB",
+        "college": "Alabama"
+      },
+      {
+        "name": "Christian Watson",
+        "number": 9,
+        "position": "WR",
+        "college": "North Dakota State"
+      },
+      {
+        "name": "Tucker Kraft",
+        "number": 85,
+        "position": "TE",
+        "college": "South Dakota State"
+      },
+      {
+        "name": "Aaron Banks",
+        "number": 65,
+        "position": "G",
+        "college": "Notre Dame"
+      },
+      {
+        "name": "Zaire Franklin",
+        "number": 44,
+        "position": "LB",
+        "college": "Syracuse"
+      },
+      {
+        "name": "Keisean Nixon",
+        "number": 25,
+        "position": "CB",
+        "college": "South Carolina"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/gb/green-bay-packers",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "HOU",
+    "name": "Houston Texans",
+    "offence_lean": "balanced",
+    "defence_lean": "coverage",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 56.93%; FTN defensive pressure 29.8%; ESPN PRWR rank 21, RSWR rank 6; FOX rush yards allowed rank ~4; FTN: highest tight-coverage rate behind pressure",
+    "top_players": [
+      {
+        "name": "Davis Mills",
+        "number": 10,
+        "position": "QB",
+        "college": "Stanford"
+      },
+      {
+        "name": "David Montgomery",
+        "number": 32,
+        "position": "RB",
+        "college": "Iowa State"
+      },
+      {
+        "name": "Nico Collins",
+        "number": 12,
+        "position": "WR",
+        "college": "Michigan"
+      },
+      {
+        "name": "Dalton Schultz",
+        "number": 86,
+        "position": "TE",
+        "college": "Stanford"
+      },
+      {
+        "name": "Ed Ingram",
+        "number": 69,
+        "position": "G",
+        "college": "LSU"
+      },
+      {
+        "name": "Will Anderson Jr.",
+        "number": 51,
+        "position": "DE",
+        "college": "Alabama"
+      },
+      {
+        "name": "Azeez Al-Shaair",
+        "number": 0,
+        "position": "LB",
+        "college": "Florida Atlantic"
+      },
+      {
+        "name": "Derek Stingley Jr.",
+        "number": 24,
+        "position": "CB",
+        "college": "LSU"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/hou/houston-texans",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "IND",
+    "name": "Indianapolis Colts",
+    "offence_lean": "balanced",
+    "defence_lean": "run-stuff",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 56.58%; FTN defensive pressure 29.3%; ESPN PRWR rank 30, RSWR rank 25; FOX rush yards allowed rank ~7",
+    "top_players": [
+      {
+        "name": "Daniel Jones",
+        "number": 17,
+        "position": "QB",
+        "college": "Duke"
+      },
+      {
+        "name": "Jonathan Taylor",
+        "number": 28,
+        "position": "RB",
+        "college": "Wisconsin"
+      },
+      {
+        "name": "Alec Pierce",
+        "number": 14,
+        "position": "WR",
+        "college": "Cincinnati"
+      },
+      {
+        "name": "Mo Alie-Cox",
+        "number": 81,
+        "position": "TE",
+        "college": "VCU"
+      },
+      {
+        "name": "Quenton Nelson",
+        "number": 56,
+        "position": "G",
+        "college": "Notre Dame"
+      },
+      {
+        "name": "Arden Key",
+        "number": 98,
+        "position": "DE",
+        "college": "LSU"
+      },
+      {
+        "name": "CJ Allen",
+        "number": 53,
+        "position": "LB",
+        "college": "Georgia"
+      },
+      {
+        "name": "Sauce Gardner",
+        "number": 1,
+        "position": "CB",
+        "college": "Cincinnati"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/ind/indianapolis-colts",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "JAX",
+    "name": "Jacksonville Jaguars",
+    "offence_lean": "balanced",
+    "defence_lean": "run-stuff",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 55.36%; FTN defensive pressure 26.8%; ESPN PRWR rank 14, RSWR rank 31; FOX rush yards allowed rank ~1",
+    "top_players": [
+      {
+        "name": "Trevor Lawrence",
+        "number": 16,
+        "position": "QB",
+        "college": "Clemson"
+      },
+      {
+        "name": "Chris Rodriguez Jr.",
+        "number": 24,
+        "position": "RB",
+        "college": "Kentucky"
+      },
+      {
+        "name": "Jakobi Meyers",
+        "number": 3,
+        "position": "WR",
+        "college": "NC State"
+      },
+      {
+        "name": "Brenton Strange",
+        "number": 85,
+        "position": "TE",
+        "college": "Penn State"
+      },
+      {
+        "name": "Walker Little",
+        "number": 72,
+        "position": "OT",
+        "college": "Stanford"
+      },
+      {
+        "name": "Travon Walker",
+        "number": 44,
+        "position": "DE",
+        "college": "Georgia"
+      },
+      {
+        "name": "Foyesade Oluokun",
+        "number": 23,
+        "position": "LB",
+        "college": "Yale"
+      },
+      {
+        "name": "Montaric Brown",
+        "number": 1,
+        "position": "CB",
+        "college": "Arkansas"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/jax/jacksonville-jaguars",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "KC",
+    "name": "Kansas City Chiefs",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 59.47%; FTN defensive pressure 33.0%; ESPN PRWR rank 10, RSWR rank 30; FOX rush yards allowed rank ~9",
+    "top_players": [
+      {
+        "name": "Patrick Mahomes",
+        "number": 15,
+        "position": "QB",
+        "college": "Texas Tech"
+      },
+      {
+        "name": "Kenneth Walker III",
+        "number": 9,
+        "position": "RB",
+        "college": "Michigan State"
+      },
+      {
+        "name": "Tyquan Thornton",
+        "number": 2,
+        "position": "WR",
+        "college": "Baylor"
+      },
+      {
+        "name": "Travis Kelce",
+        "number": 87,
+        "position": "TE",
+        "college": "Cincinnati"
+      },
+      {
+        "name": "Trey Smith",
+        "number": 65,
+        "position": "G",
+        "college": "Tennessee"
+      },
+      {
+        "name": "George Karlaftis",
+        "number": 56,
+        "position": "DE",
+        "college": "Purdue"
+      },
+      {
+        "name": "Nick Bolton",
+        "number": 32,
+        "position": "LB",
+        "college": "Missouri"
+      },
+      {
+        "name": "Kristian Fulton",
+        "number": 8,
+        "position": "CB",
+        "college": "LSU"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/kc/kansas-city-chiefs",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "LV",
+    "name": "Las Vegas Raiders",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "balanced",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 61.08%; FTN defensive pressure 26.3%; ESPN PRWR rank 17, RSWR rank 15; FOX rush yards allowed rank ~17",
+    "top_players": [
+      {
+        "name": "Fernando Mendoza",
+        "number": 15,
+        "position": "QB",
+        "college": "Indiana"
+      },
+      {
+        "name": "Ashton Jeanty",
+        "number": 2,
+        "position": "RB",
+        "college": "Boise State"
+      },
+      {
+        "name": "Jalen Nailor",
+        "number": 9,
+        "position": "WR",
+        "college": "Michigan State"
+      },
+      {
+        "name": "Brock Bowers",
+        "number": 89,
+        "position": "TE",
+        "college": "Georgia"
+      },
+      {
+        "name": "Tyler Linderbaum",
+        "number": 65,
+        "position": "C",
+        "college": "Iowa"
+      },
+      {
+        "name": "Maxx Crosby",
+        "number": 98,
+        "position": "DE",
+        "college": "Eastern Michigan"
+      },
+      {
+        "name": "Quay Walker",
+        "number": 7,
+        "position": "LB",
+        "college": "Georgia"
+      },
+      {
+        "name": "Eric Stokes",
+        "number": 5,
+        "position": "CB",
+        "college": "Georgia"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/lv/las-vegas-raiders",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "LAC",
+    "name": "Los Angeles Chargers",
+    "offence_lean": "balanced",
+    "defence_lean": "run-stuff",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 57.71%; FTN defensive pressure 30.2%; ESPN PRWR rank 16, RSWR rank 18; FOX rush yards allowed rank ~8",
+    "top_players": [
+      {
+        "name": "Justin Herbert",
+        "number": 10,
+        "position": "QB",
+        "college": "Oregon"
+      },
+      {
+        "name": "Keaton Mitchell",
+        "number": 34,
+        "position": "RB",
+        "college": "East Carolina"
+      },
+      {
+        "name": "Quentin Johnston",
+        "number": 1,
+        "position": "WR",
+        "college": "TCU"
+      },
+      {
+        "name": "Charlie Kolar",
+        "number": 88,
+        "position": "TE",
+        "college": "Iowa State"
+      },
+      {
+        "name": "Rashawn Slater",
+        "number": 70,
+        "position": "OT",
+        "college": "Northwestern"
+      },
+      {
+        "name": "Khalil Mack",
+        "number": 52,
+        "position": "LB",
+        "college": "Buffalo"
+      },
+      {
+        "name": "Donte Jackson",
+        "number": 26,
+        "position": "CB",
+        "college": "LSU"
+      },
+      {
+        "name": "Dalvin Tomlinson",
+        "number": 94,
+        "position": "DT",
+        "college": "Alabama"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/lac/los-angeles-chargers",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "LAR",
+    "name": "Los Angeles Rams",
+    "offence_lean": "balanced",
+    "defence_lean": "run-stuff",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 57.70%; FTN defensive pressure 31.9%; ESPN PRWR rank 8, RSWR rank 1; FOX rush yards allowed rank ~12",
+    "top_players": [
+      {
+        "name": "Matthew Stafford",
+        "number": 9,
+        "position": "QB",
+        "college": "Georgia"
+      },
+      {
+        "name": "Kyren Williams",
+        "number": 23,
+        "position": "RB",
+        "college": "Notre Dame"
+      },
+      {
+        "name": "Davante Adams",
+        "number": 17,
+        "position": "WR",
+        "college": "Fresno State"
+      },
+      {
+        "name": "Colby Parkinson",
+        "number": 84,
+        "position": "TE",
+        "college": "Stanford"
+      },
+      {
+        "name": "Alaric Jackson",
+        "number": 77,
+        "position": "OT",
+        "college": "Iowa"
+      },
+      {
+        "name": "Myles Garrett",
+        "number": 95,
+        "position": "DE",
+        "college": "Texas A&M"
+      },
+      {
+        "name": "Nate Landman",
+        "number": 53,
+        "position": "LB",
+        "college": "Colorado"
+      },
+      {
+        "name": "Trent McDuffie",
+        "number": 22,
+        "position": "CB",
+        "college": "Washington"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/lar/los-angeles-rams",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "MIA",
+    "name": "Miami Dolphins",
+    "offence_lean": "balanced",
+    "defence_lean": "balanced",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 54.48%; FTN defensive pressure 26.5%; ESPN PRWR rank 23, RSWR rank 21; FOX rush yards allowed rank ~26",
+    "top_players": [
+      {
+        "name": "Malik Willis",
+        "number": 2,
+        "position": "QB",
+        "college": "Liberty"
+      },
+      {
+        "name": "De'Von Achane",
+        "number": 28,
+        "position": "RB",
+        "college": "Texas A&M"
+      },
+      {
+        "name": "Caleb Douglas",
+        "number": 7,
+        "position": "WR",
+        "college": "Texas Tech"
+      },
+      {
+        "name": "Greg Dulcich",
+        "number": 85,
+        "position": "TE",
+        "college": "UCLA"
+      },
+      {
+        "name": "Kadyn Proctor",
+        "number": 74,
+        "position": "OT",
+        "college": "Alabama"
+      },
+      {
+        "name": "Malik Herring",
+        "number": 90,
+        "position": "DE",
+        "college": "Georgia"
+      },
+      {
+        "name": "Jordyn Brooks",
+        "number": 20,
+        "position": "LB",
+        "college": "Texas Tech"
+      },
+      {
+        "name": "JuJu Brents",
+        "number": 8,
+        "position": "CB",
+        "college": "Kansas State"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/mia/miami-dolphins",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "MIN",
+    "name": "Minnesota Vikings",
+    "offence_lean": "balanced",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 57.02%; FTN defensive pressure 33.3%; ESPN PRWR rank 1, RSWR rank 20; FOX rush yards allowed rank ~21",
+    "top_players": [
+      {
+        "name": "Carson Wentz",
+        "number": 11,
+        "position": "QB",
+        "college": "North Dakota State"
+      },
+      {
+        "name": "Aaron Jones Sr.",
+        "number": 33,
+        "position": "RB",
+        "college": "UTEP"
+      },
+      {
+        "name": "Justin Jefferson",
+        "number": 18,
+        "position": "WR",
+        "college": "LSU"
+      },
+      {
+        "name": "T.J. Hockenson",
+        "number": 87,
+        "position": "TE",
+        "college": "Iowa"
+      },
+      {
+        "name": "Brian O'Neill",
+        "number": 75,
+        "position": "OT",
+        "college": "Pittsburgh"
+      },
+      {
+        "name": "Elijah Williams",
+        "number": 99,
+        "position": "DE",
+        "college": "Morgan State"
+      },
+      {
+        "name": "Andrew Van Ginkel",
+        "number": 43,
+        "position": "LB",
+        "college": "Wisconsin"
+      },
+      {
+        "name": "Byron Murphy Jr.",
+        "number": 7,
+        "position": "CB",
+        "college": "Washington"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/min/minnesota-vikings",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "NE",
+    "name": "New England Patriots",
+    "offence_lean": "balanced",
+    "defence_lean": "run-stuff",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 53.11%; FTN defensive pressure 27.2%; ESPN PRWR rank 19, RSWR rank 10; FOX rush yards allowed rank ~6",
+    "top_players": [
+      {
+        "name": "Drake Maye",
+        "number": 10,
+        "position": "QB",
+        "college": "North Carolina"
+      },
+      {
+        "name": "Rhamondre Stevenson",
+        "number": 38,
+        "position": "RB",
+        "college": "Oklahoma"
+      },
+      {
+        "name": "Romeo Doubs",
+        "number": 87,
+        "position": "WR",
+        "college": "Nevada"
+      },
+      {
+        "name": "Hunter Henry",
+        "number": 85,
+        "position": "TE",
+        "college": "Arkansas"
+      },
+      {
+        "name": "Alijah Vera-Tucker",
+        "number": 75,
+        "position": "G",
+        "college": "USC"
+      },
+      {
+        "name": "Dre'Mont Jones",
+        "number": 5,
+        "position": "DE",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Robert Spillane",
+        "number": 14,
+        "position": "LB",
+        "college": "Western Michigan"
+      },
+      {
+        "name": "Christian Gonzalez",
+        "number": 0,
+        "position": "CB",
+        "college": "Oregon"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/ne/new-england-patriots",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "NO",
+    "name": "New Orleans Saints",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "balanced",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 59.53%; FTN defensive pressure 28.1%; ESPN PRWR rank 22, RSWR rank 8; FOX rush yards allowed rank ~19",
+    "top_players": [
+      {
+        "name": "Zach Wilson",
+        "number": 4,
+        "position": "QB",
+        "college": "BYU"
+      },
+      {
+        "name": "Alvin Kamara",
+        "number": 41,
+        "position": "RB",
+        "college": "Tennessee"
+      },
+      {
+        "name": "Chris Olave",
+        "number": 12,
+        "position": "WR",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Juwan Johnson",
+        "number": 83,
+        "position": "TE",
+        "college": "Oregon"
+      },
+      {
+        "name": "David Edwards",
+        "number": 76,
+        "position": "G",
+        "college": "Wisconsin"
+      },
+      {
+        "name": "Chase Young",
+        "number": 99,
+        "position": "DE",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Kaden Elliss",
+        "number": 55,
+        "position": "LB",
+        "college": "Idaho"
+      },
+      {
+        "name": "Kool-Aid McKinstry",
+        "number": 1,
+        "position": "CB",
+        "college": "Alabama"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/no/new-orleans-saints",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "NYG",
+    "name": "New York Giants",
+    "offence_lean": "balanced",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 52.90%; FTN defensive pressure 30.1%; ESPN PRWR rank 5, RSWR rank 28; FOX rush yards allowed rank ~31",
+    "top_players": [
+      {
+        "name": "Jameis Winston",
+        "number": 19,
+        "position": "QB",
+        "college": "Florida State"
+      },
+      {
+        "name": "Devin Singletary",
+        "number": 26,
+        "position": "RB",
+        "college": "Florida Atlantic"
+      },
+      {
+        "name": "Malik Nabers",
+        "number": 1,
+        "position": "WR",
+        "college": "LSU"
+      },
+      {
+        "name": "Isaiah Likely",
+        "number": 9,
+        "position": "TE",
+        "college": "Coastal Carolina"
+      },
+      {
+        "name": "Francis Mauigoa",
+        "number": 65,
+        "position": "OT",
+        "college": "Miami"
+      },
+      {
+        "name": "Chauncey Golston",
+        "number": 57,
+        "position": "DE",
+        "college": "Iowa"
+      },
+      {
+        "name": "Arvell Reese",
+        "number": 52,
+        "position": "LB",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Paulson Adebo",
+        "number": 21,
+        "position": "CB",
+        "college": "Stanford"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/nyg/new-york-giants",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "NYJ",
+    "name": "New York Jets",
+    "offence_lean": "balanced",
+    "defence_lean": "balanced",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 54.85%; FTN defensive pressure 23.7%; ESPN PRWR rank 25, RSWR rank 13; FOX rush yards allowed rank ~29",
+    "top_players": [
+      {
+        "name": "Geno Smith",
+        "number": 7,
+        "position": "QB",
+        "college": "West Virginia"
+      },
+      {
+        "name": "Breece Hall",
+        "number": 20,
+        "position": "RB",
+        "college": "Iowa State"
+      },
+      {
+        "name": "Garrett Wilson",
+        "number": 5,
+        "position": "WR",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Kenyon Sadiq",
+        "number": 16,
+        "position": "TE",
+        "college": "Oregon"
+      },
+      {
+        "name": "Joe Tippmann",
+        "number": 66,
+        "position": "C",
+        "college": "Wisconsin"
+      },
+      {
+        "name": "Joseph Ossai",
+        "number": 46,
+        "position": "DE",
+        "college": "Texas"
+      },
+      {
+        "name": "David Bailey",
+        "number": 31,
+        "position": "LB",
+        "college": "Texas Tech"
+      },
+      {
+        "name": "Brandon Stephens",
+        "number": 21,
+        "position": "CB",
+        "college": "SMU"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/nyj/new-york-jets",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "PHI",
+    "name": "Philadelphia Eagles",
+    "offence_lean": "balanced",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 52.50%; FTN defensive pressure 32.5%; ESPN PRWR rank 20, RSWR rank 17; FOX rush yards allowed rank ~22",
+    "top_players": [
+      {
+        "name": "Jalen Hurts",
+        "number": 1,
+        "position": "QB",
+        "college": "Oklahoma"
+      },
+      {
+        "name": "Saquon Barkley",
+        "number": 26,
+        "position": "RB",
+        "college": "Penn State"
+      },
+      {
+        "name": "DeVonta Smith",
+        "number": 6,
+        "position": "WR",
+        "college": "Alabama"
+      },
+      {
+        "name": "Dallas Goedert",
+        "number": 88,
+        "position": "TE",
+        "college": "South Dakota State"
+      },
+      {
+        "name": "Lane Johnson",
+        "number": 65,
+        "position": "OT",
+        "college": "Oklahoma"
+      },
+      {
+        "name": "AJ Epenesa",
+        "number": 57,
+        "position": "DE",
+        "college": "Iowa"
+      },
+      {
+        "name": "Jonathan Greenard",
+        "number": 52,
+        "position": "LB",
+        "college": "Florida"
+      },
+      {
+        "name": "Riq Woolen",
+        "number": 2,
+        "position": "CB",
+        "college": "UTSA"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/phi/philadelphia-eagles",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "PIT",
+    "name": "Pittsburgh Steelers",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 59.29%; FTN defensive pressure 29.2%; ESPN PRWR rank 4, RSWR rank 27; FOX rush yards allowed rank ~13",
+    "top_players": [
+      {
+        "name": "Aaron Rodgers",
+        "number": 8,
+        "position": "QB",
+        "college": "California"
+      },
+      {
+        "name": "Rico Dowdle",
+        "number": 13,
+        "position": "RB",
+        "college": "South Carolina"
+      },
+      {
+        "name": "DK Metcalf",
+        "number": 4,
+        "position": "WR",
+        "college": "Ole Miss"
+      },
+      {
+        "name": "Darnell Washington",
+        "number": 80,
+        "position": "TE",
+        "college": "Georgia"
+      },
+      {
+        "name": "Max Iheanachor",
+        "number": 71,
+        "position": "OT",
+        "college": "Arizona State"
+      },
+      {
+        "name": "Yahya Black",
+        "number": 94,
+        "position": "DE",
+        "college": "Iowa"
+      },
+      {
+        "name": "T.J. Watt",
+        "number": 90,
+        "position": "LB",
+        "college": "Wisconsin"
+      },
+      {
+        "name": "Jalen Ramsey",
+        "number": 5,
+        "position": "CB",
+        "college": "Florida State"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/pit/pittsburgh-steelers",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "SF",
+    "name": "San Francisco 49ers",
+    "offence_lean": "balanced",
+    "defence_lean": "balanced",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 55.58%; FTN defensive pressure 22.6%; ESPN PRWR rank 29, RSWR rank 11; FOX rush yards allowed rank ~11",
+    "top_players": [
+      {
+        "name": "Brock Purdy",
+        "number": 13,
+        "position": "QB",
+        "college": "Iowa State"
+      },
+      {
+        "name": "Christian McCaffrey",
+        "number": 23,
+        "position": "RB",
+        "college": "Stanford"
+      },
+      {
+        "name": "Brandon Aiyuk",
+        "number": 11,
+        "position": "WR",
+        "college": "Arizona State"
+      },
+      {
+        "name": "George Kittle",
+        "number": 85,
+        "position": "TE",
+        "college": "Iowa"
+      },
+      {
+        "name": "Trent Williams",
+        "number": 71,
+        "position": "OT",
+        "college": "Oklahoma"
+      },
+      {
+        "name": "Nick Bosa",
+        "number": 97,
+        "position": "DE",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Fred Warner",
+        "number": 54,
+        "position": "LB",
+        "college": "BYU"
+      },
+      {
+        "name": "Deommodore Lenoir",
+        "number": 2,
+        "position": "CB",
+        "college": "Oregon"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/sf/san-francisco-49ers",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "SEA",
+    "name": "Seattle Seahawks",
+    "offence_lean": "run-heavy",
+    "defence_lean": "coverage",
+    "run_pass_lean": "run",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 50.29%; FTN defensive pressure 34.2%; ESPN PRWR rank 7, RSWR rank 3; FOX rush yards allowed rank ~3; FTN: best DVOA without pressure (coverage identity)",
+    "top_players": [
+      {
+        "name": "Sam Darnold",
+        "number": 14,
+        "position": "QB",
+        "college": "USC"
+      },
+      {
+        "name": "Jadarian Price",
+        "number": 8,
+        "position": "RB",
+        "college": "Notre Dame"
+      },
+      {
+        "name": "Jaxon Smith-Njigba",
+        "number": 11,
+        "position": "WR",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Eric Saubert",
+        "number": 81,
+        "position": "TE",
+        "college": "Drake"
+      },
+      {
+        "name": "Charles Cross",
+        "number": 67,
+        "position": "OT",
+        "college": "Mississippi State"
+      },
+      {
+        "name": "Mike Morris",
+        "number": 94,
+        "position": "DE",
+        "college": "Michigan"
+      },
+      {
+        "name": "Derick Hall",
+        "number": 58,
+        "position": "LB",
+        "college": "Auburn"
+      },
+      {
+        "name": "Devon Witherspoon",
+        "number": 21,
+        "position": "CB",
+        "college": "Illinois"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/sea/seattle-seahawks",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "TB",
+    "name": "Tampa Bay Buccaneers",
+    "offence_lean": "balanced",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "balanced",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 55.81%; FTN defensive pressure 34.1%; ESPN PRWR rank 11, RSWR rank 19; FOX rush yards allowed rank ~5",
+    "top_players": [
+      {
+        "name": "Baker Mayfield",
+        "number": 6,
+        "position": "QB",
+        "college": "Oklahoma"
+      },
+      {
+        "name": "Kenny Gainwell",
+        "number": 1,
+        "position": "RB",
+        "college": "Memphis"
+      },
+      {
+        "name": "Chris Godwin Jr.",
+        "number": 14,
+        "position": "WR",
+        "college": "Penn State"
+      },
+      {
+        "name": "Cade Otton",
+        "number": 88,
+        "position": "TE",
+        "college": "Washington"
+      },
+      {
+        "name": "Tristan Wirfs",
+        "number": 78,
+        "position": "OT",
+        "college": "Iowa"
+      },
+      {
+        "name": "Elijah Roberts",
+        "number": 95,
+        "position": "DE",
+        "college": "SMU"
+      },
+      {
+        "name": "Alex Anzalone",
+        "number": 34,
+        "position": "LB",
+        "college": "Florida"
+      },
+      {
+        "name": "Zyon McCollum",
+        "number": 27,
+        "position": "CB",
+        "college": "Sam Houston"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/tb/tampa-bay-buccaneers",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "TEN",
+    "name": "Tennessee Titans",
+    "offence_lean": "pass-heavy",
+    "defence_lean": "balanced",
+    "run_pass_lean": "pass",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 62.35%; FTN defensive pressure 29.7%; ESPN PRWR rank 15, RSWR rank 16; FOX rush yards allowed rank ~15",
+    "top_players": [
+      {
+        "name": "Mitchell Trubisky",
+        "number": 10,
+        "position": "QB",
+        "college": "North Carolina"
+      },
+      {
+        "name": "Tony Pollard",
+        "number": 20,
+        "position": "RB",
+        "college": "Memphis"
+      },
+      {
+        "name": "Carnell Tate",
+        "number": 14,
+        "position": "WR",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Daniel Bellinger",
+        "number": 82,
+        "position": "TE",
+        "college": "San Diego State"
+      },
+      {
+        "name": "Peter Skoronski",
+        "number": 77,
+        "position": "G",
+        "college": "Northwestern"
+      },
+      {
+        "name": "John Franklin-Myers",
+        "number": 91,
+        "position": "DE",
+        "college": "Stephen F. Austin"
+      },
+      {
+        "name": "Cody Barton",
+        "number": 50,
+        "position": "LB",
+        "college": "Utah"
+      },
+      {
+        "name": "Alontae Taylor",
+        "number": 24,
+        "position": "CB",
+        "college": "Tennessee"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/ten/tennessee-titans",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  },
+  {
+    "abbreviation": "WSH",
+    "name": "Washington Commanders",
+    "offence_lean": "run-heavy",
+    "defence_lean": "pass-rush",
+    "run_pass_lean": "run",
+    "lean_basis": "2025 season tendencies: TeamRankings pass-play 51.11%; FTN defensive pressure 31.0%; ESPN PRWR rank 18, RSWR rank 7; FOX rush yards allowed rank ~30",
+    "top_players": [
+      {
+        "name": "Marcus Mariota",
+        "number": 8,
+        "position": "QB",
+        "college": "Oregon"
+      },
+      {
+        "name": "Rachaad White",
+        "number": 1,
+        "position": "RB",
+        "college": "Arizona State"
+      },
+      {
+        "name": "Terry McLaurin",
+        "number": 17,
+        "position": "WR",
+        "college": "Ohio State"
+      },
+      {
+        "name": "Chig Okonkwo",
+        "number": 85,
+        "position": "TE",
+        "college": "Maryland"
+      },
+      {
+        "name": "Sam Cosmi",
+        "number": 76,
+        "position": "G",
+        "college": "Texas"
+      },
+      {
+        "name": "Dorance Armstrong",
+        "number": 92,
+        "position": "DE",
+        "college": "Kansas"
+      },
+      {
+        "name": "Odafe Oweh",
+        "number": 98,
+        "position": "LB",
+        "college": "Penn State"
+      },
+      {
+        "name": "Amik Robertson",
+        "number": 2,
+        "position": "CB",
+        "college": "Louisiana Tech"
+      }
+    ],
+    "citations": [
+      "https://www.espn.com/nfl/team/roster/_/name/wsh/washington-commanders",
+      "https://www.teamrankings.com/nfl/stat/passing-play-pct",
+      "https://ftnfantasy.com/nfl/defensive-pressure-2025-browns-soar-texans-dominate-panthers-lacking",
+      "https://www.espn.com/nfl/story/_/id/46138675/2025-nfl-win-rates-top-teams-players-rankings-pass-run-block",
+      "https://www.foxsports.com/articles/nfl/2025-nfl-defense-rankings-team-pass-and-rush-stats"
+    ],
+    "stubbed_fields": []
+  }
+]

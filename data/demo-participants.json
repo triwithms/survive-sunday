@@ -1,0 +1,179 @@
+{
+  "poolId": "demo-survive-sunday-2026",
+  "poolName": "Survive Sunday — Friends Pool",
+  "season": "2026/27",
+  "currentWeek": 1,
+  "lockAt": "2026-09-10T00:20:00.000Z",
+  "locale": "en-CA",
+  "participants": [
+    {
+      "id": "p01",
+      "nickname": "Aurora",
+      "realName": "Aisha Rahman",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": { "team": "KC", "submittedAt": "2026-09-09T18:02:00.000Z", "visibleAfterLock": true }
+    },
+    {
+      "id": "p02",
+      "nickname": "Beacon",
+      "realName": "Ben Okonkwo",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": { "team": "BUF", "submittedAt": "2026-09-09T15:40:00.000Z", "visibleAfterLock": true }
+    },
+    {
+      "id": "p03",
+      "nickname": "Cedar",
+      "realName": "Camille Tremblay",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": { "team": "PHI", "submittedAt": "2026-09-08T22:11:00.000Z", "visibleAfterLock": true }
+    },
+    {
+      "id": "p04",
+      "nickname": "Drift",
+      "realName": "Diego Morales",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": { "team": "DET", "submittedAt": "2026-09-09T20:55:00.000Z", "visibleAfterLock": true }
+    },
+    {
+      "id": "p05",
+      "nickname": "Ember",
+      "realName": "Elena Petrova",
+      "status": "one_loss",
+      "mulliganRemaining": false,
+      "usedTeams": ["DAL"],
+      "pickHistory": [
+        {
+          "week": 0,
+          "label": "Preseason demo loss",
+          "team": "DAL",
+          "result": "loss",
+          "mulliganUsed": true,
+          "note": "demo — illustrates mulligan → one_loss before Week 1"
+        }
+      ],
+      "week1Pick": { "team": "HOU", "submittedAt": "2026-09-09T12:03:00.000Z", "visibleAfterLock": true }
+    },
+    {
+      "id": "p06",
+      "nickname": "Frost",
+      "realName": "Farah Singh",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": { "team": "BAL", "submittedAt": "2026-09-09T19:28:00.000Z", "visibleAfterLock": true },
+      "h2hHighlight": {
+        "vsNickname": "Aurora",
+        "gameId": "2026-w1-01",
+        "sides": { "Frost": "BAL", "Aurora": "KC" },
+        "animation": "boxing_gloves",
+        "note": "demo H2H — opposite sides of TNF opener"
+      }
+    },
+    {
+      "id": "p07",
+      "nickname": "Grove",
+      "realName": "Gabriel Nguyen",
+      "status": "one_loss",
+      "mulliganRemaining": false,
+      "usedTeams": ["NYJ"],
+      "pickHistory": [
+        {
+          "week": 0,
+          "label": "Preseason demo loss",
+          "team": "NYJ",
+          "result": "loss",
+          "mulliganUsed": true,
+          "note": "demo"
+        }
+      ],
+      "week1Pick": { "team": "SF", "submittedAt": "2026-09-07T16:44:00.000Z", "visibleAfterLock": true }
+    },
+    {
+      "id": "p08",
+      "nickname": "Harbor",
+      "realName": "Harper Blake",
+      "status": "eliminated",
+      "mulliganRemaining": false,
+      "usedTeams": ["CHI", "CLE"],
+      "pickHistory": [
+        {
+          "week": 0,
+          "label": "Demo loss 1",
+          "team": "CHI",
+          "result": "loss",
+          "mulliganUsed": true,
+          "note": "demo"
+        },
+        {
+          "week": 0,
+          "label": "Demo loss 2",
+          "team": "CLE",
+          "result": "loss",
+          "mulliganUsed": false,
+          "note": "demo — eliminated"
+        }
+      ],
+      "week1Pick": null,
+      "note": "Eliminated participants do not submit Week 1 picks in this demo"
+    },
+    {
+      "id": "p09",
+      "nickname": "Iris",
+      "realName": "Isabelle Chen",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": { "team": "GB", "submittedAt": "2026-09-09T21:10:00.000Z", "visibleAfterLock": true }
+    },
+    {
+      "id": "p10",
+      "nickname": "Jasper",
+      "realName": "Jamal Wright",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": null,
+      "latePickRisk": true,
+      "note": "demo — no pick yet; candidate for SMS late-pick reminder"
+    }
+  ],
+  "defaultPostLockSort": {
+    "groups": ["undefeated", "one_loss", "eliminated"],
+    "withinGroup": "nickname_asc_en_CA",
+    "expectedOrderNicknamesAfterLock": [
+      "Aurora",
+      "Beacon",
+      "Cedar",
+      "Drift",
+      "Frost",
+      "Iris",
+      "Jasper",
+      "Ember",
+      "Grove",
+      "Harbor"
+    ]
+  },
+  "notificationDefaults": {
+    "banterWeekly": true,
+    "banterSeason": true,
+    "weeklyPicksDigest": true,
+    "smsLatePickReminder": true,
+    "closeGameAlerts": false,
+    "whatsappGroupBanterStub": false
+  }
+}

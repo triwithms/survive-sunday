@@ -1,0 +1,291 @@
+{
+  "as_of": "2026-09-12",
+  "season": "2026",
+  "week": 1,
+  "week_status": "in_progress",
+  "notes": "As of Saturday Sept 12, 2026: Wed opener and Thu Melbourne game complete; 13 Sunday games + Monday Night Football remain. All matchups/times/networks below are from published 2026 NFL schedule sources (confirmed_2026), not placeholders.",
+  "schedule": [
+    {
+      "away": "New England Patriots",
+      "home": "Seattle Seahawks",
+      "kickoff_et": "2026-09-09T20:20:00-04:00",
+      "kickoff_display_et": "Wed Sep 9, 8:20 p.m. ET",
+      "network": "NBC",
+      "status": "final",
+      "score": { "away": 10, "home": 13 },
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "San Francisco 49ers",
+      "home": "Los Angeles Rams",
+      "kickoff_et": "2026-09-10T20:35:00-04:00",
+      "kickoff_display_et": "Thu Sep 10, 8:35 p.m. ET",
+      "network": "Netflix",
+      "status": "final",
+      "score": { "away": 27, "home": 7 },
+      "confirmation": "confirmed_2026",
+      "venue_note": "Melbourne Cricket Ground, Australia (NFL Melbourne Game; 49ers listed as away vs Rams)"
+    },
+    {
+      "away": "Chicago Bears",
+      "home": "Carolina Panthers",
+      "kickoff_et": "2026-09-13T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 1:00 p.m. ET",
+      "network": "Fox",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Tampa Bay Buccaneers",
+      "home": "Cincinnati Bengals",
+      "kickoff_et": "2026-09-13T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 1:00 p.m. ET",
+      "network": "Fox",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Baltimore Ravens",
+      "home": "Indianapolis Colts",
+      "kickoff_et": "2026-09-13T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 1:00 p.m. ET",
+      "network": "CBS",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Buffalo Bills",
+      "home": "Houston Texans",
+      "kickoff_et": "2026-09-13T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 1:00 p.m. ET",
+      "network": "CBS",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "New Orleans Saints",
+      "home": "Detroit Lions",
+      "kickoff_et": "2026-09-13T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 1:00 p.m. ET",
+      "network": "Fox",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "New York Jets",
+      "home": "Tennessee Titans",
+      "kickoff_et": "2026-09-13T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 1:00 p.m. ET",
+      "network": "CBS",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Atlanta Falcons",
+      "home": "Pittsburgh Steelers",
+      "kickoff_et": "2026-09-13T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 1:00 p.m. ET",
+      "network": "Fox",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Cleveland Browns",
+      "home": "Jacksonville Jaguars",
+      "kickoff_et": "2026-09-13T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 1:00 p.m. ET",
+      "network": "CBS",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Arizona Cardinals",
+      "home": "Los Angeles Chargers",
+      "kickoff_et": "2026-09-13T16:25:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 4:25 p.m. ET",
+      "network": "CBS",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Green Bay Packers",
+      "home": "Minnesota Vikings",
+      "kickoff_et": "2026-09-13T16:25:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 4:25 p.m. ET",
+      "network": "CBS",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Miami Dolphins",
+      "home": "Las Vegas Raiders",
+      "kickoff_et": "2026-09-13T16:25:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 4:25 p.m. ET",
+      "network": "Fox",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Washington Commanders",
+      "home": "Philadelphia Eagles",
+      "kickoff_et": "2026-09-13T16:25:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 4:25 p.m. ET",
+      "network": "Fox",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Dallas Cowboys",
+      "home": "New York Giants",
+      "kickoff_et": "2026-09-13T20:20:00-04:00",
+      "kickoff_display_et": "Sun Sep 13, 8:20 p.m. ET",
+      "network": "NBC",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    },
+    {
+      "away": "Denver Broncos",
+      "home": "Kansas City Chiefs",
+      "kickoff_et": "2026-09-14T20:15:00-04:00",
+      "kickoff_display_et": "Mon Sep 14, 8:15 p.m. ET",
+      "network": "ESPN/ABC",
+      "status": "upcoming",
+      "score": null,
+      "confirmation": "confirmed_2026",
+      "venue_note": null
+    }
+  ],
+  "standings": {
+    "note": "Partial after 2 of 16 Week 1 games. Team names for 0-0 rows inferred from division order on ESPN page (labels truncated in scrape).",
+    "AFC": {
+      "East": [
+        { "team": "Buffalo Bills", "w": 0, "l": 0, "t": 0 },
+        { "team": "Miami Dolphins", "w": 0, "l": 0, "t": 0 },
+        { "team": "New York Jets", "w": 0, "l": 0, "t": 0 },
+        { "team": "New England Patriots", "w": 0, "l": 1, "t": 0, "pf": 10, "pa": 13 }
+      ],
+      "North": [
+        { "team": "Baltimore Ravens", "w": 0, "l": 0, "t": 0 },
+        { "team": "Cincinnati Bengals", "w": 0, "l": 0, "t": 0 },
+        { "team": "Cleveland Browns", "w": 0, "l": 0, "t": 0 },
+        { "team": "Pittsburgh Steelers", "w": 0, "l": 0, "t": 0 }
+      ],
+      "South": [
+        { "team": "Houston Texans", "w": 0, "l": 0, "t": 0 },
+        { "team": "Indianapolis Colts", "w": 0, "l": 0, "t": 0 },
+        { "team": "Jacksonville Jaguars", "w": 0, "l": 0, "t": 0 },
+        { "team": "Tennessee Titans", "w": 0, "l": 0, "t": 0 }
+      ],
+      "West": [
+        { "team": "Denver Broncos", "w": 0, "l": 0, "t": 0 },
+        { "team": "Kansas City Chiefs", "w": 0, "l": 0, "t": 0 },
+        { "team": "Las Vegas Raiders", "w": 0, "l": 0, "t": 0 },
+        { "team": "Los Angeles Chargers", "w": 0, "l": 0, "t": 0 }
+      ]
+    },
+    "NFC": {
+      "East": [
+        { "team": "Dallas Cowboys", "w": 0, "l": 0, "t": 0 },
+        { "team": "New York Giants", "w": 0, "l": 0, "t": 0 },
+        { "team": "Philadelphia Eagles", "w": 0, "l": 0, "t": 0 },
+        { "team": "Washington Commanders", "w": 0, "l": 0, "t": 0 }
+      ],
+      "North": [
+        { "team": "Chicago Bears", "w": 0, "l": 0, "t": 0 },
+        { "team": "Detroit Lions", "w": 0, "l": 0, "t": 0 },
+        { "team": "Green Bay Packers", "w": 0, "l": 0, "t": 0 },
+        { "team": "Minnesota Vikings", "w": 0, "l": 0, "t": 0 }
+      ],
+      "South": [
+        { "team": "Atlanta Falcons", "w": 0, "l": 0, "t": 0 },
+        { "team": "Carolina Panthers", "w": 0, "l": 0, "t": 0 },
+        { "team": "New Orleans Saints", "w": 0, "l": 0, "t": 0 },
+        { "team": "Tampa Bay Buccaneers", "w": 0, "l": 0, "t": 0 }
+      ],
+      "West": [
+        { "team": "San Francisco 49ers", "w": 1, "l": 0, "t": 0, "pf": 27, "pa": 7 },
+        { "team": "Seattle Seahawks", "w": 1, "l": 0, "t": 0, "pf": 13, "pa": 10 },
+        { "team": "Arizona Cardinals", "w": 0, "l": 0, "t": 0 },
+        { "team": "Los Angeles Rams", "w": 0, "l": 1, "t": 0, "pf": 7, "pa": 27 }
+      ]
+    },
+    "source": "https://www.espn.com/nfl/standings"
+  },
+  "headlines": [
+    {
+      "title": "Seahawks beat Patriots 13-10 in Super Bowl rematch; Sam Darnold exits with hip injury",
+      "url": "https://www.espn.com/nfl/recap?gameId=401872656",
+      "source": "ESPN",
+      "summary": "Drew Lock relieved injured Sam Darnold; Seattle intercepted Drake Maye three times in the fourth quarter. Macdonald said initial tests on Darnold showed no broken bone (status still uncertain beyond that)."
+    },
+    {
+      "title": "49ers rout Rams 27-7 in NFL's first Australia regular-season game",
+      "url": "https://www.espn.com/nfl/recap?gameId=401872657",
+      "source": "ESPN",
+      "summary": "Brock Purdy threw three TD passes; Matthew Stafford pulled late. Landmark Melbourne Cricket Ground game on Netflix."
+    },
+    {
+      "title": "Falcons rule out Tua Tagovailoa vs. Steelers; Cooper Rush to start",
+      "url": "https://www.cbssports.com/nfl/news/falcons-rule-out-tua-tagovailoa-vs-steelers-cooper-rush-to-start/",
+      "source": "CBS Sports",
+      "summary": "Tagovailoa (oblique, practice Thursday) out Week 1; Michael Penix Jr. inactive rehabbing ACL; Cooper Rush starts at Pittsburgh."
+    },
+    {
+      "title": "Patriots' A.J. Brown on IR with high ankle sprain; out at least 4 weeks",
+      "url": "https://www.espn.com/nfl/story/_/id/49897884/sources-patriots-aj-brown-likely-least-4-weeks",
+      "source": "ESPN / NFL Network via ESPN",
+      "summary": "Brown injured in Week 1 opener at Seattle; placed on IR, earliest eligible return Week 6. Flag: duration beyond four weeks remains uncertain."
+    }
+  ],
+  "odds_note": "Free public DraftKings lines for remaining Week 1 games were published on ESPN Betting (subject to change). Sample: BUF -1.5 @ HOU; CLE @ JAX -8.5; ARI @ LAC -9.5; DAL -3 @ NYG; DEN @ KC -2.5 (43.5). Full board: https://www.espn.com/espn/betting/story/_/id/49428822/2026-nfl-week-1-schedule-odds-betting-point-spreads-totals — live/paid APIs not required for these snapshot lines but lines move.",
+  "citations": [
+    { "label": "CBS Sports 2026 full schedule", "url": "https://www.cbssports.com/nfl/news/2026-nfl-schedule-dates-times/" },
+    { "label": "NFL.com Week 1 schedule 2026", "url": "https://www.nfl.com/schedules/2026/by-week/week-1" },
+    { "label": "Sporting News 2026 schedule", "url": "https://www.sportingnews.com/us/nfl/news/full-nfl-schedule-2026-dates-times-channels/5f696f77eb72c470c5f835b6" },
+    { "label": "ESPN Seahawks-Patriots recap/box", "url": "https://www.espn.com/nfl/recap?gameId=401872656" },
+    { "label": "ESPN 49ers-Rams Melbourne recap", "url": "https://www.espn.com/nfl/recap?gameId=401872657" },
+    { "label": "ESPN standings 2026", "url": "https://www.espn.com/nfl/standings" },
+    { "label": "ESPN Week 1 odds board", "url": "https://www.espn.com/espn/betting/story/_/id/49428822/2026-nfl-week-1-schedule-odds-betting-point-spreads-totals" },
+    { "label": "CBS Sports Tua ruled out", "url": "https://www.cbssports.com/nfl/news/falcons-rule-out-tua-tagovailoa-vs-steelers-cooper-rush-to-start/" },
+    { "label": "ESPN A.J. Brown IR / 4+ weeks", "url": "https://www.espn.com/nfl/story/_/id/49897884/sources-patriots-aj-brown-likely-least-4-weeks" },
+    { "label": "Titans site Jets-Titans how to watch (CBS)", "url": "https://www.tennesseetitans.com/news/new-york-jets-vs-tennessee-titans-how-to-watch-listen-and-live-stream-x8862" }
+  ],
+  "gaps": [
+    "AFC/NFC East-North-South 0-0 team labels were incomplete in ESPN HTML scrape; division membership for untouched teams is standard NFL alignment, not a live scrape of every team name cell.",
+    "Yahoo Sports standings snippets mixed 2025 final records and inconsistent 2026 rows — not used as authoritative.",
+    "Sam Darnold hip: only 'no broken bone / positive initial tests' reported; Week 2 availability not verified.",
+    "Odds are free public DraftKings snapshots via ESPN Betting and will change; no paid odds API used.",
+    "Survive Sunday seed focuses on Week 1 slate; Week 2 schedule researched but not expanded in this file."
+  ],
+  "paths": {
+    "canonical": "/workspace/survive-sunday/data/week1-slate.json",
+    "mirror": "/workspace/nfl-data/survive-sunday/week1-slate.json"
+  }
+}

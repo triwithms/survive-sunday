@@ -1,0 +1,132 @@
+{
+  "_generated_at": "2026-09-12",
+  "_notes": [
+    "Free-tier and pricing facts gathered from public docs / pricing pages via WebSearch/WebFetch on 2026-09-12.",
+    "Quotas and plans change; re-check provider docs before production wiring.",
+    "paid_required=false means a usable free/public path exists for prototyping; production may still need paid plans."
+  ],
+  "live_scores": [
+    {
+      "name": "ESPN site API (undocumented public)",
+      "type": "api",
+      "url_or_docs": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
+      "free_tier": "No API key; widely used public JSON endpoints (scoreboard, summary, teams). Undocumented — no SLA.",
+      "auth": "none",
+      "notes": "Common patterns: /scoreboard, /scoreboard?dates=YYYYMMDD, week/seasontype/year params. Community catalogs (e.g. Public-ESPN-API gists). CAUTION: undocumented, may break or violate ESPN ToS for commercial redistrib — use only for prototypes or with legal review.",
+      "paid_required": false
+    },
+    {
+      "name": "NFL.com public pages",
+      "type": "scrape_note",
+      "url_or_docs": "https://www.nfl.com/scores/ ; injuries: https://www.nfl.com/injuries/",
+      "free_tier": "Public HTML; no published free developer API for general app use.",
+      "auth": "none",
+      "notes": "Official injury report UI at nfl.com/injuries (season/week paths). Scraping is brittle and may conflict with ToS; prefer licensed APIs for production. Official Shield/API paths exist but are partner/OAuth oriented — not a drop-in free public key.",
+      "paid_required": false
+    },
+    {
+      "name": "API-Sports American Football (api-sports.io)",
+      "type": "api",
+      "url_or_docs": "https://api-sports.io/documentation/nfl/v1 ; base https://v1.american-football.api-sports.io/",
+      "free_tier": "Same family as API-Football free plan: ~100 requests/day, ~10 req/min; all endpoints; historical seasons limited vs paid. No credit card for free signup (per API-Football/API-Sports public pricing docs).",
+      "auth": "key",
+      "notes": "Header x-apisports-key. Covers games, standings, teams, players, injuries, odds-ish endpoints depending on plan. Free quota resets daily (UTC). Good structured alternative to scraping when key is present.",
+      "paid_required": false
+    },
+    {
+      "name": "SportsDataIO NFL API",
+      "type": "api",
+      "url_or_docs": "https://sportsdata.io/developers/api-documentation/nfl ; free trial https://sportsdata.io/cart/free-trial/nfl",
+      "free_tier": "Never-expiring Free Trial with selectable leagues/feeds; trial data is SCRAMBLED (integration testing only). Real/live data requires paid production key. Discovery Lab / replay options for historical real data per their developer materials.",
+      "auth": "key",
+      "notes": "Auth via ?key= or Ocp-Apim-Subscription-Key header. Unlimited calls on paid. Excellent for production Survive Sunday once licensed; stub live fields until then.",
+      "paid_required": true
+    },
+    {
+      "name": "The Odds API — scores endpoint (the-odds-api.com)",
+      "type": "api",
+      "url_or_docs": "https://the-odds-api.com/liveapi/guides/v4/ ; GET /v4/sports/{sport}/scores",
+      "free_tier": "Free API key available for signup; quota is credit-based (markets×regions). Scores: 1 credit live/upcoming, 2 if daysFrom set. Note: sibling brand theoddsapi.com (2026 pricing page) lists Free as 25 req/day NBA+MLB h2h only — verify which product/account you use for NFL.",
+      "auth": "key",
+      "notes": "Sport key americanfootball_nfl. Live scores ~30s refresh per docs. Prefer for apps already pulling odds from same vendor.",
+      "paid_required": false
+    }
+  ],
+  "odds": [
+    {
+      "name": "The Odds API (the-odds-api.com v4)",
+      "type": "api",
+      "url_or_docs": "https://the-odds-api.com/liveapi/guides/v4/",
+      "free_tier": "Free key with monthly credit quota (classic product). Cost = markets × regions per odds call. NFL sport key: americanfootball_nfl. /sports and /events do not consume quota.",
+      "auth": "key",
+      "notes": "Host https://api.the-odds-api.com. Markets: h2h, spreads, totals, outrights; event odds for props on paid-friendly usage. Historical odds paid-plan only. Confirm current free credit allotment on account dashboard — public marketing pages vary between brands.",
+      "paid_required": false
+    },
+    {
+      "name": "TheOddsAPI (theoddsapi.com) — 2026 published pricing",
+      "type": "api",
+      "url_or_docs": "https://theoddsapi.com/pricing (last updated 2026-07-03)",
+      "free_tier": "Free $0: 25 requests/day; NBA + MLB only; h2h markets; US books. Professional $29/mo: 20,000 req/mo, 25 sports, h2h+spreads+totals. Business $99/mo: 200,000 req/mo + props/edges/historical. No overage — 429 at limit.",
+      "auth": "key",
+      "notes": "PAID REQUIRED for NFL on this brand's published Free tier (Free excludes NFL). Same key upgrades in place. Distinct from the-odds-api.com docs site — do not assume quotas are identical.",
+      "paid_required": true
+    },
+    {
+      "name": "API-Sports / API-Football odds endpoints",
+      "type": "api",
+      "url_or_docs": "https://www.api-football.com/pricing ; American Football docs https://api-sports.io/documentation/nfl/v1",
+      "free_tier": "~100 requests/day free across product family; pre-match / in-play odds endpoints included on free feature set but volume-limited; deeper history on paid.",
+      "auth": "key",
+      "notes": "Useful for prototypes; not a multi-book US DFS powerhouse like dedicated odds aggregators. Watch daily quota.",
+      "paid_required": false
+    },
+    {
+      "name": "OddsJam Odds API",
+      "type": "api",
+      "url_or_docs": "https://oddsjam.com/odds-api",
+      "free_tier": "Vendor advertises try-for-free / trial; public page does not publish a durable free production quota. Third-party directories claim freemium numbers — treat as unverified. Expect sales quote for production.",
+      "auth": "key",
+      "notes": "PAID / sales-gated for reliable multi-book real-time feeds (100+ books claimed). Strong for sharp/arb tooling; overkill and paid for Survive Sunday MVP — flag paid_required.",
+      "paid_required": true
+    },
+    {
+      "name": "SportsDataIO betting / odds feeds",
+      "type": "api",
+      "url_or_docs": "https://sportsdata.io/developers/apis",
+      "free_tier": "Free Trial scrambled data only; live odds feeds are paid commercial products.",
+      "auth": "key",
+      "notes": "PAID for accurate odds. Use trial only to validate response shapes.",
+      "paid_required": true
+    }
+  ],
+  "recap_videos": [
+    {
+      "name": "YouTube — NFL / team official highlights",
+      "url_pattern_or_docs": "IFrame embed: https://www.youtube.com/embed/{VIDEO_ID} ; Data API: https://developers.google.com/youtube/v3 ; quota docs https://developers.google.com/youtube/v3/guides/quota_and_compliance_audits",
+      "embed_notes": "Prefer playlistItems.list / videos.list on known NFL or club channels over search.list (search costs ~100 units). Default Data API quota ~10,000 units/day. IFrame Player API embeds do not spend Data API quota. Use youtube-nocookie.com when privacy mode desired.",
+      "terms_caution": "NFL game footage and official highlights are copyrighted. Embedding only works when the uploader allows embeds; redistributing or framing full game video outside permitted embeds can violate NFL / YouTube terms. Always keep YouTube branding and link-back; complete compliance audits before requesting quota increases."
+    },
+    {
+      "name": "NFL.com / NFL+ video pages",
+      "url_pattern_or_docs": "https://www.nfl.com/videos/ ; game center pages on nfl.com",
+      "embed_notes": "Public highlight pages exist; reliable oEmbed/partner embeds are not a documented free general-purpose API. Deep-link to official pages for MVP rather than hotlinking media files.",
+      "terms_caution": "NFL Media terms restrict unauthorized scraping/redistribution of video assets. Prefer official share/embed widgets or licensed partners."
+    },
+    {
+      "name": "ESPN watch / highlight pages",
+      "url_pattern_or_docs": "https://www.espn.com/nfl/ ; related content often surfaces via ESPN web/app (not a stable public embed API)",
+      "embed_notes": "No supported free developer embed API for ESPN game recaps comparable to YouTube IFrame. Link-out UX is safest for free tier.",
+      "terms_caution": "Do not scrape or mirror ESPN video streams; commercial use needs licensing."
+    }
+  ],
+  "recommended_stack": "Prototype free/public: ESPN undocumented scoreboard JSON for live scores + schedule shapes; NFL.com injury pages as scrape_note or manual CSV until a key exists; The Odds API (the-odds-api.com) free key for odds prototypes if NFL credits available on your account — else stub odds. Recaps: YouTube IFrame embeds from official channels via Data API playlist discovery (10k units/day). Graduate to SportsDataIO or API-Sports paid when you need SLA, injuries JSON, and unscrambling. Avoid OddsJam until revenue justifies sales-gated odds.",
+  "must_stub": [
+    "live_scores.*.home_score / away_score / period / clock (until scoreboard API wired)",
+    "odds.*.moneyline / spread / total / bookmaker / last_update (until odds API key + paid NFL access if free tier excludes NFL)",
+    "injuries.*.status / injury / updated (use sample_injury_news.json shapes only — never invent current 2026 status)",
+    "news.*.headline / summary / published_at (stub or historical-labeled until RSS/API)",
+    "recap_videos.*.video_id / embed_url (stub until YouTube API key + channel playlist IDs configured)",
+    "player_props / edge / fair_odds (paid OddsJam / Business odds tiers)",
+    "SportsDataIO unscrambling (trial data is scrambled — do not show as real)"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "package": "Survive Sunday NFL seed/reference data",
+  "as_of": "2026-09-12",
+  "season": "2026/27",
+  "canonical_dir": "/workspace/survive-sunday/data",
+  "files": {
+    "teams.json": "32 teams: abbr, conference/division, colors, public logo URLs",
+    "power_rankings.json": "ESPN Week 18 2025 final regular-season poll (1\u201332); not post\u2013SB LX",
+    "week1-slate.json": "2026 Week 1 full slate; all games confirmed_2026; week in_progress",
+    "team_profiles.json": "32 teams: offence/defence/run-pass leans + 8 top players (ESPN jersey/college)",
+    "team_profiles_meta.json": "sources + gaps for team_profiles",
+    "sample_injury_news.json": "SAMPLE SHAPES ONLY \u2014 not live injury/news",
+    "data_sources.json": "live scores / odds / recap video APIs + free tiers + must_stub"
+  },
+  "also_present_other_agents": [
+    "demo-participants.json",
+    "week1-games.json",
+    "teams.other-agent-schema.backup.json"
+  ],
+  "flags": [
+    "WSH vs WAS abbreviation inconsistency (ESPN uses WSH)",
+    "Logo CDN URLs can be brittle",
+    "2026 roster churn noted in team_profiles_meta (e.g. Garrett\u2192LAR, Tua\u2192ATL)",
+    "Odds/NFL live often need paid tiers beyond free samples",
+    "sample_injury_news is stub shapes only"
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "season_basis": "2025_final",
+  "as_of": "2025-12-30",
+  "source": {
+    "name": "ESPN NFL Week 18 Power Rankings 2025 (final regular-season poll)",
+    "url": "https://www.espn.com/nfl/story/_/id/47446909/nfl-week-18-power-rankings-poll-32-teams-2025-season-lessons"
+  },
+  "rankings": [
+    {
+      "rank": 1,
+      "team_abbreviation": "SEA",
+      "team_name": "Seattle Seahawks",
+      "note": "13-3 entering Week 18"
+    },
+    {
+      "rank": 2,
+      "team_abbreviation": "NE",
+      "team_name": "New England Patriots",
+      "note": "13-3 entering Week 18"
+    },
+    {
+      "rank": 3,
+      "team_abbreviation": "DEN",
+      "team_name": "Denver Broncos",
+      "note": "13-3 entering Week 18"
+    },
+    {
+      "rank": 4,
+      "team_abbreviation": "SF",
+      "team_name": "San Francisco 49ers",
+      "note": "12-4 entering Week 18"
+    },
+    {
+      "rank": 5,
+      "team_abbreviation": "LAR",
+      "team_name": "Los Angeles Rams",
+      "note": "11-5 entering Week 18"
+    },
+    {
+      "rank": 6,
+      "team_abbreviation": "JAX",
+      "team_name": "Jacksonville Jaguars",
+      "note": "12-4 entering Week 18"
+    },
+    {
+      "rank": 7,
+      "team_abbreviation": "PHI",
+      "team_name": "Philadelphia Eagles",
+      "note": "11-5 entering Week 18"
+    },
+    {
+      "rank": 8,
+      "team_abbreviation": "HOU",
+      "team_name": "Houston Texans",
+      "note": "11-5 entering Week 18"
+    },
+    {
+      "rank": 9,
+      "team_abbreviation": "CHI",
+      "team_name": "Chicago Bears",
+      "note": "11-5 entering Week 18"
+    },
+    {
+      "rank": 10,
+      "team_abbreviation": "BUF",
+      "team_name": "Buffalo Bills",
+      "note": "11-5 entering Week 18"
+    },
+    {
+      "rank": 11,
+      "team_abbreviation": "LAC",
+      "team_name": "Los Angeles Chargers",
+      "note": "11-5 entering Week 18"
+    },
+    {
+      "rank": 12,
+      "team_abbreviation": "GB",
+      "team_name": "Green Bay Packers",
+      "note": "9-6-1 entering Week 18"
+    },
+    {
+      "rank": 13,
+      "team_abbreviation": "PIT",
+      "team_name": "Pittsburgh Steelers",
+      "note": "9-7 entering Week 18"
+    },
+    {
+      "rank": 14,
+      "team_abbreviation": "BAL",
+      "team_name": "Baltimore Ravens",
+      "note": "8-8 entering Week 18"
+    },
+    {
+      "rank": 15,
+      "team_abbreviation": "DET",
+      "team_name": "Detroit Lions",
+      "note": "8-8 entering Week 18"
+    },
+    {
+      "rank": 16,
+      "team_abbreviation": "IND",
+      "team_name": "Indianapolis Colts",
+      "note": "8-8 entering Week 18"
+    },
+    {
+      "rank": 17,
+      "team_abbreviation": "MIN",
+      "team_name": "Minnesota Vikings",
+      "note": "8-8 entering Week 18"
+    },
+    {
+      "rank": 18,
+      "team_abbreviation": "CAR",
+      "team_name": "Carolina Panthers",
+      "note": "8-8 entering Week 18"
+    },
+    {
+      "rank": 19,
+      "team_abbreviation": "TB",
+      "team_name": "Tampa Bay Buccaneers",
+      "note": "7-9 entering Week 18"
+    },
+    {
+      "rank": 20,
+      "team_abbreviation": "DAL",
+      "team_name": "Dallas Cowboys",
+      "note": "7-8-1 entering Week 18"
+    },
+    {
+      "rank": 21,
+      "team_abbreviation": "ATL",
+      "team_name": "Atlanta Falcons",
+      "note": "7-9 entering Week 18"
+    },
+    {
+      "rank": 22,
+      "team_abbreviation": "MIA",
+      "team_name": "Miami Dolphins",
+      "note": "7-9 entering Week 18"
+    },
+    {
+      "rank": 23,
+      "team_abbreviation": "CIN",
+      "team_name": "Cincinnati Bengals",
+      "note": "6-10 entering Week 18"
+    },
+    {
+      "rank": 24,
+      "team_abbreviation": "NO",
+      "team_name": "New Orleans Saints",
+      "note": "6-10 entering Week 18"
+    },
+    {
+      "rank": 25,
+      "team_abbreviation": "KC",
+      "team_name": "Kansas City Chiefs",
+      "note": "6-10 entering Week 18"
+    },
+    {
+      "rank": 26,
+      "team_abbreviation": "WSH",
+      "team_name": "Washington Commanders",
+      "note": "4-12 entering Week 18"
+    },
+    {
+      "rank": 27,
+      "team_abbreviation": "CLE",
+      "team_name": "Cleveland Browns",
+      "note": "4-12 entering Week 18"
+    },
+    {
+      "rank": 28,
+      "team_abbreviation": "ARI",
+      "team_name": "Arizona Cardinals",
+      "note": "3-13 entering Week 18"
+    },
+    {
+      "rank": 29,
+      "team_abbreviation": "TEN",
+      "team_name": "Tennessee Titans",
+      "note": "3-13 entering Week 18"
+    },
+    {
+      "rank": 30,
+      "team_abbreviation": "NYG",
+      "team_name": "New York Giants",
+      "note": "3-13 entering Week 18"
+    },
+    {
+      "rank": 31,
+      "team_abbreviation": "NYJ",
+      "team_name": "New York Jets",
+      "note": "3-13 entering Week 18"
+    },
+    {
+      "rank": 32,
+      "team_abbreviation": "LV",
+      "team_name": "Las Vegas Raiders",
+      "note": "2-14 entering Week 18"
+    }
+  ],
+  "gaps": [
+    "ESPN labeled this the final regular-season power rankings of 2025 (Week 18 poll), not a post-Super Bowl LX final. Early-2026 post-SB rankings also exist at https://www.espn.com/nfl/story/_/id/47807175/nfl-way-too-early-power-rankings-poll-2026-offseason-three-words but were not used because the request prefers 2025 finals.",
+    "Washington abbreviation uses ESPN form WSH (NFL.com/other sources often use WAS).",
+    "Records in notes are as published entering Week 18 (before Week 18 games)."
+  ]
+}

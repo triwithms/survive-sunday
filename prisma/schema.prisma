@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  passwordHash  String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  accounts      Account[]
+  sessions      Session[]
+  memberships   Membership[]
+  auditLogs     AuditLog[] @relation("AuditActor")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Pool {
+  id          String       @id @default(cuid())
+  name        String
+  season      String
+  inviteCode  String       @unique
+  currentWeek Int          @default(1)
+  createdAt   DateTime     @default(now())
+  memberships Membership[]
+  weeks       Week[]
+  auditLogs   AuditLog[]
+}
+
+model Membership {
+  id                String           @id @default(cuid())
+  poolId            String
+  userId            String
+  nickname          String
+  realName          String?
+  role              String           @default("member") // admin | member
+  status            String           @default("undefeated") // undefeated | one_loss | eliminated
+  mulliganRemaining Boolean          @default(true)
+  losses            Int              @default(0)
+  weeksSurvived     Int              @default(0)
+  usedTeamsJson     String           @default("[]") // JSON string[] of abbrs
+  createdAt         DateTime         @default(now())
+  pool              Pool             @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  picks             Pick[]
+
+  @@unique([poolId, userId])
+  @@unique([poolId, nickname])
+}
+
+model Team {
+  abbr         String  @id
+  name         String
+  city         String
+  nickname     String
+  conference   String
+  division     String
+  primaryColor String?
+  logoUrl      String?
+}
+
+model Week {
+  id                   String    @id @default(cuid())
+  poolId               String
+  number               Int
+  label                String
+  lockAt               DateTime
+  lockOverrideAt       DateTime?
+  status               String    @default("open") // open | locked | graded
+  missedPicksAppliedAt DateTime? // idempotent natural/admin missed-pick pass
+  pool                 Pool      @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  games                Game[]
+  picks                Pick[]
+
+  @@unique([poolId, number])
+}
+
+model Game {
+  id          String  @id // e.g. 2026-w1-01
+  weekId      String
+  awayAbbr    String
+  homeAbbr    String
+  kickoff     DateTime
+  network     String?
+  spreadHome  Float?
+  spreadAway  Float?
+  mlHome      Int?
+  mlAway      Int?
+  status      String  @default("scheduled") // scheduled | live | final
+  scoreAway   Int?
+  scoreHome   Int?
+  note        String?
+  week        Week    @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  picks       Pick[]
+}
+
+model Pick {
+  id           String      @id @default(cuid())
+  membershipId String
+  weekId       String
+  teamAbbr     String
+  gameId       String?
+  result       String?     // win | loss | push | pending
+  source       String      @default("user") // user | imported | admin
+  submittedAt  DateTime    @default(now())
+  gradedAt     DateTime?
+  membership   Membership  @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  week         Week        @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  game         Game?       @relation(fields: [gameId], references: [id])
+
+  @@unique([membershipId, weekId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  poolId     String
+  actorId    String?
+  action     String
+  targetType String?
+  targetId   String?
+  details    String?  // JSON string
+  createdAt  DateTime @default(now())
+  pool       Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id])
+}
