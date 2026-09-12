@@ -24,6 +24,8 @@ html {
   color-scheme: dark;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* Desktop default one step up; rem UI still follows browser/OS zoom */
+  font-size: 112.5%; /* ~18px when browser default is 16px */
   overflow-x: hidden;
   max-width: 100%;
 }
@@ -142,10 +144,10 @@ a:focus-visible, button:focus-visible {
 }
 
 
-/* Mobile-only: slightly larger root type (desktop stays browser default ~16px) */
+/* Mobile: a bit larger still than the desktop base */
 @media (max-width: 640px) {
   html {
-    font-size: 112.5%; /* ~18px when browser default is 16px */
+    font-size: 118.75%; /* ~19px when browser default is 16px */
   }
   .team-research {
     font-size: 1.125rem;
