@@ -52,6 +52,6 @@ export async function POST(req: Request) {
   if (wantsJson) {
     return NextResponse.json({ ok: true, next: "/signed-in" });
   }
-  // Relative 303 — stay on the tunnel host; avoid absolute URL quirks in Safari.
-  return NextResponse.redirect(new URL("/signed-in", req.url), 303);
+  // Always use the public Host (tunnel), never req.url (localhost behind cloudflared).
+  return NextResponse.redirect(requestAbsolute(req, "/signed-in"), 303);
 }
