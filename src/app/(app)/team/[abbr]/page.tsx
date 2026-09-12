@@ -8,11 +8,40 @@ import {
   formatCurrentStanding,
   formatPriorYearRank,
 } from "@/lib/matchup-meta";
-import { getSampleInjuryNews, getTeamProfile } from "@/lib/team-research";
+import {
+  getSampleInjuryNews,
+  getTeamProfile,
+  splitRosterBySide,
+  type ProfilePlayer,
+} from "@/lib/team-research";
 import { formatWinPct } from "@/lib/standings-format";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+function PlayerRows({ players }: { players: ProfilePlayer[] }) {
+  return (
+    <ul className="divide-y divide-stadium-border">
+      {players.map((p) => (
+        <li
+          key={`${p.number}-${p.name}`}
+          className="py-2 flex items-baseline gap-2 text-sm min-w-0"
+        >
+          <span className="font-mono text-[var(--text-muted)] w-8 shrink-0">
+            {p.number != null ? `#${p.number}` : "—"}
+          </span>
+          <span className="font-mono text-xs text-gold-400 w-8 shrink-0">
+            {p.position}
+          </span>
+          <span className="min-w-0 flex-1 truncate font-medium">{p.name}</span>
+          <span className="text-xs text-[var(--text-muted)] truncate max-w-[40%]">
+            {p.college || "—"}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default async function TeamResearchPage({
   params,
@@ -44,6 +73,7 @@ export default async function TeamResearchPage({
       ? `${team.wins}-${team.losses}-${team.ties}`
       : `${team.wins}-${team.losses}`;
   const players = profile?.top_players ?? [];
+  const sides = splitRosterBySide(players);
 
   return (
     <div className="space-y-5 min-w-0">
@@ -61,6 +91,13 @@ export default async function TeamResearchPage({
           className="text-[var(--text-muted)] underline underline-offset-2 hover:text-gold-400"
         >
           Pick slate
+        </Link>
+        <Link
+          href="/schedule"
+          prefetch={false}
+          className="text-[var(--text-muted)] underline underline-offset-2 hover:text-gold-400"
+        >
+          Schedule
         </Link>
       </div>
 
@@ -122,34 +159,60 @@ export default async function TeamResearchPage({
         </section>
       )}
 
-      <section className="card-glass p-4 space-y-3">
-        <h2 className="font-semibold text-gold-400">
-          Roster / top players ({players.length})
-        </h2>
+      <section className="card-glass p-4 space-y-4">
+        <div>
+          <h2 className="font-semibold text-gold-400">
+            Demo starters / key players
+          </h2>
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">
+            Seeded starting units from team profiles — not a full depth chart.
+          </p>
+        </div>
+
         {players.length === 0 ? (
           <p className="text-sm text-[var(--text-muted)]">No profile seed yet.</p>
         ) : (
-          <ul className="divide-y divide-stadium-border">
-            {players.map((p) => (
-              <li
-                key={`${p.number}-${p.name}`}
-                className="py-2 flex items-baseline gap-2 text-sm min-w-0"
-              >
-                <span className="font-mono text-[var(--text-muted)] w-8 shrink-0">
-                  {p.number != null ? `#${p.number}` : "—"}
+          <>
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
+                Starting offence
+                <span className="chip chip-gold text-[10px]">
+                  {sides.offence.length}
                 </span>
-                <span className="font-mono text-xs text-gold-400 w-8 shrink-0">
-                  {p.position}
+              </h3>
+              {sides.offence.length === 0 ? (
+                <p className="text-sm text-[var(--text-muted)]">None in seed.</p>
+              ) : (
+                <PlayerRows players={sides.offence} />
+              )}
+            </div>
+
+            <div className="space-y-2 pt-2 border-t border-stadium-border">
+              <h3 className="text-sm font-medium text-gold-400 flex items-center gap-2">
+                Starting defence
+                <span className="chip chip-gold text-[10px]">
+                  {sides.defence.length}
                 </span>
-                <span className="min-w-0 flex-1 truncate font-medium">
-                  {p.name}
-                </span>
-                <span className="text-xs text-[var(--text-muted)] truncate max-w-[40%]">
-                  {p.college || "—"}
-                </span>
-              </li>
-            ))}
-          </ul>
+              </h3>
+              {sides.defence.length === 0 ? (
+                <p className="text-sm text-[var(--text-muted)]">None in seed.</p>
+              ) : (
+                <PlayerRows players={sides.defence} />
+              )}
+            </div>
+
+            {sides.other.length > 0 && (
+              <div className="space-y-2 pt-2 border-t border-stadium-border">
+                <h3 className="text-sm font-medium text-[var(--text-muted)] flex items-center gap-2">
+                  Other
+                  <span className="chip chip-one-loss text-[10px]">
+                    {sides.other.length}
+                  </span>
+                </h3>
+                <PlayerRows players={sides.other} />
+              </div>
+            )}
+          </>
         )}
       </section>
 

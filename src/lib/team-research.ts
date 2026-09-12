@@ -89,3 +89,30 @@ export function getSampleInjuryNews(abbr: string): {
     ),
   };
 }
+
+const OFFENCE_POS = new Set(
+  "QB RB FB WR TE OT OG G C OL T LT RT LG RG".split(" ")
+);
+const DEFENCE_POS = new Set(
+  "DE DT NT DL LB ILB OLB MLB CB S FS SS DB EDGE".split(" ")
+);
+
+export type RosterSides = {
+  offence: ProfilePlayer[];
+  defence: ProfilePlayer[];
+  other: ProfilePlayer[];
+};
+
+/** Split seeded top_players into starting offence / defence / other by position. */
+export function splitRosterBySide(players: ProfilePlayer[]): RosterSides {
+  const offence: ProfilePlayer[] = [];
+  const defence: ProfilePlayer[] = [];
+  const other: ProfilePlayer[] = [];
+  for (const p of players) {
+    const pos = (p.position || "").toUpperCase().trim();
+    if (OFFENCE_POS.has(pos)) offence.push(p);
+    else if (DEFENCE_POS.has(pos)) defence.push(p);
+    else other.push(p);
+  }
+  return { offence, defence, other };
+}

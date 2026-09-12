@@ -1,10 +1,16 @@
 import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
-import { ensureWeekLockedEffects } from "@/lib/grading";
+import {
+  ensureWeekLockedEffects,
+  effectiveLockAt,
+  isWeekLocked,
+} from "@/lib/grading";
 import { sortParticipants, resolveSeasonWinners } from "@/lib/tiebreak";
 import { StatusChip } from "@/components/StatusChip";
+import { formatKickoff } from "@/lib/utils";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,14 +21,20 @@ export default async function StandingsPage() {
   const me = await getMembershipForUser(session.user.id);
   if (!me) redirect("/join");
 
+  let week = await prisma.week.findFirst({
+    where: { poolId: me.poolId, number: me.pool.currentWeek },
+  });
+
   try {
-    const week = await prisma.week.findFirst({
-      where: { poolId: me.poolId, number: me.pool.currentWeek },
-    });
     if (week) await ensureWeekLockedEffects(week.id);
   } catch (e) {
     // Lock effects are best-effort — never blank the standings board
     console.error("standings lock effects skipped", e);
+  }
+
+  // Re-fetch week after possible lock effects
+  if (week) {
+    week = await prisma.week.findUnique({ where: { id: week.id } });
   }
 
   const members = await prisma.membership.findMany({
@@ -32,15 +44,53 @@ export default async function StandingsPage() {
   const sorted = sortParticipants(members);
   const winners = resolveSeasonWinners(members.filter((m) => m.role !== "admin"));
 
+  const locked = week ? isWeekLocked(week) : true;
+  const weekLabel = week?.label ?? `Week ${me.pool.currentWeek}`;
+  const canChangePick =
+    !locked && me.status !== "eliminated" && me.role !== "admin";
+  const showMutedChange =
+    !locked && (me.role === "admin" || me.status === "eliminated");
+
   return (
     <div className="space-y-6 min-w-0">
-      <div>
-        <h1 className="font-display text-2xl text-gold-400 tracking-wide">
-          Survival board
-        </h1>
-        <p className="text-sm text-[var(--text-muted)]">
-          Sorted undefeated → one loss → eliminated, then nickname A–Z.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="font-display text-2xl text-gold-400 tracking-wide">
+            {weekLabel} · Survival board
+          </h1>
+          <p className="text-sm text-[var(--text-muted)] mt-1">
+            {week
+              ? `Lock: ${formatKickoff(effectiveLockAt(week))}${
+                  locked ? " · Picks locked" : " · Picks still open"
+                }`
+              : "Current week unavailable"}
+          </p>
+          <p className="text-sm text-[var(--text-muted)]">
+            Sorted undefeated → one loss → eliminated, then nickname A–Z.
+          </p>
+        </div>
+        {canChangePick ? (
+          <Link
+            href="/pick"
+            prefetch={false}
+            className="btn-primary text-center text-sm shrink-0"
+          >
+            Change pick
+          </Link>
+        ) : showMutedChange ? (
+          <Link
+            href="/pick"
+            prefetch={false}
+            className="btn-secondary text-center text-sm shrink-0 opacity-60"
+            title={
+              me.role === "admin"
+                ? "Commissioner — optional"
+                : "Picks unavailable"
+            }
+          >
+            {me.role === "admin" ? "Change pick (optional)" : "Pick"}
+          </Link>
+        ) : null}
       </div>
 
       <ul className="space-y-2">

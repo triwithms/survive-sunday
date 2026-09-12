@@ -4,8 +4,9 @@ import { getMembershipForUser } from "@/lib/session";
 import { BottomNav } from "@/components/BottomNav";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { Countdown } from "@/components/Countdown";
+import { HeaderNav } from "@/components/HeaderNav";
 import { prisma } from "@/lib/db";
-import { effectiveLockAt } from "@/lib/grading";
+import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -33,6 +34,11 @@ export default async function AppLayout({
   });
 
   const lockIso = week ? effectiveLockAt(week).toISOString() : null;
+  const locked = week ? isWeekLocked(week) : true;
+  const canChangePick =
+    !locked && membership.status !== "eliminated" && membership.role !== "admin";
+  const showMutedChangePick =
+    !locked && membership.role === "admin";
 
   return (
     <div key={session.user.id} className="min-h-dvh flex flex-col pb-24 overflow-x-hidden max-w-full">
@@ -81,6 +87,10 @@ export default async function AppLayout({
             </div>
           </div>
         </div>
+        <HeaderNav
+          canChangePick={canChangePick}
+          showMutedChangePick={showMutedChangePick}
+        />
       </header>
       <div className="flex-1 mx-auto w-full max-w-pool px-3 sm:px-4 py-5 min-w-0 overflow-x-hidden">
         {children}
