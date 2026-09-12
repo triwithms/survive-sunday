@@ -86,10 +86,32 @@ Wave 1 Pool QA (critical):
 4. **usedTeamsJson on change-before-lock** — rebuilt from prior-week picks + current pick only (frees KC when changing KC→BUF). Same rebuild on import updates.
 5. **Import preview** — Preview matches resolves nickname→team (nickname first, then email) before Confirm import.
 6. **Auto-grade on load** — scores/pool (and other ensure paths) grade pending picks whose games are FINAL.
+7. **App Router error boundaries** — `src/app/not-found.tsx`, `error.tsx`, `global-error.tsx`, and `(app)/error.tsx` so a reload on `/admin` or `/help` no longer 404/500 with “missing required error components”.
+8. **Commissioner session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. Demo `admin@survivesunday.demo` / `demo1234` keeps admin membership for `/admin` and `/admin/import`.
 
 ## Env
 
 Copy `.env.example` → `.env`. Defaults use SQLite `file:./dev.db`.
+
+```
+AUTH_URL=http://localhost:3000
+AUTH_TRUST_HOST=true
+```
+
+`AUTH_TRUST_HOST=true` + `trustHost: true` in `src/lib/auth.ts` make Auth.js
+use the incoming `Host` / `x-forwarded-proto` instead of pinning `AUTH_URL`.
+That way **http://localhost:3000** (QA default) and an https tunnel
+(`https://great-sloths-fetch.loca.lt`) can share one `npm run dev`.
+Session cookies are `Secure` only on https; names stay `authjs.*` (no
+`__Secure-` / `__Host-` prefix) so a localhost login still works after a
+tunnel visit.
+
+To pin a single origin (OAuth callback, tunnel-only):
+
+```
+AUTH_URL=https://great-sloths-fetch.loca.lt
+AUTH_TRUST_HOST=false
+```
 
 ## Wave 2 later (deferred)
 
