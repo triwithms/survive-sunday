@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
-import { DemoEnter } from "@/components/DemoEnter";
+import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
 import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
 
 function LoginForm() {
@@ -99,12 +99,18 @@ function LoginForm() {
         </div>
       )}
 
-      <p className="mt-6 text-sm text-[var(--text-muted)] text-centre text-center">
-        New here?{" "}
-        <Link href="/join" className="text-gold-400">
-          Join with invite code
-        </Link>
-      </p>
+      <div className="mt-6 space-y-2 text-sm text-[var(--text-muted)] text-center">
+        <p className="text-xs">Managing the pool?</p>
+        <div className="flex justify-center">
+          <CommissionerEnter />
+        </div>
+        <p>
+          Have an invite?{" "}
+          <Link href="/join" className="text-gold-400">
+            Join the pool
+          </Link>
+        </p>
+      </div>
     </main>
   );
 }

@@ -6,6 +6,7 @@ import type { NextRequest } from "next/server";
 import type { Provider } from "next-auth/providers";
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
+import { isLoopbackHost, requestPublicOrigin } from "./request-host";
 
 const providers: Provider[] = [
   Credentials({
@@ -134,6 +135,23 @@ function authConfig(req?: NextRequest): NextAuthConfig {
           if (typeof token.name === "string") session.user.name = token.name;
         }
         return session;
+      },
+      async redirect({ url, baseUrl }) {
+        const publicOrigin = requestPublicOrigin(req);
+        const origin = publicOrigin ?? baseUrl;
+        if (url.startsWith("/")) return `${origin}${url}`;
+        try {
+          const parsed = new URL(url);
+          if (publicOrigin && isLoopbackHost(parsed.host)) {
+            return `${publicOrigin}${parsed.pathname}${parsed.search}${parsed.hash}`;
+          }
+          if (parsed.origin === origin || parsed.origin === baseUrl) {
+            return `${origin}${parsed.pathname}${parsed.search}${parsed.hash}`;
+          }
+        } catch {
+          /* fall through */
+        }
+        return origin;
       },
     },
     trustHost: true,

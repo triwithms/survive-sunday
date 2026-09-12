@@ -46,7 +46,19 @@ export async function signInCredentials(
  * reuse another user's RSC payload (prefetch + layout cache).
  */
 export function afterAuthNavigate(path: string) {
-  if (typeof window !== "undefined") {
+  if (typeof window === "undefined") return;
+  // Always stay on the current origin — never follow a localhost
+  // redirect leftover from Auth.js when we are on the tunnel.
+  if (path.startsWith("/")) {
+    window.location.assign(path);
+    return;
+  }
+  try {
+    const u = new URL(path, window.location.origin);
+    window.location.assign(
+      `${window.location.origin}${u.pathname}${u.search}${u.hash}`
+    );
+  } catch {
     window.location.assign(path);
   }
 }

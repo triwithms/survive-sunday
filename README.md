@@ -35,7 +35,7 @@ npm install && npx prisma db push && npm run seed && npm run build
 | **Commissioner** | `admin@survivesunday.demo` | `demo1234` |
 
 - Invite code: **`SUNDAY26`**
-- Landing → **Enter demo pool** switches accounts without signup friction.
+- Landing → **Enter as selected** (account picker). Commissioner and invite-code join are secondary.
 
 ## Google auth (optional)
 
@@ -88,6 +88,7 @@ Wave 1 Pool QA (critical):
 6. **Auto-grade on load** — scores/pool (and other ensure paths) grade pending picks whose games are FINAL.
 7. **App Router error boundaries** — `src/app/not-found.tsx`, `error.tsx`, `global-error.tsx`, and `(app)/error.tsx` so a reload on `/admin` or `/help` no longer 404/500 with “missing required error components”.
 8. **Commissioner session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. Demo `admin@survivesunday.demo` / `demo1234` keeps admin membership for `/admin` and `/admin/import`.
+8b. **Tunnel login Host** — middleware forwards a public `Host` (e.g. `*.trycloudflare.com`) as `x-forwarded-host` / `x-forwarded-proto`. Auth `callbacks.redirect` and the auth route rewrite any `https://localhost:3000` Location to the request Host. Client `afterAuthNavigate` always uses a relative `/pool`.
 9. **Session identity drift** — demo login `signOut`s first, `await getSession()` before navigate, then hard-loads `/pool`. Authenticated routes are `force-dynamic` + `revalidate = 0`; BottomNav prefetch is off; SW is network-only for HTML/RSC. `SessionProvider` remounts on user id (`refetchOnWindowFocus`, `refetchInterval={60}`).
 10. **/pick red “1 Error” toast** — `Countdown` no longer hydrates `Date.now()` from the server; kickoff/logo/undefined guards in `PickClient`.
 
@@ -103,12 +104,14 @@ AUTH_TRUST_HOST=true
 ```
 
 `AUTH_TRUST_HOST=true` + `trustHost: true` in `src/lib/auth.ts` make Auth.js
-use the incoming `Host` / `x-forwarded-proto` instead of pinning `AUTH_URL`.
-That way **http://localhost:3000** (QA default) and an https tunnel
-(`https://great-sloths-fetch.loca.lt`) can share one `npm run dev`.
-Session cookies are `Secure` only on https; names stay `authjs.*` (no
-`__Secure-` / `__Host-` prefix) so a localhost login still works after a
-tunnel visit.
+use the incoming `Host` / `x-forwarded-host` / `x-forwarded-proto` instead of
+pinning `AUTH_URL`. Middleware copies a non-localhost `Host` onto
+`x-forwarded-host` so a Cloudflare quick tunnel
+(`https://*.trycloudflare.com`) and **http://localhost:3000** share one
+`npm run dev`. Auth redirects that still resolve to localhost are rewritten
+to the request Host. Session cookies are `Secure` only on https; names stay
+`authjs.*` (no `__Secure-` / `__Host-` prefix) so a localhost login still
+works after a tunnel visit.
 
 To pin a single origin (OAuth callback, tunnel-only):
 

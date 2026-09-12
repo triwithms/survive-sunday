@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
-import { INVITE_CODE } from "@/lib/constants";
-import { DemoEnter } from "@/components/DemoEnter";
+import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
 
 export default function LandingPage() {
   return (
@@ -13,25 +12,13 @@ export default function LandingPage() {
         <h1 className="font-display text-4xl sm:text-5xl tracking-wide text-gold-400 mb-4">
           SURVIVE SUNDAY
         </h1>
-        <p className="text-lg text-[var(--text-primary)] mb-2 text-balance">
+        <p className="text-lg text-[var(--text-primary)] mb-6 text-balance">
           Private NFL survivor pool for friends. One pick a week. No team reuse.
           One mulligan. Last mates standing win the bragging rights.
         </p>
-        <p className="text-[var(--text-muted)] mb-8">
-          Lock is first kickoff. Others&apos; picks stay hidden until then. Week 1
-          is locked history; the demo is on{" "}
-          <span className="text-[var(--text-primary)]">Week 2</span> with an open
-          lock — make your pick before Thursday night.
-        </p>
 
-        <div className="flex flex-col gap-3 mb-10">
+        <div className="mb-10">
           <DemoEnter />
-          <Link href="/join" className="btn-secondary text-center">
-            Join with invite code ({INVITE_CODE})
-          </Link>
-          <Link href="/login" className="btn-secondary text-center">
-            Sign in
-          </Link>
         </div>
 
         <div className="card-glass p-4 space-y-2 text-sm text-[var(--text-muted)]">
@@ -43,6 +30,28 @@ export default function LandingPage() {
             <li>Second loss → eliminated</li>
             <li>Bye-week teams are off the board</li>
           </ul>
+          <p className="pt-2 text-xs">
+            Week 1 is locked history; the demo is on{" "}
+            <span className="text-[var(--text-primary)]">Week 2</span> with an
+            open lock — make your pick before Thursday night.
+          </p>
+          <p className="text-xs">
+            Have an invite?{" "}
+            <Link href="/join" className="text-gold-400 hover:underline">
+              Join the pool
+            </Link>
+          </p>
+        </div>
+
+        <div className="mt-8 flex flex-col items-start gap-2 text-sm">
+          <p className="text-xs text-[var(--text-muted)]">Managing the pool?</p>
+          <CommissionerEnter />
+          <Link
+            href="/login"
+            className="text-sm text-[var(--text-muted)] hover:text-gold-400"
+          >
+            Sign in
+          </Link>
         </div>
       </div>
       <FooterDisclaimer />
