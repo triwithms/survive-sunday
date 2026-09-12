@@ -31,6 +31,7 @@ export default async function PickPage() {
   });
 
   const locked = isWeekLocked(week);
+  const eliminated = me.status === "eliminated";
 
   const myPick = await prisma.pick.findUnique({
     where: {
@@ -58,38 +59,34 @@ export default async function PickPage() {
   const used = Array.from(new Set([...priorAbbrs, ...seededUsed]));
 
   const teams = await prisma.team.findMany({ orderBy: { abbr: "asc" } });
-  const playing = new Set(
-    week.games.flatMap((g) => [g.awayAbbr, g.homeAbbr])
-  );
+  const teamByAbbr = new Map(teams.map((t) => [t.abbr, t]));
 
-  const eligible = teams.map((t) => {
-    const game = week.games.find(
-      (g) => g.awayAbbr === t.abbr || g.homeAbbr === t.abbr
-    );
-    const onBye = !playing.has(t.abbr);
-    const alreadyUsed = used.includes(t.abbr);
+  const games = week.games.map((g) => {
+    const away = teamByAbbr.get(g.awayAbbr);
+    const home = teamByAbbr.get(g.homeAbbr);
     return {
-      abbr: t.abbr,
-      name: t.name,
-      logoUrl: t.logoUrl ?? null,
-      onBye,
-      alreadyUsed,
-      disabled: onBye || alreadyUsed || locked || me.status === "eliminated",
-      game: game
-        ? {
-            id: game.id,
-            awayAbbr: game.awayAbbr,
-            homeAbbr: game.homeAbbr,
-            kickoff: game.kickoff instanceof Date && !Number.isNaN(game.kickoff.getTime())
-              ? game.kickoff.toISOString()
-              : "",
-            spreadHome: game.spreadHome,
-            spreadAway: game.spreadAway,
-            mlHome: game.mlHome,
-            mlAway: game.mlAway,
-            network: game.network,
-          }
-        : null,
+      id: g.id,
+      kickoff:
+        g.kickoff instanceof Date && !Number.isNaN(g.kickoff.getTime())
+          ? g.kickoff.toISOString()
+          : "",
+      network: g.network,
+      spreadHome: g.spreadHome,
+      spreadAway: g.spreadAway,
+      mlHome: g.mlHome,
+      mlAway: g.mlAway,
+      away: {
+        abbr: g.awayAbbr,
+        name: away?.name ?? g.awayAbbr,
+        logoUrl: away?.logoUrl ?? null,
+        alreadyUsed: used.includes(g.awayAbbr),
+      },
+      home: {
+        abbr: g.homeAbbr,
+        name: home?.name ?? g.homeAbbr,
+        logoUrl: home?.logoUrl ?? null,
+        alreadyUsed: used.includes(g.homeAbbr),
+      },
     };
   });
 
@@ -97,9 +94,9 @@ export default async function PickPage() {
     <PickClient
       weekNumber={week.number}
       locked={locked}
-      eliminated={me.status === "eliminated"}
+      eliminated={eliminated}
       currentPick={currentAbbr}
-      teams={eligible}
+      games={games}
     />
   );
 }
