@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { AuthError } from "next-auth";
-import { signIn, signOut } from "@/lib/auth";
+import { signIn } from "@/lib/auth";
 import { requestAbsolute } from "@/lib/request-host";
 
 /**
@@ -32,12 +32,8 @@ export async function POST(req: Request) {
     /* use defaults */
   }
 
-  try {
-    await signOut({ redirect: false });
-  } catch {
-    /* no existing session */
-  }
-
+  // Do not signOut first — Auth.js CSRF/cookie races on the tunnel.
+  // JWT callback replaces identity on credentials sign-in.
   try {
     await signIn("credentials", {
       email,
