@@ -4,9 +4,9 @@ import { signIn } from "@/lib/auth";
 import { requestAbsolute } from "@/lib/request-host";
 
 /**
- * Form + JSON demo login. Sets the Auth.js session cookie via the Next
- * cookie store, then redirects to /pool on the *request Host* (never localhost
- * leftover from next dev + x-forwarded-proto).
+ * Form + JSON demo login. Sets Auth.js session cookie, then 303 to a
+ * same-origin handoff page (Safari often shows "can't open page" on a
+ * direct POST→/pool redirect through the tunnel; refresh then works).
  */
 export async function POST(req: Request) {
   const wantsJson = (req.headers.get("accept") ?? "").includes("application/json");
@@ -29,11 +29,9 @@ export async function POST(req: Request) {
       if (typeof p === "string" && p) password = p;
     }
   } catch {
-    /* use defaults */
+    /* defaults */
   }
 
-  // Do not signOut first — Auth.js CSRF/cookie races on the tunnel.
-  // JWT callback replaces identity on credentials sign-in.
   try {
     await signIn("credentials", {
       email,
@@ -48,11 +46,12 @@ export async function POST(req: Request) {
     }
     const url = new URL(requestAbsolute(req, "/"));
     url.searchParams.set("error", code);
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, 303);
   }
 
   if (wantsJson) {
-    return NextResponse.json({ ok: true, next: "/pool" });
+    return NextResponse.json({ ok: true, next: "/signed-in" });
   }
-  return NextResponse.redirect(requestAbsolute(req, "/pool"));
+  // Relative 303 — stay on the tunnel host; avoid absolute URL quirks in Safari.
+  return NextResponse.redirect(new URL("/signed-in", req.url), 303);
 }
