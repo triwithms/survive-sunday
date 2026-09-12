@@ -1,4 +1,4 @@
-const CACHE = "survive-sunday-shell-v4";
+const CACHE = "survive-sunday-shell-v5";
 const SHELL = ["/manifest.webmanifest", "/icons/icon.svg"];
 
 self.addEventListener("install", (event) => {
@@ -49,8 +49,9 @@ self.addEventListener("fetch", (event) => {
   }
   if (url.origin !== self.location.origin) return;
 
-  // Never cache authenticated HTML / RSC / API — stale /pool or /pick
-  // from Aurora was showing up after switching to Frost.
+  // Auth HTML / RSC / API: do NOT intercept. Letting the browser fetch avoids
+  // SW "Failed to fetch" rejections that blanked Scores in Safari when the
+  // tunnel/dev server briefly hiccuped.
   const documentLike =
     request.mode === "navigate" ||
     request.destination === "document" ||
@@ -59,7 +60,6 @@ self.addEventListener("fetch", (event) => {
     isAuthSensitive(url);
 
   if (documentLike) {
-    event.respondWith(fetch(request));
     return;
   }
 
