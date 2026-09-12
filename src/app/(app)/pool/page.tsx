@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { sortParticipants } from "@/lib/tiebreak";
 import { effectiveLockAt, isWeekLocked, ensureWeekLockedEffects, MISSED_TEAM } from "@/lib/grading";
 import { StatusChip } from "@/components/StatusChip";
-import { formatKickoff, initials } from "@/lib/utils";
+import { formatKickoff } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -148,12 +148,9 @@ export default async function PoolPage() {
                     return (
                       <li
                         key={m.id}
-                        className={`card-glass p-3 flex items-start gap-3 ${faded}`}
+                        className={`card-glass p-3 ${faded}`}
                       >
-                        <div className="h-10 w-10 rounded-full bg-stadium-700 flex items-center justify-center text-sm font-semibold text-gold-400 shrink-0">
-                          {initials(m.nickname)}
-                        </div>
-                        <div className="flex-1 min-w-0">
+                        <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="font-medium">
                               {m.nickname}
@@ -161,6 +158,11 @@ export default async function PoolPage() {
                             </span>
                             <StatusChip status={m.status} />
                           </div>
+                          {m.realName ? (
+                            <div className="text-xs text-[var(--text-muted)]">
+                              {m.realName}
+                            </div>
+                          ) : null}
                           {show && pick ? (
                             <div className="mt-1 text-sm">
                               <span className="font-mono text-gold-400">
