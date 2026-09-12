@@ -78,6 +78,8 @@ type Week2Standing = {
   divisionRank: number;
   conference: string;
   division: string;
+  pf?: number;
+  pa?: number;
 };
 
 type OddsGame = {
@@ -167,6 +169,8 @@ async function main() {
         losses: st?.l ?? 0,
         ties: st?.t ?? 0,
         divisionRank: st?.divisionRank ?? null,
+        pointsFor: st?.pf ?? 0,
+        pointsAgainst: st?.pa ?? 0,
       },
     });
   }

@@ -11,6 +11,7 @@ import {
   resolveFavourite,
   type StandingBits,
 } from "@/lib/matchup-meta";
+import { TeamLogo } from "@/components/TeamLogo";
 
 type Side = {
   abbr: string;
@@ -32,41 +33,6 @@ type Matchup = {
   away: Side;
   home: Side;
 };
-
-function TeamLogo({
-  abbr,
-  logoUrl,
-  size = 40,
-}: {
-  abbr: string;
-  logoUrl: string | null;
-  size?: number;
-}) {
-  const [failed, setFailed] = useState(false);
-  if (!logoUrl || failed) {
-    return (
-      <div
-        className="flex shrink-0 items-center justify-center rounded-full bg-[var(--stadium-700)] font-mono text-xs font-semibold text-gold-400"
-        style={{ width: size, height: size }}
-        aria-hidden
-      >
-        {abbr.slice(0, 3)}
-      </div>
-    );
-  }
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={logoUrl}
-      alt=""
-      width={size}
-      height={size}
-      className="shrink-0 rounded-full object-contain bg-[var(--stadium-700)]"
-      style={{ width: size, height: size }}
-      onError={() => setFailed(true)}
-    />
-  );
-}
 
 export function PickClient({
   weekNumber,
@@ -375,36 +341,32 @@ function SideButton({
   const current = formatCurrentStanding(side.standing);
 
   return (
-    <button
-      type="button"
-      disabled={disabled && !selected}
-      onClick={() => {
-        if (readOnly || side.alreadyUsed) return;
-        onPick();
-      }}
-      aria-pressed={selected}
-      aria-label={`Pick ${side.name} (${side.abbr})`}
+    <div
       className={`flex min-h-[88px] flex-col gap-1 rounded-lg border p-2 transition sm:p-3 ${
         isAway ? "items-start text-left" : "items-end text-right"
       } ${
         selected
           ? "border-gold-400 bg-gold-400/10 ring-2 ring-gold-400"
           : "border-transparent bg-[var(--stadium-700)]/40"
-      } ${
-        side.alreadyUsed && !selected
-          ? "cursor-not-allowed opacity-40"
-          : readOnly
-            ? "cursor-default"
-            : "hover:border-gold-400/60"
-      } ${!disabled && !selected ? "active:scale-[0.98]" : ""}`}
+      } ${side.alreadyUsed && !selected ? "opacity-40" : ""}`}
     >
-      <div
-        className={`flex items-center gap-2 ${isAway ? "" : "flex-row-reverse"}`}
+      <Link
+        href={`/team/${side.abbr}`}
+        prefetch={false}
+        onClick={(e) => e.stopPropagation()}
+        className={`flex items-center gap-2 min-w-0 hover:opacity-90 ${
+          isAway ? "" : "flex-row-reverse"
+        }`}
+        aria-label={`${side.name} team info`}
       >
         <TeamLogo abbr={side.abbr} logoUrl={side.logoUrl} size={40} />
         <div className="min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="font-mono text-sm font-semibold text-gold-400">
+          <div
+            className={`flex items-center gap-1.5 flex-wrap ${
+              isAway ? "" : "justify-end"
+            }`}
+          >
+            <span className="font-mono text-sm font-semibold text-gold-400 underline underline-offset-2 decoration-gold-400/40">
               {side.abbr}
             </span>
             {favSpread != null && (
@@ -413,22 +375,48 @@ function SideButton({
               </span>
             )}
           </div>
-          <div className="truncate text-xs text-[var(--text-muted)]">
+          <div className="truncate text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-transparent hover:decoration-[var(--text-muted)]">
             {side.name}
           </div>
         </div>
-      </div>
-      <div
-        className={`space-y-0.5 text-[10px] leading-tight text-[var(--text-muted)] ${
+      </Link>
+      <button
+        type="button"
+        disabled={disabled && !selected}
+        onClick={() => {
+          if (readOnly || side.alreadyUsed) return;
+          onPick();
+        }}
+        aria-pressed={selected}
+        aria-label={`Pick ${side.name} (${side.abbr})`}
+        className={`w-full space-y-0.5 text-[10px] leading-tight text-[var(--text-muted)] rounded-md px-1 py-1 ${
           isAway ? "text-left" : "text-right"
-        }`}
+        } ${
+          side.alreadyUsed && !selected
+            ? "cursor-not-allowed"
+            : readOnly
+              ? "cursor-default"
+              : "hover:bg-gold-400/10 cursor-pointer"
+        } ${!disabled && !selected ? "active:scale-[0.98]" : ""}`}
       >
         {prior && <div>{prior}</div>}
         {current && <div>{current}</div>}
-      </div>
-      {side.alreadyUsed && (
-        <div className="text-[10px] text-crimson-400">Already used</div>
-      )}
-    </button>
+        {side.alreadyUsed ? (
+          <div className="text-crimson-400">Already used</div>
+        ) : !readOnly ? (
+          <div className="text-gold-400/80 font-medium">
+            {selected ? "Selected · tap to confirm" : "Tap to pick"}
+          </div>
+        ) : null}
+      </button>
+      <Link
+        href={`/team/${side.abbr}`}
+        prefetch={false}
+        onClick={(e) => e.stopPropagation()}
+        className="text-[10px] text-sky-400 underline underline-offset-2"
+      >
+        Info
+      </Link>
+    </div>
   );
 }

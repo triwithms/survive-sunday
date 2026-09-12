@@ -102,6 +102,8 @@ model Team {
   losses        Int     @default(0)
   ties          Int     @default(0)
   divisionRank  Int?
+  pointsFor     Int     @default(0)
+  pointsAgainst Int     @default(0)
 }
 
 model Week {

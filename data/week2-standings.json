@@ -1,6 +1,6 @@
 {
   "as_of": "2026-09-15",
-  "note": "Demo standings entering Week 2 after simulated Week 1 (real finals + prior-rank-based demo results).",
+  "note": "Demo standings entering Week 2 after simulated Week 1 (records + invented PF/PA). Not a live NFL API feed.",
   "teams": [
     {
       "abbr": "SEA",
@@ -9,7 +9,9 @@
       "t": 0,
       "divisionRank": 1,
       "conference": "NFC",
-      "division": "West"
+      "division": "West",
+      "pf": 29,
+      "pa": 17
     },
     {
       "abbr": "SF",
@@ -18,7 +20,9 @@
       "t": 0,
       "divisionRank": 2,
       "conference": "NFC",
-      "division": "West"
+      "division": "West",
+      "pf": 32,
+      "pa": 16
     },
     {
       "abbr": "LAR",
@@ -27,7 +31,9 @@
       "t": 0,
       "divisionRank": 3,
       "conference": "NFC",
-      "division": "West"
+      "division": "West",
+      "pf": 23,
+      "pa": 26
     },
     {
       "abbr": "ARI",
@@ -36,7 +42,9 @@
       "t": 0,
       "divisionRank": 4,
       "conference": "NFC",
-      "division": "West"
+      "division": "West",
+      "pf": 14,
+      "pa": 28
     },
     {
       "abbr": "TB",
@@ -45,7 +53,9 @@
       "t": 0,
       "divisionRank": 1,
       "conference": "NFC",
-      "division": "South"
+      "division": "South",
+      "pf": 23,
+      "pa": 18
     },
     {
       "abbr": "CAR",
@@ -54,7 +64,9 @@
       "t": 0,
       "divisionRank": 2,
       "conference": "NFC",
-      "division": "South"
+      "division": "South",
+      "pf": 17,
+      "pa": 26
     },
     {
       "abbr": "ATL",
@@ -63,7 +75,9 @@
       "t": 0,
       "divisionRank": 3,
       "conference": "NFC",
-      "division": "South"
+      "division": "South",
+      "pf": 16,
+      "pa": 27
     },
     {
       "abbr": "NO",
@@ -72,7 +86,9 @@
       "t": 0,
       "divisionRank": 4,
       "conference": "NFC",
-      "division": "South"
+      "division": "South",
+      "pf": 16,
+      "pa": 31
     },
     {
       "abbr": "PIT",
@@ -81,7 +97,9 @@
       "t": 0,
       "divisionRank": 1,
       "conference": "AFC",
-      "division": "North"
+      "division": "North",
+      "pf": 28,
+      "pa": 17
     },
     {
       "abbr": "BAL",
@@ -90,7 +108,9 @@
       "t": 0,
       "divisionRank": 2,
       "conference": "AFC",
-      "division": "North"
+      "division": "North",
+      "pf": 26,
+      "pa": 20
     },
     {
       "abbr": "CIN",
@@ -99,7 +119,9 @@
       "t": 0,
       "divisionRank": 3,
       "conference": "AFC",
-      "division": "North"
+      "division": "North",
+      "pf": 16,
+      "pa": 31
     },
     {
       "abbr": "CLE",
@@ -108,7 +130,9 @@
       "t": 0,
       "divisionRank": 4,
       "conference": "AFC",
-      "division": "North"
+      "division": "North",
+      "pf": 15,
+      "pa": 30
     },
     {
       "abbr": "MIA",
@@ -117,7 +141,9 @@
       "t": 0,
       "divisionRank": 1,
       "conference": "AFC",
-      "division": "East"
+      "division": "East",
+      "pf": 24,
+      "pa": 21
     },
     {
       "abbr": "NE",
@@ -126,7 +152,9 @@
       "t": 0,
       "divisionRank": 2,
       "conference": "AFC",
-      "division": "East"
+      "division": "East",
+      "pf": 20,
+      "pa": 24
     },
     {
       "abbr": "BUF",
@@ -135,7 +163,9 @@
       "t": 0,
       "divisionRank": 3,
       "conference": "AFC",
-      "division": "East"
+      "division": "East",
+      "pf": 20,
+      "pa": 27
     },
     {
       "abbr": "NYJ",
@@ -144,7 +174,9 @@
       "t": 0,
       "divisionRank": 4,
       "conference": "AFC",
-      "division": "East"
+      "division": "East",
+      "pf": 13,
+      "pa": 30
     },
     {
       "abbr": "CHI",
@@ -153,7 +185,9 @@
       "t": 0,
       "divisionRank": 1,
       "conference": "NFC",
-      "division": "North"
+      "division": "North",
+      "pf": 30,
+      "pa": 16
     },
     {
       "abbr": "GB",
@@ -162,7 +196,9 @@
       "t": 0,
       "divisionRank": 2,
       "conference": "NFC",
-      "division": "North"
+      "division": "North",
+      "pf": 25,
+      "pa": 20
     },
     {
       "abbr": "DET",
@@ -171,7 +207,9 @@
       "t": 0,
       "divisionRank": 3,
       "conference": "NFC",
-      "division": "North"
+      "division": "North",
+      "pf": 25,
+      "pa": 20
     },
     {
       "abbr": "MIN",
@@ -180,7 +218,9 @@
       "t": 0,
       "divisionRank": 4,
       "conference": "NFC",
-      "division": "North"
+      "division": "North",
+      "pf": 16,
+      "pa": 31
     },
     {
       "abbr": "PHI",
@@ -189,7 +229,9 @@
       "t": 0,
       "divisionRank": 1,
       "conference": "NFC",
-      "division": "East"
+      "division": "East",
+      "pf": 31,
+      "pa": 18
     },
     {
       "abbr": "DAL",
@@ -198,7 +240,9 @@
       "t": 0,
       "divisionRank": 2,
       "conference": "NFC",
-      "division": "East"
+      "division": "East",
+      "pf": 26,
+      "pa": 20
     },
     {
       "abbr": "WAS",
@@ -207,7 +251,9 @@
       "t": 0,
       "divisionRank": 3,
       "conference": "NFC",
-      "division": "East"
+      "division": "East",
+      "pf": 17,
+      "pa": 31
     },
     {
       "abbr": "NYG",
@@ -216,7 +262,9 @@
       "t": 0,
       "divisionRank": 4,
       "conference": "NFC",
-      "division": "East"
+      "division": "East",
+      "pf": 15,
+      "pa": 32
     },
     {
       "abbr": "DEN",
@@ -225,7 +273,9 @@
       "t": 0,
       "divisionRank": 1,
       "conference": "AFC",
-      "division": "West"
+      "division": "West",
+      "pf": 29,
+      "pa": 17
     },
     {
       "abbr": "LAC",
@@ -234,7 +284,9 @@
       "t": 0,
       "divisionRank": 2,
       "conference": "AFC",
-      "division": "West"
+      "division": "West",
+      "pf": 29,
+      "pa": 17
     },
     {
       "abbr": "KC",
@@ -243,7 +295,9 @@
       "t": 0,
       "divisionRank": 3,
       "conference": "AFC",
-      "division": "West"
+      "division": "West",
+      "pf": 16,
+      "pa": 32
     },
     {
       "abbr": "LV",
@@ -252,7 +306,9 @@
       "t": 0,
       "divisionRank": 4,
       "conference": "AFC",
-      "division": "West"
+      "division": "West",
+      "pf": 13,
+      "pa": 31
     },
     {
       "abbr": "JAX",
@@ -261,7 +317,9 @@
       "t": 0,
       "divisionRank": 1,
       "conference": "AFC",
-      "division": "South"
+      "division": "South",
+      "pf": 29,
+      "pa": 14
     },
     {
       "abbr": "HOU",
@@ -270,7 +328,9 @@
       "t": 0,
       "divisionRank": 2,
       "conference": "AFC",
-      "division": "South"
+      "division": "South",
+      "pf": 32,
+      "pa": 16
     },
     {
       "abbr": "TEN",
@@ -279,7 +339,9 @@
       "t": 0,
       "divisionRank": 3,
       "conference": "AFC",
-      "division": "South"
+      "division": "South",
+      "pf": 20,
+      "pa": 23
     },
     {
       "abbr": "IND",
@@ -288,7 +350,10 @@
       "t": 0,
       "divisionRank": 4,
       "conference": "AFC",
-      "division": "South"
+      "division": "South",
+      "pf": 16,
+      "pa": 32
     }
-  ]
+  ],
+  "demo": true
 }
