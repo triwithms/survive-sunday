@@ -417,59 +417,31 @@ async function main() {
     await rebuildUsedTeams(m.id);
   }
 
-  // Grade any imported picks whose games are already final
-  const pending = await prisma.pick.findMany({
-    where: { weekId: week1.id },
-    include: { game: true },
-  });
-  let gradedCount = 0;
-  for (const pick of pending) {
-    if (!pick.game || pick.game.status !== "final") continue;
-    if (pick.game.scoreAway == null || pick.game.scoreHome == null) continue;
-    let result: string;
-    if (pick.game.scoreAway === pick.game.scoreHome) result = "loss";
-    else {
-      const winner =
-        pick.game.scoreAway > pick.game.scoreHome
-          ? pick.game.awayAbbr
-          : pick.game.homeAbbr;
-      result = pick.teamAbbr === winner ? "win" : "loss";
-    }
-    await prisma.pick.update({
-      where: { id: pick.id },
-      data: { result, gradedAt: new Date() },
-    });
-    const m = await prisma.membership.findUniqueOrThrow({
-      where: { id: pick.membershipId },
-    });
-    if (result === "loss") {
-      if (m.mulliganRemaining) {
-        await prisma.membership.update({
-          where: { id: m.id },
-          data: { mulliganRemaining: false, status: "one_loss", losses: m.losses + 1 },
-        });
-      } else if (m.status !== "eliminated") {
-        await prisma.membership.update({
-          where: { id: m.id },
-          data: { status: "eliminated", losses: m.losses + 1 },
-        });
-      }
-    } else if (result === "win" && m.status !== "eliminated") {
-      await prisma.membership.update({
-        where: { id: m.id },
-        data: { weeksSurvived: m.weeksSurvived + 1 },
-      });
-    }
-    gradedCount++;
-  }
-  console.log(`  Auto-graded ${gradedCount} picks from final games`);
+  // Finalize remaining Week 1 games (demo slate only has a couple finals),
+  // grade pending picks, then recompute weeksSurvived from win picks.
+  const {
+    simulateRemainingGames,
+    gradeWeekPicks,
+    ensureWeekLockedEffects,
+    recomputeWeeksSurvived,
+  } = await import("../src/lib/grading");
+  const simulated = await simulateRemainingGames(week1.id);
+  console.log(`  Simulated ${simulated.length} remaining Week 1 games to final`);
 
   // Natural lock may already have passed (demo date) — apply missed picks once
-  const { ensureWeekLockedEffects } = await import("../src/lib/grading");
   const lockEffects = await ensureWeekLockedEffects(week1.id);
+  const gradedExtra = await gradeWeekPicks(week1.id);
   console.log(
-    `  Lock effects: missed=${lockEffects.missed.length}, graded=${lockEffects.graded.length}`
+    `  Lock effects: missed=${lockEffects.missed.length}, graded=${lockEffects.graded.length + gradedExtra.length}`
   );
+
+  await prisma.week.update({
+    where: { id: week1.id },
+    data: { status: "graded" },
+  });
+
+  await recomputeWeeksSurvived(pool.id);
+  console.log("  Recomputed weeksSurvived from win picks");
 
   await prisma.auditLog.create({
     data: {

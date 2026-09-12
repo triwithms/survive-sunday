@@ -269,3 +269,74 @@ export async function ensureWeekLockedEffects(weekId: string) {
 
   return { locked: true, missed, graded };
 }
+
+/** Deterministic plausible final score from game id (home slightly favoured). */
+export function plausibleFinalScores(gameId: string): {
+  scoreHome: number;
+  scoreAway: number;
+} {
+  const seed = gameId.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  let homeScore = 17 + (seed % 14);
+  let awayScore = 14 + ((seed * 3) % 17);
+  // Avoid ties (ties grade as loss)
+  if (homeScore === awayScore) homeScore += 1;
+  return { scoreHome: homeScore, scoreAway: awayScore };
+}
+
+/**
+ * Finalize non-final games for a week with plausible scores.
+ * Idempotent for already-final games. Does not grade picks.
+ */
+export async function simulateRemainingGames(
+  weekId: string,
+  opts?: { gameId?: string }
+) {
+  const week = await prisma.week.findUniqueOrThrow({
+    where: { id: weekId },
+    include: { games: true },
+  });
+
+  const targets = opts?.gameId
+    ? week.games.filter((g) => g.id === opts.gameId)
+    : week.games.filter((g) => g.status !== "final");
+
+  const updated = [];
+  for (const g of targets) {
+    const { scoreHome, scoreAway } = plausibleFinalScores(g.id);
+    const row = await prisma.game.update({
+      where: { id: g.id },
+      data: {
+        status: "final",
+        scoreHome,
+        scoreAway,
+      },
+    });
+    updated.push(row);
+  }
+  return updated;
+}
+
+/**
+ * Set weeksSurvived = count of non-missed picks with result === 'win'.
+ * Does not touch losses / mulligan / status.
+ */
+export async function recomputeWeeksSurvived(poolId: string) {
+  const members = await prisma.membership.findMany({
+    where: { poolId, role: "member" },
+    include: { picks: true },
+  });
+  const results: { membershipId: string; weeksSurvived: number }[] = [];
+  for (const m of members) {
+    const weeksSurvived = m.picks.filter(
+      (p) => p.result === "win" && p.source !== "missed" && p.teamAbbr !== MISSED_TEAM
+    ).length;
+    if (m.weeksSurvived !== weeksSurvived) {
+      await prisma.membership.update({
+        where: { id: m.id },
+        data: { weeksSurvived },
+      });
+    }
+    results.push({ membershipId: m.id, weeksSurvived });
+  }
+  return results;
+}

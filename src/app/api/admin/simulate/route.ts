@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/session";
-import { gradeWeekPicks, ensureWeekLockedEffects } from "@/lib/grading";
+import {
+  gradeWeekPicks,
+  ensureWeekLockedEffects,
+  simulateRemainingGames,
+  recomputeWeeksSurvived,
+} from "@/lib/grading";
 
 export async function POST(req: Request) {
   const admin = await requireAdmin();
@@ -15,33 +20,14 @@ export async function POST(req: Request) {
         number: weekNumber ?? 1,
       },
     },
-    include: { games: true },
   });
   if (!week) return NextResponse.json({ error: "Week not found" }, { status: 404 });
 
-  const targets = gameId
-    ? week.games.filter((g) => g.id === gameId)
-    : week.games.filter((g) => g.status !== "final");
-
-  const updated = [];
-  for (const g of targets) {
-    // Favour home slightly; random-ish but deterministic from game id
-    const seed = g.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-    const homeScore = 17 + (seed % 14);
-    const awayScore = 14 + ((seed * 3) % 17);
-    const row = await prisma.game.update({
-      where: { id: g.id },
-      data: {
-        status: "final",
-        scoreHome: homeScore,
-        scoreAway: awayScore,
-      },
-    });
-    updated.push(row);
-  }
+  const updated = await simulateRemainingGames(week.id, { gameId });
 
   await ensureWeekLockedEffects(week.id);
   const graded = await gradeWeekPicks(week.id);
+  await recomputeWeeksSurvived(admin.membership.poolId);
 
   await prisma.auditLog.create({
     data: {
