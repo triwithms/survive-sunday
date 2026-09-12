@@ -2,6 +2,13 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import fs from "fs";
 import path from "path";
+import {
+  findSeasonSchedulePath,
+  gameIdFor,
+  loadNormalizedSeason,
+  pairKey,
+  type NormalizedWeek,
+} from "../src/lib/season-schedule";
 
 const prisma = new PrismaClient();
 
@@ -197,6 +204,16 @@ async function main() {
   const week1Odds = loadJson<{ games: OddsGame[] }>("week1-games.json");
   const week2Odds = loadJson<{ games: OddsGame[] }>("week2-odds.json");
 
+  const seasonPath = findSeasonSchedulePath();
+  const seasonWeeks: NormalizedWeek[] | null = seasonPath
+    ? loadNormalizedSeason()
+    : null;
+  if (seasonWeeks) {
+    console.log(`  Full 2026 schedule: ${seasonPath}`);
+  } else {
+    console.log("  season-2026-schedule.json missing — Week 1–2 slates only");
+  }
+
   // BM Boys roster lives in demo-participants.json (synced from bm-boys-2026-participants.json)
   const demo = loadJson<{
     participants: DemoPart[];
@@ -215,45 +232,42 @@ async function main() {
   });
 
   const kickoffs = slate.schedule.map((g) => new Date(g.kickoff_et));
-  const lockAt = new Date(Math.min(...kickoffs.map((d) => d.getTime())));
-
-  const week1 = await prisma.week.create({
-    data: {
-      poolId: pool.id,
-      number: 1,
-      label: "Week 1",
-      lockAt,
-      status: "locked",
-    },
-  });
-
+  const lockAtFallback1 = new Date(Math.min(...kickoffs.map((d) => d.getTime())));
   const kickoffs2 = slate2.schedule.map((g) => new Date(g.kickoff_et));
-  const lockAt2 = new Date(Math.min(...kickoffs2.map((d) => d.getTime())));
+  const lockAtFallback2 = new Date(
+    Math.min(...kickoffs2.map((d) => d.getTime()))
+  );
 
-  const week2 = await prisma.week.create({
-    data: {
-      poolId: pool.id,
-      number: 2,
-      label: "Week 2",
-      lockAt: lockAt2,
-      status: new Date() >= lockAt2 ? "locked" : "open",
-    },
-  });
-
-  // Placeholder weeks 3–18 from Week 2 lock
-  for (let n = 3; n <= 18; n++) {
-    const approx = new Date(lockAt2);
+  function lockForWeek(n: number): Date {
+    const sw = seasonWeeks?.find((w) => w.week === n);
+    if (sw?.lockAt) return sw.lockAt;
+    if (n === 1) return lockAtFallback1;
+    if (n === 2) return lockAtFallback2;
+    const approx = new Date(lockAtFallback2);
     approx.setDate(approx.getDate() + 7 * (n - 2));
-    await prisma.week.create({
+    return approx;
+  }
+
+  const lockAt = lockForWeek(1);
+  const lockAt2 = lockForWeek(2);
+
+  const weekRows: { id: string; number: number }[] = [];
+  for (let n = 1; n <= 18; n++) {
+    const lock = lockForWeek(n);
+    const row = await prisma.week.create({
       data: {
         poolId: pool.id,
         number: n,
         label: `Week ${n}`,
-        lockAt: approx,
-        status: "open",
+        lockAt: lock,
+        status: n === 1 ? "locked" : new Date() >= lock ? "locked" : "open",
       },
     });
+    weekRows.push(row);
   }
+  const week1 = weekRows[0];
+  const week2 = weekRows[1];
+  if (!week1 || !week2) throw new Error("Failed to create weeks 1–2");
 
   function oddsLookup(list: OddsGame[], away: string, home: string) {
     return list.find((o) => o.away === away && o.home === home);
@@ -310,10 +324,80 @@ async function main() {
     return gi;
   }
 
-  const gi1 = await seedGames(week1.id, slate.schedule, "2026-w1", week1Odds.games);
-  console.log(`  Week 1: ${gi1} games, lock ${lockAt.toISOString()} (historical)`);
-  const gi2 = await seedGames(week2.id, slate2.schedule, "2026-w2", week2Odds.games);
-  console.log(`  Week 2: ${gi2} games, lock ${lockAt2.toISOString()} (current)`);
+  const slateScoreByPair = new Map<
+    string,
+    { status: string; score: { away: number; home: number } | null; venue_note?: string | null; network: string }
+  >();
+  for (const g of slate.schedule) {
+    const away = NAME_TO_ABBR[g.away];
+    const home = NAME_TO_ABBR[g.home];
+    if (away && home) {
+      slateScoreByPair.set(pairKey(away, home), {
+        status: g.status,
+        score: g.score,
+        venue_note: g.venue_note,
+        network: g.network,
+      });
+    }
+  }
+
+  async function seedOfficialWeek(
+    weekId: string,
+    weekNumber: number,
+    oddsList: OddsGame[]
+  ) {
+    const sw = seasonWeeks?.find((w) => w.week === weekNumber);
+    if (!sw || sw.games.length === 0) return 0;
+    let gi = 0;
+    for (const g of sw.games) {
+      gi++;
+      const overlay = weekNumber === 1 ? slateScoreByPair.get(pairKey(g.awayAbbr, g.homeAbbr)) : undefined;
+      const status =
+        overlay?.status === "final"
+          ? "final"
+          : overlay?.status === "live"
+            ? "live"
+            : "scheduled";
+      const odds = resolveOdds(oddsLookup(oddsList, g.awayAbbr, g.homeAbbr));
+      await prisma.game.create({
+        data: {
+          id: gameIdFor(weekNumber, gi),
+          weekId,
+          awayAbbr: g.awayAbbr,
+          homeAbbr: g.homeAbbr,
+          kickoff: g.kickoff,
+          network: overlay?.network ?? g.network,
+          status,
+          scoreAway: overlay?.score?.away ?? null,
+          scoreHome: overlay?.score?.home ?? null,
+          note: overlay?.venue_note ?? g.note,
+          spreadHome: odds.spreadHome,
+          spreadAway: odds.spreadAway,
+          mlHome: odds.mlHome,
+          mlAway: odds.mlAway,
+        },
+      });
+    }
+    return gi;
+  }
+
+  if (seasonWeeks) {
+    for (const row of weekRows) {
+      const oddsList = row.number === 1 ? week1Odds.games : week2Odds.games;
+      const n = await seedOfficialWeek(row.id, row.number, oddsList);
+      if (n > 0) {
+        const lock = lockForWeek(row.number);
+        console.log(
+          `  Week ${row.number}: ${n} games, lock ${lock.toISOString()}${row.number === 1 ? " (historical)" : row.number === 2 ? " (current)" : ""}`
+        );
+      }
+    }
+  } else {
+    const gi1 = await seedGames(week1.id, slate.schedule, "2026-w1", week1Odds.games);
+    console.log(`  Week 1: ${gi1} games, lock ${lockAt.toISOString()} (historical)`);
+    const gi2 = await seedGames(week2.id, slate2.schedule, "2026-w2", week2Odds.games);
+    console.log(`  Week 2: ${gi2} games, lock ${lockAt2.toISOString()} (current)`);
+  }
 
   const passwordHash = await bcrypt.hash("demo1234", 10);
 
@@ -458,7 +542,7 @@ async function main() {
       actorId: adminUser.id,
       action: "seed",
       details: JSON.stringify({
-        note: "Seed: Week 1 historical + Week 2 open (currentWeek=2); W1 picks imported",
+        note: "Seed: full 2026 schedule weeks 1–18; Week 1 historical + Week 2 current; W1 picks imported",
         currentWeek: 2,
         week2LockAt: lockAt2.toISOString(),
         missedPicks: lockEffects.missed.length,

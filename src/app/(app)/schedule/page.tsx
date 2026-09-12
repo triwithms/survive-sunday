@@ -137,7 +137,7 @@ export default async function SchedulePage() {
                 </div>
                 {w.games.length > 0 && (
                   <ul className="mt-2 space-y-1 text-xs text-[var(--text-muted)]">
-                    {w.games.slice(0, 4).map((g) => (
+                    {w.games.map((g) => (
                       <li key={g.id}>
                         <Link
                           href={`/team/${g.awayAbbr}`}
@@ -156,11 +156,9 @@ export default async function SchedulePage() {
                         </Link>
                         {" · "}
                         {formatKickoff(g.kickoff)}
+                        {g.network ? ` · ${g.network}` : ""}
                       </li>
                     ))}
-                    {w.games.length > 4 && (
-                      <li>+{w.games.length - 4} more</li>
-                    )}
                   </ul>
                 )}
               </li>

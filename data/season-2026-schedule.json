@@ -1,0 +1,1762 @@
+{
+  "season": 2026,
+  "source": "ESPN site API: https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week={1-18}&dates=2026",
+  "as_of": "2026-09-12",
+  "weeks": [
+    {
+      "week": 1,
+      "games": [
+        {
+          "away": "NE",
+          "home": "SEA",
+          "kickoff": "2026-09-10T00:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "SF",
+          "home": "LAR",
+          "kickoff": "2026-09-11T00:35Z",
+          "network": "Netflix",
+          "note": "NFL Melbourne Game; Neutral: Melbourne Cricket Ground, Melbourne, Australia"
+        },
+        {
+          "away": "ATL",
+          "home": "PIT",
+          "kickoff": "2026-09-13T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BAL",
+          "home": "IND",
+          "kickoff": "2026-09-13T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "BUF",
+          "home": "HOU",
+          "kickoff": "2026-09-13T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CHI",
+          "home": "CAR",
+          "kickoff": "2026-09-13T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CLE",
+          "home": "JAX",
+          "kickoff": "2026-09-13T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "NO",
+          "home": "DET",
+          "kickoff": "2026-09-13T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYJ",
+          "home": "TEN",
+          "kickoff": "2026-09-13T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "TB",
+          "home": "CIN",
+          "kickoff": "2026-09-13T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "ARI",
+          "home": "LAC",
+          "kickoff": "2026-09-13T20:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "GB",
+          "home": "MIN",
+          "kickoff": "2026-09-13T20:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIA",
+          "home": "LV",
+          "kickoff": "2026-09-13T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "WAS",
+          "home": "PHI",
+          "kickoff": "2026-09-13T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "DAL",
+          "home": "NYG",
+          "kickoff": "2026-09-14T00:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "DEN",
+          "home": "KC",
+          "kickoff": "2026-09-15T00:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "games": [
+        {
+          "away": "DET",
+          "home": "BUF",
+          "kickoff": "2026-09-18T00:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "CAR",
+          "home": "ATL",
+          "kickoff": "2026-09-20T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CIN",
+          "home": "HOU",
+          "kickoff": "2026-09-20T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CLE",
+          "home": "TB",
+          "kickoff": "2026-09-20T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "GB",
+          "home": "NYJ",
+          "kickoff": "2026-09-20T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "MIN",
+          "home": "CHI",
+          "kickoff": "2026-09-20T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NO",
+          "home": "BAL",
+          "kickoff": "2026-09-20T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "PHI",
+          "home": "TEN",
+          "kickoff": "2026-09-20T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "PIT",
+          "home": "NE",
+          "kickoff": "2026-09-20T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "JAX",
+          "home": "DEN",
+          "kickoff": "2026-09-20T20:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LV",
+          "home": "LAC",
+          "kickoff": "2026-09-20T20:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIA",
+          "home": "SF",
+          "kickoff": "2026-09-20T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "SEA",
+          "home": "ARI",
+          "kickoff": "2026-09-20T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "WAS",
+          "home": "DAL",
+          "kickoff": "2026-09-20T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "IND",
+          "home": "KC",
+          "kickoff": "2026-09-21T00:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "NYG",
+          "home": "LAR",
+          "kickoff": "2026-09-22T00:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "games": [
+        {
+          "away": "ATL",
+          "home": "GB",
+          "kickoff": "2026-09-25T00:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "CAR",
+          "home": "CLE",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CIN",
+          "home": "PIT",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "HOU",
+          "home": "IND",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "KC",
+          "home": "MIA",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LAC",
+          "home": "BUF",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NE",
+          "home": "JAX",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "NYJ",
+          "home": "DET",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "SEA",
+          "home": "WAS",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "TEN",
+          "home": "NYG",
+          "kickoff": "2026-09-27T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "ARI",
+          "home": "SF",
+          "kickoff": "2026-09-27T20:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "MIN",
+          "home": "TB",
+          "kickoff": "2026-09-27T20:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BAL",
+          "home": "DAL",
+          "kickoff": "2026-09-27T20:25Z",
+          "network": "CBS",
+          "note": "NFL Rio Game; Neutral: Maracan\u00e3 Stadium, Rio De Janeiro, Brazil"
+        },
+        {
+          "away": "LV",
+          "home": "NO",
+          "kickoff": "2026-09-27T20:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LAR",
+          "home": "DEN",
+          "kickoff": "2026-09-28T00:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "PHI",
+          "home": "CHI",
+          "kickoff": "2026-09-29T00:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "games": [
+        {
+          "away": "PIT",
+          "home": "CLE",
+          "kickoff": "2026-10-02T00:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "IND",
+          "home": "WAS",
+          "kickoff": "2026-10-04T13:30Z",
+          "network": "NFL Net",
+          "note": "NFL London Games; Neutral: Tottenham Hotspur Stadium, London, England"
+        },
+        {
+          "away": "ARI",
+          "home": "NYG",
+          "kickoff": "2026-10-04T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DAL",
+          "home": "HOU",
+          "kickoff": "2026-10-04T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "GB",
+          "home": "TB",
+          "kickoff": "2026-10-04T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "JAX",
+          "home": "CIN",
+          "kickoff": "2026-10-04T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LAR",
+          "home": "PHI",
+          "kickoff": "2026-10-04T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NE",
+          "home": "BUF",
+          "kickoff": "2026-10-04T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "NYJ",
+          "home": "CHI",
+          "kickoff": "2026-10-04T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "TEN",
+          "home": "BAL",
+          "kickoff": "2026-10-04T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIA",
+          "home": "MIN",
+          "kickoff": "2026-10-04T20:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "DEN",
+          "home": "SF",
+          "kickoff": "2026-10-04T20:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "KC",
+          "home": "LV",
+          "kickoff": "2026-10-04T20:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LAC",
+          "home": "SEA",
+          "kickoff": "2026-10-04T20:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DET",
+          "home": "CAR",
+          "kickoff": "2026-10-05T00:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "ATL",
+          "home": "NO",
+          "kickoff": "2026-10-06T00:15Z",
+          "network": "ESPN"
+        }
+      ]
+    },
+    {
+      "week": 5,
+      "games": [
+        {
+          "away": "TB",
+          "home": "DAL",
+          "kickoff": "2026-10-09T00:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "PHI",
+          "home": "JAX",
+          "kickoff": "2026-10-11T13:30Z",
+          "network": "NFL Net",
+          "note": "NFL London Games; Neutral: Tottenham Hotspur Stadium, London, England"
+        },
+        {
+          "away": "CIN",
+          "home": "MIA",
+          "kickoff": "2026-10-11T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CLE",
+          "home": "NYJ",
+          "kickoff": "2026-10-11T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "HOU",
+          "home": "TEN",
+          "kickoff": "2026-10-11T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "IND",
+          "home": "PIT",
+          "kickoff": "2026-10-11T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LV",
+          "home": "NE",
+          "kickoff": "2026-10-11T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIN",
+          "home": "NO",
+          "kickoff": "2026-10-11T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYG",
+          "home": "WAS",
+          "kickoff": "2026-10-11T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "DEN",
+          "home": "LAC",
+          "kickoff": "2026-10-11T20:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CHI",
+          "home": "GB",
+          "kickoff": "2026-10-11T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "DET",
+          "home": "ARI",
+          "kickoff": "2026-10-11T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "SF",
+          "home": "SEA",
+          "kickoff": "2026-10-11T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BAL",
+          "home": "ATL",
+          "kickoff": "2026-10-12T00:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "BUF",
+          "home": "LAR",
+          "kickoff": "2026-10-13T00:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 6,
+      "games": [
+        {
+          "away": "SEA",
+          "home": "DEN",
+          "kickoff": "2026-10-16T00:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "HOU",
+          "home": "JAX",
+          "kickoff": "2026-10-18T13:30Z",
+          "network": "NFL Net",
+          "note": "NFL London Games; Neutral: Wembley Stadium, London, England"
+        },
+        {
+          "away": "BAL",
+          "home": "CLE",
+          "kickoff": "2026-10-18T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CAR",
+          "home": "PHI",
+          "kickoff": "2026-10-18T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CHI",
+          "home": "ATL",
+          "kickoff": "2026-10-18T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NO",
+          "home": "NYG",
+          "kickoff": "2026-10-18T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYJ",
+          "home": "NE",
+          "kickoff": "2026-10-18T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "PIT",
+          "home": "TB",
+          "kickoff": "2026-10-18T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "TEN",
+          "home": "IND",
+          "kickoff": "2026-10-18T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "ARI",
+          "home": "LAR",
+          "kickoff": "2026-10-18T20:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BUF",
+          "home": "LV",
+          "kickoff": "2026-10-18T20:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LAC",
+          "home": "KC",
+          "kickoff": "2026-10-18T20:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DAL",
+          "home": "GB",
+          "kickoff": "2026-10-19T00:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "WAS",
+          "home": "SF",
+          "kickoff": "2026-10-20T00:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "games": [
+        {
+          "away": "NE",
+          "home": "CHI",
+          "kickoff": "2026-10-23T00:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "PIT",
+          "home": "NO",
+          "kickoff": "2026-10-25T13:30Z",
+          "network": "NFL Net",
+          "note": "NFL Paris Game; Neutral: Stade de France, Saint-Denis, France"
+        },
+        {
+          "away": "CIN",
+          "home": "BAL",
+          "kickoff": "2026-10-25T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CLE",
+          "home": "TEN",
+          "kickoff": "2026-10-25T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "IND",
+          "home": "MIN",
+          "kickoff": "2026-10-25T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIA",
+          "home": "NYJ",
+          "kickoff": "2026-10-25T17:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "NYG",
+          "home": "HOU",
+          "kickoff": "2026-10-25T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "SF",
+          "home": "ATL",
+          "kickoff": "2026-10-25T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "TB",
+          "home": "CAR",
+          "kickoff": "2026-10-25T17:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "DEN",
+          "home": "ARI",
+          "kickoff": "2026-10-25T20:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "GB",
+          "home": "DET",
+          "kickoff": "2026-10-25T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "LAR",
+          "home": "LV",
+          "kickoff": "2026-10-25T20:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "KC",
+          "home": "SEA",
+          "kickoff": "2026-10-26T00:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "DAL",
+          "home": "PHI",
+          "kickoff": "2026-10-27T00:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 8,
+      "games": [
+        {
+          "away": "CAR",
+          "home": "GB",
+          "kickoff": "2026-10-30T00:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "ARI",
+          "home": "DAL",
+          "kickoff": "2026-11-01T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "ATL",
+          "home": "TB",
+          "kickoff": "2026-11-01T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BAL",
+          "home": "BUF",
+          "kickoff": "2026-11-01T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CLE",
+          "home": "PIT",
+          "kickoff": "2026-11-01T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "IND",
+          "home": "JAX",
+          "kickoff": "2026-11-01T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LV",
+          "home": "NYJ",
+          "kickoff": "2026-11-01T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "MIN",
+          "home": "DET",
+          "kickoff": "2026-11-01T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "TEN",
+          "home": "CIN",
+          "kickoff": "2026-11-01T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LAC",
+          "home": "LAR",
+          "kickoff": "2026-11-01T21:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "KC",
+          "home": "DEN",
+          "kickoff": "2026-11-01T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "NE",
+          "home": "MIA",
+          "kickoff": "2026-11-01T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "PHI",
+          "home": "WAS",
+          "kickoff": "2026-11-02T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "CHI",
+          "home": "SEA",
+          "kickoff": "2026-11-03T01:15Z",
+          "network": "ESPN"
+        }
+      ]
+    },
+    {
+      "week": 9,
+      "games": [
+        {
+          "away": "JAX",
+          "home": "BAL",
+          "kickoff": "2026-11-06T01:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "CIN",
+          "home": "ATL",
+          "kickoff": "2026-11-08T14:30Z",
+          "network": "NFL Net",
+          "note": "NFL Madrid Game; Neutral: Santiago Bernab\u00e9u, Madrid, Spain"
+        },
+        {
+          "away": "CLE",
+          "home": "NO",
+          "kickoff": "2026-11-08T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DAL",
+          "home": "IND",
+          "kickoff": "2026-11-08T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "DEN",
+          "home": "CAR",
+          "kickoff": "2026-11-08T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DET",
+          "home": "MIA",
+          "kickoff": "2026-11-08T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "LAR",
+          "home": "WAS",
+          "kickoff": "2026-11-08T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYG",
+          "home": "PHI",
+          "kickoff": "2026-11-08T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYJ",
+          "home": "KC",
+          "kickoff": "2026-11-08T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "HOU",
+          "home": "LAC",
+          "kickoff": "2026-11-08T21:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LV",
+          "home": "SF",
+          "kickoff": "2026-11-08T21:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "ARI",
+          "home": "SEA",
+          "kickoff": "2026-11-08T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "GB",
+          "home": "NE",
+          "kickoff": "2026-11-08T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "TB",
+          "home": "CHI",
+          "kickoff": "2026-11-09T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "BUF",
+          "home": "MIN",
+          "kickoff": "2026-11-10T01:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 10,
+      "games": [
+        {
+          "away": "WAS",
+          "home": "NYG",
+          "kickoff": "2026-11-13T01:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "NE",
+          "home": "DET",
+          "kickoff": "2026-11-15T14:30Z",
+          "network": "FOX",
+          "note": "NFL Munich Game; Neutral: FC Bayern Munich Stadium, Munich, Germany"
+        },
+        {
+          "away": "BUF",
+          "home": "NYJ",
+          "kickoff": "2026-11-15T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CAR",
+          "home": "NO",
+          "kickoff": "2026-11-15T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "HOU",
+          "home": "CLE",
+          "kickoff": "2026-11-15T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "JAX",
+          "home": "TEN",
+          "kickoff": "2026-11-15T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "KC",
+          "home": "ATL",
+          "kickoff": "2026-11-15T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIA",
+          "home": "IND",
+          "kickoff": "2026-11-15T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIN",
+          "home": "GB",
+          "kickoff": "2026-11-15T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "LAR",
+          "home": "ARI",
+          "kickoff": "2026-11-15T21:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "SEA",
+          "home": "LV",
+          "kickoff": "2026-11-15T21:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "SF",
+          "home": "DAL",
+          "kickoff": "2026-11-15T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "PIT",
+          "home": "CIN",
+          "kickoff": "2026-11-16T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "LAC",
+          "home": "BAL",
+          "kickoff": "2026-11-17T01:15Z",
+          "network": "ESPN"
+        }
+      ]
+    },
+    {
+      "week": 11,
+      "games": [
+        {
+          "away": "IND",
+          "home": "HOU",
+          "kickoff": "2026-11-20T01:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "ARI",
+          "home": "KC",
+          "kickoff": "2026-11-22T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "BAL",
+          "home": "CAR",
+          "kickoff": "2026-11-22T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "JAX",
+          "home": "NYG",
+          "kickoff": "2026-11-22T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIA",
+          "home": "BUF",
+          "kickoff": "2026-11-22T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NO",
+          "home": "CHI",
+          "kickoff": "2026-11-22T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "TB",
+          "home": "DET",
+          "kickoff": "2026-11-22T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "TEN",
+          "home": "DAL",
+          "kickoff": "2026-11-22T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYJ",
+          "home": "LAC",
+          "kickoff": "2026-11-22T21:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "LV",
+          "home": "DEN",
+          "kickoff": "2026-11-22T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "PIT",
+          "home": "PHI",
+          "kickoff": "2026-11-22T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIN",
+          "home": "SF",
+          "kickoff": "2026-11-23T01:20Z",
+          "network": "NBC",
+          "note": "NFL Mexico City Game; Neutral: Estadio Banorte, Mexico City, Mexico"
+        },
+        {
+          "away": "CIN",
+          "home": "WAS",
+          "kickoff": "2026-11-24T01:15Z",
+          "network": "ESPN"
+        }
+      ]
+    },
+    {
+      "week": 12,
+      "games": [
+        {
+          "away": "GB",
+          "home": "LAR",
+          "kickoff": "2026-11-26T01:00Z",
+          "network": "Netflix"
+        },
+        {
+          "away": "CHI",
+          "home": "DET",
+          "kickoff": "2026-11-26T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "PHI",
+          "home": "DAL",
+          "kickoff": "2026-11-26T21:30Z",
+          "network": "FOX"
+        },
+        {
+          "away": "KC",
+          "home": "BUF",
+          "kickoff": "2026-11-27T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "DEN",
+          "home": "PIT",
+          "kickoff": "2026-11-27T20:00Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "ATL",
+          "home": "MIN",
+          "kickoff": "2026-11-29T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BAL",
+          "home": "HOU",
+          "kickoff": "2026-11-29T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LV",
+          "home": "CLE",
+          "kickoff": "2026-11-29T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NO",
+          "home": "CIN",
+          "kickoff": "2026-11-29T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "NYG",
+          "home": "IND",
+          "kickoff": "2026-11-29T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYJ",
+          "home": "MIA",
+          "kickoff": "2026-11-29T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "TEN",
+          "home": "JAX",
+          "kickoff": "2026-11-29T21:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "SEA",
+          "home": "SF",
+          "kickoff": "2026-11-29T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "WAS",
+          "home": "ARI",
+          "kickoff": "2026-11-29T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NE",
+          "home": "LAC",
+          "kickoff": "2026-11-30T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "CAR",
+          "home": "TB",
+          "kickoff": "2026-12-01T01:15Z",
+          "network": "ESPN"
+        }
+      ]
+    },
+    {
+      "week": 13,
+      "games": [
+        {
+          "away": "KC",
+          "home": "LAR",
+          "kickoff": "2026-12-04T01:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "CIN",
+          "home": "CLE",
+          "kickoff": "2026-12-06T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DET",
+          "home": "ATL",
+          "kickoff": "2026-12-06T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "GB",
+          "home": "NO",
+          "kickoff": "2026-12-06T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "JAX",
+          "home": "CHI",
+          "kickoff": "2026-12-06T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "LAC",
+          "home": "TB",
+          "kickoff": "2026-12-06T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "SF",
+          "home": "NYG",
+          "kickoff": "2026-12-06T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "WAS",
+          "home": "TEN",
+          "kickoff": "2026-12-06T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIA",
+          "home": "DEN",
+          "kickoff": "2026-12-06T21:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "PHI",
+          "home": "ARI",
+          "kickoff": "2026-12-06T21:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BUF",
+          "home": "NE",
+          "kickoff": "2026-12-06T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CAR",
+          "home": "MIN",
+          "kickoff": "2026-12-06T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "HOU",
+          "home": "PIT",
+          "kickoff": "2026-12-07T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "DAL",
+          "home": "SEA",
+          "kickoff": "2026-12-08T01:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 14,
+      "games": [
+        {
+          "away": "MIN",
+          "home": "NE",
+          "kickoff": "2026-12-11T01:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "ATL",
+          "home": "CLE",
+          "kickoff": "2026-12-13T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CHI",
+          "home": "MIA",
+          "kickoff": "2026-12-13T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DEN",
+          "home": "NYJ",
+          "kickoff": "2026-12-13T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "HOU",
+          "home": "WAS",
+          "kickoff": "2026-12-13T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "IND",
+          "home": "PHI",
+          "kickoff": "2026-12-13T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NO",
+          "home": "CAR",
+          "kickoff": "2026-12-13T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "TB",
+          "home": "BAL",
+          "kickoff": "2026-12-13T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "TEN",
+          "home": "DET",
+          "kickoff": "2026-12-13T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "LAC",
+          "home": "LV",
+          "kickoff": "2026-12-13T21:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "KC",
+          "home": "CIN",
+          "kickoff": "2026-12-13T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "LAR",
+          "home": "SF",
+          "kickoff": "2026-12-13T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYG",
+          "home": "SEA",
+          "kickoff": "2026-12-13T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BUF",
+          "home": "GB",
+          "kickoff": "2026-12-14T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "PIT",
+          "home": "JAX",
+          "kickoff": "2026-12-15T01:15Z",
+          "network": "ESPN"
+        }
+      ]
+    },
+    {
+      "week": 15,
+      "games": [
+        {
+          "away": "SF",
+          "home": "LAC",
+          "kickoff": "2026-12-18T01:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "SEA",
+          "home": "PHI",
+          "kickoff": "2026-12-19T22:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CHI",
+          "home": "BUF",
+          "kickoff": "2026-12-20T01:20Z",
+          "network": "CBS"
+        },
+        {
+          "away": "ATL",
+          "home": "WAS",
+          "kickoff": "2026-12-20T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "BAL",
+          "home": "PIT",
+          "kickoff": "2026-12-20T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "CIN",
+          "home": "CAR",
+          "kickoff": "2026-12-20T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CLE",
+          "home": "NYG",
+          "kickoff": "2026-12-20T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "IND",
+          "home": "TEN",
+          "kickoff": "2026-12-20T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "JAX",
+          "home": "HOU",
+          "kickoff": "2026-12-20T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "MIA",
+          "home": "GB",
+          "kickoff": "2026-12-20T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NO",
+          "home": "TB",
+          "kickoff": "2026-12-20T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYJ",
+          "home": "ARI",
+          "kickoff": "2026-12-20T21:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "DAL",
+          "home": "LAR",
+          "kickoff": "2026-12-20T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DEN",
+          "home": "LV",
+          "kickoff": "2026-12-20T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DET",
+          "home": "MIN",
+          "kickoff": "2026-12-21T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "NE",
+          "home": "KC",
+          "kickoff": "2026-12-22T01:15Z",
+          "network": "ESPN/ABC"
+        }
+      ]
+    },
+    {
+      "week": 16,
+      "games": [
+        {
+          "away": "HOU",
+          "home": "PHI",
+          "kickoff": "2026-12-25T01:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "GB",
+          "home": "CHI",
+          "kickoff": "2026-12-25T18:00Z",
+          "network": "Netflix"
+        },
+        {
+          "away": "BUF",
+          "home": "DEN",
+          "kickoff": "2026-12-25T21:30Z",
+          "network": "Netflix"
+        },
+        {
+          "away": "LAR",
+          "home": "SEA",
+          "kickoff": "2026-12-26T01:15Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CAR",
+          "home": "PIT",
+          "kickoff": "2026-12-27T05:00Z",
+          "network": null,
+          "note": "Flex Game: 12/26 or 12/27; time TBD"
+        },
+        {
+          "away": "CIN",
+          "home": "IND",
+          "kickoff": "2026-12-27T05:00Z",
+          "network": null,
+          "note": "Flex Game: 12/26 or 12/27; time TBD"
+        },
+        {
+          "away": "TB",
+          "home": "ATL",
+          "kickoff": "2026-12-27T05:00Z",
+          "network": null,
+          "note": "Flex Game: 12/26 or 12/27; time TBD"
+        },
+        {
+          "away": "WAS",
+          "home": "MIN",
+          "kickoff": "2026-12-27T05:00Z",
+          "network": null,
+          "note": "Flex Game: 12/26 or 12/27; time TBD"
+        },
+        {
+          "away": "ARI",
+          "home": "NO",
+          "kickoff": "2026-12-27T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "CLE",
+          "home": "BAL",
+          "kickoff": "2026-12-27T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "LAC",
+          "home": "MIA",
+          "kickoff": "2026-12-27T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NE",
+          "home": "NYJ",
+          "kickoff": "2026-12-27T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "TEN",
+          "home": "LV",
+          "kickoff": "2026-12-27T21:05Z",
+          "network": "FOX"
+        },
+        {
+          "away": "SF",
+          "home": "KC",
+          "kickoff": "2026-12-27T21:25Z",
+          "network": "CBS"
+        },
+        {
+          "away": "JAX",
+          "home": "DAL",
+          "kickoff": "2026-12-28T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "NYG",
+          "home": "DET",
+          "kickoff": "2026-12-29T01:15Z",
+          "network": "ESPN"
+        }
+      ]
+    },
+    {
+      "week": 17,
+      "games": [
+        {
+          "away": "BAL",
+          "home": "CIN",
+          "kickoff": "2027-01-01T01:15Z",
+          "network": "Prime Video"
+        },
+        {
+          "away": "DEN",
+          "home": "NE",
+          "kickoff": "2027-01-03T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/2 or 1/3; time TBD"
+        },
+        {
+          "away": "KC",
+          "home": "LAC",
+          "kickoff": "2027-01-03T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/2 or 1/3; time TBD"
+        },
+        {
+          "away": "LAR",
+          "home": "TB",
+          "kickoff": "2027-01-03T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/2 or 1/3; time TBD"
+        },
+        {
+          "away": "WAS",
+          "home": "JAX",
+          "kickoff": "2027-01-03T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/2 or 1/3; time TBD"
+        },
+        {
+          "away": "BUF",
+          "home": "MIA",
+          "kickoff": "2027-01-03T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "IND",
+          "home": "CLE",
+          "kickoff": "2027-01-03T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "MIN",
+          "home": "NYJ",
+          "kickoff": "2027-01-03T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "NO",
+          "home": "ATL",
+          "kickoff": "2027-01-03T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "NYG",
+          "home": "DAL",
+          "kickoff": "2027-01-03T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "PIT",
+          "home": "TEN",
+          "kickoff": "2027-01-03T18:00Z",
+          "network": "CBS"
+        },
+        {
+          "away": "SEA",
+          "home": "CAR",
+          "kickoff": "2027-01-03T18:00Z",
+          "network": "FOX"
+        },
+        {
+          "away": "LV",
+          "home": "ARI",
+          "kickoff": "2027-01-03T21:05Z",
+          "network": "CBS"
+        },
+        {
+          "away": "DET",
+          "home": "CHI",
+          "kickoff": "2027-01-03T21:25Z",
+          "network": "FOX"
+        },
+        {
+          "away": "PHI",
+          "home": "SF",
+          "kickoff": "2027-01-04T01:20Z",
+          "network": "NBC"
+        },
+        {
+          "away": "HOU",
+          "home": "GB",
+          "kickoff": "2027-01-05T01:15Z",
+          "network": "ESPN"
+        }
+      ]
+    },
+    {
+      "week": 18,
+      "games": [
+        {
+          "away": "ATL",
+          "home": "CAR",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "CHI",
+          "home": "MIN",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "CLE",
+          "home": "CIN",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "DAL",
+          "home": "WAS",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "DET",
+          "home": "GB",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "JAX",
+          "home": "IND",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "LAC",
+          "home": "DEN",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "LV",
+          "home": "KC",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "MIA",
+          "home": "NE",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "NYJ",
+          "home": "BUF",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "PHI",
+          "home": "NYG",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "PIT",
+          "home": "BAL",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "SEA",
+          "home": "LAR",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "SF",
+          "home": "ARI",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "TB",
+          "home": "NO",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        },
+        {
+          "away": "TEN",
+          "home": "HOU",
+          "kickoff": "2027-01-10T05:00Z",
+          "network": null,
+          "note": "Flex Game: 1/9 or 1/10; time TBD"
+        }
+      ]
+    }
+  ]
+}

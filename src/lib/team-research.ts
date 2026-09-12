@@ -2,7 +2,7 @@ import "server-only";
 import fs from "fs";
 import path from "path";
 
-/** Server-only JSON loaders for team profiles / sample injury news. Do not import from client components. */
+/** Server-only team research: profiles/rosters JSON + live ESPN news (TTL cache). Do not import from client components. */
 
 const DATA_DIRS = [
   path.resolve(process.cwd(), "data"),
@@ -62,6 +62,23 @@ export type NewsRow = {
   headline: string;
   published?: string;
   _label?: string;
+};
+
+/** Live headline from ESPN / NFL.com (server-fetched). */
+export type TeamNewsItem = {
+  headline: string;
+  url: string;
+  published: string | null;
+  source: "ESPN" | "NFL.com";
+};
+
+export type TeamNewsResult = {
+  items: TeamNewsItem[];
+  /** True when the upstream fetch failed (show empty-state + external links). */
+  failed: boolean;
+  fetchedAt: number | null;
+  espnTeamUrl: string;
+  nflTeamUrl: string;
 };
 
 export type TeamRosterFile = {
@@ -138,6 +155,241 @@ export function getSampleInjuryNews(abbr: string): {
       (n) => !n.team || normAbbr(n.team) === key
     ),
   };
+}
+
+/** App abbr (WAS) → ESPN site abbreviation (WSH). */
+function espnAbbr(abbr: string): string {
+  const key = normAbbr(abbr);
+  return key === "WAS" ? "WSH" : key;
+}
+
+/** ESPN site API team ids (stable for NFL). */
+const ESPN_TEAM_IDS: Record<string, string> = {
+  ARI: "22",
+  ATL: "1",
+  BAL: "33",
+  BUF: "2",
+  CAR: "29",
+  CHI: "3",
+  CIN: "4",
+  CLE: "5",
+  DAL: "6",
+  DEN: "7",
+  DET: "8",
+  GB: "9",
+  HOU: "34",
+  IND: "11",
+  JAX: "30",
+  KC: "12",
+  LV: "13",
+  LAC: "24",
+  LAR: "14",
+  MIA: "15",
+  MIN: "16",
+  NE: "17",
+  NO: "18",
+  NYG: "19",
+  NYJ: "20",
+  PHI: "21",
+  PIT: "23",
+  SF: "25",
+  SEA: "26",
+  TB: "27",
+  TEN: "10",
+  WAS: "28",
+};
+
+const NFL_TEAM_SLUGS: Record<string, string> = {
+  ARI: "arizona-cardinals",
+  ATL: "atlanta-falcons",
+  BAL: "baltimore-ravens",
+  BUF: "buffalo-bills",
+  CAR: "carolina-panthers",
+  CHI: "chicago-bears",
+  CIN: "cincinnati-bengals",
+  CLE: "cleveland-browns",
+  DAL: "dallas-cowboys",
+  DEN: "denver-broncos",
+  DET: "detroit-lions",
+  GB: "green-bay-packers",
+  HOU: "houston-texans",
+  IND: "indianapolis-colts",
+  JAX: "jacksonville-jaguars",
+  KC: "kansas-city-chiefs",
+  LV: "las-vegas-raiders",
+  LAC: "los-angeles-chargers",
+  LAR: "los-angeles-rams",
+  MIA: "miami-dolphins",
+  MIN: "minnesota-vikings",
+  NE: "new-england-patriots",
+  NO: "new-orleans-saints",
+  NYG: "new-york-giants",
+  NYJ: "new-york-jets",
+  PHI: "philadelphia-eagles",
+  PIT: "pittsburgh-steelers",
+  SF: "san-francisco-49ers",
+  SEA: "seattle-seahawks",
+  TB: "tampa-bay-buccaneers",
+  TEN: "tennessee-titans",
+  WAS: "washington-commanders",
+};
+
+const NEWS_TTL_MS = 12 * 60 * 1000; // ~12 min success cache
+const NEWS_FAIL_TTL_MS = 45 * 1000; // retry sooner after upstream errors
+
+type NewsCacheEntry = {
+  fetchedAt: number;
+  items: TeamNewsItem[];
+  failed: boolean;
+};
+
+const newsCacheByTeam = new Map<string, NewsCacheEntry>();
+
+export function teamExternalNewsUrls(abbr: string): {
+  espnTeamUrl: string;
+  nflTeamUrl: string;
+} {
+  const key = normAbbr(abbr);
+  const espn = espnAbbr(key).toLowerCase();
+  const slug = NFL_TEAM_SLUGS[key] ?? key.toLowerCase();
+  return {
+    espnTeamUrl: `https://www.espn.com/nfl/team/_/name/${espn}`,
+    nflTeamUrl: `https://www.nfl.com/teams/${slug}/`,
+  };
+}
+
+function httpsUrl(href: string | undefined | null): string | null {
+  if (!href || typeof href !== "string") return null;
+  const trimmed = href.trim();
+  if (!trimmed) return null;
+  if (trimmed.startsWith("//")) return `https:${trimmed}`;
+  if (trimmed.startsWith("http://")) return `https://${trimmed.slice(7)}`;
+  if (trimmed.startsWith("https://")) return trimmed;
+  return null;
+}
+
+function sortNewsNewestFirst(items: TeamNewsItem[]): TeamNewsItem[] {
+  return [...items].sort((a, b) => {
+    const ta = a.published ? Date.parse(a.published) : NaN;
+    const tb = b.published ? Date.parse(b.published) : NaN;
+    const aOk = Number.isFinite(ta);
+    const bOk = Number.isFinite(tb);
+    if (aOk && bOk) return tb - ta;
+    if (aOk && !bOk) return -1;
+    if (!aOk && bOk) return 1;
+    return 0;
+  });
+}
+
+type EspnArticle = {
+  headline?: string;
+  published?: string;
+  lastModified?: string;
+  links?: { web?: { href?: string } };
+};
+
+async function fetchEspnTeamNewsRaw(abbr: string): Promise<TeamNewsItem[]> {
+  const key = normAbbr(abbr);
+  const teamId = ESPN_TEAM_IDS[key];
+  if (!teamId) return [];
+
+  const url = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?team=${encodeURIComponent(teamId)}&limit=20`;
+  const res = await fetch(url, {
+    headers: {
+      Accept: "application/json",
+      // ESPN edge returns 403 HTML for some bot-like UAs; a normal browser UA works.
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    },
+    // Avoid Next fetch cache fighting our own TTL map; this module caches.
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`ESPN news HTTP ${res.status}`);
+  }
+  const data = (await res.json()) as { articles?: EspnArticle[] };
+  const articles = Array.isArray(data.articles) ? data.articles : [];
+  const seen = new Set<string>();
+  const items: TeamNewsItem[] = [];
+
+  for (const a of articles) {
+    const headline = (a.headline || "").trim();
+    const link = httpsUrl(a.links?.web?.href);
+    if (!headline || !link) continue;
+    const dedupe = link.toLowerCase();
+    if (seen.has(dedupe)) continue;
+    seen.add(dedupe);
+    const published =
+      (a.published && String(a.published)) ||
+      (a.lastModified && String(a.lastModified)) ||
+      null;
+    items.push({
+      headline,
+      url: link,
+      published,
+      source: "ESPN",
+    });
+  }
+
+  return sortNewsNewestFirst(items);
+}
+
+/**
+ * Live team headlines from ESPN site API (public). Cached in-memory ~12 min.
+ * Never invents headlines — on failure returns empty items + failed:true.
+ */
+export async function getTeamNews(abbr: string): Promise<TeamNewsResult> {
+  const key = normAbbr(abbr);
+  const urls = teamExternalNewsUrls(key);
+  const cached = newsCacheByTeam.get(key);
+  const now = Date.now();
+  const ttl = cached?.failed ? NEWS_FAIL_TTL_MS : NEWS_TTL_MS;
+  if (cached && now - cached.fetchedAt < ttl) {
+    return {
+      items: cached.items,
+      failed: cached.failed,
+      fetchedAt: cached.fetchedAt,
+      ...urls,
+    };
+  }
+
+  try {
+    const items = await fetchEspnTeamNewsRaw(key);
+    const entry: NewsCacheEntry = {
+      fetchedAt: now,
+      items,
+      failed: false,
+    };
+    newsCacheByTeam.set(key, entry);
+    return {
+      items,
+      failed: false,
+      fetchedAt: now,
+      ...urls,
+    };
+  } catch {
+    // Keep prior good cache if present even when TTL expired
+    if (cached && cached.items.length > 0 && !cached.failed) {
+      return {
+        items: cached.items,
+        failed: false,
+        fetchedAt: cached.fetchedAt,
+        ...urls,
+      };
+    }
+    const entry: NewsCacheEntry = {
+      fetchedAt: now,
+      items: [],
+      failed: true,
+    };
+    newsCacheByTeam.set(key, entry);
+    return {
+      items: [],
+      failed: true,
+      fetchedAt: now,
+      ...urls,
+    };
+  }
 }
 
 const OFFENCE_POS = new Set(

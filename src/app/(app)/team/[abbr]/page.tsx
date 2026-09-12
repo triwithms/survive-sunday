@@ -9,11 +9,12 @@ import {
   formatPriorYearRank,
 } from "@/lib/matchup-meta";
 import {
-  getSampleInjuryNews,
+  getTeamNews,
   getTeamProfile,
   getTeamRoster,
   splitRosterPlayers,
   type RosterPlayer,
+  type TeamNewsItem,
 } from "@/lib/team-research";
 import { formatWinPct } from "@/lib/standings-format";
 
@@ -102,6 +103,56 @@ function SideSections({
   );
 }
 
+
+function formatNewsDate(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return null;
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short",
+    }).format(new Date(t));
+  } catch {
+    return iso.slice(0, 10);
+  }
+}
+
+function NewsList({ items }: { items: TeamNewsItem[] }) {
+  return (
+    <ul className="space-y-2 text-sm">
+      {items.map((n, i) => {
+        const when = formatNewsDate(n.published);
+        return (
+          <li
+            key={`${n.url}-${i}`}
+            className="rounded-lg bg-[var(--stadium-700)]/40 p-3"
+          >
+            <a
+              href={n.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-[var(--text-primary)] underline decoration-gold-400/40 underline-offset-2 hover:decoration-gold-400"
+            >
+              {n.headline}
+            </a>
+            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] uppercase tracking-wide text-[var(--text-muted)]">
+              <span className="chip chip-one-loss text-[10px] normal-case tracking-normal">
+                {n.source}
+              </span>
+              {when && <span className="normal-case tracking-normal">{when}</span>}
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 export default async function TeamResearchPage({
   params,
 }: {
@@ -119,7 +170,7 @@ export default async function TeamResearchPage({
 
   const profile = getTeamProfile(abbr);
   const roster = getTeamRoster(abbr);
-  const sample = getSampleInjuryNews(abbr);
+  const news = await getTeamNews(abbr);
   const standing = {
     wins: team.wins,
     losses: team.losses,
@@ -284,45 +335,70 @@ export default async function TeamResearchPage({
 
       <section className="card-glass p-4 space-y-3">
         <div className="flex items-center gap-2 flex-wrap">
-          <h2 className="font-semibold text-gold-400">Injuries / news</h2>
-          <span className="chip chip-gold text-[10px]">Demo sample</span>
+          <h2 className="font-semibold text-gold-400">Team news</h2>
+          {!news.failed && news.items.length > 0 && (
+            <span className="chip chip-gold text-[10px]">Live · ESPN</span>
+          )}
         </div>
-        <p className="text-xs text-[var(--text-muted)]">
-          From sample_injury_news.json — fictional stubs or historical shape
-          only. Not live 2026 reports.
+        <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+          Headlines from ESPN&apos;s public team news feed, newest first. Opens
+          on ESPN in a new tab. Not affiliated with the NFL or ESPN.
         </p>
-        {sample.injuries.length === 0 && sample.news.length === 0 ? (
-          <p className="text-sm text-[var(--text-muted)]">
-            No sample rows for {team.abbr}.
-          </p>
+        {news.failed || news.items.length === 0 ? (
+          <div className="space-y-2 text-sm text-[var(--text-muted)]">
+            <p>
+              {news.failed
+                ? "Live headlines are unavailable right now."
+                : "No recent headlines returned for this team."}{" "}
+              Check the team pages directly:
+            </p>
+            <ul className="flex flex-wrap gap-3 text-sm">
+              <li>
+                <a
+                  href={news.espnTeamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold-400 underline underline-offset-2"
+                >
+                  ESPN · {team.abbr}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={news.nflTeamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold-400 underline underline-offset-2"
+                >
+                  NFL.com · {team.abbr}
+                </a>
+              </li>
+            </ul>
+          </div>
         ) : (
-          <ul className="space-y-2 text-sm">
-            {sample.injuries.map((inj, i) => (
-              <li key={`inj-${i}`} className="rounded-lg bg-[var(--stadium-700)]/40 p-3">
-                <div className="font-medium">
-                  {inj.player}{" "}
-                  <span className="text-xs font-mono text-[var(--text-muted)]">
-                    {inj.position}
-                  </span>
-                </div>
-                <div className="text-xs mt-0.5">
-                  <span className="text-crimson-400">{inj.status}</span>
-                  {" · "}
-                  {inj.injury}
-                </div>
-              </li>
-            ))}
-            {sample.news.map((n, i) => (
-              <li key={`news-${i}`} className="rounded-lg bg-[var(--stadium-700)]/40 p-3">
-                <div className="text-sm">{n.headline}</div>
-                {n._label && (
-                  <div className="text-[10px] text-[var(--text-muted)] mt-1 uppercase tracking-wide">
-                    {n._label}
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
+          <>
+            <NewsList items={news.items} />
+            <p className="text-[10px] text-[var(--text-muted)] pt-1">
+              More coverage:{" "}
+              <a
+                href={news.espnTeamUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-gold-400"
+              >
+                ESPN
+              </a>
+              {" · "}
+              <a
+                href={news.nflTeamUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-gold-400"
+              >
+                NFL.com
+              </a>
+            </p>
+          </>
         )}
       </section>
     </div>
