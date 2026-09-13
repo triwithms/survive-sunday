@@ -65,7 +65,7 @@ export function boardPickFields(
   games: BoardGameSource[] = []
 ): { pickTeamAbbr: string | null; pickGameKickoff: Date | string | number | null } {
   const abbr = pick?.teamAbbr?.trim().toUpperCase() ?? "";
-  if (!abbr || pick?.source === "missed" || abbr === MISSED_PICK_TEAM) {
+  if (!pick || !abbr || pick.source === "missed" || abbr === MISSED_PICK_TEAM) {
     return { pickTeamAbbr: null, pickGameKickoff: null };
   }
   if (pick.game?.kickoff != null) {
