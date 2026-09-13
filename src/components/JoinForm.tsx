@@ -134,7 +134,7 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
           </>
         )}
 
-        {(!claimed || newPlayer) && (
+        {(newPlayer || (membershipId && !claimed)) && (
           <>
             <label className="block text-sm">
               <span className="text-[var(--text-muted)]">Email</span>
