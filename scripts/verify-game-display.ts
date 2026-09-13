@@ -9,6 +9,8 @@ import {
   espnSituationFromNote,
   formatEspnSituation,
   formatKickoffForScores,
+  formatLiveScorebug,
+  formatScorebugPeriodLine,
   formatScoreLine,
   formatScoresStatus,
   possessionAbbrFromSituation,
@@ -64,6 +66,32 @@ assert.equal(formatEspnSituation(null), null);
 assert.equal(formatEspnSituation({}), null);
 assert.equal(possessionAbbrFromSituation("KC ball · 2nd & 7 · KC 33"), "KC");
 assert.equal(possessionAbbrFromSituation(null), null);
+assert.equal(formatScorebugPeriodLine("Q4 9:00"), "4TH | 9:00");
+assert.equal(formatScorebugPeriodLine("Q1 12:00"), "1ST | 12:00");
+assert.equal(formatScorebugPeriodLine("OT 8:12"), "OT | 8:12");
+assert.equal(formatScorebugPeriodLine("Halftime"), "HALF");
+assert.equal(formatScorebugPeriodLine("End of 2nd"), "END 2ND");
+assert.deepEqual(
+  formatLiveScorebug("Q4 9:00 · MIN ball · 1st & 10 · GB 40 · ESPN"),
+  {
+    down: "1ST & 10",
+    periodLine: "4TH | 9:00",
+    spot: "GB 40",
+    possession: "MIN",
+  }
+);
+assert.deepEqual(formatLiveScorebug("Q3 4:21 · ESPN"), {
+  down: null,
+  periodLine: "3RD | 4:21",
+  spot: null,
+  possession: null,
+});
+assert.deepEqual(formatLiveScorebug("Live · ESPN"), {
+  down: null,
+  periodLine: null,
+  spot: null,
+  possession: null,
+});
 
 const sundayAfternoon = new Date("2026-09-13T17:00:00.000Z"); // 1:00 p.m. ET
 const sundayEvening = new Date("2026-09-13T20:00:00.000Z");
