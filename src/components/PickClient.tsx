@@ -101,6 +101,28 @@ export function PickClient({
   }
 
   const list = Array.isArray(games) ? games : [];
+  const activePick = selected ?? currentPick;
+  const activeMatchup = activePick
+    ? list.find(
+        (m) => m.away.abbr === activePick || m.home.abbr === activePick
+      ) ?? null
+    : null;
+  const activeSide = activeMatchup
+    ? activeMatchup.away.abbr === activePick
+      ? activeMatchup.away
+      : activeMatchup.home
+    : null;
+  const activeOpp = activeMatchup
+    ? activeMatchup.away.abbr === activePick
+      ? activeMatchup.home
+      : activeMatchup.away
+    : null;
+  const activePrior = activeSide
+    ? formatPriorYearRank(activeSide.priorYearRank)
+    : null;
+  const activeStanding = activeSide?.standing
+    ? formatCurrentStanding(activeSide.standing)
+    : null;
 
   return (
     <div className="space-y-4">
@@ -124,21 +146,71 @@ export function PickClient({
                 ? "Week locked — picks are read-only."
                 : "Use Pick on a side to choose that team. One team. No reuse."}
           </p>
-          {currentPick && (
-            <div className="mt-2 space-y-1 text-sm">
-              <p>
-                Current:{" "}
-                <span className="font-mono text-gold-400">{currentPick}</span>
-              </p>
-              {!readOnly && (
-                <p className="text-[var(--text-muted)]">
-                  Pick another side to change before lock.
-                </p>
-              )}
-            </div>
-          )}
         </div>
       </div>
+
+      <section
+        className="card-glass p-4 border border-gold-400/30"
+        aria-label="Your current pick"
+      >
+        <p className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">
+          Your pick
+        </p>
+        {activeSide ? (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <TeamLogo
+                abbr={activeSide.abbr}
+                logoUrl={activeSide.logoUrl}
+                size={52}
+              />
+              <div className="min-w-0">
+                <p className="font-mono text-2xl font-semibold text-gold-400 leading-none">
+                  {activeSide.abbr}
+                </p>
+                <p className="text-sm text-[var(--text-primary)] truncate mt-1">
+                  {activeSide.name}
+                </p>
+                {activeOpp && (
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                    vs {activeOpp.abbr}
+                    {activeMatchup?.kickoff
+                      ? ` · ${formatKickoff(activeMatchup.kickoff)}`
+                      : ""}
+                  </p>
+                )}
+                {(activePrior || activeStanding) && (
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                    {[activePrior, activeStanding].filter(Boolean).join(" · ")}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <Link
+                href={`/team/${activeSide.abbr}`}
+                prefetch={false}
+                className="btn-secondary text-sm"
+              >
+                Team details
+              </Link>
+              {!readOnly && (
+                <span className="text-xs text-[var(--text-muted)]">
+                  Pick another side below to change
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <p className="text-sm text-[var(--text-muted)]">
+              {readOnly
+                ? "No pick recorded for this week."
+                : "No pick yet — choose a side from this week's games below."}
+            </p>
+          </div>
+        )}
+      </section>
 
       {eliminated && (
         <div
@@ -147,7 +219,7 @@ export function PickClient({
         >
           <p className="font-semibold text-crimson-400">Eliminated this season</p>
           <p className="text-[var(--text-muted)]">
-            No more picks — you can still browse the slate below.
+            No more picks — you can still browse this week's games below.
           </p>
         </div>
       )}
@@ -188,6 +260,10 @@ export function PickClient({
         </div>
       )}
 
+      <section aria-label="This week's games" className="space-y-3">
+        <h2 className="text-sm font-semibold text-gold-400 tracking-wide">
+          This week&apos;s games
+        </h2>
       <ul className="space-y-3">
         {list.map((m) => {
           const fav = resolveFavourite({
@@ -242,6 +318,7 @@ export function PickClient({
           );
         })}
       </ul>
+      </section>
 
       {confirm && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-4">

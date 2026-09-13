@@ -2,8 +2,13 @@ import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { ensureWeekLockedEffects, isWeekLocked } from "@/lib/grading";
+import {
+  syncWeekScoresFromEspn,
+  shouldPollLiveScores,
+} from "@/lib/live-scores";
 import { formatKickoff } from "@/lib/utils";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
+import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -13,6 +18,12 @@ export const revalidate = 0;
 type ScoresSearchParams = {
   week?: string | string[];
 };
+
+function statusRank(status: string) {
+  if (status === "live") return 0;
+  if (status === "scheduled") return 1;
+  return 2;
+}
 
 export default async function ScoresPage({
   searchParams,
@@ -36,7 +47,7 @@ export default async function ScoresPage({
   const requestedIsValid =
     Number.isInteger(parsedWeek) &&
     parsedWeek <= me.pool.currentWeek &&
-    weeks.some((week) => w.number === parsedWeek);
+    weeks.some((week) => week.number === parsedWeek);
   const selectedNumber = requestedIsValid ? parsedWeek : me.pool.currentWeek;
   const selectedRef =
     weeks.find((week) => week.number === selectedNumber) ??
@@ -51,11 +62,18 @@ export default async function ScoresPage({
     );
   }
 
-  // Auto-grade finals + missed picks when lock has passed (idempotent).
   try {
     await ensureWeekLockedEffects(selectedRef.id);
   } catch (e) {
     console.error("scores lock effects skipped", e);
+  }
+
+  let espnSyncError: string | null = null;
+  try {
+    await syncWeekScoresFromEspn(selectedRef.id);
+  } catch (e) {
+    console.error("espn score sync skipped", e);
+    espnSyncError = "Couldn’t refresh ESPN right now — showing last saved scores.";
   }
 
   const week = await prisma.week.findUniqueOrThrow({
@@ -79,6 +97,14 @@ export default async function ScoresPage({
     hasGames: candidate.games.length > 0,
   }));
 
+  const games = [...week.games].sort((a, b) => {
+    const rank = statusRank(a.status) - statusRank(b.status);
+    if (rank !== 0) return rank;
+    return a.kickoff.getTime() - b.kickoff.getTime();
+  });
+  const liveCount = games.filter((g) => g.status === "live").length;
+  const poll = shouldPollLiveScores(games);
+
   return (
     <div className="space-y-4 min-w-0">
       <div>
@@ -86,8 +112,12 @@ export default async function ScoresPage({
           {week.label} scores
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Live / simulated scores. Finals auto-grade picks.
+          Live scores from ESPN while games are on. Finals auto-grade picks.
+          {liveCount > 0 ? ` · ${liveCount} live now` : ""}
         </p>
+        {espnSyncError && (
+          <p className="text-xs text-crimson-400 mt-1">{espnSyncError}</p>
+        )}
       </div>
 
       <WeekSwitcher
@@ -97,56 +127,98 @@ export default async function ScoresPage({
         basePath="/scores"
       />
 
-      {week.games.length === 0 ? (
+      <LiveScoresRefresh weekNumber={week.number} poll={poll} />
+
+      {games.length === 0 ? (
         <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
           Games for {week.label} have not been seeded yet. Check back when the
-          slate is available.
+          games are available.
         </div>
       ) : (
         <ul className="space-y-2">
-          {week.games.map((g) => (
-            <li key={g.id} className="card-glass p-3">
-              <div className="flex items-center justify-between gap-2">
-                <div className="font-mono">
-                  <span className={g.status === "final" && (g.scoreAway ?? 0) > (g.scoreHome ?? 0) ? "text-field-400 font-semibold" : ""}>
-                    {g.awayAbbr}
-                  </span>{" "}
-                  {g.scoreAway != null ? (
-                    <span className="text-lg">{g.scoreAway}</span>
-                  ) : (
-                    <span className="text-[var(--text-muted)]">–</span>
-                  )}
-                  <span className="text-[var(--text-muted)] mx-2">@</span>
-                  {g.scoreHome != null ? (
-                    <span className="text-lg">{g.scoreHome}</span>
-                  ) : (
-                    <span className="text-[var(--text-muted)]">–</span>
-                  )}{" "}
-                  <span className={g.status === "final" && (g.scoreHome ?? 0) > (g.scoreAway ?? 0) ? "text-field-400 font-semibold" : ""}>
-                    {g.homeAbbr}
+          {games.map((g) => {
+            const isLive = g.status === "live";
+            const isFinal = g.status === "final";
+            const awayWins =
+              isFinal &&
+              g.scoreAway != null &&
+              g.scoreHome != null &&
+              g.scoreAway > g.scoreHome;
+            const homeWins =
+              isFinal &&
+              g.scoreAway != null &&
+              g.scoreHome != null &&
+              g.scoreHome > g.scoreAway;
+            return (
+              <li
+                key={g.id}
+                className={`card-glass p-3 ${
+                  isLive ? "border border-field-400/50" : ""
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="font-mono min-w-0">
+                    <span
+                      className={
+                        awayWins || (isLive && (g.scoreAway ?? 0) > (g.scoreHome ?? 0))
+                          ? "text-field-400 font-semibold"
+                          : ""
+                      }
+                    >
+                      {g.awayAbbr}
+                    </span>{" "}
+                    {g.scoreAway != null ? (
+                      <span className={`text-lg ${isLive ? "text-gold-400" : ""}`}>
+                        {g.scoreAway}
+                      </span>
+                    ) : (
+                      <span className="text-[var(--text-muted)]">–</span>
+                    )}
+                    <span className="text-[var(--text-muted)] mx-2">@</span>
+                    {g.scoreHome != null ? (
+                      <span className={`text-lg ${isLive ? "text-gold-400" : ""}`}>
+                        {g.scoreHome}
+                      </span>
+                    ) : (
+                      <span className="text-[var(--text-muted)]">–</span>
+                    )}{" "}
+                    <span
+                      className={
+                        homeWins || (isLive && (g.scoreHome ?? 0) > (g.scoreAway ?? 0))
+                          ? "text-field-400 font-semibold"
+                          : ""
+                      }
+                    >
+                      {g.homeAbbr}
+                    </span>
+                  </div>
+                  <span
+                    className={`chip shrink-0 ${
+                      isFinal
+                        ? "chip-gold"
+                        : isLive
+                          ? "chip-live"
+                          : "chip-one-loss"
+                    }`}
+                  >
+                    {isLive ? "LIVE" : g.status}
                   </span>
                 </div>
-                <span
-                  className={`chip ${
-                    g.status === "final"
-                      ? "chip-gold"
-                      : g.status === "live"
-                        ? "chip-live"
-                        : "chip-one-loss"
-                  }`}
-                >
-                  {g.status}
-                </span>
-              </div>
-              <p className="text-xs text-[var(--text-muted)] mt-1">
-                {formatKickoff(g.kickoff)}
-                {g.network ? ` · ${g.network}` : ""}
-              </p>
-              {g.note && (
-                <p className="text-xs text-[var(--text-muted)] mt-0.5">{g.note}</p>
-              )}
-            </li>
-          ))}
+                <p className="text-xs text-[var(--text-muted)] mt-1">
+                  {isLive && g.note
+                    ? g.note
+                    : `${formatKickoff(g.kickoff)}${
+                        g.network ? ` · ${g.network}` : ""
+                      }`}
+                </p>
+                {!isLive && g.note && (
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                    {g.note}
+                  </p>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
 
@@ -165,7 +237,9 @@ export default async function ScoresPage({
             const isSelf = member.id === me.id;
             const showPick = revealAllPicks || isSelf;
             const pick =
-              rawPick && rawPick.source !== "missed" && rawPick.teamAbbr !== "MISS"
+              rawPick &&
+              rawPick.source !== "missed" &&
+              rawPick.teamAbbr !== "MISS"
                 ? rawPick
                 : null;
             const result = rawPick?.result ?? "pending";

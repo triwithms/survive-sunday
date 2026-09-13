@@ -50,7 +50,12 @@ function StandingTable({
             <th className="py-2 pr-2 font-medium font-mono">Pct</th>
             <th className="py-2 pr-2 font-medium font-mono">PF</th>
             <th className="py-2 pr-2 font-medium font-mono">PA</th>
-            <th className="py-2 font-medium font-mono whitespace-nowrap">’25</th>
+            <th
+              className="py-2 font-medium whitespace-nowrap"
+              title="2025 composite power rank — 1 strongest, 32 weakest"
+            >
+              2025 rank
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -90,7 +95,14 @@ function StandingTable({
               </td>
               <td className="py-2 pr-2 font-mono text-xs">{t.pointsFor}</td>
               <td className="py-2 pr-2 font-mono text-xs">{t.pointsAgainst}</td>
-              <td className="py-2 font-mono text-xs text-[var(--text-muted)]">
+              <td
+                className="py-2 font-mono text-xs text-[var(--text-muted)]"
+                title={
+                  t.priorYearRank != null
+                    ? `2025 power rank #${t.priorYearRank} (1 = strongest)`
+                    : undefined
+                }
+              >
                 {t.priorYearRank != null ? `#${t.priorYearRank}` : "—"}
               </td>
             </tr>
@@ -184,6 +196,12 @@ export function NflStandingsClient({
         <span className="chip chip-gold mr-2">Demo standings</span>
         {asOf ? `As of ${asOf}. ` : ""}
         {note || "Not a live NFL API feed."}
+      </p>
+      <p className="text-xs text-[var(--text-muted)]">
+        <span className="font-medium text-[var(--text-primary)]">2025 rank</span>
+        {" "}
+        = last season’s composite power rank by team (1 = strongest, 32 =
+        weakest). Used for research next to each club — not this year’s W-L.
       </p>
 
       {tab === "division" && (

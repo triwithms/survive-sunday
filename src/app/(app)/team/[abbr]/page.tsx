@@ -206,7 +206,7 @@ export default async function TeamResearchPage({
           prefetch={false}
           className="text-[var(--text-muted)] underline underline-offset-2 hover:text-gold-400"
         >
-          Pick slate
+          This week&apos;s games
         </Link>
         <Link
           href="/schedule"

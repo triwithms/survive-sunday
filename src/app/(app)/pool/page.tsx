@@ -122,6 +122,24 @@ export default async function PoolPage({
     { key: "eliminated", label: "Eliminated" },
   ] as const;
 
+  type Participant = (typeof participants)[number];
+  const validPick = (m: Participant) => {
+    const pickRaw = m.picks[0];
+    return pickRaw &&
+      pickRaw.source !== "missed" &&
+      pickRaw.teamAbbr !== MISSED_TEAM
+      ? pickRaw
+      : undefined;
+  };
+  const byNickname = (a: Participant, b: Participant) =>
+    a.nickname.localeCompare(b.nickname, "en-CA");
+  const gamesByKickoff = [...week.games].sort(
+    (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime(),
+  );
+  const missedOrNoPick = participants
+    .filter((m) => !validPick(m))
+    .sort(byNickname);
+
   return (
     <div className="space-y-6">
       <div>
@@ -223,92 +241,159 @@ export default async function PoolPage({
         )}
       </section>
 
-      <section>
-        <h2 className="text-lg font-semibold mb-3">Participants</h2>
-        <div className="space-y-5">
-          {groups.map((g) => {
-            const rows = sorted.filter((m) => m.status === g.key);
-            if (!rows.length) return null;
-            return (
-              <div key={g.key}>
+      {revealAllPicks ? (
+        <section>
+          <h2 className="text-lg font-semibold mb-3">Picks by game</h2>
+          <div className="space-y-5">
+            {gamesByKickoff.map((game) => {
+              const isLive = game.status === "live";
+              const isFinal = game.status === "final";
+              const awayCluster = participants
+                .filter((m) => validPick(m)?.teamAbbr === game.awayAbbr)
+                .sort(byNickname);
+              const homeCluster = participants
+                .filter((m) => validPick(m)?.teamAbbr === game.homeAbbr)
+                .sort(byNickname);
+              return (
+                <div key={game.id} className="card-glass p-4 space-y-3">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div>
+                      <p className="font-mono font-semibold text-gold-400">
+                        {game.awayAbbr} @ {game.homeAbbr}
+                      </p>
+                      <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                        {formatKickoff(game.kickoff)}
+                        {isFinal &&
+                          game.scoreAway != null &&
+                          game.scoreHome != null &&
+                          ` · ${game.scoreAway}–${game.scoreHome}`}
+                      </p>
+                    </div>
+                    {isLive && (
+                      <span className="chip chip-live shrink-0">LIVE</span>
+                    )}
+                    {isFinal && (
+                      <span className="chip chip-gold shrink-0">final</span>
+                    )}
+                  </div>
+                  {(
+                    [
+                      { abbr: game.awayAbbr, rows: awayCluster },
+                      { abbr: game.homeAbbr, rows: homeCluster },
+                    ] as const
+                  ).map((cluster) =>
+                    cluster.rows.length ? (
+                      <div key={cluster.abbr}>
+                        <h3 className="text-xs uppercase tracking-wider text-[var(--text-muted)] mb-2">
+                          <Link
+                            href={`/team/${cluster.abbr}`}
+                            prefetch={false}
+                            className="font-mono text-gold-400 underline underline-offset-2 decoration-gold-400/40 hover:decoration-gold-400"
+                          >
+                            {cluster.abbr}
+                          </Link>
+                        </h3>
+                        <ul className="space-y-2">
+                          {cluster.rows.map((m) => {
+                            const pick = validPick(m);
+                            if (!pick) return null;
+                            const isSelf = m.id === self.id;
+                            const faded =
+                              m.status === "eliminated" ? "opacity-60" : "";
+                            return (
+                              <li
+                                key={m.id}
+                                className={`card-glass p-3 ${faded}`}
+                              >
+                                <div className="flex items-center gap-2 flex-wrap min-w-0">
+                                  <span className="font-medium min-w-0">
+                                    {m.nickname}
+                                    {isSelf ? " (you)" : ""}
+                                    {m.realName ? (
+                                      <span className="text-xs font-normal text-[var(--text-muted)]">
+                                        {" "}
+                                        ({m.realName})
+                                      </span>
+                                    ) : null}
+                                  </span>
+                                  <StatusChip status={m.status} />
+                                  {pick.result && (
+                                    <span
+                                      className={`text-sm font-medium ${
+                                        pick.result === "win"
+                                          ? "text-field-400"
+                                          : pick.result === "loss"
+                                            ? "text-crimson-400"
+                                            : "text-[var(--text-muted)]"
+                                      }`}
+                                    >
+                                      {pick.result}
+                                    </span>
+                                  )}
+                                  {pick.source === "imported" && (
+                                    <span className="text-xs text-[var(--text-muted)]">
+                                      imported
+                                    </span>
+                                  )}
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ) : null,
+                  )}
+                </div>
+              );
+            })}
+
+            {missedOrNoPick.length > 0 && (
+              <div>
                 <h3 className="text-xs uppercase tracking-wider text-[var(--text-muted)] mb-2">
-                  {g.label}
+                  Missed / no pick
                 </h3>
                 <ul className="space-y-2">
-                  {rows.map((m) => {
-                    const pickRaw = m.picks[0];
-                    const pick =
-                      pickRaw &&
-                      pickRaw.source !== "missed" &&
-                      pickRaw.teamAbbr !== MISSED_TEAM
-                        ? pickRaw
-                        : undefined;
+                  {missedOrNoPick.map((m) => {
                     const isSelf = m.id === self.id;
-                    const show = revealAllPicks || isSelf;
-                    const faded = m.status === "eliminated" ? "opacity-60" : "";
+                    const faded =
+                      m.status === "eliminated" ? "opacity-60" : "";
+                    const pickRaw = m.picks[0];
+                    const isMissed =
+                      !!pickRaw &&
+                      (pickRaw.source === "missed" ||
+                        pickRaw.teamAbbr === MISSED_TEAM);
                     return (
                       <li
                         key={m.id}
                         className={`card-glass p-3 ${faded}`}
                       >
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-medium min-w-0">
-                              {m.nickname}
-                              {isSelf ? " (you)" : ""}
-                              {m.realName ? (
-                                <span className="text-xs font-normal text-[var(--text-muted)]">
-                                  {" "}
-                                  ({m.realName})
-                                </span>
-                              ) : null}
+                        <div className="flex items-center gap-2 flex-wrap min-w-0">
+                          <span className="font-medium min-w-0">
+                            {m.nickname}
+                            {isSelf ? " (you)" : ""}
+                            {m.realName ? (
+                              <span className="text-xs font-normal text-[var(--text-muted)]">
+                                {" "}
+                                ({m.realName})
+                              </span>
+                            ) : null}
+                          </span>
+                          <StatusChip status={m.status} />
+                          <span className="text-sm text-[var(--text-muted)]">
+                            {isMissed ? "Missed pick" : "No pick"}
+                          </span>
+                          {isMissed && pickRaw?.result && (
+                            <span
+                              className={`text-sm font-medium ${
+                                pickRaw.result === "win"
+                                  ? "text-field-400"
+                                  : pickRaw.result === "loss"
+                                    ? "text-crimson-400"
+                                    : "text-[var(--text-muted)]"
+                              }`}
+                            >
+                              {pickRaw.result}
                             </span>
-                            <StatusChip status={m.status} />
-                          </div>
-                          {show && pick ? (
-                            <div className="mt-1 text-sm">
-                              <Link
-                                href={`/team/${pick.teamAbbr}`}
-                                prefetch={false}
-                                className="font-mono text-gold-400 underline underline-offset-2 decoration-gold-400/40 hover:decoration-gold-400"
-                              >
-                                {pick.teamAbbr}
-                              </Link>
-                              {pick.game && (
-                                <span className="text-[var(--text-muted)]">
-                                  {" "}
-                                  · {pick.game.awayAbbr} @ {pick.game.homeAbbr}
-                                </span>
-                              )}
-                              {pick.result && (
-                                <span
-                                  className={
-                                    pick.result === "win"
-                                      ? " text-field-400"
-                                      : pick.result === "loss"
-                                        ? " text-crimson-400"
-                                        : " text-[var(--text-muted)]"
-                                  }
-                                >
-                                  {" "}
-                                  · {pick.result}
-                                </span>
-                              )}
-                              {pick.source === "imported" && (
-                                <span className="text-[var(--text-muted)]">
-                                  {" "}
-                                  · imported
-                                </span>
-                              )}
-                            </div>
-                          ) : show ? (
-                            <p className="text-sm text-[var(--text-muted)] mt-1">
-                              No pick
-                            </p>
-                          ) : (
-                            <p className="text-sm text-[var(--text-muted)] mt-1 italic">
-                              Reveals after kickoff
-                            </p>
                           )}
                         </div>
                       </li>
@@ -316,10 +401,108 @@ export default async function PoolPage({
                   })}
                 </ul>
               </div>
-            );
-          })}
-        </div>
-      </section>
+            )}
+          </div>
+        </section>
+      ) : (
+        <section>
+          <h2 className="text-lg font-semibold mb-3">Participants</h2>
+          <div className="space-y-5">
+            {groups.map((g) => {
+              const rows = sorted.filter((m) => m.status === g.key);
+              if (!rows.length) return null;
+              return (
+                <div key={g.key}>
+                  <h3 className="text-xs uppercase tracking-wider text-[var(--text-muted)] mb-2">
+                    {g.label}
+                  </h3>
+                  <ul className="space-y-2">
+                    {rows.map((m) => {
+                      const pickRaw = m.picks[0];
+                      const pick =
+                        pickRaw &&
+                        pickRaw.source !== "missed" &&
+                        pickRaw.teamAbbr !== MISSED_TEAM
+                          ? pickRaw
+                          : undefined;
+                      const isSelf = m.id === self.id;
+                      const show = isSelf;
+                      const faded = m.status === "eliminated" ? "opacity-60" : "";
+                      return (
+                        <li
+                          key={m.id}
+                          className={`card-glass p-3 ${faded}`}
+                        >
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-medium min-w-0">
+                                {m.nickname}
+                                {isSelf ? " (you)" : ""}
+                                {m.realName ? (
+                                  <span className="text-xs font-normal text-[var(--text-muted)]">
+                                    {" "}
+                                    ({m.realName})
+                                  </span>
+                                ) : null}
+                              </span>
+                              <StatusChip status={m.status} />
+                            </div>
+                            {show && pick ? (
+                              <div className="mt-1 text-sm">
+                                <Link
+                                  href={`/team/${pick.teamAbbr}`}
+                                  prefetch={false}
+                                  className="font-mono text-gold-400 underline underline-offset-2 decoration-gold-400/40 hover:decoration-gold-400"
+                                >
+                                  {pick.teamAbbr}
+                                </Link>
+                                {pick.game && (
+                                  <span className="text-[var(--text-muted)]">
+                                    {" "}
+                                    · {pick.game.awayAbbr} @ {pick.game.homeAbbr}
+                                  </span>
+                                )}
+                                {pick.result && (
+                                  <span
+                                    className={
+                                      pick.result === "win"
+                                        ? " text-field-400"
+                                        : pick.result === "loss"
+                                          ? " text-crimson-400"
+                                          : " text-[var(--text-muted)]"
+                                    }
+                                  >
+                                    {" "}
+                                    · {pick.result}
+                                  </span>
+                                )}
+                                {pick.source === "imported" && (
+                                  <span className="text-[var(--text-muted)]">
+                                    {" "}
+                                    · imported
+                                  </span>
+                                )}
+                              </div>
+                            ) : show ? (
+                              <p className="text-sm text-[var(--text-muted)] mt-1">
+                                No pick
+                              </p>
+                            ) : (
+                              <p className="text-sm text-[var(--text-muted)] mt-1 italic">
+                                Reveals after kickoff
+                              </p>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

@@ -32,8 +32,8 @@ export function Countdown({ lockAt }: { lockAt: string }) {
         className="inline-flex flex-col items-center sm:items-start gap-0 min-w-0"
         title={hint}
       >
-        <span className="text-[9px] sm:text-[10px] uppercase tracking-wide text-[var(--text-muted)] leading-none">
-          Locks in
+        <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-gold-400/90 leading-none">
+          Pick deadline
         </span>
         <span className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap">
           <span className="opacity-0">00h 00m</span>
@@ -51,10 +51,10 @@ export function Countdown({ lockAt }: { lockAt: string }) {
         title={hint}
       >
         <span className="font-display tracking-wide text-crimson-400 text-xs sm:text-sm uppercase shrink-0">
-          Picks locked
+          Deadline passed
         </span>
         <span className="hidden sm:block text-[10px] text-[var(--text-muted)] leading-none mt-0.5">
-          First kickoff passed
+          Picks locked · first kickoff
         </span>
       </span>
     );
@@ -78,11 +78,11 @@ export function Countdown({ lockAt }: { lockAt: string }) {
     <span
       className="inline-flex flex-col items-center sm:items-start gap-0 min-w-0"
       title={hint}
-      aria-label={`Picks lock in ${full.join(" ")}. ${hint}`}
+      aria-label={`Pick deadline in ${full.join(" ")}. ${hint}`}
       aria-live="polite"
     >
-      <span className="text-[9px] sm:text-[10px] uppercase tracking-wide text-[var(--text-muted)] leading-none">
-        Locks in
+      <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wide text-gold-400/90 leading-none">
+        Pick deadline
       </span>
       <span className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap">
         <span className="sm:hidden">{compact.join(" ")}</span>

@@ -9,9 +9,21 @@ export type StandingBits = {
   division: string;
 };
 
+/**
+ * 2025 composite power rank (1 = strongest, 32 = weakest).
+ * Demo/seed ranking for research — not official NFL standings.
+ */
 export function formatPriorYearRank(rank: number | null | undefined): string | null {
   if (rank == null || rank < 1) return null;
-  return `’25 #${rank}`;
+  return `2025 rank #${rank}`;
+}
+
+/** Short chip for tight UI (tables). */
+export function formatPriorYearRankShort(
+  rank: number | null | undefined
+): string | null {
+  if (rank == null || rank < 1) return null;
+  return `#${rank}`;
 }
 
 function ordinal(n: number): string {

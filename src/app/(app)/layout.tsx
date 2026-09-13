@@ -10,6 +10,7 @@ import { prisma } from "@/lib/db";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { INVITE_CODE } from "@/lib/constants";
 import Link from "next/link";
+import { NicknameEditor } from "@/components/NicknameEditor";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -74,20 +75,12 @@ export default async function AppLayout({
                 Admin
               </Link>
             )}
-            <div className="text-right text-xs min-w-0 overflow-hidden">
-              <div
-                className="text-[var(--text-primary)] font-medium truncate max-w-[7.5rem] sm:max-w-[10rem]"
-                title={membership.nickname}
-                data-testid="session-nickname"
-                data-user-id={session.user.id}
-                data-user-role={membership.role}
-              >
-                {membership.nickname}
-              </div>
-              <div className="text-[var(--text-muted)] capitalize truncate">
-                {membership.status.replace("_", " ")}
-              </div>
-            </div>
+            <NicknameEditor
+              nickname={membership.nickname}
+              statusLabel={membership.status.replace("_", " ")}
+              userId={session.user.id}
+              role={membership.role}
+            />
           </div>
         </div>
         <HeaderNav

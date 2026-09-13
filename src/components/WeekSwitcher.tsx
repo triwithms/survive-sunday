@@ -27,9 +27,11 @@ export function WeekSwitcher({
   allowFuture?: boolean;
 }) {
   const router = useRouter();
-  const selectable = weeks.filter(
-    (week) =>
-      week.hasGames && (allowFuture || week.number <= currentWeek)
+  // Schedule (allowFuture): every week, including TBA. Pool/Scores: past+current with games.
+  const selectable = weeks.filter((week) =>
+    allowFuture
+      ? true
+      : week.hasGames && week.number <= currentWeek
   );
   const selected = weeks.find((week) => week.number === selectedWeek);
   const options =
@@ -99,9 +101,13 @@ export function WeekSwitcher({
           <ChevronRight className="h-5 w-5" aria-hidden />
         </button>
       </div>
-      {!allowFuture && (
+      {!allowFuture ? (
         <p className="text-[10px] text-[var(--text-muted)] px-0.5">
           Future weeks are on Schedule — picks stay on the current week.
+        </p>
+      ) : (
+        <p className="text-[10px] text-[var(--text-muted)] px-0.5">
+          Flip weeks with the arrows or jump from the dropdown.
         </p>
       )}
     </nav>

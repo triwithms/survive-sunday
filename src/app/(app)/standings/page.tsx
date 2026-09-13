@@ -5,9 +5,11 @@ import {
   ensureWeekLockedEffects,
   effectiveLockAt,
   isWeekLocked,
+  MISSED_TEAM,
 } from "@/lib/grading";
 import { sortParticipants, resolveSeasonWinners } from "@/lib/tiebreak";
 import { StatusChip } from "@/components/StatusChip";
+import { TeamLogo } from "@/components/TeamLogo";
 import { formatKickoff } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -23,6 +25,7 @@ export default async function StandingsPage() {
 
   let week = await prisma.week.findFirst({
     where: { poolId: me.poolId, number: me.pool.currentWeek },
+    include: { picks: true },
   });
 
   try {
@@ -34,7 +37,10 @@ export default async function StandingsPage() {
 
   // Re-fetch week after possible lock effects
   if (week) {
-    week = await prisma.week.findUnique({ where: { id: week.id } });
+    week = await prisma.week.findUnique({
+      where: { id: week.id },
+      include: { picks: true },
+    });
   }
 
   const members = await prisma.membership.findMany({
@@ -50,6 +56,24 @@ export default async function StandingsPage() {
     !locked && me.status !== "eliminated" && me.role !== "admin";
   const showMutedChange =
     !locked && (me.role === "admin" || me.status === "eliminated");
+  const revealAllPicks = locked;
+
+  const pickByMember = new Map(
+    (week?.picks ?? []).map((p) => [p.membershipId, p])
+  );
+  const teamAbbrs = [
+    ...new Set(
+      (week?.picks ?? [])
+        .filter(
+          (p) => p.source !== "missed" && p.teamAbbr !== MISSED_TEAM
+        )
+        .map((p) => p.teamAbbr)
+    ),
+  ];
+  const teams = teamAbbrs.length
+    ? await prisma.team.findMany({ where: { abbr: { in: teamAbbrs } } })
+    : [];
+  const logoByAbbr = new Map(teams.map((t) => [t.abbr, t.logoUrl]));
 
   return (
     <div className="space-y-6 min-w-0">
@@ -67,6 +91,9 @@ export default async function StandingsPage() {
           </p>
           <p className="text-sm text-[var(--text-muted)]">
             Sorted undefeated → one loss → eliminated, then nickname A–Z.
+            {!revealAllPicks
+              ? " Others' picks stay hidden until the deadline."
+              : ""}
           </p>
         </div>
         {canChangePick ? (
@@ -94,35 +121,112 @@ export default async function StandingsPage() {
       </div>
 
       <ul className="space-y-2">
-        {sorted.map((m, i) => (
-          <li
-            key={m.id}
-            className="card-glass p-3 flex items-center gap-2 sm:gap-3 min-w-0"
-          >
-            <span className="text-[var(--text-muted)] w-5 sm:w-6 text-sm font-mono shrink-0">
-              {i + 1}
-            </span>
-            <div className="flex-1 min-w-0 overflow-hidden">
-              <div className="font-medium truncate">
-                {m.nickname}
-                {m.id === me.id ? " (you)" : ""}
-                {m.realName ? (
-                  <span className="text-xs font-normal text-[var(--text-muted)]">
-                    {" "}
-                    ({m.realName})
+        {sorted.map((m, i) => {
+          const isSelf = m.id === me.id;
+          const pickRaw = pickByMember.get(m.id);
+          const pick =
+            pickRaw &&
+            pickRaw.source !== "missed" &&
+            pickRaw.teamAbbr !== MISSED_TEAM
+              ? pickRaw
+              : undefined;
+          const showPick = revealAllPicks || isSelf;
+          const canEditThisRow =
+            isSelf && canChangePick && m.status !== "eliminated";
+
+          return (
+            <li
+              key={m.id}
+              className={`card-glass p-3 flex items-center gap-2 sm:gap-3 min-w-0 ${
+                m.status === "eliminated" ? "opacity-60" : ""
+              }`}
+            >
+              <span className="text-[var(--text-muted)] w-5 sm:w-6 text-sm font-mono shrink-0">
+                {i + 1}
+              </span>
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <div className="font-medium truncate">
+                  {m.nickname}
+                  {isSelf ? " (you)" : ""}
+                  {m.realName ? (
+                    <span className="text-xs font-normal text-[var(--text-muted)]">
+                      {" "}
+                      ({m.realName})
+                    </span>
+                  ) : null}
+                </div>
+                <div className="text-xs text-[var(--text-muted)] truncate">
+                  Losses: {m.losses} · Weeks survived: {m.weeksSurvived}
+                  {!m.mulliganRemaining && " · Mulligan used"}
+                </div>
+              </div>
+
+              <div className="shrink-0 flex flex-col items-end gap-1.5">
+                <StatusChip status={m.status} />
+                {showPick && pick ? (
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/team/${pick.teamAbbr}`}
+                      prefetch={false}
+                      aria-label={`${m.nickname}'s pick: ${pick.teamAbbr}`}
+                      className="flex items-center gap-1.5 rounded-md px-1.5 py-1 min-h-11 hover:bg-gold-400/5 active:bg-gold-400/10"
+                    >
+                      <TeamLogo
+                        abbr={pick.teamAbbr}
+                        logoUrl={logoByAbbr.get(pick.teamAbbr) ?? null}
+                        size={36}
+                      />
+                      <span className="font-mono text-base sm:text-lg font-semibold text-gold-400">
+                        {pick.teamAbbr}
+                      </span>
+                      {pick.result ? (
+                        <span
+                          className={`text-[10px] uppercase font-semibold ${
+                            pick.result === "win"
+                              ? "text-field-400"
+                              : pick.result === "loss"
+                                ? "text-crimson-400"
+                                : "text-[var(--text-muted)]"
+                          }`}
+                        >
+                          {pick.result}
+                        </span>
+                      ) : null}
+                    </Link>
+                    {canEditThisRow ? (
+                      <Link
+                        href="/pick"
+                        prefetch={false}
+                        className="btn-primary text-xs px-2.5 py-2 min-h-11"
+                      >
+                        Change
+                      </Link>
+                    ) : null}
+                  </div>
+                ) : showPick ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-crimson-400 font-medium px-1">
+                      No pick
+                    </span>
+                    {canEditThisRow ? (
+                      <Link
+                        href="/pick"
+                        prefetch={false}
+                        className="btn-primary text-xs px-2.5 py-2 min-h-11"
+                      >
+                        Pick
+                      </Link>
+                    ) : null}
+                  </div>
+                ) : (
+                  <span className="text-xs text-[var(--text-muted)] italic px-1">
+                    Hidden
                   </span>
-                ) : null}
+                )}
               </div>
-              <div className="text-xs text-[var(--text-muted)] truncate">
-                Losses: {m.losses} · Weeks survived: {m.weeksSurvived}
-                {!m.mulliganRemaining && " · Mulligan used"}
-              </div>
-            </div>
-            <div className="shrink-0">
-              <StatusChip status={m.status} />
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ul>
 
       <section className="card-glass p-4 text-sm space-y-2 min-w-0">

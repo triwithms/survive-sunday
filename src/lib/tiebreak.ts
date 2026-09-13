@@ -1,9 +1,11 @@
 /**
  * Season-end tiebreak helpers (en-CA).
- * Prefer sole survivor; if multiple remain alive, shared win with:
+ * Prefer sole survivor. If multiple remain alive after Week 18:
  * 1. Fewest losses
  * 2. Most weeks survived
- * 3. Nickname A–Z (en-CA)
+ * 3. Still tied → shared win (co-champions). Nickname A–Z is display order only —
+ *    never used to crown a sole winner.
+ * Optional backup (commissioner / offline): one extra pick week among tied players only.
  */
 export type AliveMember = {
   nickname: string;

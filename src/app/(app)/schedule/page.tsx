@@ -4,28 +4,65 @@ import { prisma } from "@/lib/db";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { formatKickoff } from "@/lib/utils";
 import { resolveFavourite } from "@/lib/matchup-meta";
+import { WeekSwitcher } from "@/components/WeekSwitcher";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function SchedulePage() {
+type ScheduleSearchParams = {
+  week?: string | string[];
+};
+
+export default async function SchedulePage({
+  searchParams,
+}: {
+  searchParams?: Promise<ScheduleSearchParams>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
   const me = await getMembershipForUser(session.user.id);
   if (!me) redirect("/join");
 
+  const params = await searchParams;
+  const rawWeek = params?.week;
+  const requestedWeek = Array.isArray(rawWeek) ? rawWeek[0] : rawWeek;
+  const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
+
   const weeks = await prisma.week.findMany({
-    where: { poolId: me.poolId, number: { gte: me.pool.currentWeek } },
+    where: { poolId: me.poolId },
     orderBy: { number: "asc" },
     include: {
       games: { orderBy: { kickoff: "asc" } },
     },
   });
 
-  const current = weeks.find((w) => w.number === me.pool.currentWeek) ?? weeks[0];
-  const upcoming = weeks.filter((w) => w.number !== current?.number);
+  const requestedIsValid =
+    Number.isInteger(parsedWeek) &&
+    weeks.some((candidate) => candidate.number === parsedWeek);
+  const selectedNumber = requestedIsValid
+    ? parsedWeek
+    : me.pool.currentWeek;
+  const week =
+    weeks.find((candidate) => candidate.number === selectedNumber) ??
+    weeks.find((candidate) => candidate.number === me.pool.currentWeek) ??
+    weeks[0];
+
+  if (!week) {
+    return (
+      <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
+        No weeks have been seeded for this pool yet.
+      </div>
+    );
+  }
+
+  const weekOptions = weeks.map((candidate) => ({
+    number: candidate.number,
+    label: candidate.label,
+    hasGames: candidate.games.length > 0,
+  }));
+  const isCurrent = week.number === me.pool.currentWeek;
 
   return (
     <div className="space-y-6 min-w-0">
@@ -34,138 +71,95 @@ export default async function SchedulePage() {
           Schedule
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Plan strong picks — tap a team for research. Weeks without a seeded
-          slate show as TBA.
+          Plan strong picks — tap a team for research. Weeks without seeded
+          games show as TBA.
         </p>
       </div>
 
-      {current && (
-        <section className="space-y-3">
-          <div className="flex flex-wrap items-baseline gap-2">
-            <h2 className="font-display text-xl text-gold-400 tracking-wide">
-              {current.label}
-            </h2>
+      <WeekSwitcher
+        weeks={weekOptions}
+        selectedWeek={week.number}
+        currentWeek={me.pool.currentWeek}
+        basePath="/schedule"
+        allowFuture
+      />
+
+      <section className="space-y-3">
+        <div className="flex flex-wrap items-baseline gap-2">
+          <h2 className="font-display text-xl text-gold-400 tracking-wide">
+            {week.label}
+          </h2>
+          {isCurrent ? (
             <span className="chip chip-gold text-[10px]">This week</span>
-            <span className="text-xs text-[var(--text-muted)]">
-              Lock: {formatKickoff(effectiveLockAt(current))}
-              {isWeekLocked(current) ? " · Locked" : " · Open"}
-            </span>
-          </div>
-
-          {current.games.length === 0 ? (
-            <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
-              Slate coming — games not seeded yet.
-            </div>
+          ) : week.number < me.pool.currentWeek ? (
+            <span className="chip chip-one-loss text-[10px]">Past</span>
           ) : (
-            <ul className="space-y-2">
-              {current.games.map((g) => {
-                const fav = resolveFavourite({
-                  homeAbbr: g.homeAbbr,
-                  awayAbbr: g.awayAbbr,
-                  spreadHome: g.spreadHome,
-                  spreadAway: g.spreadAway,
-                });
-                return (
-                  <li key={g.id} className="card-glass p-3 min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
-                      <Link
-                        href={`/team/${g.awayAbbr}`}
-                        prefetch={false}
-                        className="inline-flex items-center min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
-                      >
-                        {g.awayAbbr}
-                      </Link>
-                      <span className="text-[var(--text-muted)]">@</span>
-                      <Link
-                        href={`/team/${g.homeAbbr}`}
-                        prefetch={false}
-                        className="inline-flex items-center min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
-                      >
-                        {g.homeAbbr}
-                      </Link>
-                      {g.network && (
-                        <span className="chip chip-one-loss text-[10px]">
-                          {g.network}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-1 text-xs text-[var(--text-muted)] flex flex-wrap gap-x-2">
-                      <span>{formatKickoff(g.kickoff)}</span>
-                      {fav && (
-                        <span className="font-mono text-[var(--text-primary)]">
-                          {fav.label}
-                        </span>
-                      )}
-                      {g.status === "final" &&
-                        g.scoreAway != null &&
-                        g.scoreHome != null && (
-                          <span>
-                            Final {g.scoreAway}–{g.scoreHome}
-                          </span>
-                        )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
+            <span className="chip chip-one-loss text-[10px]">Upcoming</span>
           )}
-        </section>
-      )}
+          <span className="text-xs text-[var(--text-muted)]">
+            Lock: {formatKickoff(effectiveLockAt(week))}
+            {isWeekLocked(week) ? " · Locked" : " · Open"}
+          </span>
+        </div>
 
-      {upcoming.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="font-semibold text-gold-400">Upcoming weeks</h2>
+        {week.games.length === 0 ? (
+          <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
+            Games coming — not seeded yet.
+          </div>
+        ) : (
           <ul className="space-y-2">
-            {upcoming.map((w) => (
-              <li key={w.id} className="card-glass p-3 min-w-0">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div>
-                    <div className="font-medium">{w.label}</div>
-                    <div className="text-xs text-[var(--text-muted)]">
-                      Lock: {formatKickoff(effectiveLockAt(w))}
-                    </div>
+            {week.games.map((g) => {
+              const fav = resolveFavourite({
+                homeAbbr: g.homeAbbr,
+                awayAbbr: g.awayAbbr,
+                spreadHome: g.spreadHome,
+                spreadAway: g.spreadAway,
+              });
+              return (
+                <li key={g.id} className="card-glass p-3 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                    <Link
+                      href={`/team/${g.awayAbbr}`}
+                      prefetch={false}
+                      className="inline-flex items-center min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
+                    >
+                      {g.awayAbbr}
+                    </Link>
+                    <span className="text-[var(--text-muted)]">@</span>
+                    <Link
+                      href={`/team/${g.homeAbbr}`}
+                      prefetch={false}
+                      className="inline-flex items-center min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
+                    >
+                      {g.homeAbbr}
+                    </Link>
+                    {g.network && (
+                      <span className="chip chip-one-loss text-[10px]">
+                        {g.network}
+                      </span>
+                    )}
                   </div>
-                  {w.games.length > 0 ? (
-                    <span className="chip chip-gold text-[10px]">
-                      {w.games.length} games
-                    </span>
-                  ) : (
-                    <span className="chip chip-one-loss text-[10px]">
-                      Slate coming · TBA
-                    </span>
-                  )}
-                </div>
-                {w.games.length > 0 && (
-                  <ul className="mt-2 space-y-1 text-xs text-[var(--text-muted)]">
-                    {w.games.map((g) => (
-                      <li key={g.id}>
-                        <Link
-                          href={`/team/${g.awayAbbr}`}
-                          prefetch={false}
-                          className="inline-flex items-center min-h-10 px-1 text-gold-400 hover:underline"
-                        >
-                          {g.awayAbbr}
-                        </Link>
-                        {" @ "}
-                        <Link
-                          href={`/team/${g.homeAbbr}`}
-                          prefetch={false}
-                          className="inline-flex items-center min-h-10 px-1 text-gold-400 hover:underline"
-                        >
-                          {g.homeAbbr}
-                        </Link>
-                        {" · "}
-                        {formatKickoff(g.kickoff)}
-                        {g.network ? ` · ${g.network}` : ""}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
+                  <div className="mt-1 text-xs text-[var(--text-muted)] flex flex-wrap gap-x-2">
+                    <span>{formatKickoff(g.kickoff)}</span>
+                    {fav && (
+                      <span className="font-mono text-[var(--text-primary)]">
+                        {fav.label}
+                      </span>
+                    )}
+                    {g.status === "final" &&
+                      g.scoreAway != null &&
+                      g.scoreHome != null && (
+                        <span>
+                          Final {g.scoreAway}–{g.scoreHome}
+                        </span>
+                      )}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   );
 }

@@ -2,8 +2,8 @@ export function HelpContent() {
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
       <aside className="card-glass border border-gold-400/30 p-4 space-y-2" aria-label="Feature availability">
-        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, prior-pick import, commissioner admin, PWA install, joining, and sign-in.</p>
-        <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, notification centre, SMS, WhatsApp, weekly digests, close-game alerts, and full team detail pages.</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, joining, and sign-in.</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, notification centre, SMS, WhatsApp, weekly digests, and close-game alerts.</p>
       </aside>
       <section id="onboarding-first-run">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">Onboarding first-run</h2>
@@ -12,7 +12,7 @@ export function HelpContent() {
           <li className="text-[var(--text-primary)]">**Pick one team each week** to win. You can’t reuse a team you’ve already picked, and bye-week teams are off the board.</li>
           <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). Submit before then; after lock, everyone’s picks go public.</li>
           <li className="text-[var(--text-primary)]">**You get one mulligan.** Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you.</li>
-          <li className="text-[var(--text-primary)]">**Invite link**, then **Google** or email/password to sign in. Set a nickname your friends will recognise.</li>
+          <li className="text-[var(--text-primary)]">**Invite link**, then **Google** or email/password to sign in. Returning BM Boys already have a nickname — use **Change nickname** in the header to edit it. New joiners create a nickname on join (unique within the pool).</li>
           <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Wave 2 social and notification features are marked below as coming soon.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">---</p>
@@ -28,9 +28,9 @@ export function HelpContent() {
       <section id="2-how-to-play-quick-start">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">2. How to play (quick start)</h2>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
-          <li>Join with your **invite link or code**, sign in with **Google** or **email and password**, then choose a nickname.</li>
-          <li>Each open week, pick **exactly one** NFL team to win.</li>
-          <li>Submit before the week **locks** — that’s the kickoff of the first game that week (usually Thursday Night Football).</li>
+          <li>Join with your **invite link or code** and sign in with **Google** or **email and password**. Returning BM Boys: your nickname is already set — use **Change nickname** in the header if you want something different. New joiners: create a nickname on join (unique within the pool).</li>
+          <li>Open **Pick** and choose from **This week’s games** — pick **exactly one** NFL team to win.</li>
+          <li>Submit before the **Pick deadline** (header countdown) — the week locks at the kickoff of the first game that week (usually Thursday Night Football).</li>
           <li>If your team wins, you survive. If it loses, your mulligan absorbs the first hit (you’re still alive with one loss) or a second loss eliminates you.</li>
           <li>You **cannot reuse** any team you’ve already picked — win or lose.</li>
           <li>Last friends standing win the bragging rights (and whatever your group agreed offline).</li>
@@ -38,6 +38,34 @@ export function HelpContent() {
         <p className="text-[var(--text-muted)] mb-2">That’s the whole game. The rest of this help fills in the edges.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
+      <section id="walkthrough">
+        <h2 className="text-lg font-semibold text-gold-400 mb-2">App walkthrough</h2>
+        <p className="text-[var(--text-muted)] mb-4">A visual tour of the main screens you&apos;ll use each week.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 space-y-0">
+          {[
+            { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: 'Sign in (demo or Google)' },
+            { src: '/help-preview/02-pool-home.png', alt: 'Pool home / Board entry', caption: 'Pool home / Board entry' },
+            { src: '/help-preview/03-pick-this-weeks-games.png', alt: 'Pick — This week’s games', caption: 'Pick — This week’s games' },
+            { src: '/help-preview/04-team-research.png', alt: 'Team research', caption: 'Team research' },
+            { src: '/help-preview/05-team-news.png', alt: 'Team news', caption: 'Team news' },
+            { src: '/help-preview/06-league-standings.png', alt: 'League standings with 2025 rank', caption: 'League standings (with 2025 rank)' },
+            { src: '/help-preview/07-board-survival.png', alt: 'Board — survival standings', caption: 'Board — survival standings' },
+            { src: '/help-preview/08-change-pick.png', alt: 'Change pick', caption: 'Change pick' },
+            { src: '/help-preview/09-schedule.png', alt: 'Schedule with week dropdown', caption: 'Schedule (week dropdown)' },
+          ].map((item) => (
+            <figure key={item.src} className="card-glass p-3 space-y-2">
+              <img
+                src={item.src}
+                alt={item.alt}
+                className="w-full rounded-lg border border-stadium-border"
+              />
+              <figcaption className="text-xs text-[var(--text-muted)] text-center">{item.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <p className="text-[var(--text-muted)] mb-2 mt-4">---</p>
+      </section>
+
       <section id="3-core-rules">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">3. Core rules</h2>
         <h3 className="font-semibold mt-3 mb-1">One pick per week</h3>
@@ -63,24 +91,26 @@ export function HelpContent() {
         <h3 className="font-semibold mt-3 mb-1">Ties &amp; postponements</h3>
         <p className="text-[var(--text-muted)] mb-2">If your picked team’s game ends in a **tie** (after overtime), it counts as a **loss** unless a pool admin overrides. Postponed or **cancelled** games: your commissioner decides how to resolve — ask them, or check the pool notice.</p>
         <h3 className="font-semibold mt-3 mb-1">Season end</h3>
-        <p className="text-[var(--text-muted)] mb-2">We prefer a **sole survivor**. If more than one player is still alive at the end of the season, it’s a **shared win**, with an optional season-long tiebreak:</p>
+        <p className="text-[var(--text-muted)] mb-2">We prefer a **sole survivor**. If more than one player is still alive after Week 18, apply this ladder:</p>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
-          <li>Fewest losses  </li>
-          <li>Most weeks survived  </li>
-          <li>Nickname A–Z</li>
+          <li>**Fewest losses** (undefeated beats one loss).</li>
+          <li>**Most weeks survived**.</li>
+          <li>Still tied → **shared win** (co-champions). Nickname A–Z is only for list order — it does not crown a sole winner.</li>
+          <li>**Optional backup:** the commissioner may run **one extra pick week** among only the tied players if the group wants a sole champ.</li>
         </ol>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="4-seeing-others-picks">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">4. Seeing others’ picks</h2>
-        <p className="text-[var(--text-muted)] mb-2">**Before lock:** you only see your own pick (or an empty “still deciding” state). Everyone else shows as hidden — think silhouettes and “reveals after kickoff.”</p>
-        <p className="text-[var(--text-muted)] mb-2">**After lock:** all picks for the week are shown.</p>
-        <p className="text-[var(--text-muted)] mb-2">**Default view** once you’ve picked (and after lock): the participants list, sorted by:</p>
+        <p className="text-[var(--text-muted)] mb-2">**Before lock:** you only see your own pick (or an empty “still deciding” state). Everyone else shows as hidden — think silhouettes and “reveals after kickoff.” The Board still lists participants in a **status ladder**: **undefeated → one loss → eliminated**, then nickname **A–Z** within each group.</p>
+        <p className="text-[var(--text-muted)] mb-2">**After lock:** all picks for the week are revealed. The Board switches to **Picks by game**:</p>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
-          <li>Status group — **undefeated → one loss → eliminated**  </li>
-          <li>Within each group — nickname **A–Z**</li>
+          <li>Games ordered by **kickoff** (earliest first)  </li>
+          <li>Under each game — **same-pick clusters**: away-side pickers, then home-side pickers  </li>
+          <li>Within each cluster — nickname **A–Z**, with status chips (and graded result when available)  </li>
+          <li>At the bottom — a **Missed / no pick** group for anyone who missed lock or never picked</li>
         </ol>
-        <p className="text-[var(--text-muted)] mb-2">That way the board reads like a survival ladder, not a random roll call.</p>
+        <p className="text-[var(--text-muted)] mb-2">That way post-lock you can see who stacked the same side of each matchup, while pre-lock the board still reads like a survival ladder.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="5-status-badges">
@@ -111,16 +141,19 @@ export function HelpContent() {
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="9-live-scores-digests">
-        <h2 className="text-lg font-semibold text-gold-400 mb-2">9. Live scores (Wave 1) &amp; digests (Wave 2 · Coming soon)</h2>
-        <p className="text-[var(--text-muted)] mb-2">Live scores update for games tied to pool picks. When a game reaches final, picks auto-grade.</p>
-        <p className="text-[var(--text-muted)] mb-2"><strong>Wave 2 — Coming soon:</strong> the weekly picks digest (email and/or in-app) and close-game alerts. They are not available now; Wave 1 scores and grading remain live.</p>
+        <h2 className="text-lg font-semibold text-gold-400 mb-2">9. Live scores &amp; digests</h2>
+        <p className="text-[var(--text-muted)] mb-2">**Scores** pulls live and final results from ESPN while games are on, and refreshes during kickoff windows. When a game reaches **final**, picks auto-grade.</p>
+        <p className="text-[var(--text-muted)] mb-2">Use the week dropdown (and arrows) to check past weeks. Live games show a **LIVE** badge and clock when ESPN has them in progress.</p>
+        <p className="text-[var(--text-muted)] mb-2"><strong>Coming later:</strong> weekly picks digests and close-game alerts.</p>
         <p className="text-[var(--text-muted)] mb-2">If a score or grade looks wrong, pull to refresh; if it’s still off, ping your commissioner.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="10-team-pages">
-        <h2 className="text-lg font-semibold text-gold-400 mb-2">10. Team pages <span className="text-sm font-normal text-[var(--text-muted)]">— Wave 2 · Coming soon</span></h2>
-        <p className="text-[var(--text-muted)] mb-2"><strong>Coming soon in Wave 2:</strong> full team detail and scouting pages, including matchup, player, and clearly labelled demo injury/news details. These pages are not available in Wave 1.</p>
-        <p className="text-[var(--text-muted)] mb-2">Any odds shown in the live pick flow are informational only.</p>
+        <h2 className="text-lg font-semibold text-gold-400 mb-2">10. League, Schedule &amp; team research</h2>
+        <p className="text-[var(--text-muted)] mb-2">**League** shows NFL standings (by division / overall). The **2025 rank** column is last season’s composite power rank by team (1 = strongest, 32 = weakest) — research only, not this year’s W-L.</p>
+        <p className="text-[var(--text-muted)] mb-2">**Schedule** lists this week’s games and future weeks (dropdown + arrows). Tap a team for research.</p>
+        <p className="text-[var(--text-muted)] mb-2">**Team pages** cover roster (starting offence / defence / special teams), news links, and record. From **This week’s games**, logos and names open research; **Pick** stays on its own button.</p>
+        <p className="text-[var(--text-muted)] mb-2">Spreads and favourites in the pick flow are informational only.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="11-install-the-app-pwa">
@@ -133,7 +166,7 @@ export function HelpContent() {
         <h2 className="text-lg font-semibold text-gold-400 mb-2">12. Privacy &amp; accounts</h2>
         <p className="text-[var(--text-muted)] mb-2">Pools are **private and invite-only**. Join with an invite link or code, then sign in with **Google** or **email and password**.</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
-          <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees (unique within the pool).</li>
+          <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; use **Change nickname** in the app header to edit it. New members create a nickname when they join.</li>
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
           <li className="text-[var(--text-primary)]">**Phone number** is not required in Wave 1; SMS reminders are planned for Wave 2.</li>
         </ul>
@@ -199,15 +232,19 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
         <h2 className="text-lg font-semibold text-gold-400 mb-2">16. Glossary</h2>
         <pre className="card-glass p-3 text-xs overflow-x-auto whitespace-pre-wrap mb-2">| Term | Meaning |
 |------|---------|
-| **Lock** | Kickoff of the first game of the week; picks freeze and become visible. |
+| **Pick deadline** | Header countdown to lock — first kickoff of the week; after that picks freeze. |
+| **Lock** | Same moment as the pick deadline: picks freeze and become visible to everyone. |
+| **This week’s games** | The list of matchups you pick from on the Pick screen (not “slate”). |
+| **Board** | Pool board: pre-lock status ladder (undefeated → one loss → eliminated); after lock, picks by kickoff-ordered games then away/home clusters. |
+| **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock). |
-| **Digest** | **Wave 2 — Coming soon:** post-lock summary of everyone’s picks. |
-| **H2H** | **Wave 2 — Coming soon:** head-to-head spotlight when two participants pick opposite sides of a game. |
+| **Digest** | **Coming later:** post-lock summary of everyone’s picks. |
+| **H2H** | **Coming later:** head-to-head spotlight when two participants pick opposite sides. |
 | **en-CA** | Canadian English locale for copy, dates, and A–Z sorting. |
 | **Import (prior picks)** | Commissioner backfill of earlier weeks so mulligan, reuse, and standings stay honest. |
 | **Undefeated / one loss / eliminated** | Your survival status for the season. |</pre>
         <p className="text-[var(--text-muted)] mb-2">---</p>
-        <p className="text-[var(--text-muted)] mb-2">*Help copy draft — Survive Sunday 2026/27 (en-CA)*</p>
+        <p className="text-[var(--text-muted)] mb-2">*Help updated with the current app — Survive Sunday 2026/27 (en-CA)*</p>
       </section>
       <section id="importing-prior-picks">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">Importing prior picks</h2>
