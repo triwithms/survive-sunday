@@ -48,7 +48,7 @@ export function espnClockFromNote(note: string | null | undefined): string | nul
   return cleaned;
 }
 
-/** Kickoff for Scores: "Today 1:00 p.m. EDT" when the game is today (ET). */
+/** Compact kickoff: "Today 1:00 p.m. ET" or "Mon 8:15 p.m. ET". */
 export function formatKickoffForScores(
   kickoff: Date | string | null | undefined,
   now: Date | number = Date.now()
@@ -68,22 +68,17 @@ export function formatKickoffForScores(
     timeZone: NFL_DISPLAY_TZ,
     hour: "numeric",
     minute: "2-digit",
-    timeZoneName: "short",
   });
-  const fullFmt = new Intl.DateTimeFormat("en-CA", {
+  const weekdayFmt = new Intl.DateTimeFormat("en-CA", {
     timeZone: NFL_DISPLAY_TZ,
     weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
   });
 
+  const time = `${timeFmt.format(date)} ET`;
   if (dayKey.format(date) === dayKey.format(nowDate)) {
-    return `Today ${timeFmt.format(date)}`;
+    return `Today ${time}`;
   }
-  return fullFmt.format(date);
+  return `${weekdayFmt.format(date)} ${time}`;
 }
 
 export type ScoresStatusBits = GameScoreBits & {

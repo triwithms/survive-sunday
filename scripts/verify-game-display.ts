@@ -34,7 +34,8 @@ assert.doesNotMatch(todayLabel, /Sep|September|Mon|Tue|Wed|Thu|Fri|Sat|Sun,/);
 
 const laterLabel = formatKickoffForScores(mondayNight, sundayEvening);
 assert.doesNotMatch(laterLabel, /^Today /);
-assert.match(laterLabel, /Sep|Mon/);
+assert.match(laterLabel, /Mon/);
+assert.doesNotMatch(laterLabel, /Sep|September/);
 
 const live = formatScoresStatus({
   status: "live",

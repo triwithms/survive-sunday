@@ -103,10 +103,10 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
             live={isLive}
           />
         </div>
-        <div className="shrink-0 max-w-[44%] text-right">
+        <div className="shrink-0 text-right pl-1">
           {status.kind === "live" ? (
             <div>
-              <p className="font-mono text-base sm:text-lg font-semibold leading-tight text-sky-400 tabular-nums">
+              <p className="whitespace-nowrap font-mono text-sm sm:text-base font-semibold leading-tight text-sky-400 tabular-nums">
                 {status.primary}
               </p>
               {status.secondary ? (
@@ -126,7 +126,7 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
             </div>
           ) : (
             <div>
-              <p className="text-sm font-medium leading-snug text-[var(--text-primary)]">
+              <p className="whitespace-nowrap text-sm font-medium leading-snug text-[var(--text-primary)]">
                 {status.primary}
               </p>
               {status.secondary ? (
