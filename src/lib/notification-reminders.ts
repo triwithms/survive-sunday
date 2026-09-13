@@ -1,4 +1,3 @@
-import "server-only";
 import { prisma } from "./db";
 import { effectiveLockAt, isWeekLocked } from "./grading";
 import { missingPickCopy, notifyUser } from "./notify";
