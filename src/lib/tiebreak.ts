@@ -18,9 +18,15 @@ export function isAlive(status: string): boolean {
   return status === "undefeated" || status === "one_loss";
 }
 
-export function sortParticipants<T extends { status: string; nickname: string }>(
-  members: T[]
-): T[] {
+/** Player-facing Survival board / standings list (not season-end crowning). */
+export type BoardMember = {
+  status: string;
+  nickname: string;
+  weeksSurvived: number;
+  losses: number;
+};
+
+export function sortParticipants<T extends BoardMember>(members: T[]): T[] {
   const order: Record<string, number> = {
     undefeated: 0,
     one_loss: 1,
@@ -30,6 +36,9 @@ export function sortParticipants<T extends { status: string; nickname: string }>
     const sa = order[a.status] ?? 9;
     const sb = order[b.status] ?? 9;
     if (sa !== sb) return sa - sb;
+    if (a.weeksSurvived !== b.weeksSurvived)
+      return b.weeksSurvived - a.weeksSurvived;
+    if (a.losses !== b.losses) return a.losses - b.losses;
     return a.nickname.localeCompare(b.nickname, "en-CA");
   });
 }
