@@ -16,7 +16,7 @@ export const CLAIM_ERRORS = {
   emailOnOtherSeat:
     "That email is already on another player seat. Sign in instead, or pick a different email.",
   emailPasswordMismatch:
-    "That email already has an account. Use the password you already sign in with (your commissioner login), not a new one.",
+    "That email already has an account. Use the password you already sign in with (your commissioner login), not a new one. Or Sign in first, then come back to Join and claim with one tap.",
   alreadyInPool: "Already in this pool",
   alreadyCommissioner:
     "This email is already the commissioner login. Pick your player name from the list (for example Gams) and use that same password.",

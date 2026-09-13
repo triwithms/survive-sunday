@@ -2,14 +2,20 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { INVITE_CODE } from "@/lib/constants";
 import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
 import type { ClaimableSeat } from "@/lib/claim-seat";
 import { CLAIM_ERRORS } from "@/lib/claim-seat";
 import { WhoAreYouSelect } from "@/components/WhoAreYouSelect";
 
-export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
+export function JoinForm({
+  seats,
+  signedIn,
+}: {
+  seats: ClaimableSeat[];
+  signedIn?: { email: string; userId: string } | null;
+}) {
   const params = useSearchParams();
   const preselect = params.get("seat") ?? "";
   const initialSeat = seats.some((s) => s.membershipId === preselect)
@@ -17,7 +23,7 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
     : "";
 
   const [inviteCode, setInviteCode] = useState(INVITE_CODE);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(signedIn?.email ?? "");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
   const [realName, setRealName] = useState("");
@@ -27,12 +33,27 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
   const [busy, setBusy] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    if (signedIn?.email && !email) setEmail(signedIn.email);
+  }, [signedIn?.email, email]);
+
   const selected = useMemo(
     () => seats.find((s) => s.membershipId === membershipId),
     [seats, membershipId]
   );
   const claimed = Boolean(selected?.claimed);
   const canSubmit = newPlayer || (Boolean(membershipId) && !claimed);
+  const oneTapClaim = Boolean(signedIn && !newPlayer && membershipId && !claimed);
+  const showPassword = !oneTapClaim && (newPlayer || (membershipId && !claimed));
+  const signInToClaimHref = `/login?callbackUrl=${encodeURIComponent(
+    membershipId ? `/join?seat=${encodeURIComponent(membershipId)}` : "/join"
+  )}`;
+  const showSignInToClaim =
+    !signedIn &&
+    !newPlayer &&
+    Boolean(membershipId) &&
+    !claimed &&
+    (err === CLAIM_ERRORS.emailPasswordMismatch || Boolean(email));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,14 +64,20 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
     setBusy(true);
     setErr("");
     try {
+      const claimEmail = signedIn?.email || email;
       const res = await fetch("/api/join", {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           newPlayer
-            ? { inviteCode, email, password, nickname, realName }
-            : { inviteCode, email, password, membershipId }
+            ? { inviteCode, email: claimEmail, password, nickname, realName }
+            : {
+                inviteCode,
+                email: claimEmail,
+                password: oneTapClaim ? "" : password,
+                membershipId,
+              }
         ),
       });
       let data: { error?: string; ok?: boolean } = {};
@@ -64,7 +91,11 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
         setErr(data.error || `Join failed (HTTP ${res.status})`);
         return;
       }
-      const login = await signInCredentials(email, password);
+      if (signedIn) {
+        afterAuthNavigate("/pool");
+        return;
+      }
+      const login = await signInCredentials(claimEmail, password);
       if (!login.ok) {
         setErr(
           `Account created, but sign-in failed (${login.error || "unknown"}). Use Sign in on this same link.`
@@ -87,10 +118,20 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
         ← Survive Sunday
       </Link>
       <h1 className="font-display text-3xl text-gold-400 mt-6 mb-2">Join the pool</h1>
+      {signedIn && (
+        <p
+          className="chip chip-gold mb-3 inline-flex"
+          role="status"
+        >
+          You’re signed in — claim with one tap
+        </p>
+      )}
       <p className="text-[var(--text-muted)] text-sm mb-6">
         {newPlayer
           ? "Invite-only. Choose a nickname your friends will recognise."
-          : "Pick yourself from the live roster, then set your own email and password. Your Week 1 picks stay with that name. Already the commissioner? Use that same email and the password you already sign in with."}
+          : oneTapClaim
+            ? `Signed in as ${signedIn?.email}. Pick your name — no password re-entry. Your Week 1 picks stay.`
+            : "Pick yourself from the live roster, then use your own email and the password you already sign in with. Your Week 1 picks stay with that name. Already the commissioner? Same email and password, or Sign in first then claim."}
       </p>
       <form onSubmit={onSubmit} className="space-y-4 card-glass p-5">
         <label className="block text-sm">
@@ -135,31 +176,43 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
         )}
 
         {(newPlayer || (membershipId && !claimed)) && (
-          <>
-            <label className="block text-sm">
-              <span className="text-[var(--text-muted)]">Email</span>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="mt-1"
-                autoComplete="email"
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="text-[var(--text-muted)]">Password</span>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="mt-1"
-                autoComplete="new-password"
-              />
-            </label>
-          </>
+          <label className="block text-sm">
+            <span className="text-[var(--text-muted)]">Email</span>
+            <input
+              type="email"
+              value={signedIn?.email || email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              readOnly={Boolean(signedIn)}
+              className="mt-1"
+              autoComplete="email"
+            />
+          </label>
+        )}
+
+        {showPassword && (
+          <label className="block text-sm">
+            <span className="text-[var(--text-muted)]">
+              {newPlayer
+                ? "Password"
+                : "Password you already sign in with"}
+            </span>
+            <input
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              className="mt-1"
+              autoComplete="current-password"
+            />
+            {!newPlayer && (
+              <span className="block mt-1 text-xs text-[var(--text-muted)]">
+                Same as Sign in (your commissioner login) — not a new password.
+              </span>
+            )}
+          </label>
         )}
 
         {err && (
@@ -172,10 +225,21 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
           <button type="submit" className="btn-primary w-full" disabled={busy}>
             {busy
               ? "Joining…"
-              : selected
-                ? `Join as ${selected.nickname}`
-                : "Join pool"}
+              : oneTapClaim && selected
+                ? `Claim ${selected.nickname} with this login`
+                : selected
+                  ? `Join as ${selected.nickname}`
+                  : "Join pool"}
           </button>
+        )}
+
+        {showSignInToClaim && (
+          <Link
+            href={signInToClaimHref}
+            className="btn-secondary inline-flex items-center justify-center w-full"
+          >
+            I already have this login — Sign in to claim
+          </Link>
         )}
 
         <p className="text-xs text-[var(--text-muted)]">

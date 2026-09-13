@@ -10,6 +10,12 @@ import {
   seatsFromMemberships,
   type ClaimableSeat,
 } from "./claim-seat";
+import {
+  normalizeAuthEmail,
+  normalizeAuthPassword,
+  shouldSkipClaimPassword,
+} from "./auth-credentials";
+import { userFromCredentials } from "./credentials-user";
 import { POOL_ROLES } from "./roles";
 import { grantPoolRole } from "./roles-db";
 
@@ -49,6 +55,7 @@ export type JoinOrClaimInput = {
   realName?: string;
   /** Signed-in user claiming their own player seat (skip password re-check). */
   sessionUserId?: string;
+  sessionEmail?: string;
 };
 
 export type JoinOrClaimResult =
@@ -63,8 +70,16 @@ export type JoinOrClaimResult =
 function normalizeJoinFields(input: JoinOrClaimInput) {
   return {
     inviteCode: typeof input.inviteCode === "string" ? input.inviteCode.trim() : "",
-    email: typeof input.email === "string" ? input.email.trim().toLowerCase() : "",
-    password: typeof input.password === "string" ? input.password : "",
+    email:
+      typeof input.email === "string" ? normalizeAuthEmail(input.email) : "",
+    password:
+      typeof input.password === "string"
+        ? normalizeAuthPassword(input.password)
+        : "",
+    sessionUserId:
+      typeof input.sessionUserId === "string" ? input.sessionUserId : "",
+    sessionEmail:
+      typeof input.sessionEmail === "string" ? input.sessionEmail : "",
     membershipId:
       typeof input.membershipId === "string" ? input.membershipId.trim() : "",
     nickname: typeof input.nickname === "string" ? input.nickname.trim() : "",
@@ -81,10 +96,17 @@ async function ownerInfoForEmail(
   email: string,
   poolId: string
 ) {
-  const user = await tx.user.findUnique({
-    where: { email },
+  const normalized = normalizeAuthEmail(email);
+  let user = await tx.user.findUnique({
+    where: { email: normalized },
     select: { id: true, passwordHash: true },
   });
+  if (!user && email.trim() !== normalized) {
+    user = await tx.user.findUnique({
+      where: { email: email.trim() },
+      select: { id: true, passwordHash: true },
+    });
+  }
   if (!user) return null;
   const seats = await tx.membership.findMany({
     where: { poolId, userId: user.id },
@@ -112,7 +134,46 @@ async function claimPracticeSeat(args: {
   email: string;
   password: string;
   sessionUserId?: string;
+  sessionEmail?: string;
 }): Promise<JoinOrClaimResult> {
+  const seatPreview = await prisma.membership.findFirst({
+    where: { id: args.membershipId, poolId: args.poolId },
+    include: { user: { select: { id: true, email: true, name: true } } },
+  });
+  const ownerPreview = await ownerInfoForEmail(prisma, args.email, args.poolId);
+  const previewDecision = decideClaim({
+    seat: seatPreview
+      ? {
+          role: seatPreview.role,
+          userId: seatPreview.userId,
+          email: seatPreview.user.email,
+        }
+      : null,
+    newEmail: args.email,
+    emailOwner: ownerPreview,
+  });
+  if (!previewDecision.ok) return previewDecision;
+
+  if (previewDecision.action === "attach-to-existing") {
+    const signedInOwner = shouldSkipClaimPassword({
+      sessionUserId: args.sessionUserId,
+      sessionEmail: args.sessionEmail,
+      ownerUserId: previewDecision.userId,
+      claimEmail: args.email,
+    });
+    if (!signedInOwner) {
+      // Same authorize() path as /login — not a second bcrypt inside the tx.
+      const authorized = await userFromCredentials(args.email, args.password);
+      if (!authorized || authorized.id !== previewDecision.userId) {
+        return {
+          ok: false,
+          status: 401,
+          error: CLAIM_ERRORS.emailPasswordMismatch,
+        };
+      }
+    }
+  }
+
   try {
     const claimed = await prisma.$transaction(async (tx) => {
       const seat = await tx.membership.findFirst({
@@ -132,22 +193,6 @@ async function claimPracticeSeat(args: {
       if (!decision.ok) return decision;
 
       if (decision.action === "attach-to-existing") {
-        const signedInOwner =
-          Boolean(args.sessionUserId) && args.sessionUserId === decision.userId;
-        if (!signedInOwner) {
-          const hash = emailOwner?.passwordHash;
-          const passwordOk = hash
-            ? await bcrypt.compare(args.password, hash)
-            : false;
-          if (!passwordOk) {
-            return {
-              ok: false as const,
-              status: 401,
-              error: CLAIM_ERRORS.emailPasswordMismatch,
-            };
-          }
-        }
-
         const oldUserId = seat!.userId;
         await tx.membership.update({
           where: { id: seat!.id },
@@ -326,13 +371,24 @@ async function joinAsNewPlayer(args: {
 export async function joinOrClaimSeat(
   input: JoinOrClaimInput
 ): Promise<JoinOrClaimResult> {
-  const { inviteCode, email, password, membershipId, nickname, realName } =
-    normalizeJoinFields(input);
+  const {
+    inviteCode,
+    email,
+    password,
+    membershipId,
+    nickname,
+    realName,
+    sessionUserId,
+    sessionEmail,
+  } = normalizeJoinFields(input);
 
-  if (!inviteCode || !email || !password) {
+  if (!inviteCode || !email) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.missingFields };
   }
-  if (password.length < CLAIM_PASSWORD_MIN) {
+  if (!password && !sessionUserId) {
+    return { ok: false, status: 400, error: CLAIM_ERRORS.missingFields };
+  }
+  if (password && password.length < CLAIM_PASSWORD_MIN) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.passwordShort };
   }
   if (inviteCode.toUpperCase() !== INVITE_CODE) {
@@ -356,7 +412,8 @@ export async function joinOrClaimSeat(
       membershipId,
       email,
       password,
-      sessionUserId: input.sessionUserId,
+      sessionUserId: sessionUserId || undefined,
+      sessionEmail: sessionEmail || undefined,
     });
   }
 

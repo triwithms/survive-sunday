@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { normalizeAuthEmail, normalizeAuthPassword } from "./auth-credentials";
 import { INVITE_CODE } from "./constants";
 import { prisma } from "./db";
 import { isDemoEmail, isLiveMode } from "./pool-mode";
@@ -19,7 +20,14 @@ export type AuthorizedUser = {
 };
 
 export async function lookupUserByEmail(email: string): Promise<CredentialRecord | null> {
-  return prisma.user.findUnique({ where: { email } });
+  const normalized = normalizeAuthEmail(email);
+  const byNormalized = await prisma.user.findUnique({ where: { email: normalized } });
+  if (byNormalized) return byNormalized;
+  const raw = email.trim();
+  if (raw && raw !== normalized) {
+    return prisma.user.findUnique({ where: { email: raw } });
+  }
+  return null;
 }
 
 /**
@@ -56,7 +64,10 @@ export async function userFromCredentials(
       }
     }
 
-    const ok = await bcrypt.compare(password, user.passwordHash);
+    const candidate = normalizeAuthPassword(password);
+    const ok =
+      (await bcrypt.compare(candidate, user.passwordHash)) ||
+      (candidate !== password && (await bcrypt.compare(password, user.passwordHash)));
     if (!ok) return null;
     return {
       id: user.id,

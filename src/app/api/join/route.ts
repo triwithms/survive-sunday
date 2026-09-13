@@ -19,6 +19,7 @@ export async function POST(req: Request) {
     nickname: typeof body.nickname === "string" ? body.nickname : "",
     realName: typeof body.realName === "string" ? body.realName : "",
     sessionUserId: session?.user?.id,
+    sessionEmail: session?.user?.email ?? undefined,
   });
 
   if (!result.ok) {
