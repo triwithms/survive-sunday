@@ -40,6 +40,7 @@ npm run seed
 
 - Prefer **`prisma db push`** for the first deploy — there is no `prisma/migrations` folder yet.
 - `postinstall` already runs `prisma generate`.
+- `npm run build` also runs `prisma db push` (when `DATABASE_URL` is set) and seeds the BM Boys demo pool if `SUNDAY26` is missing. That keeps Vercel from serving Auth.js `CallbackRouteError` on `/api/demo-enter` against an empty or un-migrated Neon database.
 - Re-run `npm run seed` only when you intentionally want demo/seed data refreshed.
 
 ## 5. Verify

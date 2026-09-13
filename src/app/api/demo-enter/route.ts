@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
+import { ensureDemoAccount } from "@/lib/demo-account";
 import { signInDemoCredentials } from "@/lib/demo-session";
 
 /**
@@ -30,6 +31,19 @@ export async function POST(req: Request) {
     }
   } catch {
     /* defaults */
+  }
+
+  try {
+    await ensureDemoAccount(email, password);
+  } catch (error) {
+    console.error("[demo-enter] ensureDemoAccount failed", error);
+    if (wantsJson) {
+      return NextResponse.json(
+        { ok: false, error: "DatabaseUnavailable" },
+        { status: 503 }
+      );
+    }
+    redirect("/?error=DatabaseUnavailable");
   }
 
   const result = await signInDemoCredentials(email, password, "/pool");
