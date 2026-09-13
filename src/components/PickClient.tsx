@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { formatKickoff } from "@/lib/utils";
+import { isGameStarted, week1PickChangeApplies } from "@/lib/pick-change";
 import {
   formatCurrentStanding,
   formatPriorYearRank,
@@ -45,6 +46,7 @@ export function PickClient({
   weekNumber,
   currentWeek,
   locked,
+  canChange,
   eliminated,
   currentPick,
   games,
@@ -52,6 +54,7 @@ export function PickClient({
   weekNumber: number;
   currentWeek: number;
   locked: boolean;
+  canChange: boolean;
   eliminated: boolean;
   currentPick: string | null;
   games: Matchup[];
@@ -66,7 +69,9 @@ export function PickClient({
   const router = useRouter();
   const isCurrentWeek = weekNumber === currentWeek;
   const browsingOtherWeek = !isCurrentWeek;
-  const readOnly = locked || eliminated || browsingOtherWeek;
+  const week1Rule = week1PickChangeApplies(weekNumber) && isCurrentWeek;
+  const lockStartedGames = week1Rule && locked && canChange;
+  const readOnly = !canChange || eliminated || browsingOtherWeek;
 
   useEffect(() => {
     setSelected(currentPick ?? null);
@@ -115,6 +120,7 @@ export function PickClient({
   function trySelect(side: Side, matchup: Matchup) {
     if (readOnly) return;
     if (side.alreadyUsed) return;
+    if (lockStartedGames && isGameStarted(matchup)) return;
     setConfirm({ side, matchup });
   }
 
@@ -160,13 +166,19 @@ export function PickClient({
           <p className="text-sm text-[var(--text-muted)]">
             {eliminated
               ? "You're eliminated — matchups are read-only."
-              : locked
-                ? "Week locked — picks are read-only."
-                : browsingOtherWeek
-                  ? weekNumber > currentWeek
-                    ? `Browsing Week ${weekNumber} — picks open on Week ${currentWeek}.`
-                    : `Week ${weekNumber} is over — this pick is read-only.`
-                  : "Use Pick on a side to choose that team. One team. No reuse."}
+              : browsingOtherWeek
+                ? weekNumber > currentWeek
+                  ? `Browsing Week ${weekNumber} — picks open on Week ${currentWeek}.`
+                  : `Week ${weekNumber} is over — this pick is read-only.`
+                : week1Rule
+                  ? canChange
+                    ? "Week 1 only: you can change your pick until that team’s kickoff. After Week 1 this goes away."
+                    : locked
+                      ? "Your Week 1 pick is locked — that team’s game has started (or you missed lock)."
+                      : "Use Pick on a side to choose that team. One team. No reuse."
+                  : locked
+                    ? "Week locked — picks are read-only."
+                    : "Use Pick on a side to choose that team. One team. No reuse."}
           </p>
         </div>
       </div>
@@ -227,7 +239,9 @@ export function PickClient({
               </Link>
               {!readOnly && (
                 <span className="text-xs text-[var(--text-muted)]">
-                  Pick another side below to change
+                  {week1Rule
+                    ? "Pick another not-started game below to change"
+                    : "Pick another side below to change"}
                 </span>
               )}
             </div>
@@ -255,7 +269,23 @@ export function PickClient({
         </div>
       )}
 
-      {locked && !eliminated && (
+      {week1Rule && !eliminated && (
+        <div
+          role="status"
+          className="card-glass border border-gold-400/40 p-3 text-sm space-y-1"
+        >
+          <p className="font-semibold text-gold-400">Week 1 pick changes</p>
+          <p className="text-[var(--text-muted)]">
+            {canChange
+              ? "You can switch to any other team whose game has not started yet. Once your pick’s kickoff starts, that pick locks. After Week 1, picks lock at the first game of the week."
+              : locked
+                ? "Week 1’s first kickoff has passed. If your pick’s game has started, or you never picked, you cannot change it. After Week 1 this extra change window goes away."
+                : "Pick a team to win. You can change that pick until the team’s kickoff. After Week 1 this extra change window goes away."}
+          </p>
+        </div>
+      )}
+
+      {locked && !eliminated && !canChange && !week1Rule && (
         <div
           role="status"
           className="card-glass border border-gold-400/40 p-3 text-sm space-y-1"
@@ -326,6 +356,7 @@ export function PickClient({
             spreadHome: m.spreadHome,
             spreadAway: m.spreadAway,
           });
+          const gameClosed = lockStartedGames && isGameStarted(m);
           return (
             <li key={m.id} className="card-glass overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[var(--stadium-border)] px-3 py-2 text-[11px] text-[var(--text-muted)]">
@@ -335,6 +366,11 @@ export function PickClient({
                 <span className="flex items-center gap-2">
                   {m.status === "live" && (
                     <span className="chip chip-live text-[10px]">LIVE</span>
+                  )}
+                  {gameClosed && m.status !== "live" && (
+                    <span className="text-[10px] uppercase tracking-wide">
+                      Started
+                    </span>
                   )}
                   {m.network && (
                     <span className="uppercase tracking-wide">{m.network}</span>
@@ -346,7 +382,8 @@ export function PickClient({
                 <SideButton
                   side={m.away}
                   selected={selected === m.away.abbr}
-                  readOnly={readOnly}
+                  readOnly={readOnly || gameClosed}
+                  gameClosed={gameClosed}
                   align="away"
                   favSpread={
                     fav && fav.abbr === m.away.abbr ? fav.spread : null
@@ -361,7 +398,8 @@ export function PickClient({
                 <SideButton
                   side={m.home}
                   selected={selected === m.home.abbr}
-                  readOnly={readOnly}
+                  readOnly={readOnly || gameClosed}
+                  gameClosed={gameClosed}
                   align="home"
                   favSpread={
                     fav && fav.abbr === m.home.abbr ? fav.spread : null
@@ -468,6 +506,7 @@ function SideButton({
   side,
   selected,
   readOnly,
+  gameClosed,
   align,
   favSpread,
   onPick,
@@ -475,11 +514,12 @@ function SideButton({
   side: Side;
   selected: boolean;
   readOnly: boolean;
+  gameClosed?: boolean;
   align: "away" | "home";
   favSpread: number | null;
   onPick: () => void;
 }) {
-  const disabled = readOnly || side.alreadyUsed;
+  const disabled = readOnly || side.alreadyUsed || !!gameClosed;
   const isAway = align === "away";
   const prior = formatPriorYearRank(side.priorYearRank);
   const current = formatCurrentStanding(side.standing);
@@ -540,13 +580,17 @@ function SideButton({
 
       {side.alreadyUsed ? (
         <div className="text-[10px] font-medium text-crimson-400">Already used</div>
+      ) : gameClosed && !selected ? (
+        <div className="text-[10px] font-medium text-[var(--text-muted)]">
+          Game started
+        </div>
       ) : !readOnly ? (
         <button
           type="button"
           disabled={disabled && !selected}
           onClick={(e) => {
             e.stopPropagation();
-            if (readOnly || side.alreadyUsed) return;
+            if (readOnly || side.alreadyUsed || gameClosed) return;
             onPick();
           }}
           aria-pressed={selected}

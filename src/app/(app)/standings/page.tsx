@@ -18,6 +18,7 @@ import { formatKickoff } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
+import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -70,8 +71,17 @@ export default async function StandingsPage() {
   const weekLabel =
     week?.label ??
     `Week ${effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek)}`;
-  const canChangePick =
-    !locked && me.status !== "eliminated" && me.role !== "admin";
+  const myBoardPick = week ? pickByMember.get(me.id) : undefined;
+  const canChangePick = week
+    ? playerCanChangeCurrentPick({
+        weekNumber: week.number,
+        weekLocked: locked,
+        eliminated: me.status === "eliminated",
+        isPlayer: me.role !== "admin",
+        existingPick: myBoardPick ?? null,
+        existingGame: gameForPick(myBoardPick, week.games),
+      })
+    : false;
   const showMutedChange =
     !locked && (me.role === "admin" || me.status === "eliminated");
   const revealAllPicks = locked;
@@ -100,7 +110,11 @@ export default async function StandingsPage() {
           <p className="text-sm text-[var(--text-muted)] mt-1">
             {week
               ? `Lock: ${formatKickoff(effectiveLockAt(week))}${
-                  locked ? " · Picks locked" : " · Picks still open"
+                  locked
+                    ? canChangePick
+                      ? " · Week 1: you can still change until your pick’s kickoff"
+                      : " · Picks locked"
+                    : " · Picks still open"
                 }`
               : "Current week unavailable"}
           </p>

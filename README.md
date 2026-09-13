@@ -88,7 +88,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - Forgot-password one-time code (email / SMS); sessions stay signed in (~90 days)
 - Nickname + optional real name; pool membership; admin/member roles
 - Week 1 schedule from `data/week1-slate.json` (real 2026 slate + final scores where present)
-- Lock at first kickoff; countdown; hide others’ picks until lock
+- Lock at first kickoff; countdown; hide others’ picks until lock. Week 1 only: change an existing pick until that team’s kickoff if the new game has not started.
 - One pick/week; no team reuse; bye teams disabled
 - Mulligan auto-burn → `one_loss`; second loss → `eliminated`
 - Participants list sorted undefeated → one_loss → eliminated, then weeks survived (most first), then fewest losses, then same pick, then same game (earlier kickoff first), then nickname A–Z

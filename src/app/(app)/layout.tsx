@@ -14,6 +14,7 @@ import {
 } from "@/components/HeaderWeekNav";
 import { prisma } from "@/lib/db";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
+import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
 import {
   effectiveCurrentWeek,
   isDemoMode,
@@ -57,7 +58,17 @@ export default async function AppLayout({
     await prisma.week.findMany({
       where: { poolId: membership.poolId },
       orderBy: { number: "asc" },
-      include: { games: { select: { id: true } } },
+      include: {
+      games: {
+        select: {
+          id: true,
+          status: true,
+          kickoff: true,
+          awayAbbr: true,
+          homeAbbr: true,
+        },
+      },
+    },
     })
   );
   const week =
@@ -71,8 +82,26 @@ export default async function AppLayout({
     hasGames: row.games.length > 0,
     lockAt: effectiveLockAt(row).toISOString(),
   }));
-  const canChangePick =
-    !locked && membership.status !== "eliminated" && isPlayer;
+  const myPick = week
+    ? await prisma.pick.findUnique({
+        where: {
+          membershipId_weekId: {
+            membershipId: membership.id,
+            weekId: week.id,
+          },
+        },
+      })
+    : null;
+  const canChangePick = week
+    ? playerCanChangeCurrentPick({
+        weekNumber: week.number,
+        weekLocked: locked,
+        eliminated: membership.status === "eliminated",
+        isPlayer,
+        existingPick: myPick,
+        existingGame: gameForPick(myPick, week.games),
+      })
+    : false;
   const showMutedChangePick = !locked && isAdmin && !isPlayer;
   const showDemoLockToggle =
     isDemoMode(membership.pool.mode) && showAdminChrome;

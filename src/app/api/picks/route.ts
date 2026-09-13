@@ -11,6 +11,11 @@ import {
   parseUsedTeams,
   MISSED_TEAM,
 } from "@/lib/grading";
+import {
+  evaluatePickChange,
+  gameForPick,
+  pickChangeErrorMessage,
+} from "@/lib/pick-change";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -52,22 +57,20 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Week not found" }, { status: 404 });
   }
 
-  // Natural lock may have passed — apply effects and reject
+  // Natural lock may have passed — apply missed-pick / grade effects
   await ensureWeekLockedEffects(week.id);
-  const weekFresh = await prisma.week.findUniqueOrThrow({ where: { id: week.id } });
-  if (isWeekLocked(weekFresh)) {
-    return NextResponse.json(
-      { error: "Week is locked — picks cannot change", locked: true },
-      { status: 403 }
-    );
-  }
+  const weekFresh = await prisma.week.findUniqueOrThrow({
+    where: { id: week.id },
+    include: { games: true },
+  });
+  const weekLocked = isWeekLocked(weekFresh);
 
   const team = await prisma.team.findUnique({ where: { abbr: teamAbbr } });
   if (!team) {
     return NextResponse.json({ error: "Unknown team" }, { status: 400 });
   }
 
-  const game = week.games.find(
+  const game = weekFresh.games.find(
     (g) => g.awayAbbr === teamAbbr || g.homeAbbr === teamAbbr
   );
   if (!game) {
@@ -85,6 +88,24 @@ export async function POST(req: Request) {
       },
     },
   });
+
+  const existingGame = gameForPick(existing, weekFresh.games);
+  const change = evaluatePickChange({
+    weekNumber,
+    weekLocked,
+    existingPick: existing,
+    existingGame,
+    newGame: game,
+  });
+  if (!change.allowed) {
+    const hardLock =
+      change.reason === "week_locked" ||
+      change.reason === "current_game_started";
+    return NextResponse.json(
+      { error: pickChangeErrorMessage(change.reason), locked: hardLock },
+      { status: 403 }
+    );
+  }
 
   const prior = await prisma.pick.findMany({
     where: {
