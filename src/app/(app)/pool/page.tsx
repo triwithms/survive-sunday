@@ -23,9 +23,9 @@ import { getTeamInjuries } from "@/lib/live-injuries";
 import { formatInjuryChip, formatScoreLine } from "@/lib/game-display";
 import {
   effectiveCurrentWeek,
-  isSandboxWeekHidden,
   weeksForParticipants,
 } from "@/lib/pool-mode";
+import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -45,9 +45,6 @@ export default async function PoolPage({
   if (!me) redirect("/join");
 
   const params = await searchParams;
-  const rawWeek = params?.week;
-  const requestedWeek = Array.isArray(rawWeek) ? rawWeek[0] : rawWeek;
-  const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
   const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
   const weeks = weeksForParticipants(
     me.pool.mode,
@@ -57,12 +54,11 @@ export default async function PoolPage({
       include: { games: { select: { id: true } } },
     })
   );
-  const requestedIsValid =
-    Number.isInteger(parsedWeek) &&
-    parsedWeek <= currentWeek &&
-    !isSandboxWeekHidden(me.pool.mode, parsedWeek) &&
-    weeks.some((candidate) => candidate.number === parsedWeek);
-  const selectedNumber = requestedIsValid ? parsedWeek : currentWeek;
+  const selectedNumber = resolveSelectedWeekNumber({
+    requested: parseWeekParam(params?.week),
+    weekNumbers: weeks.map((candidate) => candidate.number),
+    currentWeek,
+  });
   const selectedRef =
     weeks.find((candidate) => candidate.number === selectedNumber) ??
     weeks.find((candidate) => candidate.number === currentWeek) ??

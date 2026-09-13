@@ -9,7 +9,6 @@ import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import { InjuryChip } from "@/components/InjuryChip";
 import {
   effectiveCurrentWeek,
-  isSandboxWeekHidden,
   weeksForParticipants,
 } from "@/lib/pool-mode";
 import { redirect } from "next/navigation";
@@ -20,6 +19,7 @@ import {
 } from "@/lib/live-scores";
 import { getInjuryCountsByTeam } from "@/lib/live-injuries";
 import { formatInjuryChip, formatScoreLine } from "@/lib/game-display";
+import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -39,9 +39,6 @@ export default async function SchedulePage({
   if (!me) redirect("/join");
 
   const params = await searchParams;
-  const rawWeek = params?.week;
-  const requestedWeek = Array.isArray(rawWeek) ? rawWeek[0] : rawWeek;
-  const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
   const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
 
   const weeks = weeksForParticipants(
@@ -55,11 +52,12 @@ export default async function SchedulePage({
     })
   );
 
-  const requestedIsValid =
-    Number.isInteger(parsedWeek) &&
-    !isSandboxWeekHidden(me.pool.mode, parsedWeek) &&
-    weeks.some((candidate) => candidate.number === parsedWeek);
-  const selectedNumber = requestedIsValid ? parsedWeek : currentWeek;
+  const selectedNumber = resolveSelectedWeekNumber({
+    requested: parseWeekParam(params?.week),
+    weekNumbers: weeks.map((candidate) => candidate.number),
+    currentWeek,
+    allowFuture: true,
+  });
   const week =
     weeks.find((candidate) => candidate.number === selectedNumber) ??
     weeks.find((candidate) => candidate.number === currentWeek) ??
