@@ -1,6 +1,12 @@
-const CACHE = "survive-sunday-shell-v6";
+const CACHE = "survive-sunday-shell-v7";
 /** Only these never-change shell assets — never Next chunks (stable names in next dev). */
-const SHELL = ["/manifest.webmanifest", "/icons/icon.svg"];
+const SHELL = [
+  "/manifest.webmanifest",
+  "/icons/icon.svg",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/apple-touch-icon.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

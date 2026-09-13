@@ -187,6 +187,7 @@ export function HelpContent() {
 | Can’t see mates’ picks | Week hasn’t locked yet — hang tight until first kickoff. |
 | Missed SMS | Add or update your cell in the header (near nickname). Confirm the number is correct. |
 | Forgot password | Sign in → Forgot password. Use the email on your account. Demo seats use demo1234. |
+| Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
 | Can’t change my pick | Lock has passed — picks are frozen. |</pre>
