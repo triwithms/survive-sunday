@@ -7,6 +7,7 @@ import {
   normalizePoolMode,
   type PoolMode,
 } from "@/lib/pool-mode";
+import { poolHasRealCommissioner } from "@/lib/pool-mode-db";
 
 export async function GET() {
   const admin = await requireAdmin();
@@ -32,6 +33,19 @@ export async function POST(req: Request) {
   }
 
   const mode: PoolMode = requested;
+  if (mode === POOL_MODE_LIVE) {
+    const ready = await poolHasRealCommissioner(admin.membership.poolId);
+    if (!ready) {
+      return NextResponse.json(
+        {
+          error:
+            "Set your real commissioner login first. Real mode cannot use a practice account.",
+        },
+        { status: 400 }
+      );
+    }
+  }
+
   const pool = await prisma.pool.update({
     where: { id: admin.membership.poolId },
     data: { mode },

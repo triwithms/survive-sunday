@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
+import { INVITE_CODE } from "./constants";
 import { prisma } from "./db";
+import { isDemoEmail, isLiveMode } from "./pool-mode";
 
 export type CredentialRecord = {
   id: string;
@@ -30,6 +32,13 @@ export async function userFromCredentials(
   lookup: (email: string) => Promise<CredentialRecord | null> = lookupUserByEmail
 ): Promise<AuthorizedUser | null> {
   try {
+    if (isDemoEmail(email)) {
+      const pool = await prisma.pool.findUnique({
+        where: { inviteCode: INVITE_CODE },
+        select: { mode: true },
+      });
+      if (isLiveMode(pool?.mode)) return null;
+    }
     const user = await lookup(email);
     if (!user?.passwordHash) return null;
     const ok = await bcrypt.compare(password, user.passwordHash);

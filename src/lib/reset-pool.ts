@@ -25,7 +25,10 @@ function weekStatusForLock(lockAt: Date, now: Date): "open" | "locked" {
   return now >= lockAt ? "locked" : "open";
 }
 
-export async function previewPoolReset(poolId: string): Promise<ResetPoolPreview | null> {
+export async function previewPoolReset(
+  poolId: string,
+  actorUserId?: string
+): Promise<ResetPoolPreview | null> {
   const pool = await prisma.pool.findUnique({ where: { id: poolId } });
   if (!pool) return null;
 
@@ -39,12 +42,17 @@ export async function previewPoolReset(poolId: string): Promise<ResetPoolPreview
   });
   const weekCount = await prisma.week.count({ where: { poolId } });
 
+  const actor = members.find((m) => m.userId === actorUserId);
+  const actorIsReal = Boolean(actor && !isDemoEmail(actor.user.email));
+
   const demoMembersToRemove: ResetPoolPreview["demoMembersToRemove"] = [];
   const membersKept: ResetPoolPreview["membersKept"] = [];
 
   for (const m of members) {
     const email = m.user.email ?? "";
-    const dropDemoMember = isDemoEmail(email) && m.role !== "admin";
+    const isActor = Boolean(actorUserId && m.userId === actorUserId);
+    const dropDemoMember =
+      isDemoEmail(email) && !isActor && (m.role !== "admin" || actorIsReal);
     if (dropDemoMember) {
       demoMembersToRemove.push({ nickname: m.nickname, email });
     } else {
@@ -80,7 +88,7 @@ export async function resetPoolSeasonData(opts: {
     throw new Error("Confirmation phrase does not match");
   }
 
-  const preview = await previewPoolReset(opts.poolId);
+  const preview = await previewPoolReset(opts.poolId, opts.actorUserId);
   if (!preview) {
     throw new Error("Pool not found");
   }
@@ -90,11 +98,18 @@ export async function resetPoolSeasonData(opts: {
       where: { membership: { poolId: opts.poolId } },
     });
 
+    const actorUser = await tx.user.findUnique({
+      where: { id: opts.actorUserId },
+      select: { email: true },
+    });
+    const actorIsReal = !isDemoEmail(actorUser?.email);
+
     const demoMemberships = await tx.membership.findMany({
       where: {
         poolId: opts.poolId,
-        role: { not: "admin" },
+        userId: { not: opts.actorUserId },
         user: { email: { endsWith: DEMO_EMAIL_SUFFIX } },
+        ...(actorIsReal ? {} : { role: { not: "admin" } }),
       },
       select: { id: true, userId: true },
     });

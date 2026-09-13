@@ -6,7 +6,8 @@ import Link from "next/link";
 import { AdminPanel } from "@/components/AdminPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 import { PoolModePanel } from "@/components/PoolModePanel";
-import { isDemoMode, normalizePoolMode } from "@/lib/pool-mode";
+import { CommissionerAccountPanel } from "@/components/CommissionerAccountPanel";
+import { isDemoEmail, isDemoMode, normalizePoolMode } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -58,21 +59,37 @@ export default async function AdminPage() {
           Commissioner
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          Light admin — pool mode, reset, roster, lock override, import picks,
-          simulate scores, remove players. Pick and name edits are always
-          audited.
+          Light admin — your login, pool mode, reset, roster, lock override,
+          import picks, simulate scores, remove players. Pick and name edits
+          are always audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Going live: switch to <strong className="text-[var(--text-primary)]">Real mode</strong>,
+          Going live: save your real commissioner login, switch to{" "}
+          <strong className="text-[var(--text-primary)]">Real mode</strong>,
           reset if the board still has practice picks, then import Week 1.
         </p>
       </div>
 
-      <PoolModePanel initialMode={normalizePoolMode(me.pool.mode)} />
+      <CommissionerAccountPanel
+        currentEmail={session.user.email ?? me.user.email ?? null}
+        isPracticeLogin={isDemoEmail(session.user.email ?? me.user.email)}
+      />
+
+      <PoolModePanel
+        initialMode={normalizePoolMode(me.pool.mode)}
+        hasRealCommissioner={!isDemoEmail(session.user.email ?? me.user.email)}
+      />
+
+      <Link
+        href="/admin/roster"
+        className="btn-primary inline-flex items-center justify-center w-full"
+      >
+        Roster — nicknames and real names
+      </Link>
 
       <Link
         href="/admin/import"
-        className="btn-primary inline-flex items-center justify-center w-full"
+        className="btn-secondary inline-flex items-center justify-center w-full"
       >
         Import week picks (CSV / paste)
       </Link>

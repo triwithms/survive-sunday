@@ -14,7 +14,13 @@ type Preview = {
   weekCount: number;
 };
 
-export function PoolModePanel({ initialMode }: { initialMode: PoolMode }) {
+export function PoolModePanel({
+  initialMode,
+  hasRealCommissioner = false,
+}: {
+  initialMode: PoolMode;
+  hasRealCommissioner?: boolean;
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<PoolMode>(initialMode);
   const [busy, setBusy] = useState(false);
@@ -23,7 +29,7 @@ export function PoolModePanel({ initialMode }: { initialMode: PoolMode }) {
   const [preview, setPreview] = useState<Preview | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [typed, setTyped] = useState("");
-  const [switchToLive, setSwitchToLive] = useState(true);
+  const [switchToLive, setSwitchToLive] = useState(hasRealCommissioner);
 
   useEffect(() => {
     let cancelled = false;
@@ -50,6 +56,12 @@ export function PoolModePanel({ initialMode }: { initialMode: PoolMode }) {
 
   async function setPoolMode(next: PoolMode) {
     if (next === mode) return;
+    if (next === "live" && !hasRealCommissioner) {
+      setErr(
+        "Set your real commissioner login first (the box above). Then you can switch to Real mode."
+      );
+      return;
+    }
     setBusy(true);
     setErr("");
     setMsg("");
@@ -138,7 +150,7 @@ export function PoolModePanel({ initialMode }: { initialMode: PoolMode }) {
           <button
             type="button"
             className={isLive ? "btn-primary" : "btn-secondary"}
-            disabled={busy || isLive}
+            disabled={busy || isLive || !hasRealCommissioner}
             onClick={() => setPoolMode("live")}
           >
             Switch to Real mode
@@ -152,6 +164,12 @@ export function PoolModePanel({ initialMode }: { initialMode: PoolMode }) {
             Switch to Demo mode
           </button>
         </div>
+        {!hasRealCommissioner && (
+          <p className="text-sm text-crimson-400">
+            Real mode stays locked until you save a real commissioner email
+            above (not a practice login).
+          </p>
+        )}
         <ul className="text-xs text-[var(--text-muted)] list-disc pl-5 space-y-1">
           <li>
             <strong className="text-[var(--text-primary)]">Real:</strong> home
@@ -228,10 +246,16 @@ export function PoolModePanel({ initialMode }: { initialMode: PoolMode }) {
               <input
                 type="checkbox"
                 className="mt-1"
-                checked={switchToLive}
+                checked={switchToLive && hasRealCommissioner}
+                disabled={!hasRealCommissioner}
                 onChange={(e) => setSwitchToLive(e.target.checked)}
               />
-              <span>Also switch to Real mode after reset (recommended)</span>
+              <span>
+                Also switch to Real mode after reset
+                {hasRealCommissioner
+                  ? " (recommended)"
+                  : " — save a real commissioner login first"}
+              </span>
             </label>
             <input
               value={typed}

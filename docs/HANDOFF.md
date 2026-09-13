@@ -403,6 +403,9 @@ You are helping maintain Survive Sunday. Read docs/HANDOFF.md and docs/REAL-MODE
 - src/app/(app)/admin/import/page.tsx
 - src/components/AdminPanel.tsx
 - src/components/PoolModePanel.tsx
+- src/components/RosterEditor.tsx
+- src/components/CommissionerAccountPanel.tsx
+- src/app/(app)/admin/roster/page.tsx
 - src/components/ImportPicksForm.tsx
 - src/lib/pool-mode.ts
 - src/lib/reset-pool.ts

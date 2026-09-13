@@ -17,12 +17,30 @@ You switch modes yourself. The site does not change by itself.
 
 ---
 
+## First: your real commissioner login (required)
+
+Practice accounts (`…@survivesunday.demo`) **cannot** sign in once Real mode is on. Set your own email first or you will lock yourself out.
+
+1. While Demo mode is still on, tap **Enter as commissioner** (or sign in with the practice commissioner email).
+2. Open **Admin**.
+3. Under **Your commissioner login**, enter **your real email** and a new password.
+4. Tap **Save real commissioner login**.
+5. Tap **Sign out and use the new login**.
+6. Sign in on `/login` with that real email and password.
+7. Confirm you still see **Admin** in the header.
+
+You are now ready. Tell yourself: commissioner login is the real email, not a practice address.
+
+---
+
 ## How to switch modes
 
-1. Sign in as commissioner (email + password, or **Enter as commissioner** while still in Demo mode).
+1. Sign in with your **real** commissioner email (after the step above).
 2. Tap **Admin** in the header.
 3. Under **Pool mode**, tap **Switch to Real mode** or **Switch to Demo mode**.
 4. You should see a short confirmation. Refresh if the home page still looks old.
+
+Real mode stays locked until a real commissioner email is saved.
 
 **Tip:** Switch to **Real mode before you invite friends**, so they never see the practice picker.
 
@@ -44,7 +62,7 @@ Use this when the board still has practice picks and you want a clean start.
 
 - Clears all picks.
 - Sets everyone who stays to **undefeated** with a fresh mulligan.
-- Removes practice accounts (`…@survivesunday.demo`) except the commissioner.
+- Removes practice accounts (`…@survivesunday.demo`), including the old practice commissioner if you already saved a real login.
 - Sets the pool to **Week 1**.
 - Keeps the schedule, games, your commissioner login, and real friends who joined with their own email.
 
@@ -72,13 +90,22 @@ After import, open **Home** or **Scores** and confirm Week 1 looks right.
 
 ---
 
+## Roster (nicknames and real names)
+
+1. Admin → **Roster — nicknames and real names**
+2. Each person is a card: nickname (board name) and real name.
+3. Fix what’s wrong → **Save this person**.
+
+---
+
 ## Suggested order for the real season
 
-1. Sign in as commissioner.
+1. Set your **real commissioner login** and sign in with it (see above).
 2. **Reset pool** (with “switch to Real mode” ticked) **or** switch to Real mode, then reset if the board is still full of practice data.
-3. **Import week 1 picks**.
-4. Send friends to the site → **Join the pool** with invite code **`SUNDAY26`** (or **Sign in** if they already have an account).
-5. They pick as usual. You can still correct a pick later with **Import week picks**.
+3. Fix names on **Roster** if needed.
+4. **Import week 1 picks**.
+5. Send friends to the site → **Join the pool** with invite code **`SUNDAY26`** (or **Sign in** if they already have an account).
+6. They pick as usual. You can still correct a pick later with **Import week picks**.
 
 ---
 
@@ -86,5 +113,7 @@ After import, open **Home** or **Scores** and confirm Week 1 looks right.
 
 - Home still shows a player picker → you are still in Demo mode. Open Admin and switch to Real.
 - Board still has old practice picks → run Reset, then import again.
-- You cannot open Admin → you are not on the commissioner account. Sign in with that email.
+- You cannot open Admin → you are not on the commissioner account. Sign in with your real commissioner email.
+- Real mode button is greyed out → you are still on a practice login. Save your real email first.
+- Practice email/password fails after Real mode → that is intended. Use your real commissioner email.
 - A friend cannot join → they need invite code `SUNDAY26` and a unique nickname.

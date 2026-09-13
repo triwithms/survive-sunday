@@ -38,7 +38,7 @@ Production should feel like a **private pool**, not a try-it-out site. The commi
 | **Real** | Join + Sign in only. No “demo” wording. |
 | **Demo** | Practice account picker and demo copy (for you to try the app). |
 
-**Go live for Week 1:** Admin → **Reset pool** (type `RESET`; leave “switch to Real mode” ticked) → **Import week picks**. Step-by-step: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
+**Go live for Week 1:** Admin → save your **real commissioner login** → **Reset pool** (type `RESET`; leave “switch to Real mode” ticked) → **Roster** if names need fixing → **Import week picks**. Step-by-step: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
 
 ## Demo login
 
