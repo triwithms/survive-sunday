@@ -97,7 +97,7 @@ export function HeaderWeekNav({
   };
 
   return (
-    <div className="flex items-center gap-0 sm:gap-0.5 text-sm min-w-0 flex-1 justify-center overflow-hidden">
+    <div className="flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-1 text-sm min-w-0 flex-1 overflow-hidden">
       <nav
         aria-label="Header week navigation"
         data-testid="header-week-nav"
