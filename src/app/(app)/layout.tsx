@@ -1,14 +1,22 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
+import { Suspense } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
-import { Countdown } from "@/components/Countdown";
 import { HeaderNav } from "@/components/HeaderNav";
 import { DemoLockToggle } from "@/components/DemoLockToggle";
+import {
+  HeaderWeekBadge,
+  HeaderWeekNav,
+} from "@/components/HeaderWeekNav";
 import { prisma } from "@/lib/db";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
-import { effectiveCurrentWeek, isDemoMode } from "@/lib/pool-mode";
+import {
+  effectiveCurrentWeek,
+  isDemoMode,
+  weeksForParticipants,
+} from "@/lib/pool-mode";
 import Link from "next/link";
 import { NicknameEditor } from "@/components/NicknameEditor";
 
@@ -27,20 +35,29 @@ export default async function AppLayout({
   const membership = await getMembershipForUser(session.user.id);
   if (!membership) redirect("/join");
 
-  const week = await prisma.week.findUnique({
-    where: {
-      poolId_number: {
-        poolId: membership.poolId,
-        number: effectiveCurrentWeek(
-          membership.pool.mode,
-          membership.pool.currentWeek
-        ),
-      },
-    },
-  });
+  const currentWeek = effectiveCurrentWeek(
+    membership.pool.mode,
+    membership.pool.currentWeek
+  );
+  const weeks = weeksForParticipants(
+    membership.pool.mode,
+    await prisma.week.findMany({
+      where: { poolId: membership.poolId },
+      orderBy: { number: "asc" },
+      include: { games: { select: { id: true } } },
+    })
+  );
+  const week =
+    weeks.find((row) => row.number === currentWeek) ?? weeks[0] ?? null;
 
   const lockIso = week ? effectiveLockAt(week).toISOString() : null;
   const locked = week ? isWeekLocked(week) : true;
+  const weekNav = weeks.map((row) => ({
+    number: row.number,
+    label: row.label,
+    hasGames: row.games.length > 0,
+    lockAt: effectiveLockAt(row).toISOString(),
+  }));
   const canChangePick =
     !locked && membership.status !== "eliminated" && membership.role !== "admin";
   const showMutedChangePick =
@@ -59,19 +76,13 @@ export default async function AppLayout({
           >
             SURVIVE
           </Link>
-          <div className="flex items-center gap-1.5 sm:gap-2 text-sm min-w-0 flex-1 justify-center overflow-hidden">
-            <span className="chip chip-gold shrink-0">
-              W{effectiveCurrentWeek(
-                membership.pool.mode,
-                membership.pool.currentWeek
-              )}
-            </span>
-            {lockIso && (
-              <span className="min-w-0 overflow-hidden">
-                <Countdown lockAt={lockIso} />
-              </span>
-            )}
-          </div>
+          <Suspense
+            fallback={
+              <HeaderWeekBadge weekNumber={currentWeek} lockAt={lockIso} />
+            }
+          >
+            <HeaderWeekNav weeks={weekNav} currentWeek={currentWeek} />
+          </Suspense>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 max-w-[42%]">
             {membership.role === "admin" && (
               <Link

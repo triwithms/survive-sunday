@@ -10,25 +10,52 @@ import {
   shouldPollLiveScores,
 } from "@/lib/live-scores";
 import { getInjuryCountsByTeam } from "@/lib/live-injuries";
-import { effectiveCurrentWeek } from "@/lib/pool-mode";
+import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
+import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function PickPage() {
+type PickSearchParams = {
+  week?: string | string[];
+};
+
+export default async function PickPage({
+  searchParams,
+}: {
+  searchParams?: Promise<PickSearchParams>;
+}) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
   const me = await getMembershipForUser(session.user.id);
   if (!me) redirect("/join");
 
-  const weekRef = await prisma.week.findUniqueOrThrow({
-    where: {
-      poolId_number: {
-        poolId: me.poolId,
-        number: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
-      },
-    },
+  const params = await searchParams;
+  const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
+  const weeks = weeksForParticipants(
+    me.pool.mode,
+    await prisma.week.findMany({
+      where: { poolId: me.poolId },
+      orderBy: { number: "asc" },
+      select: { id: true, number: true },
+    })
+  );
+  const selectedNumber = resolveSelectedWeekNumber({
+    requested: parseWeekParam(params?.week),
+    weekNumbers: weeks.map((row) => row.number),
+    currentWeek,
+    allowFuture: true,
   });
+  const weekRef =
+    weeks.find((row) => row.number === selectedNumber) ??
+    weeks.find((row) => row.number === currentWeek);
+  if (!weekRef) {
+    return (
+      <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
+        No weeks have been seeded for this pool yet.
+      </div>
+    );
+  }
   try {
     await ensureWeekLockedEffects(weekRef.id);
   } catch (e) {
@@ -128,7 +155,9 @@ export default async function PickPage() {
     <>
       <LiveScoresRefresh weekNumber={week.number} poll={poll} />
       <PickClient
+        key={week.number}
         weekNumber={week.number}
+        currentWeek={currentWeek}
         locked={locked}
         eliminated={eliminated}
         currentPick={currentAbbr}

@@ -10,12 +10,12 @@ import { formatKickoff } from "@/lib/utils";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
 import {
   effectiveCurrentWeek,
-  isSandboxWeekHidden,
   weeksForParticipants,
 } from "@/lib/pool-mode";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -41,9 +41,6 @@ export default async function ScoresPage({
   if (!me) redirect("/join");
 
   const params = await searchParams;
-  const rawWeek = params?.week;
-  const requestedWeek = Array.isArray(rawWeek) ? rawWeek[0] : rawWeek;
-  const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
   const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
   const weeks = weeksForParticipants(
     me.pool.mode,
@@ -53,12 +50,11 @@ export default async function ScoresPage({
       include: { games: { select: { id: true } } },
     })
   );
-  const requestedIsValid =
-    Number.isInteger(parsedWeek) &&
-    parsedWeek <= currentWeek &&
-    !isSandboxWeekHidden(me.pool.mode, parsedWeek) &&
-    weeks.some((week) => week.number === parsedWeek);
-  const selectedNumber = requestedIsValid ? parsedWeek : currentWeek;
+  const selectedNumber = resolveSelectedWeekNumber({
+    requested: parseWeekParam(params?.week),
+    weekNumbers: weeks.map((week) => week.number),
+    currentWeek,
+  });
   const selectedRef =
     weeks.find((week) => week.number === selectedNumber) ??
     weeks.find((week) => week.number === currentWeek) ??

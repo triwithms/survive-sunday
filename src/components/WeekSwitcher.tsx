@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { adjacentWeeks, selectableWeeks } from "@/lib/weeks";
 
 export type WeekSwitcherOption = {
   number: number;
@@ -28,24 +29,24 @@ export function WeekSwitcher({
 }) {
   const router = useRouter();
   // Schedule (allowFuture): every week, including TBA. Pool/Scores: past+current with games.
-  const selectable = weeks.filter((week) =>
-    allowFuture
-      ? true
-      : week.hasGames && week.number <= currentWeek
-  );
+  const selectable = selectableWeeks(weeks, currentWeek, allowFuture);
   const selected = weeks.find((week) => week.number === selectedWeek);
   const options =
     selected && !selectable.some((week) => week.number === selectedWeek)
       ? [...selectable, selected].sort((a, b) => a.number - b.number)
       : selectable;
-  const selectedIndex = selectable.findIndex(
-    (week) => week.number === selectedWeek
-  );
-  const previous = selectedIndex > 0 ? selectable[selectedIndex - 1] : null;
-  const next =
-    selectedIndex >= 0 && selectedIndex < selectable.length - 1
-      ? selectable[selectedIndex + 1]
-      : null;
+  const { previous: previousNumber, next: nextNumber } = adjacentWeeks({
+    weeks,
+    selectedWeek,
+    currentWeek,
+    allowFuture,
+  });
+  const previous = previousNumber
+    ? selectable.find((week) => week.number === previousNumber) ?? null
+    : null;
+  const next = nextNumber
+    ? selectable.find((week) => week.number === nextNumber) ?? null
+    : null;
   const value = selectable.some((w) => w.number === selectedWeek)
     ? selectedWeek
     : currentWeek;

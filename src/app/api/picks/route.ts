@@ -32,9 +32,19 @@ export async function POST(req: Request) {
   }
 
   const { weekNumber, teamAbbr } = await req.json();
+  const currentWeek = effectiveCurrentWeek(
+    membership.pool.mode,
+    membership.pool.currentWeek
+  );
   if (isSandboxWeekHidden(membership.pool.mode, Number(weekNumber))) {
     return NextResponse.json(
       { error: "Week 2 is only available in Demo mode" },
+      { status: 403 }
+    );
+  }
+  if (weekNumber !== currentWeek) {
+    return NextResponse.json(
+      { error: "You can only change the current week's pick" },
       { status: 403 }
     );
   }

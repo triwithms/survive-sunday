@@ -29,8 +29,8 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h2 className="text-lg font-semibold text-gold-400 mb-2">2. How to play (quick start)</h2>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
           <li>Join with your **invite link or code** and sign in with **Google** or **email and password**. Returning BM Boys: your nickname is already set — use **Change nickname** in the header if you want something different. New joiners: create a nickname on join (unique within the pool).</li>
-          <li>Open **Pick** and choose from **This week’s games** — pick **exactly one** NFL team to win.</li>
-          <li>Submit before the **Pick deadline** (header countdown) — the week locks at the kickoff of the first game that week (usually Thursday Night Football).</li>
+          <li>Open **Pick** and choose from **This week’s games** — pick **exactly one** NFL team to win. Use the arrows beside the **W#** badge in the header to flip to other weeks.</li>
+          <li>Submit before the **Pick deadline** (header countdown) — the week locks at the kickoff of the first game that week (usually Thursday Night Football). Past weeks stay read-only after lock; future weeks show that week’s games if they’re already in the app.</li>
           <li>If your team wins, you survive. If it loses, your mulligan absorbs the first hit (you’re still alive with one loss) or a second loss eliminates you.</li>
           <li>You **cannot reuse** any team you’ve already picked — win or lose.</li>
           <li>Last friends standing win the bragging rights (and whatever your group agreed offline).</li>

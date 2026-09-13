@@ -43,12 +43,14 @@ type Matchup = {
 
 export function PickClient({
   weekNumber,
+  currentWeek,
   locked,
   eliminated,
   currentPick,
   games,
 }: {
   weekNumber: number;
+  currentWeek: number;
   locked: boolean;
   eliminated: boolean;
   currentPick: string | null;
@@ -62,7 +64,16 @@ export function PickClient({
   const [msg, setMsg] = useState("");
   const [redirectIn, setRedirectIn] = useState<number | null>(null);
   const router = useRouter();
-  const readOnly = locked || eliminated;
+  const isCurrentWeek = weekNumber === currentWeek;
+  const browsingOtherWeek = !isCurrentWeek;
+  const readOnly = locked || eliminated || browsingOtherWeek;
+
+  useEffect(() => {
+    setSelected(currentPick ?? null);
+    setConfirm(null);
+    setMsg("");
+    setRedirectIn(null);
+  }, [weekNumber, currentPick]);
 
   useEffect(() => {
     if (redirectIn == null) return;
@@ -151,7 +162,11 @@ export function PickClient({
               ? "You're eliminated — matchups are read-only."
               : locked
                 ? "Week locked — picks are read-only."
-                : "Use Pick on a side to choose that team. One team. No reuse."}
+                : browsingOtherWeek
+                  ? weekNumber > currentWeek
+                    ? `Browsing Week ${weekNumber} — picks open on Week ${currentWeek}.`
+                    : `Week ${weekNumber} is over — this pick is read-only.`
+                  : "Use Pick on a side to choose that team. One team. No reuse."}
           </p>
         </div>
       </div>
@@ -255,6 +270,24 @@ export function PickClient({
         </div>
       )}
 
+      {browsingOtherWeek && !locked && !eliminated && (
+        <div
+          role="status"
+          className="card-glass border border-gold-400/40 p-3 text-sm space-y-1"
+        >
+          <p className="font-semibold text-gold-400">
+            {weekNumber > currentWeek
+              ? `Week ${weekNumber} isn’t open for picks yet`
+              : `Viewing Week ${weekNumber}`}
+          </p>
+          <p className="text-[var(--text-muted)]">
+            {weekNumber > currentWeek
+              ? `This is next week’s slate. Make this week’s pick on Week ${currentWeek}.`
+              : "This week’s pick is locked in. Use the arrows in the header to get back to the current week."}
+          </p>
+        </div>
+      )}
+
       {msg && (
         <div
           className={`rounded-lg border p-3 text-sm space-y-2 ${
@@ -280,6 +313,11 @@ export function PickClient({
         <h2 className="text-sm font-semibold text-gold-400 tracking-wide">
           This week&apos;s games
         </h2>
+      {list.length === 0 ? (
+        <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
+          Games for Week {weekNumber} have not been added yet.
+        </div>
+      ) : (
       <ul className="space-y-3">
         {list.map((m) => {
           const fav = resolveFavourite({
@@ -341,6 +379,7 @@ export function PickClient({
           );
         })}
       </ul>
+      )}
       </section>
 
       {confirm && (
