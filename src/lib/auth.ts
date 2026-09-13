@@ -7,10 +7,7 @@ import type { Provider } from "next-auth/providers";
 import { userFromCredentials } from "./credentials-user";
 import { isLoopbackHost, requestPublicOrigin } from "./request-host";
 import { requiresTwoFactor } from "./two-factor";
-import {
-  hasRecentTwoFactorCompletion,
-  userFromTwoFactorGrant,
-} from "./two-factor-service";
+import { userFromTwoFactorGrant } from "./two-factor-service";
 
 const providers: Provider[] = [
   Credentials({
@@ -80,24 +77,17 @@ function authConfig(req?: NextRequest): NextAuthConfig {
       signIn: "/login",
     },
     callbacks: {
-      async jwt({ token, user }) {
+      async jwt({ token, user, account }) {
         if (user) {
           // Always replace identity — never merge onto a previous demo JWT.
           token.sub = user.id;
           token.email = user.email;
           token.name = user.name;
           const email = typeof user.email === "string" ? user.email : undefined;
-          let pending = requiresTwoFactor(email);
-          if (pending) {
-            const flagged =
-              "twoFactorComplete" in user && user.twoFactorComplete === true;
-            // Auth.js may strip custom authorize fields; the grant row is backup.
-            pending = !(
-              flagged ||
-              (await hasRecentTwoFactorCompletion(user.id, email))
-            );
-          }
-          token.twoFactorPending = pending;
+          const completed =
+            account?.provider === "two-factor" ||
+            ("twoFactorComplete" in user && user.twoFactorComplete === true);
+          token.twoFactorPending = completed ? false : requiresTwoFactor(email);
         }
         return token;
       },

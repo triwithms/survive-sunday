@@ -14,12 +14,7 @@ import {
   expirySeconds,
   type TwoFactorChannel,
 } from "./two-factor";
-import {
-  canRevealDevCode,
-  deliverOtp,
-  emailProviderReady,
-  smsProviderReady,
-} from "./two-factor-delivery";
+import { canRevealDevCode, deliverOtp } from "./two-factor-delivery";
 
 export type TwoFactorSessionUser = {
   id: string;
@@ -319,31 +314,6 @@ export type TwoFactorAuthorizedUser = {
  * Complete a verified 2FA grant. Must not throw — Auth.js maps authorize
  * exceptions as CallbackRouteError.
  */
-export async function hasRecentTwoFactorCompletion(
-  userId?: string | null,
-  email?: string | null
-): Promise<boolean> {
-  try {
-    const or = [
-      ...(userId ? [{ userId }] : []),
-      ...(email ? [{ email }] : []),
-    ];
-    if (or.length === 0) return false;
-    const since = new Date(Date.now() - TWO_FACTOR.grantTtlMs);
-    const row = await prisma.twoFactorChallenge.findFirst({
-      where: {
-        sessionAppliedAt: { gte: since },
-        OR: or,
-      },
-      select: { id: true },
-    });
-    return Boolean(row);
-  } catch (error) {
-    console.error("[2fa] completion lookup failed", error);
-    return false;
-  }
-}
-
 export async function userFromTwoFactorGrant(
   grant: string
 ): Promise<TwoFactorAuthorizedUser | null> {
