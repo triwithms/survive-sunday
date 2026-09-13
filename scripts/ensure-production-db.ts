@@ -106,19 +106,17 @@ async function ensureOtpChallengeTable(prisma: PrismaClient) {
     CREATE INDEX IF NOT EXISTS "OtpChallenge_userId_purpose_createdAt_idx"
     ON "OtpChallenge" ("userId", "purpose", "createdAt")
   `);
-  await prisma.$executeRawUnsafe(`
-    DO $$
-    BEGIN
-      IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint WHERE conname = 'OtpChallenge_userId_fkey'
-      ) THEN
-        ALTER TABLE "OtpChallenge"
-          ADD CONSTRAINT "OtpChallenge_userId_fkey"
-          FOREIGN KEY ("userId") REFERENCES "User"("id")
-          ON DELETE CASCADE ON UPDATE CASCADE;
-      END IF;
-    END $$
-  `);
+  const fk = await prisma.$queryRaw<Array<{ conname: string }>>`
+    SELECT conname FROM pg_constraint WHERE conname = 'OtpChallenge_userId_fkey'
+  `;
+  if (fk.length === 0) {
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "OtpChallenge"
+        ADD CONSTRAINT "OtpChallenge_userId_fkey"
+        FOREIGN KEY ("userId") REFERENCES "User"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+    `);
+  }
   console.log("[ensure-db] OtpChallenge table ready");
 }
 
