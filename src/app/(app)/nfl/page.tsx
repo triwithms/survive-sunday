@@ -7,11 +7,13 @@ import { NflStandingsClient } from "@/components/NflStandingsClient";
 import { isDemoMode } from "@/lib/pool-mode";
 import fs from "fs";
 import path from "path";
+import { syncTeamStandingsFromEspn } from "@/lib/live-scores";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function standingsMeta(): { asOf?: string; note?: string } {
+/** Demo-only meta from seed file — never show on Real/live player screens. */
+function demoStandingsMeta(): { asOf?: string; note?: string } {
   const dirs = [
     path.resolve(process.cwd(), "data"),
     path.resolve("/workspace/survive-sunday/app/data"),
@@ -36,10 +38,21 @@ export default async function NflStandingsPage() {
   const me = await getMembershipForUser(session.user.id);
   if (!me) redirect("/join");
 
+  const demoMode = isDemoMode(me.pool.mode);
+
+  // Real mode: refresh Team W-L from ESPN so BUF etc. match live results.
+  if (!demoMode) {
+    try {
+      await syncTeamStandingsFromEspn();
+    } catch (e) {
+      console.error("nfl standings ESPN sync skipped", e);
+    }
+  }
+
   const teams = await prisma.team.findMany({
     orderBy: [{ conference: "asc" }, { division: "asc" }, { divisionRank: "asc" }],
   });
-  const meta = standingsMeta();
+  const meta = demoMode ? demoStandingsMeta() : {};
 
   return (
     <div className="space-y-5 min-w-0">
@@ -48,7 +61,9 @@ export default async function NflStandingsPage() {
           NFL standings
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          Week-2-ish league table · tap a team for research ·{" "}
+          {demoMode
+            ? "Demo league table · tap a team for research · "
+            : "Live league table · tap a team for research · "}
           <Link href="/standings" prefetch={false} className="text-gold-400 underline underline-offset-2">
             pool survival board
           </Link>
@@ -56,7 +71,7 @@ export default async function NflStandingsPage() {
       </div>
 
       <NflStandingsClient
-        demoMode={isDemoMode(me.pool.mode)}
+        demoMode={demoMode}
         asOf={meta.asOf}
         note={meta.note}
         teams={teams.map((t) => ({
