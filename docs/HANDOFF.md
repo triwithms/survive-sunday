@@ -347,7 +347,7 @@ Re-checked against GitHub. **Do not describe an open PR as live.** After you mer
 | Real vs Demo mode, Week 1 isolation, reset, real commissioner login | [#10](https://github.com/triwithms/survive-sunday/pull/10) (squash-merged) | Admin first card. Real = Week 1, no practice picker. Week 2 = Demo-only. [`docs/REAL-MODE.md`](./REAL-MODE.md) is on `main`. |
 | Forgot password + ~90 day stay-logged-in | [#7](https://github.com/triwithms/survive-sunday/pull/7) (squash-merged, `2df4645`) | Sign in → **Forgot password?** → 6-digit code → new password. **Merged / shipping.** Codes send only after Resend (optional Twilio) env vars are on Vercel + Redeploy. |
 | Pick header previous / next week | [#14](https://github.com/triwithms/survive-sunday/pull/14) | Chevrons around the gold `W#` badge; `?week=` like Home / Scores. Past / future weeks read-only. |
-| Week 1-only pick change after first kickoff | this PR | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. Weeks 2+ stay on the normal week lock. |
+| Week 1-only pick change after first kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. Weeks 2+ stay on the normal week lock. |
 
 ### Open — not on `main` yet
 
