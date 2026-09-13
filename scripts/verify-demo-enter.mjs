@@ -47,8 +47,9 @@ async function main() {
   const jar = new Map();
 
   const csrf = await request(jar, "/api/auth/csrf");
-  assert(csrf.ok, `/api/auth/csrf ${csrf.status} ${await csrf.text()}`);
-  const csrfBody = await csrf.json();
+  const csrfText = await csrf.text();
+  assert(csrf.ok, `/api/auth/csrf ${csrf.status} ${csrfText}`);
+  const csrfBody = JSON.parse(csrfText);
   assert(csrfBody.csrfToken, "csrfToken missing");
   console.log("PASS  /api/auth/csrf 200");
 
