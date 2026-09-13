@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import { ModalDialog } from "@/components/ModalDialog";
 import { formatPhoneDisplay } from "@/lib/phone";
 
 type Props = {
@@ -119,101 +120,93 @@ export function PhoneEditor({ phoneE164, softPrompt }: Props) {
       </button>
 
       {dialogOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={dialogTitleId}
-          onClick={(e) => {
-            if (e.target === e.currentTarget && !busy) {
-              if (isSoft) return; // soft prompt: dismiss only via Skip / Save
-              setOpen(false);
-            }
-          }}
+        <ModalDialog
+          labelledBy={dialogTitleId}
+          onBackdropClick={
+            busy || isSoft ? undefined : () => setOpen(false)
+          }
         >
-          <div className="card-glass w-full max-w-sheet p-5 space-y-3">
-            <h2
-              id={dialogTitleId}
-              className="font-semibold text-lg text-gold-400"
-            >
-              {isSoft
-                ? "Add your cell for SMS reminders?"
-                : phoneE164
-                  ? "Change cell number"
-                  : "Add cell number"}
-            </h2>
-            <p className="text-xs text-[var(--text-muted)]">
-              {isSoft ? (
-                <>
-                  We’ll text you if you’re missing a pick before lock. SMS only
-                  for now — WhatsApp later. You can skip and add this anytime
-                  from the header.
-                </>
-              ) : (
-                <>
-                  Used for missing-pick SMS reminders. Canadian and US numbers
-                  welcome — e.g. (416) 951-4262 or +1…
-                </>
-              )}
-            </p>
-            <label className="block text-sm">
-              <span className="text-[var(--text-muted)]">Cell number</span>
-              <input
-                ref={inputRef}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                disabled={busy}
-                className="mt-1 w-full"
-                autoComplete="tel"
-                inputMode="tel"
-                placeholder="(416) 951-4262"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    void save();
-                  }
-                  if (e.key === "Escape" && !busy && !isSoft) setOpen(false);
-                }}
-              />
-            </label>
-            {error && (
-              <p className="text-crimson-400 text-sm" role="alert">
-                {error}
-              </p>
+          <h2
+            id={dialogTitleId}
+            className="font-semibold text-lg text-gold-400"
+          >
+            {isSoft
+              ? "Add your cell for SMS reminders?"
+              : phoneE164
+                ? "Change cell number"
+                : "Add cell number"}
+          </h2>
+          <p className="text-xs text-[var(--text-muted)]">
+            {isSoft ? (
+              <>
+                We’ll text you if you’re missing a pick before lock. SMS only
+                for now — WhatsApp later. You can skip and add this anytime
+                from the header.
+              </>
+            ) : (
+              <>
+                Used for missing-pick SMS reminders. Canadian and US numbers
+                welcome — e.g. (416) 951-4262 or +1…
+              </>
             )}
-            <div className="flex gap-2 pt-1">
-              {isSoft ? (
-                <button
-                  type="button"
-                  className="btn-secondary flex-1"
-                  disabled={busy}
-                  onClick={() => void skip()}
-                  data-testid="skip-phone"
-                >
-                  {busy ? "…" : "Skip for now"}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="btn-secondary flex-1"
-                  disabled={busy}
-                  onClick={() => setOpen(false)}
-                >
-                  Cancel
-                </button>
-              )}
+          </p>
+          <label className="block text-sm">
+            <span className="text-[var(--text-muted)]">Cell number</span>
+            <input
+              ref={inputRef}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              disabled={busy}
+              className="mt-1 w-full"
+              autoComplete="tel"
+              inputMode="tel"
+              placeholder="(416) 951-4262"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  void save();
+                }
+                if (e.key === "Escape" && !busy && !isSoft) setOpen(false);
+              }}
+            />
+          </label>
+          {error && (
+            <p className="text-crimson-400 text-sm" role="alert">
+              {error}
+            </p>
+          )}
+          <div className="flex gap-2 pt-1">
+            {isSoft ? (
               <button
                 type="button"
-                className="btn-primary flex-1"
+                className="btn-secondary flex-1"
                 disabled={busy}
-                onClick={() => void save()}
-                data-testid="save-phone"
+                onClick={() => void skip()}
+                data-testid="skip-phone"
               >
-                {busy ? "Saving…" : "Save"}
+                {busy ? "…" : "Skip for now"}
               </button>
-            </div>
+            ) : (
+              <button
+                type="button"
+                className="btn-secondary flex-1"
+                disabled={busy}
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              type="button"
+              className="btn-primary flex-1"
+              disabled={busy}
+              onClick={() => void save()}
+              data-testid="save-phone"
+            >
+              {busy ? "Saving…" : "Save"}
+            </button>
           </div>
-        </div>
+        </ModalDialog>
       )}
     </>
   );
