@@ -15,7 +15,7 @@ export function TeamLogo({
   if (!logoUrl || failed) {
     return (
       <div
-        className="flex shrink-0 items-center justify-center rounded-full bg-[var(--stadium-700)] font-mono text-xs font-semibold text-gold-400"
+        className="flex shrink-0 items-center justify-center rounded-md bg-[var(--stadium-700)] font-mono text-[10px] font-semibold text-gold-400"
         style={{ width: size, height: size }}
         aria-hidden
       >
@@ -30,7 +30,7 @@ export function TeamLogo({
       alt=""
       width={size}
       height={size}
-      className="shrink-0 rounded-full object-contain bg-[var(--stadium-700)]"
+      className="shrink-0 rounded-md object-contain bg-white"
       style={{ width: size, height: size }}
       onError={() => setFailed(true)}
     />

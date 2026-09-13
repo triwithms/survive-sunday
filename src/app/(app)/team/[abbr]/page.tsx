@@ -18,6 +18,7 @@ import {
 } from "@/lib/team-research";
 import { getTeamInjuries, type LiveInjury } from "@/lib/live-injuries";
 import { formatWinPct } from "@/lib/standings-format";
+import { teamLogoUrl } from "@/lib/espn-teams";
 import { InjuryChip } from "@/components/InjuryChip";
 import { isDemoMode } from "@/lib/pool-mode";
 
@@ -292,7 +293,11 @@ export default async function TeamResearchPage({
       </div>
 
       <header className="card-glass p-4 flex items-start gap-3 min-w-0">
-        <TeamLogo abbr={team.abbr} logoUrl={team.logoUrl} size={64} />
+        <TeamLogo
+          abbr={team.abbr}
+          logoUrl={teamLogoUrl(team.abbr, team.logoUrl)}
+          size={64}
+        />
         <div className="min-w-0 flex-1">
           <h1 className="font-display text-3xl sm:text-4xl text-gold-400 tracking-wide break-words">
             {team.name}

@@ -33,6 +33,7 @@
     "verify:live-feeds": "tsx scripts/verify-live-feeds.ts",
     "verify:game-display": "tsx scripts/verify-game-display.ts",
     "verify:espn-game-detail": "tsx scripts/verify-espn-game-detail.ts",
+    "verify:team-logo": "tsx scripts/verify-team-logo.ts",
     "verify:week1-pick-change": "tsx scripts/verify-week1-pick-change.ts",
     "verify:notification-prefs": "tsx scripts/verify-notification-prefs.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
