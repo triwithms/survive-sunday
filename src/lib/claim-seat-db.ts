@@ -13,9 +13,9 @@ import {
 import {
   normalizeAuthEmail,
   normalizeAuthPassword,
+  passwordsMatch,
   shouldSkipClaimPassword,
 } from "./auth-credentials";
-import { userFromCredentials } from "./credentials-user";
 import { POOL_ROLES } from "./roles";
 import { grantPoolRole } from "./roles-db";
 
@@ -72,10 +72,9 @@ function normalizeJoinFields(input: JoinOrClaimInput) {
     inviteCode: typeof input.inviteCode === "string" ? input.inviteCode.trim() : "",
     email:
       typeof input.email === "string" ? normalizeAuthEmail(input.email) : "",
-    password:
-      typeof input.password === "string"
-        ? normalizeAuthPassword(input.password)
-        : "",
+    // Keep the pasted password intact (iOS often adds a trailing \n).
+    // Attach compares via passwordsMatch(); new hashes use the normalized form.
+    password: typeof input.password === "string" ? input.password : "",
     sessionUserId:
       typeof input.sessionUserId === "string" ? input.sessionUserId : "",
     sessionEmail:
@@ -162,9 +161,11 @@ async function claimPracticeSeat(args: {
       claimEmail: args.email,
     });
     if (!signedInOwner) {
-      // Same authorize() path as /login — not a second bcrypt inside the tx.
-      const authorized = await userFromCredentials(args.email, args.password);
-      if (!authorized || authorized.id !== previewDecision.userId) {
+      const hash = ownerPreview?.passwordHash;
+      const passwordOk = hash
+        ? await passwordsMatch(args.password, hash)
+        : false;
+      if (!passwordOk) {
         return {
           ok: false,
           status: 401,
@@ -251,7 +252,10 @@ async function claimPracticeSeat(args: {
         where: { id: decision.userId },
         data: {
           email: args.email,
-          passwordHash: await bcrypt.hash(args.password, 10),
+          passwordHash: await bcrypt.hash(
+            normalizeAuthPassword(args.password) || args.password,
+            10
+          ),
           name:
             seat!.user.name && !isDemoEmail(seat!.user.email)
               ? seat!.user.name
@@ -340,7 +344,10 @@ async function joinAsNewPlayer(args: {
       data: {
         email: args.email,
         name: args.realName || args.nickname,
-        passwordHash: await bcrypt.hash(args.password, 10),
+        passwordHash: await bcrypt.hash(
+          normalizeAuthPassword(args.password) || args.password,
+          10
+        ),
       },
     });
   }
@@ -385,10 +392,11 @@ export async function joinOrClaimSeat(
   if (!inviteCode || !email) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.missingFields };
   }
-  if (!password && !sessionUserId) {
+  const passwordNormalized = normalizeAuthPassword(password);
+  if (!passwordNormalized && !sessionUserId) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.missingFields };
   }
-  if (password && password.length < CLAIM_PASSWORD_MIN) {
+  if (passwordNormalized && passwordNormalized.length < CLAIM_PASSWORD_MIN) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.passwordShort };
   }
   if (inviteCode.toUpperCase() !== INVITE_CODE) {

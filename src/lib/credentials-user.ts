@@ -1,5 +1,4 @@
-import bcrypt from "bcryptjs";
-import { normalizeAuthEmail, normalizeAuthPassword } from "./auth-credentials";
+import { normalizeAuthEmail, passwordsMatch } from "./auth-credentials";
 import { INVITE_CODE } from "./constants";
 import { prisma } from "./db";
 import { isDemoEmail, isLiveMode } from "./pool-mode";
@@ -64,11 +63,7 @@ export async function userFromCredentials(
       }
     }
 
-    const candidate = normalizeAuthPassword(password);
-    const ok =
-      (await bcrypt.compare(candidate, user.passwordHash)) ||
-      (candidate !== password && (await bcrypt.compare(password, user.passwordHash)));
-    if (!ok) return null;
+    if (!(await passwordsMatch(password, user.passwordHash))) return null;
     return {
       id: user.id,
       email: user.email,

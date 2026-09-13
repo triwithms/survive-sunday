@@ -7,6 +7,7 @@ import { INVITE_CODE } from "@/lib/constants";
 import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
 import type { ClaimableSeat } from "@/lib/claim-seat";
 import { CLAIM_ERRORS } from "@/lib/claim-seat";
+import { normalizeAuthPassword } from "@/lib/auth-credentials";
 import { WhoAreYouSelect } from "@/components/WhoAreYouSelect";
 
 export function JoinForm({
@@ -65,17 +66,24 @@ export function JoinForm({
     setErr("");
     try {
       const claimEmail = signedIn?.email || email;
+      const claimPassword = oneTapClaim ? "" : normalizeAuthPassword(password);
       const res = await fetch("/api/join", {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           newPlayer
-            ? { inviteCode, email: claimEmail, password, nickname, realName }
+            ? {
+                inviteCode,
+                email: claimEmail,
+                password: claimPassword,
+                nickname,
+                realName,
+              }
             : {
                 inviteCode,
                 email: claimEmail,
-                password: oneTapClaim ? "" : password,
+                password: claimPassword,
                 membershipId,
               }
         ),
@@ -95,7 +103,7 @@ export function JoinForm({
         afterAuthNavigate("/pool");
         return;
       }
-      const login = await signInCredentials(claimEmail, password);
+      const login = await signInCredentials(claimEmail, claimPassword || password);
       if (!login.ok) {
         setErr(
           `Account created, but sign-in failed (${login.error || "unknown"}). Use Sign in on this same link.`

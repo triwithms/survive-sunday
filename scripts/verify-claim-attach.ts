@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs";
 import {
   normalizeAuthEmail,
   normalizeAuthPassword,
+  passwordsMatch,
   safeAuthCallbackPath,
   shouldSkipClaimPassword,
 } from "../src/lib/auth-credentials";
@@ -16,6 +17,9 @@ import { userFromCredentials } from "../src/lib/credentials-user";
 
 assert.equal(normalizeAuthEmail("  RobertGama@Gmail.com "), "robertgama@gmail.com");
 assert.equal(normalizeAuthPassword("  AttachPass9!  "), "AttachPass9!");
+assert.equal(normalizeAuthPassword("AttachPass9!\n"), "AttachPass9!");
+assert.equal(normalizeAuthPassword("AttachPass9!\r\n"), "AttachPass9!");
+assert.equal(normalizeAuthPassword("AttachPass9! "), "AttachPass9!");
 
 assert.equal(safeAuthCallbackPath("/join?seat=abc"), "/join?seat=abc");
 assert.equal(safeAuthCallbackPath("/pool"), "/pool");
@@ -78,6 +82,19 @@ async function main() {
     async () => record
   );
   assert.equal(ok?.id, "u-commish");
+
+  assert.equal(await passwordsMatch(password, passwordHash), true);
+  assert.equal(await passwordsMatch(`${password}\n`, passwordHash), true);
+  assert.equal(await passwordsMatch(`${password}\r\n`, passwordHash), true);
+  assert.equal(await passwordsMatch(`${password} `, passwordHash), true);
+  assert.equal(await passwordsMatch("not-the-password", passwordHash), false);
+
+  const pastedNewline = await userFromCredentials(
+    "robertgama@gmail.com",
+    `${password}\n`,
+    async () => record
+  );
+  assert.equal(pastedNewline?.id, "u-commish");
 
   const wrong = await userFromCredentials(
     "robertgama@gmail.com",
@@ -143,18 +160,72 @@ async function main() {
         assert.equal(bad.error, CLAIM_ERRORS.emailPasswordMismatch);
       }
 
-      const good = await joinOrClaimSeat({
+      // iOS paste often appends \n — Join must accept it the same as Sign in.
+      const goodNewline = await joinOrClaimSeat({
         inviteCode: INVITE_CODE,
         email: adminEmail,
-        password,
+        password: `${password}\n`,
         membershipId: seat.id,
       });
-      assert.equal(good.ok, true);
-      if (good.ok) {
+      assert.equal(
+        goodNewline.ok,
+        true,
+        goodNewline.ok ? "newline attach ok" : goodNewline.error
+      );
+      if (goodNewline.ok) {
         const attached = await prisma.membership.findUniqueOrThrow({
           where: { id: seat.id },
         });
         assert.equal(attached.userId, admin.id);
+      }
+
+      const adminSpaceEmail = `verify-attach-space-${stamp}@example.com`;
+      const adminSpace = await prisma.user.create({
+        data: {
+          email: adminSpaceEmail,
+          name: "Verify Admin Space",
+          passwordHash: await bcrypt.hash(password, 10),
+        },
+      });
+      await prisma.membership.create({
+        data: {
+          poolId: pool.id,
+          userId: adminSpace.id,
+          nickname: `CommishSp${stamp}`,
+          role: "admin",
+        },
+      });
+      const practiceSpace = await prisma.user.create({
+        data: {
+          email: `space-${practiceEmail}`,
+          name: `${nick}Sp`,
+          passwordHash: await bcrypt.hash("demo1234", 10),
+        },
+      });
+      const seatSpace = await prisma.membership.create({
+        data: {
+          poolId: pool.id,
+          userId: practiceSpace.id,
+          nickname: `${nick}Sp`,
+          role: "member",
+        },
+      });
+      const goodSpace = await joinOrClaimSeat({
+        inviteCode: INVITE_CODE,
+        email: adminSpaceEmail,
+        password: `${password} `,
+        membershipId: seatSpace.id,
+      });
+      assert.equal(
+        goodSpace.ok,
+        true,
+        goodSpace.ok ? "space attach ok" : goodSpace.error
+      );
+      if (goodSpace.ok) {
+        const attachedSpace = await prisma.membership.findUniqueOrThrow({
+          where: { id: seatSpace.id },
+        });
+        assert.equal(attachedSpace.userId, adminSpace.id);
       }
 
       // Fresh admin-only login: session match skips password (cannot reuse
@@ -206,7 +277,14 @@ async function main() {
         assert.equal(attached2.userId, admin2.id);
       }
 
-      const leftoverIds = [admin.id, admin2.id, practiceUser.id, practice2.id];
+      const leftoverIds = [
+        admin.id,
+        admin2.id,
+        adminSpace.id,
+        practiceUser.id,
+        practice2.id,
+        practiceSpace.id,
+      ];
       await prisma.membership.deleteMany({
         where: { userId: { in: leftoverIds }, poolId: pool.id },
       });
