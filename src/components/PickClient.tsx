@@ -219,7 +219,7 @@ export function PickClient({
         >
           <p className="font-semibold text-crimson-400">Eliminated this season</p>
           <p className="text-[var(--text-muted)]">
-            No more picks — you can still browse this week's games below.
+            No more picks — you can still browse this week&apos;s games below.
           </p>
         </div>
       )}

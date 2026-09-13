@@ -101,7 +101,7 @@ async function assignDemoWeekPicks(weekId: string, poolId: string): Promise<numb
     }
 
     const available = uniqueSlate.filter((t) => !used.has(t));
-    let team =
+    const team =
       available.find((t) => !globalTaken.has(t)) ??
       available[0] ??
       uniqueSlate.find((t) => !used.has(t)) ??
