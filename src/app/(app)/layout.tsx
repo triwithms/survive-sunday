@@ -80,6 +80,11 @@ export default async function AppLayout({
               statusLabel={membership.status.replace("_", " ")}
               userId={session.user.id}
               role={membership.role}
+              phoneE164={membership.user.phoneE164}
+              phoneSoftPrompt={
+                membership.user.phoneE164 == null &&
+                membership.user.phoneSkippedAt == null
+              }
             />
           </div>
         </div>

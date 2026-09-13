@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import { PhoneEditor } from "@/components/PhoneEditor";
 
 const MAX_NICKNAME = 24;
 
@@ -10,6 +11,8 @@ type Props = {
   statusLabel: string;
   userId: string;
   role: string;
+  phoneE164: string | null;
+  phoneSoftPrompt: boolean;
 };
 
 export function NicknameEditor({
@@ -17,6 +20,8 @@ export function NicknameEditor({
   statusLabel,
   userId,
   role,
+  phoneE164,
+  phoneSoftPrompt,
 }: Props) {
   const router = useRouter();
   const dialogTitleId = useId();
@@ -100,6 +105,7 @@ export function NicknameEditor({
           >
             Change
           </button>
+          <PhoneEditor phoneE164={phoneE164} softPrompt={phoneSoftPrompt} />
         </div>
         <div className="text-[var(--text-muted)] capitalize truncate">
           {statusLabel}
