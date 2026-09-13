@@ -22,6 +22,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - Real **Week 1 picks imported** for **12 BM Boys** (the original 10 plus **Go Giants** and **Pauli**). Pauli’s nickname is **Pauli** (Paul Gama)
 - **Week 1 pick-change until kickoff** — merged [PR #25](https://github.com/triwithms/survive-sunday/pull/25). Week 1: you can still change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock** (first kickoff).
 - Forgot password **code is on `main`**; codes will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**
+- **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). Password-reset codes are **not** gated by these prefs.
 
 The Real-mode playbook is [`docs/REAL-MODE.md`](./REAL-MODE.md). Earlier handoff refreshes ([PR #13](https://github.com/triwithms/survive-sunday/pull/13), [PR #15](https://github.com/triwithms/survive-sunday/pull/15)) are **superseded by this file**.
 
@@ -137,7 +138,7 @@ Same steps are in [DEPLOY.md](../DEPLOY.md) section **3b**. `onboarding@resend.d
 |------|----------------|
 | `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM_NUMBER` | Text the code if the friend saved a cell. Skip if email is enough today. |
 
-Friends can still **save a cell number** in the header. Missing-pick reminder texts are **not sent yet**.
+Friends can still **save a cell number** under Account. Missing-pick reminder **emails** (and texts if Twilio is set) go out only when that friend left **Missing pick reminder** on. The same Resend keys as Forgot password send the emails. A daily Vercel cron plus **Admin → Nudge missing picks** can fire them in the 24 hours before lock.
 
 A full list with local-dev notes is in [`.env.example`](../.env.example) and [`DEPLOY.md`](../DEPLOY.md).
 
@@ -240,6 +241,7 @@ Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is 
 - **Join** (`/join`): pick yourself from the **live roster** (nickname + real name), invite code **`SUNDAY26`**, then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. If the seat already has a real email, the page says it is claimed — Sign in instead. Practice `@survivesunday.demo` seats are claimable. **One user, more than one role** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)): there is **no special admin account**. The same email can be **Player + Administrator**. Use **Playing as …** / **Admin tools** to switch. Commissioner email can claim a player seat (Gams). People not on the list can still join as a new player.
 - **Forgot password?** on the sign-in page: we email (or text) a 6-digit code → new password → signed back in. This is **not** a code at every login. **Codes do not send until Resend keys are on Vercel** (section 4). That is still the group-invite blocker.
 - **Sign out:** header **Account** (top right) → **Sign out** (merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)). Also on Admin and Help.
+- **Notification preferences:** header **Account** → **Notification preferences**. Each friend chooses which emails they want. Missing-pick texts use the same Missing pick reminder switch. Password-reset codes always send when requested.
 
 The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` (click-by-click in [DEPLOY.md](../DEPLOY.md) §3b), then Redeploy. Optional Twilio for texts. Do not claim codes are sending until those keys are set and you have tested once. Demo-mode practice seats stay on `demo1234` — friends in Real mode never see that password.
 
@@ -317,6 +319,7 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 | Remove player | Drops a member from the pool. |
 | Demo lock toggle | Header **Before / After deadline** — commissioner only, and only in Demo mode. |
 | **Administrators** | Grant Admin tools to an existing pool player (confirm). They stay on the board. Same login can be Player + Administrator; switch views. Remove Admin is allowed only if another administrator remains. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
+| **Pool notes & nudge** | Send a short email note to friends who left **Pool notes** on. **Nudge missing picks** emails/texts friends who still have no pick (and left that reminder on). Uses Resend / optional Twilio. |
 
 **Not on Admin yet (other open PRs):** turn off the mulligan / one-and-done, **hand the whole pool** to someone else (they become the commissioner seat — [PR #8](https://github.com/triwithms/survive-sunday/pull/8)). That is different from **Make administrator** (they keep playing).
 
@@ -338,6 +341,7 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 | Friends pick themselves from the live roster and claim that seat | **Shipped** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)). Join + logged-out Home show **Who are you?** from the live Admin roster. Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch with **Playing as …** / **Admin tools**. Admin can promote another existing member. |
 | Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in → **Forgot password?** → 6-digit code is on `main`. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Optional Twilio for texts. Not a code at every login. |
 | Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** Install works. Cookie on `main` is ~**90 days** (open the app to keep it fresh). |
+| Each friend chooses which notification types they want | **Shipped.** Account → **Notification preferences**. Per-user row in the database. Core on, noisy off. Gates pick-confirm, results, elimination/mulligan, pool notes, missing-pick email/SMS. Password reset is never gated. |
 
 ### Do not build (already decided)
 
@@ -354,7 +358,7 @@ Live **scores** and **injury report** (ESPN public JSON) are already wired on `m
 
 Lowest priority. Do **not** start unless the owner asks. None of this is on `main`.
 
-- H2H gloves animation, banter, SMS/email digests, WhatsApp, notification centre, extra visual polish. Listed in the README. If digests ever happen, include Canadian TV (TSN / CTV / RDS / DAZN) in the copy — that is not an app feature today.
+- H2H gloves animation, banter, weekly SMS/email **digests**, WhatsApp, extra visual polish. **Notification type preferences are shipped** (not this list). If digests ever happen, include Canadian TV (TSN / CTV / RDS / DAZN) in the copy — that is not an app feature today.
 - **Weekly video previews (lowest priority):** a Help and/or Home section (or a simple link) with **curated** video links for that week — about **1–2 short** (5–10 min), **1–2 medium** (10–20 min), and **1–2 long** (20 min up to ~2.5 hr). Sources: **NFL YouTube channel**, **ESPN**, and/or **TSN**. Links only / embed-friendly preview. **Not** required for core picks / board / in-vs-out. Do not invent a live video feed or scrape YouTube. Do not implement this unless the owner asks. A free or basic Grok chat may later *draft a short list of official links* if asked — that is still not a feature on `main`.
 
 ---
@@ -380,6 +384,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Survival board sort | [#21](https://github.com/triwithms/survive-sunday/pull/21), [#24](https://github.com/triwithms/survive-sunday/pull/24) | Status → weeks survived → losses → same pick → same game (earlier kickoff) → nickname A–Z. |
 | League W-L from ESPN (no demo leak) | live-standings merge (`538be1f`) | Real-mode League syncs ESPN W-L. Demo `week2-standings` seed is not shown to Real-mode friends. |
 | Week 1 pick-change until kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock.** |
+| Notification preferences | [#29](https://github.com/triwithms/survive-sunday/pull/29) | Account → Notification preferences. Types: missing pick, pick saved/changed, results, you’re out / mulligan, pool notes (default on); live scores, injury notes (default off). Email via Resend. Missing-pick SMS follows the same switch. |
 
 ### Open — not on `main` yet
 
@@ -388,6 +393,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Commissioner: turn off mulligan + transfer | [PR #8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player). Branch `cursor/commissioner-mulligan-transfer-a878`. May need a rebase onto latest `main`. |
 | NFL player details | [PR #11](https://github.com/triwithms/survive-sunday/pull/11) (open, **not draft**) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth. That PR’s own injury notes were **sample / demo** — `main` already has ESPN injuries on team pages, so a rebase should not invent a second feed. Branch `cursor/nfl-player-team-details-a32a`. |
 | Head coach on team pages | [PR #20](https://github.com/triwithms/survive-sunday/pull/20) | Team research page **Coach** card (ESPN name + links). Does not touch picks or auth. Branch `cursor/team-page-head-coach-9d0f`. |
+| Unclaim leftover pending.local seats | [PR #27](https://github.com/triwithms/survive-sunday/pull/27) | Makes **Go Giants** and **Pauli** claimable again if they still have leftover pending emails. Parallel work — do not edit those seats in other PRs. Branch `cursor/unclaim-pending-practice-seats-7410`. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 

@@ -86,6 +86,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 
 - Invite code join + live-roster **Who are you?** claim (own email/password on an existing seat) + credentials/demo login + Google-ready Auth.js
 - Forgot-password one-time code (email / SMS); sessions stay signed in (~90 days)
+- **Notification preferences** (Account): each user chooses alert types. Core on, live scores / injury notes off. Email via Resend; missing-pick SMS follows the same switch. Password-reset codes are never gated.
 - Nickname + optional real name; pool membership; admin/member roles
 - Week 1 schedule from `data/week1-slate.json` (real 2026 slate + final scores where present)
 - Lock at first kickoff; countdown; hide others’ picks until lock. Week 1 only: change an existing pick until that team’s kickoff if the new game has not started.
@@ -160,8 +161,8 @@ AUTH_TRUST_HOST=false
 
 - H2H boxing gloves animation
 - Weekly + season banter / mute
-- SMS (Twilio), digests (Resend), WhatsApp stub
-- Notification preference centre (close-game alerts off by default)
+- Weekly digests (Resend), WhatsApp stub, close-game alerts
+- PWA web push (preference flag exists; sender not wired)
 - Team detail pages already show ESPN injury report (not demo stubs)
 - Full visual polish / motion pass
 

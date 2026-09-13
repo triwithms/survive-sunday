@@ -22,6 +22,7 @@ import { ensureWeek2Slate } from "../src/lib/ensure-week-slate";
 import { isLiveMode } from "../src/lib/pool-mode";
 import { backfillPoolAccessRoles } from "../src/lib/roles-db";
 import { ensureDualMembershipIndex } from "../src/lib/membership-schema";
+import { ensureNotificationTables } from "../src/lib/notification-schema";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
 
@@ -198,6 +199,7 @@ async function assertRequiredSchema(prisma: PrismaClient) {
   await prisma.pool.findFirst({ select: { id: true } });
   await prisma.otpChallenge.findFirst({ select: { id: true } });
   await prisma.poolAccessRole.findFirst({ select: { id: true } });
+  await prisma.notificationPreference.findFirst({ select: { id: true } });
 }
 
 function pushSchema(env: NodeJS.ProcessEnv) {
@@ -243,6 +245,7 @@ async function main() {
     await ensureDualMembershipIndex(prisma);
     await ensureMembershipIsAdminColumn(prisma);
     await ensurePoolAccessRoleTable(prisma);
+    await ensureNotificationTables(prisma);
   });
 
   const pushed = pushSchema(env);
@@ -262,6 +265,7 @@ async function main() {
       await ensureMembershipIsAdminColumn(prisma);
       await ensurePoolAccessRoleTable(prisma);
       await ensureOtpChallengeTable(prisma);
+      await ensureNotificationTables(prisma);
       await assertRequiredSchema(prisma);
     });
   } else {
@@ -269,6 +273,7 @@ async function main() {
       // db push from `main` (still @@unique) can put the leftover back.
       await ensureDualMembershipIndex(prisma);
       await ensurePoolAccessRoleTable(prisma);
+      await ensureNotificationTables(prisma);
       await assertRequiredSchema(prisma);
     });
   }

@@ -173,14 +173,16 @@ export function PhoneEditor({
           <p className="text-xs text-[var(--text-muted)]">
             {isSoft ? (
               <>
-                We’ll text you if you’re missing a pick before lock. SMS only
-                for now — WhatsApp later. You can skip and add this anytime
-                from the header.
+                We’ll text you if you’re missing a pick before lock — unless you
+                turn that reminder off under Account → Notification
+                preferences. SMS only for now — WhatsApp later. You can skip
+                and add this anytime from the header.
               </>
             ) : (
               <>
-                Used for missing-pick SMS reminders. Canadian and US numbers
-                welcome — e.g. (416) 951-4262 or +1…
+                Used for missing-pick SMS reminders (same on/off switch as
+                email, under Account → Notification preferences). Canadian and
+                US numbers welcome — e.g. (416) 951-4262 or +1…
               </>
             )}
           </p>

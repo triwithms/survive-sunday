@@ -60,9 +60,16 @@ export default async function HelpPage() {
               Signed in as {membership.nickname}
             </p>
             <p className="text-xs text-[var(--text-muted)]">
-              Sign out is also under <strong>Account</strong> in the header
-              (top right) and on Admin.
+              Sign out and <strong>Notification preferences</strong> are under{" "}
+              <strong>Account</strong> in the header (top right). Also see Help
+              section 8.
             </p>
+            <Link
+              href="/account/notifications"
+              className="btn-secondary w-full inline-flex items-center justify-center"
+            >
+              Notification preferences
+            </Link>
             <SignOutButton next="/login" className="btn-danger w-full" />
           </div>
         )}

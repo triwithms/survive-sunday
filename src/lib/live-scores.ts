@@ -7,6 +7,7 @@ import {
 } from "@/lib/grading";
 import { fetchEspnJson, normAbbr } from "@/lib/espn";
 import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
+import { scheduleScoreUpdate } from "@/lib/notification-events";
 
 /** ESPN → app team abbreviation. */
 export function fromEspnAbbr(abbr: string): string {
@@ -221,6 +222,32 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
       },
     });
     updated += 1;
+
+    if (snap.status === "live" && game.status !== "final") {
+      const livePicks = await prisma.pick.findMany({
+        where: {
+          weekId,
+          gameId: game.id,
+          source: { not: "missed" },
+        },
+        include: { membership: { include: { user: true } } },
+      });
+      for (const pick of livePicks) {
+        if (pick.membership.role === "admin") continue;
+        scheduleScoreUpdate({
+          user: pick.membership.user,
+          nickname: pick.membership.nickname,
+          weekNumber: week.number,
+          gameId: game.id,
+          teamAbbr: pick.teamAbbr,
+          awayAbbr: game.awayAbbr,
+          homeAbbr: game.homeAbbr,
+          scoreAway: nextScores.scoreAway,
+          scoreHome: nextScores.scoreHome,
+          clockLabel: snap.clockLabel,
+        });
+      }
+    }
   }
 
   // Ungrade picks whose game is no longer final (e.g. premature demo finals).

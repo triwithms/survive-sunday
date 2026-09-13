@@ -3,6 +3,7 @@ import { getUserPoolContext } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { AdminAnnouncePanel } from "@/components/AdminAnnouncePanel";
 import { AdminPanel } from "@/components/AdminPanel";
 import { AdminRolesPanel } from "@/components/AdminRolesPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
@@ -155,6 +156,8 @@ export default async function AdminPage() {
       >
         Import week picks (CSV / paste)
       </Link>
+
+      <AdminAnnouncePanel />
 
       <AdminPanel
         weekNumber={week.number}

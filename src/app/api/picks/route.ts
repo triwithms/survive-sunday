@@ -16,6 +16,7 @@ import {
   gameForPick,
   pickChangeErrorMessage,
 } from "@/lib/pick-change";
+import { schedulePickConfirmed } from "@/lib/notification-events";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -155,6 +156,17 @@ export async function POST(req: Request) {
   });
 
   await rebuildUsedTeams(membership.id, { freedTeam });
+
+  if (!existing || existing.teamAbbr !== teamAbbr) {
+    schedulePickConfirmed({
+      user: membership.user,
+      nickname: membership.nickname,
+      weekNumber,
+      weekId: week.id,
+      teamAbbr,
+      changed: Boolean(existing && existing.teamAbbr !== teamAbbr),
+    });
+  }
 
   return NextResponse.json({ ok: true, pick, locked: false });
 }
