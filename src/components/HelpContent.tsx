@@ -240,7 +240,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           The **2025 rank** column is last season’s composite power rank by team (1 = strongest, 32 = weakest) — research only, not this year’s W-L.
         </p>
         <p className="text-[var(--text-muted)] mb-2">**Schedule** lists this week’s games and future weeks (dropdown + arrows). Tap a team for research.</p>
-        <p className="text-[var(--text-muted)] mb-2"><strong>Team pages</strong> cover roster, an ESPN injury report (Out / Doubtful / Questionable / IR / suspension), news headlines, and record. Injury chips on Pick / Home / Schedule are a compact count — tap the team for names. This is ESPN&apos;s public list, not the official NFL club report.</p>
+        <p className="text-[var(--text-muted)] mb-2"><strong>Team pages</strong> cover key NFL players, full roster, an ESPN injury report (Out / Doubtful / Questionable / IR / suspension), news headlines, and record. Tap a <strong>player name</strong> for college, depth role, and any ESPN injury note. Injury chips on Pick / Home / Schedule are a compact count — tap the team for names. This is ESPN&apos;s public list, not the official NFL club report.</p>
         <p className="text-[var(--text-muted)] mb-2">From <strong>This week&apos;s games</strong>, logos and names open research; <strong>Pick</strong> stays on its own button.</p>
         <p className="text-[var(--text-muted)] mb-2">Spreads and favourites in the pick flow are informational only.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
