@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/((?!_next/static|_next/image|icons/|favicon.ico|manifest.webmanifest|sw.js).*)",
+        source: "/((?!_next/static|_next/image|icons/|favicon.ico|apple-touch-icon.png|manifest.webmanifest|sw.js).*)",
         headers: [
           {
             key: "Cache-Control",
