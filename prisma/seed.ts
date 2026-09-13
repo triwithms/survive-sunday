@@ -421,6 +421,7 @@ async function main() {
       role: "admin",
       status: "undefeated",
       mulliganRemaining: true,
+      isParticipant: false,
     },
   });
 

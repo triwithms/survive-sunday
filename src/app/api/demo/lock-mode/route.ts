@@ -51,7 +51,7 @@ async function assignDemoWeekPicks(weekId: string, poolId: string): Promise<numb
     include: { games: true, picks: true },
   });
   const memberships = await prisma.membership.findMany({
-    where: { poolId, role: "member" },
+    where: { poolId, isParticipant: true },
     include: { picks: true },
   });
 

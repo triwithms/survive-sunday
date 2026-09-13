@@ -90,6 +90,8 @@ model Pool {
   currentWeek Int          @default(1)
   /// demo = practise picker / demo copy. live = real private pool (no participant "demo" UX).
   mode        String       @default("demo") // demo | live
+  /// null = classic one-mulligan season. N = from week N onward, one loss = out.
+  singleEliminationFromWeek Int?
   createdAt   DateTime     @default(now())
   memberships     Membership[]
   poolAccessRoles PoolAccessRole[]
@@ -110,6 +112,10 @@ model Membership {
   isAdmin           Boolean          @default(false)
   status            String           @default("undefeated") // undefeated | one_loss | eliminated
   mulliganRemaining Boolean          @default(true)
+  /// false = spectator commissioner (not on the player board, no missed-pick losses)
+  isParticipant     Boolean          @default(true)
+  /// Skip missed-pick losses for weeks before this (spectator → player after transfer)
+  playingFromWeek   Int?
   losses            Int              @default(0)
   weeksSurvived     Int              @default(0)
   usedTeamsJson     String           @default("[]") // JSON string[] of abbrs

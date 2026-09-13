@@ -1,5 +1,9 @@
 import { prisma } from "./db";
 import { scheduleResultsNotice } from "./notification-events";
+import {
+  decideStatusAfterLoss,
+  shouldApplyMissedPick,
+} from "./pool-rules";
 
 export type GradeResult = "win" | "loss" | "push";
 
@@ -64,26 +68,29 @@ export async function rebuildUsedTeams(
   });
 }
 
-export async function applyLossToMembership(membershipId: string) {
+export async function applyLossToMembership(
+  membershipId: string,
+  weekNumber: number
+) {
   const m = await prisma.membership.findUniqueOrThrow({
     where: { id: membershipId },
+    include: { pool: true },
   });
   if (m.status === "eliminated") return m;
 
-  if (m.mulliganRemaining) {
-    return prisma.membership.update({
-      where: { id: membershipId },
-      data: {
-        mulliganRemaining: false,
-        status: "one_loss",
-        losses: m.losses + 1,
-      },
-    });
-  }
+  const decision = decideStatusAfterLoss({
+    currentStatus: m.status,
+    mulliganRemaining: m.mulliganRemaining,
+    weekNumber,
+    singleEliminationFromWeek: m.pool.singleEliminationFromWeek,
+  });
+  if (decision.unchanged) return m;
+
   return prisma.membership.update({
     where: { id: membershipId },
     data: {
-      status: "eliminated",
+      mulliganRemaining: decision.mulliganRemaining,
+      status: decision.status,
       losses: m.losses + 1,
     },
   });
@@ -166,7 +173,8 @@ export async function gradeWeekPicks(weekId: string) {
     const before = pick.membership;
     let afterStatus = before.status;
     if (result === "loss" || result === "push") {
-      afterStatus = (await applyLossToMembership(pick.membershipId)).status;
+      afterStatus = (await applyLossToMembership(pick.membershipId, weekNumber))
+        .status;
     } else if (result === "win") {
       afterStatus = (await applyWinToMembership(pick.membershipId)).status;
     }
@@ -188,9 +196,9 @@ export async function gradeWeekPicks(weekId: string) {
 }
 
 /**
- * Apply missed-pick losses for member-role players with no pick after lock.
+ * Apply missed-pick losses for playing members with no pick after lock.
  * Idempotent per membership+week via source=missed pick records.
- * Skips role === 'admin' (commissioner spectator).
+ * Skips spectator commissioners and members not yet playing this week.
  */
 export async function applyMissedPicks(weekId: string) {
   const week = await prisma.week.findUniqueOrThrow({
@@ -206,8 +214,7 @@ export async function applyMissedPicks(weekId: string) {
   const applied: string[] = [];
 
   for (const m of week.pool.memberships) {
-    if (m.role === "admin") continue;
-    if (m.status === "eliminated") continue;
+    if (!shouldApplyMissedPick(m, week.number)) continue;
     if (picked.has(m.id)) continue;
 
     try {
@@ -226,7 +233,7 @@ export async function applyMissedPicks(weekId: string) {
       continue;
     }
 
-    const after = await applyLossToMembership(m.id);
+    const after = await applyLossToMembership(m.id, week.number);
     scheduleResultsNotice({
       user: m.user,
       nickname: m.nickname,
@@ -363,7 +370,7 @@ export async function simulateRemainingGames(
  */
 export async function recomputeWeeksSurvived(poolId: string) {
   const members = await prisma.membership.findMany({
-    where: { poolId, role: "member" },
+    where: { poolId, isParticipant: true },
     include: { picks: true },
   });
   const results: { membershipId: string; weeksSurvived: number }[] = [];

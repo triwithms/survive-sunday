@@ -25,6 +25,9 @@ import {
 } from "@/lib/pool-mode";
 import { listClaimableSeats } from "@/lib/claim-seat-db";
 import { PersonalInvitePanel } from "@/components/PersonalInvitePanel";
+import { PoolRulesForm } from "@/components/PoolRulesForm";
+import { TransferCommissionerForm } from "@/components/TransferCommissionerForm";
+import { isPoolParticipant } from "@/lib/pool-rules";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -93,8 +96,9 @@ export default async function AdminPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
           Light admin — your login, pool mode, reset, roster, administrators,
-          lock override, import picks, simulate scores, remove players. Pick
-          and name edits are always audited.
+          pool rules, hand the pool to someone else, lock override, import
+          picks, simulate scores, remove players. Pick and name edits are
+          always audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
           Mode switch is the first card below. Real mode is Week 1. Week 2
@@ -168,6 +172,31 @@ export default async function AdminPage() {
       </Link>
 
       <AdminAnnouncePanel />
+
+      <PoolRulesForm
+        currentWeek={effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek)}
+        singleEliminationFromWeek={me.pool.singleEliminationFromWeek}
+        oneLossCount={
+          members.filter(
+            (m) => isPoolParticipant(m) && m.status === "one_loss"
+          ).length
+        }
+        undefeatedCount={
+          members.filter(
+            (m) => isPoolParticipant(m) && m.status === "undefeated"
+          ).length
+        }
+      />
+
+      <TransferCommissionerForm
+        members={members
+          .filter((m) => isPlayerSeat(m) && m.userId !== session.user.id)
+          .map((m) => ({
+            id: m.id,
+            nickname: m.nickname,
+            status: m.status,
+          }))}
+      />
 
       <AdminPanel
         weekNumber={week.number}

@@ -97,6 +97,19 @@ async function ensureMembershipIsAdminColumn(prisma: PrismaClient) {
   `);
 }
 
+/** Mulligan toggle + spectator→player after handing the pool. */
+async function ensurePoolRulesColumns(prisma: PrismaClient) {
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Pool" ADD COLUMN IF NOT EXISTS "singleEliminationFromWeek" INTEGER
+  `);
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "isParticipant" BOOLEAN NOT NULL DEFAULT true
+  `);
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "playingFromWeek" INTEGER
+  `);
+}
+
 /** Extensible user↔roles table. Shipped: player, administrator. Reserved: watcher. */
 async function ensurePoolAccessRoleTable(prisma: PrismaClient) {
   await prisma.$executeRawUnsafe(`
@@ -247,6 +260,7 @@ async function main() {
     await ensurePoolModeColumn(prisma);
     await ensureDualMembershipIndex(prisma);
     await ensureMembershipIsAdminColumn(prisma);
+    await ensurePoolRulesColumns(prisma);
     await ensurePoolAccessRoleTable(prisma);
     await ensureNotificationTables(prisma);
     await ensurePickMirrorColumn(prisma);
@@ -267,6 +281,7 @@ async function main() {
       await ensurePoolModeColumn(prisma);
       await ensureDualMembershipIndex(prisma);
       await ensureMembershipIsAdminColumn(prisma);
+      await ensurePoolRulesColumns(prisma);
       await ensurePoolAccessRoleTable(prisma);
       await ensureOtpChallengeTable(prisma);
       await ensureNotificationTables(prisma);
@@ -278,6 +293,7 @@ async function main() {
       // db push from `main` (still @@unique) can put the leftover back.
       await ensureDualMembershipIndex(prisma);
       await ensurePoolAccessRoleTable(prisma);
+      await ensurePoolRulesColumns(prisma);
       await ensureNotificationTables(prisma);
       await ensurePickMirrorColumn(prisma);
       await assertRequiredSchema(prisma);
@@ -372,7 +388,41 @@ async function main() {
           error
         );
       }
-      console.log(`[ensure-db] demo pool present (${users} users)`);
+      // Spectator commissioners (no real picks) stay off the player board
+      // after isParticipant was added. Playing commissioners with picks
+      // are left on the board.
+      let spectatorsMarked = 0;
+      try {
+        const admins = await prisma.membership.findMany({
+          where: { role: "admin", isParticipant: true },
+          include: {
+            picks: {
+              where: { source: { not: "missed" }, NOT: { teamAbbr: "MISS" } },
+              take: 1,
+            },
+          },
+        });
+        for (const admin of admins) {
+          if (admin.picks.length === 0) {
+            await prisma.membership.update({
+              where: { id: admin.id },
+              data: { isParticipant: false },
+            });
+            spectatorsMarked += 1;
+          }
+        }
+      } catch (error) {
+        console.warn(
+          "[ensure-db] spectator commissioner mark skipped (build continues)",
+          error
+        );
+      }
+      console.log(
+        `[ensure-db] demo pool present (${users} users)` +
+          (spectatorsMarked
+            ? `; marked ${spectatorsMarked} spectator commissioner(s)`
+            : "")
+      );
       return false;
     }
     return true;

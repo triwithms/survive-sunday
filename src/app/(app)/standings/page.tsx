@@ -23,6 +23,7 @@ import Link from "next/link";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
 import { teamLogoUrl } from "@/lib/espn-teams";
+import { isPoolParticipant, isSingleEliminationWeek } from "@/lib/pool-rules";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -63,11 +64,15 @@ export default async function StandingsPage() {
     (week?.picks ?? []).map((p) => [p.membershipId, p])
   );
   const participants = members
-    .filter((m) => m.role !== "admin")
+    .filter((m) => isPoolParticipant(m))
     .map((m) => ({
       ...m,
       ...boardPickFields(pickByMember.get(m.id), week?.games ?? []),
     }));
+  const oneAndDone = isSingleEliminationWeek(
+    me.pool.singleEliminationFromWeek,
+    effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek)
+  );
   const sorted = sortParticipants(participants);
   const winners = resolveSeasonWinners(participants);
 
@@ -76,18 +81,19 @@ export default async function StandingsPage() {
     week?.label ??
     `Week ${effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek)}`;
   const myBoardPick = week ? pickByMember.get(me.id) : undefined;
+  const playing = isPoolParticipant(me);
   const canChangePick = week
     ? playerCanChangeCurrentPick({
         weekNumber: week.number,
         weekLocked: locked,
         eliminated: me.status === "eliminated",
-        isPlayer: me.role !== "admin",
+        isPlayer: playing,
         existingPick: myBoardPick ?? null,
         existingGame: gameForPick(myBoardPick, week.games),
       })
     : false;
   const showMutedChange =
-    !locked && (me.role === "admin" || me.status === "eliminated");
+    !locked && ((me.role === "admin" && !playing) || me.status === "eliminated");
   const revealAllPicks = locked;
   const stillInCount = sorted.filter((m) => isAlive(m.status)).length;
   const undefeatedCount = sorted.filter((m) => m.status === "undefeated").length;
@@ -165,12 +171,14 @@ export default async function StandingsPage() {
               prefetch={false}
               className="btn-secondary text-center text-sm shrink-0 opacity-60"
               title={
-                me.role === "admin"
+                me.role === "admin" && !playing
                   ? "Commissioner — optional"
                   : "Picks unavailable"
               }
             >
-              {me.role === "admin" ? "Change pick (optional)" : "Pick"}
+              {me.role === "admin" && !playing
+                ? "Change pick (optional)"
+                : "Pick"}
             </Link>
           ) : null}
         </div>
@@ -217,7 +225,11 @@ export default async function StandingsPage() {
                 </div>
                 <div className="text-xs text-[var(--text-muted)] truncate">
                   Losses: {m.losses} · Weeks survived: {m.weeksSurvived}
-                  {!m.mulliganRemaining && " · Mulligan used"}
+                  {!m.mulliganRemaining
+                    ? " · Mulligan used"
+                    : oneAndDone
+                      ? " · One-and-done"
+                      : ""}
                 </div>
               </div>
 

@@ -28,6 +28,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Share Board / Scores as a picture** — shipping in [PR #45](https://github.com/triwithms/survive-sunday/pull/45) (rebased onto #46). No Share button on the screen. On Board or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
 - **Scores Details ›** — merged [PR #46](https://github.com/triwithms/survive-sunday/pull/46). Each game card shows gold **Details ›** (live, Final, and upcoming) so friends know the card opens more info.
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset and sign-in codes are **not** gated by these prefs.
+- **Pool rules — mulligan** + **Hand the pool to someone else** — commissioner can turn off the free mulligan from a chosen week (one-and-done; already-scored weeks stay) and give Admin to another existing member (they keep playing; you stay as a player). Different from **Make administrator**.
 
 The Real-mode playbook is [`docs/REAL-MODE.md`](./REAL-MODE.md). Earlier handoff refreshes ([PR #13](https://github.com/triwithms/survive-sunday/pull/13), [PR #15](https://github.com/triwithms/survive-sunday/pull/15)) are **superseded by this file**.
 
@@ -48,10 +49,10 @@ A **private NFL survivor pool** for friends (2026/27 season). Canadian English (
 Rules the live app already enforces:
 
 - You cannot reuse a team later in the season (win or lose).
-- First wrong **or missed** pick burns the mulligan → **one loss**.
-- Second loss → **eliminated**.
+- First wrong **or missed** pick burns the mulligan → **one loss** (unless the commissioner turns the mulligan off).
+- Second loss → **eliminated**. If the commissioner switches to **one-and-done** from a week, one loss from that week onward puts a player out.
 - Bye-week teams are off the board.
-- **Administrator** is a role on a user (merged PR #19), not a special account. The same person can play (e.g. Gams) and use Admin tools. A leftover spectator “Commissioner” seat stays off the player board.
+- **Administrator** is a role on a user (merged PR #19), not a special account. The same person can play (e.g. Gams) and use Admin tools. A leftover spectator “Commissioner” seat stays off the player board. **Hand the pool** gives Admin to another existing member; they keep playing; you stay as a player and lose Admin.
 
 Entertainment among friends. Not a gambling service.
 
@@ -282,7 +283,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 ### Standings / in vs out
 
 - **Home** (`/pool`), **Board** (`/standings`), Scores **Participants’ picks**, and `GET /api/picks`: same pick (team abbr; no pick last), then same game (earlier kickoff / game id), then nickname A–Z. Status does not split a pick group.
-- You can open Home, Scores, League, Board, Help, and team pages **without** making a pick. If lock hits and a player still has no pick, the app records a **missed pick** (loss / mulligan), except the commissioner.
+- You can open Home, Scores, League, Board, Help, and team pages **without** making a pick. If lock hits and a player still has no pick, the app records a **missed pick** (loss / mulligan), except a spectator commissioner. Players see a gold banner when the commissioner has turned the mulligan off: **From Week X: no mulligan / one-and-done.**
 
 ### Scores, League, team pages
 
@@ -329,6 +330,8 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 | **Roster** | See each nickname + real name (including Go Giants, Pauli, JaJa). Edit either when wrong. Copy that person’s Join link if they have not Joined yet. Set **If no pick within 30 min, copy from** (JaJa → Gams). Audit-logged. |
 | **Import week picks** | Paste or upload `nickname,team` (or `email,team`). This is how you **correct a player’s pick after the fact**. Week 1 is already imported. Changes are written to the **audit log**. There is no single-player “edit pick” button yet. |
 | Lock controls | Reopen week, unlock (testing), lock now + missed picks, clear override. |
+| **Pool rules — mulligan** | Turn off the free mulligan from a chosen week (or immediately). One loss = out from that week. Already-scored weeks stay as they are. People who already used a mulligan stay in with one loss. Players see a banner. You can turn the mulligan back on. |
+| **Hand the pool to someone else** | Transfer Admin to another **existing** member. Type their nickname and confirm. You stay as a player and lose Admin. They keep their picks and stay on the board. Different from **Make administrator** (that keeps both of you as Admin). The app will not transfer if nobody else is in the pool. |
 | Simulate scores | Fake remaining finals (testing). |
 | Force grade | Grade + apply missed picks now. |
 | Remove player | Drops a member from the pool. |
@@ -337,7 +340,7 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 | **Pool notes & nudge** | Send a short email note to friends who left **Pool notes** on. **Nudge missing picks** emails/texts friends who still have no pick (and left that reminder on). Uses Resend / optional Twilio. |
 | **Share Board / Scores** | Not on Admin. After this PR merges: press and hold the Board or Scores title, or triple-tap the week label. No Share button. Full long picture always, or a shorter / split option. |
 
-**Not on Admin yet (other open PRs):** turn off the mulligan / one-and-done, **hand the whole pool** to someone else (they become the commissioner seat — [PR #8](https://github.com/triwithms/survive-sunday/pull/8)). That is different from **Make administrator** (they keep playing).
+**Not on Admin yet (other open PRs):** none of the mulligan / transfer work — that ships with this merge. Player-detail and head-coach pages are still open PRs (#11, #20).
 
 ---
 
@@ -352,7 +355,8 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 | ~100% reliable core: submit pick, group board, in vs out | **Built.** Protect this above all else. |
 | Commissioner can change a participant pick after the fact | **Built** via **Admin → Import week picks** (audit-logged). No single-player “edit pick” button yet. |
 | Friends can use the app without picking every week | **Built.** They can browse without picking. A missed week still counts as a loss after lock. Changing that rule is a product decision — say so explicitly. |
-| Transfer ownership (hand Admin to another friend) | **Not shipped.** Open [PR #8](https://github.com/triwithms/survive-sunday/pull/8). Do not invent a transfer screen on `main`. |
+| Transfer ownership (hand Admin to another friend) | **Shipped.** Admin → **Hand the pool to someone else**. They keep playing; you stay as a player and lose Admin. Different from **Make administrator**. |
+| Turn off the free mulligan (one-and-done from a week) | **Shipped.** Admin → **Pool rules — mulligan**. Already-scored weeks stay. Players see a gold banner. |
 | No “demo” labels / `demo1234` practice picker in real season mode | **Shipped** (merged [PR #10](https://github.com/triwithms/survive-sunday/pull/10)). Admin → **Real mode**. Real = Week 1 current. Week 2 stays viewable ([PR #22](https://github.com/triwithms/survive-sunday/pull/22)). Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
 | Friends pick themselves from the live roster and claim that seat | **Shipped** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)). Join + logged-out Home show **Who are you?** from the live Admin roster. Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch with **Playing as …** / **Admin tools**. Admin can promote another existing member. Commissioner copies **personal Join links** from Admin / Roster. |
 | Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in → **Use password instead** → **Forgot password?** → 6-digit code is on `main`. **Email me a sign-in code** is the primary Sign in path (same keys; not every-login 2FA). Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Optional Twilio for texts. |
@@ -407,12 +411,12 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Personal Join links + Home Screen prompt + simpler Sign in | [#44](https://github.com/triwithms/survive-sunday/pull/44) | One Copy per open seat (`?who=` when unique). Claimed seats → Sign in. Phone browser prompt after Join / first Sign in. Sign in defaults to **Email me a sign-in code**; password and Forgot are secondary; Google hidden on Sign in. Help + this file updated. |
 | Scores Details › | [#46](https://github.com/triwithms/survive-sunday/pull/46) | Gold **Details ›** on live, Final, and upcoming game cards. Tap opens the game sheet. Logos still open team pages. |
 | Share Board / Scores as pictures | [#45](https://github.com/triwithms/survive-sunday/pull/45) | Quiet gesture: **press and hold the title** or **triple-tap the week**. No Share button. Always includes the **full long picture**. Chrome (nav, tabs, Details ›) stays off the image. Help + this file. Does not touch picks / Join / Sign in / lock. |
+| Commissioner: turn off mulligan + transfer | [#8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player and lose Admin). Dual roles / Make administrator stay. |
 
 ### Open — not on `main` yet
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
-| Commissioner: turn off mulligan + transfer | [PR #8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player). Branch `cursor/commissioner-mulligan-transfer-a878`. May need a rebase onto latest `main`. |
 | NFL player details | [PR #11](https://github.com/triwithms/survive-sunday/pull/11) (open, **not draft**) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth. That PR’s own injury notes were **sample / demo** — `main` already has ESPN injuries on team pages, so a rebase should not invent a second feed. Branch `cursor/nfl-player-team-details-a32a`. |
 | Head coach on team pages | [PR #20](https://github.com/triwithms/survive-sunday/pull/20) | Team research page **Coach** card (ESPN name + links). Does not touch picks or auth. Branch `cursor/team-page-head-coach-9d0f`. |
 
@@ -499,7 +503,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 **Rules for every chat**
 
 1. Prefer **one small PR per chat**.
-2. **Continue** an existing open PR branch. Never reopen password reset (merged PR #7), Real mode (merged PR #10), Who are you? / roles (merged PR #19), Safari/Sign out (merged PR #18), Week 2 slate restore (merged PR #22), board sort (merged PRs #21 / #24), pick-week nav (merged PR #14), or Week 1 pick-change-until-kickoff (merged PR #25). Never open a second copy of mulligan/transfer, player pages, or head-coach (open PRs #8, #11, #20).
+2. **Continue** an existing open PR branch. Never reopen password reset (merged PR #7), Real mode (merged PR #10), Who are you? / roles (merged PR #19), Safari/Sign out (merged PR #18), Week 2 slate restore (merged PR #22), board sort (merged PRs #21 / #24), pick-week nav (merged PR #14), Week 1 pick-change-until-kickoff (merged PR #25), or mulligan/transfer (merged PR #8). Never open a second copy of player pages or head-coach (open PRs #11, #20).
 3. **Never invent features as “live.”** If it is not on `main` (section 10), say it is not shipped.
 4. Owner is **not a coder** — every answer needs click-by-click GitHub / Vercel / Admin steps, not “run this locally.”
 5. Do not use or recommend **paid Grok Bot**, Cursor desktop agents, or other expensive coding bots unless the owner explicitly asks after a basic chat hits a wall.
@@ -626,9 +630,7 @@ MUST on main (already shipped):
 - Who are you? claim + Player/Administrator roles + Make administrator (merged PR #19). Do not start a second copy.
 - Commissioner can change a participant pick after the fact (Import week picks, audit-logged). Week 1 is already imported — HANDOFF section 6b.
 - Roster real-name editor (including Go Giants, Pauli, JaJa). Pick backup (copy from another member within 30 min of kickoff) is on Account and Admin → Roster.
-
-Not on main — continue the existing PR, do not start a second copy:
-- Turn off mulligan / one-and-done + transfer commissioner → open PR #8 (branch cursor/commissioner-mulligan-transfer-a878)
+- Turn off mulligan / one-and-done from a week; **Hand the pool to someone else** (confirm nickname; previous stays a player and loses Admin). Do not start a second copy.
 
 Small PR only. Do not expand into Wave 2 SMS/digests or weekly video previews.
 My problem: [describe admin / import / lock-override / mulligan / transfer / mode issue]
@@ -704,7 +706,7 @@ Read docs/HANDOFF.md section 10. Trust GitHub main.
 Continue the existing open PR I name. Rebase that branch onto latest origin/main.
 Do not open a second PR for the same feature. Do not merge. Do not invent extras.
 Owner is not a coder: after you push, give click-by-click GitHub steps to review the updated PR.
-Password reset PR #7, Real mode PR #10, pick-week nav PR #14, Safari/Sign out PR #18, Who are you? PR #19, board sort PRs #21/#24, Week 2 restore PR #22, and Week 1 pick-change PR #25 are already merged — do not reopen them. Still open: PR #8 mulligan/transfer, PR #11 player details, PR #20 head coach.
+Password reset PR #7, Real mode PR #10, pick-week nav PR #14, Safari/Sign out PR #18, Who are you? PR #19, board sort PRs #21/#24, Week 2 restore PR #22, Week 1 pick-change PR #25, and mulligan/transfer PR #8 are already merged — do not reopen them. Still open: PR #11 player details, PR #20 head coach.
 My problem: [PR number and what GitHub shows — conflicts / failed checks]
 ```
 
@@ -723,15 +725,15 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **PWA** | Website you can pin to the phone home screen. |
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |
-| **Audit log** | A written record of commissioner changes (imports, removals, real-name edits). |
+| **Audit log** | A written record of commissioner changes (imports, removals, real-name edits, pool rules, transfer). |
 | **Real mode** | Season mode on `main` (merged PR #10). Hides the practice picker. Week 1 is the current pick week. Week 2 stays on the schedule (merged PR #22). |
 | **Demo / practice picker** | Home-page list of BM Boys nicknames with built-in `demo1234`. Visible only while **Demo mode** is on. Real-mode Help never mentions this password. |
 | **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname (e.g. **Pauli**, **Go Giants**, **JaJa**, Gams), sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
 | **Personal Join link** | Per-person URL from Admin (`/join?who=cannoli-stuffer` when unique). Opens Join with that seat picked. Claimed seats → Sign in. |
 | **Pick backup** | Off, copy from a member (30 min), or auto best remaining 2025-rank team (~2 min) if you still have no pick. JaJa copies Gams. |
 | **OTP / sign-in code** | One-time 6-digit code. Primary Sign in path (**Email me a sign-in code**). Forgot password is a small link on the password screen. Not a code at every login. Codes send only after Resend keys are on Vercel. |
-| **One-and-done** | Planned commissioner rule (PR #8): no free mulligan from a chosen week. One loss = out. **Not live.** |
-| **Transfer commissioner** | Planned Admin tool (PR #8): give Admin to another existing member. **Not live.** |
+| **One-and-done** | Commissioner rule: no free mulligan from a chosen week. One loss = out. Banner: “From Week X: no mulligan / one-and-done.” |
+| **Transfer commissioner** | Admin → **Hand the pool to someone else**. Give Admin to another existing member. You stay as a player and lose Admin. They keep playing. Different from **Make administrator**. |
 | **Free / basic Grok** | grok.com or xAI chat. The intended maintenance tool. **Not** paid Grok Bot. |
 
 ---

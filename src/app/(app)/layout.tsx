@@ -23,6 +23,7 @@ import {
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
 import { RoleSwitcher } from "@/components/RoleSwitcher";
+import { PoolRulesBanner } from "@/components/PoolRulesBanner";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -155,6 +156,10 @@ export default async function AppLayout({
             />
           </div>
         )}
+        <PoolRulesBanner
+          singleEliminationFromWeek={membership.pool.singleEliminationFromWeek}
+          compact
+        />
       </header>
       <div className="flex-1 mx-auto w-full max-w-pool px-3 sm:px-4 py-5 min-w-0 overflow-x-hidden">
         {children}
