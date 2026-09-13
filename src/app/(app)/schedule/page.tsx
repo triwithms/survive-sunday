@@ -5,8 +5,16 @@ import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { formatKickoff } from "@/lib/utils";
 import { resolveFavourite } from "@/lib/matchup-meta";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
+import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
+import { InjuryChip } from "@/components/InjuryChip";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import {
+  syncWeekScoresFromEspn,
+  shouldPollLiveScores,
+} from "@/lib/live-scores";
+import { getInjuryCountsByTeam } from "@/lib/live-injuries";
+import { formatInjuryChip, formatScoreLine } from "@/lib/game-display";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -57,6 +65,21 @@ export default async function SchedulePage({
     );
   }
 
+  const [, injuryFeed] = await Promise.all([
+    syncWeekScoresFromEspn(week.id).catch((e) => {
+      console.error("schedule espn score sync skipped", e);
+      return null;
+    }),
+    getInjuryCountsByTeam(),
+  ]);
+
+  const weekFresh = await prisma.week.findUniqueOrThrow({
+    where: { id: week.id },
+    include: { games: { orderBy: { kickoff: "asc" } } },
+  });
+  const games = weekFresh.games;
+  const poll = shouldPollLiveScores(games);
+
   const weekOptions = weeks.map((candidate) => ({
     number: candidate.number,
     label: candidate.label,
@@ -71,8 +94,8 @@ export default async function SchedulePage({
           Schedule
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Plan strong picks — tap a team for research. Weeks without seeded
-          games show as TBA.
+          Plan strong picks — tap a team for research. Live and final scores
+          refresh from ESPN while games are on.
         </p>
       </div>
 
@@ -83,6 +106,8 @@ export default async function SchedulePage({
         basePath="/schedule"
         allowFuture
       />
+
+      <LiveScoresRefresh weekNumber={week.number} poll={poll} />
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-baseline gap-2">
@@ -102,19 +127,24 @@ export default async function SchedulePage({
           </span>
         </div>
 
-        {week.games.length === 0 ? (
+        {games.length === 0 ? (
           <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
             Games coming — not seeded yet.
           </div>
         ) : (
           <ul className="space-y-2">
-            {week.games.map((g) => {
+            {games.map((g) => {
               const fav = resolveFavourite({
                 homeAbbr: g.homeAbbr,
                 awayAbbr: g.awayAbbr,
                 spreadHome: g.spreadHome,
                 spreadAway: g.spreadAway,
               });
+              const awayInj = injuryFeed.byTeam.get(g.awayAbbr);
+              const homeInj = injuryFeed.byTeam.get(g.homeAbbr);
+              const awayChip = awayInj ? formatInjuryChip(awayInj) : null;
+              const homeChip = homeInj ? formatInjuryChip(homeInj) : null;
+              const scoreLine = formatScoreLine(g);
               return (
                 <li key={g.id} className="card-glass p-3 min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
@@ -133,27 +163,47 @@ export default async function SchedulePage({
                     >
                       {g.homeAbbr}
                     </Link>
+                    {g.status === "live" && (
+                      <span className="chip chip-live text-[10px]">LIVE</span>
+                    )}
                     {g.network && (
                       <span className="chip chip-one-loss text-[10px]">
                         {g.network}
                       </span>
                     )}
                   </div>
-                  <div className="mt-1 text-xs text-[var(--text-muted)] flex flex-wrap gap-x-2">
-                    <span>{formatKickoff(g.kickoff)}</span>
+                  <div className="mt-1 text-xs text-[var(--text-muted)] flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span>{scoreLine || formatKickoff(g.kickoff)}</span>
                     {fav && (
                       <span className="font-mono text-[var(--text-primary)]">
                         {fav.label}
                       </span>
                     )}
-                    {g.status === "final" &&
-                      g.scoreAway != null &&
-                      g.scoreHome != null && (
-                        <span>
-                          Final {g.scoreAway}–{g.scoreHome}
-                        </span>
-                      )}
                   </div>
+                  {(awayChip || homeChip) && (
+                    <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-[var(--text-muted)]">
+                      {awayChip && awayInj && (
+                        <Link
+                          href={`/team/${g.awayAbbr}`}
+                          prefetch={false}
+                          className="inline-flex items-center gap-1"
+                        >
+                          <span className="font-mono">{g.awayAbbr}</span>
+                          <InjuryChip counts={awayInj} />
+                        </Link>
+                      )}
+                      {homeChip && homeInj && (
+                        <Link
+                          href={`/team/${g.homeAbbr}`}
+                          prefetch={false}
+                          className="inline-flex items-center gap-1"
+                        >
+                          <span className="font-mono">{g.homeAbbr}</span>
+                          <InjuryChip counts={homeInj} />
+                        </Link>
+                      )}
+                    </div>
+                  )}
                 </li>
               );
             })}

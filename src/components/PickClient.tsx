@@ -12,6 +12,8 @@ import {
   type StandingBits,
 } from "@/lib/matchup-meta";
 import { TeamLogo } from "@/components/TeamLogo";
+import { InjuryChip } from "@/components/InjuryChip";
+import { formatScoreLine, type InjuryCountBits } from "@/lib/game-display";
 
 type Side = {
   abbr: string;
@@ -20,12 +22,17 @@ type Side = {
   alreadyUsed: boolean;
   priorYearRank: number | null;
   standing: StandingBits | null;
+  injuries?: InjuryCountBits;
 };
 
 type Matchup = {
   id: string;
   kickoff: string;
   network: string | null;
+  status: string;
+  scoreAway: number | null;
+  scoreHome: number | null;
+  note: string | null;
   spreadHome: number | null;
   spreadAway: number | null;
   mlHome: number | null;
@@ -174,10 +181,19 @@ export function PickClient({
                 {activeOpp && (
                   <p className="text-xs text-[var(--text-muted)] mt-0.5">
                     vs {activeOpp.abbr}
-                    {activeMatchup?.kickoff
-                      ? ` · ${formatKickoff(activeMatchup.kickoff)}`
+                    {activeMatchup
+                      ? formatScoreLine(activeMatchup)
+                        ? ` · ${formatScoreLine(activeMatchup)}`
+                        : activeMatchup.kickoff
+                          ? ` · ${formatKickoff(activeMatchup.kickoff)}`
+                          : ""
                       : ""}
                   </p>
+                )}
+                {activeSide?.injuries && (
+                  <div className="mt-1">
+                    <InjuryChip counts={activeSide.injuries} />
+                  </div>
                 )}
                 {(activePrior || activeStanding) && (
                   <p className="text-xs text-[var(--text-muted)] mt-0.5">
@@ -275,10 +291,17 @@ export function PickClient({
           return (
             <li key={m.id} className="card-glass overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[var(--stadium-border)] px-3 py-2 text-[11px] text-[var(--text-muted)]">
-                <span className="font-mono">{formatKickoff(m.kickoff)}</span>
-                {m.network && (
-                  <span className="uppercase tracking-wide">{m.network}</span>
-                )}
+                <span className="font-mono">
+                  {formatScoreLine(m) || formatKickoff(m.kickoff)}
+                </span>
+                <span className="flex items-center gap-2">
+                  {m.status === "live" && (
+                    <span className="chip chip-live text-[10px]">LIVE</span>
+                  )}
+                  {m.network && (
+                    <span className="uppercase tracking-wide">{m.network}</span>
+                  )}
+                </span>
               </div>
 
               <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-1 p-2 sm:gap-2 sm:p-3">
@@ -345,6 +368,11 @@ export function PickClient({
                     .filter(Boolean)
                     .join(" · ")}
                 </p>
+                {confirm.side.injuries && (
+                  <div className="mt-1">
+                    <InjuryChip counts={confirm.side.injuries} />
+                  </div>
+                )}
               </div>
             </div>
             <p className="text-sm text-[var(--text-muted)]">
@@ -469,6 +497,7 @@ function SideButton({
           {current && <div>{current}</div>}
         </div>
       )}
+      {side.injuries && <InjuryChip counts={side.injuries} />}
 
       {side.alreadyUsed ? (
         <div className="text-[10px] font-medium text-crimson-400">Already used</div>

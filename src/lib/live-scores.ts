@@ -5,14 +5,11 @@ import {
   undoPickMembershipEffect,
   recomputeWeeksSurvived,
 } from "@/lib/grading";
-
-const ESPN_SCOREBOARD =
-  "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard";
+import { fetchEspnJson, normAbbr } from "@/lib/espn";
 
 /** ESPN → app team abbreviation. */
 export function fromEspnAbbr(abbr: string): string {
-  const u = abbr.trim().toUpperCase();
-  return u === "WSH" ? "WAS" : u;
+  return normAbbr(abbr);
 }
 
 export type EspnGameSnapshot = {
@@ -87,20 +84,30 @@ function periodClock(
   return shortDetail || null;
 }
 
+const SCOREBOARD_TTL_MS = 20_000;
+let scoreboardCache: {
+  key: string;
+  at: number;
+  data: EspnGameSnapshot[];
+} | null = null;
+
 export async function fetchEspnWeekScoreboard(
   weekNumber: number,
   year = 2026
 ): Promise<EspnGameSnapshot[]> {
-  const url = `${ESPN_SCOREBOARD}?seasontype=2&week=${weekNumber}&year=${year}`;
-  const res = await fetch(url, {
-    headers: { Accept: "application/json", "User-Agent": "SurviveSunday/1.0" },
-    next: { revalidate: 0 },
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    throw new Error(`ESPN scoreboard ${res.status}`);
+  const key = `${year}-w${weekNumber}`;
+  const now = Date.now();
+  if (
+    scoreboardCache &&
+    scoreboardCache.key === key &&
+    now - scoreboardCache.at < SCOREBOARD_TTL_MS
+  ) {
+    return scoreboardCache.data;
   }
-  const data = (await res.json()) as { events?: EspnEvent[] };
+
+  const data = await fetchEspnJson<{ events?: EspnEvent[] }>(
+    `/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=${weekNumber}&year=${year}`
+  );
   const out: EspnGameSnapshot[] = [];
   for (const event of data.events || []) {
     const comp = event.competitions?.[0];
@@ -132,6 +139,7 @@ export async function fetchEspnWeekScoreboard(
       detail: type?.detail || type?.shortDetail || null,
     });
   }
+  scoreboardCache = { key, at: now, data: out };
   return out;
 }
 
@@ -244,17 +252,4 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
   };
 }
 
-/** True when Scores should keep polling ESPN (live window). */
-export function shouldPollLiveScores(
-  games: { status: string; kickoff: Date }[],
-  now = Date.now()
-): boolean {
-  if (games.some((g) => g.status === "live")) return true;
-  const hour = 60 * 60 * 1000;
-  return games.some((g) => {
-    if (g.status === "final") return false;
-    const t = new Date(g.kickoff).getTime();
-    // 30m before kickoff through 4h after (covers most games)
-    return t - 30 * 60 * 1000 <= now && now <= t + 4 * hour;
-  });
-}
+export { shouldPollLiveScores } from "@/lib/game-display";

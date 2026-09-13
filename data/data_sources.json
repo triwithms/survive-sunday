@@ -119,12 +119,14 @@
       "terms_caution": "Do not scrape or mirror ESPN video streams; commercial use needs licensing."
     }
   ],
-  "recommended_stack": "Prototype free/public: ESPN undocumented scoreboard JSON for live scores + schedule shapes; NFL.com injury pages as scrape_note or manual CSV until a key exists; The Odds API (the-odds-api.com) free key for odds prototypes if NFL credits available on your account — else stub odds. Recaps: YouTube IFrame embeds from official channels via Data API playlist discovery (10k units/day). Graduate to SportsDataIO or API-Sports paid when you need SLA, injuries JSON, and unscrambling. Avoid OddsJam until revenue justifies sales-gated odds.",
+  "recommended_stack": "Wired in-app (Hobby, no key): ESPN site.web.api scoreboard + injuries JSON (fallback site.api). Odds still seeded. Recaps: YouTube IFrame later. Graduate to SportsDataIO or API-Sports paid when you need SLA. Avoid OddsJam until revenue justifies sales-gated odds.",
+  "wired_in_app": {
+    "live_scores": "src/lib/live-scores.ts → ESPN scoreboard; poll ~45s in live window; auto-grade finals",
+    "injuries": "src/lib/live-injuries.ts → ESPN injuries JSON; drop Active/cleared; cache ~12 min; never uses sample_injury_news.json in UI"
+  },
   "must_stub": [
-    "live_scores.*.home_score / away_score / period / clock (until scoreboard API wired)",
     "odds.*.moneyline / spread / total / bookmaker / last_update (until odds API key + paid NFL access if free tier excludes NFL)",
-    "injuries.*.status / injury / updated (use sample_injury_news.json shapes only — never invent current 2026 status)",
-    "news.*.headline / summary / published_at (stub or historical-labeled until RSS/API)",
+    "sample_injury_news.json (schema only — UI uses live ESPN; never invent current 2026 status as seed)",
     "recap_videos.*.video_id / embed_url (stub until YouTube API key + channel playlist IDs configured)",
     "player_props / edge / fair_odds (paid OddsJam / Business odds tiers)",
     "SportsDataIO unscrambling (trial data is scrambled — do not show as real)"

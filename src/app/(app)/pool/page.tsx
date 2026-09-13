@@ -13,6 +13,14 @@ import {
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
+import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
+import { InjuryChip } from "@/components/InjuryChip";
+import {
+  syncWeekScoresFromEspn,
+  shouldPollLiveScores,
+} from "@/lib/live-scores";
+import { getTeamInjuries } from "@/lib/live-injuries";
+import { formatInjuryChip, formatScoreLine } from "@/lib/game-display";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -59,6 +67,11 @@ export default async function PoolPage({
   }
 
   await ensureWeekLockedEffects(selectedRef.id);
+  try {
+    await syncWeekScoresFromEspn(selectedRef.id);
+  } catch (e) {
+    console.error("pool espn score sync skipped", e);
+  }
 
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: selectedRef.id },
@@ -104,6 +117,10 @@ export default async function PoolPage({
           spreadAway: myPick.game.spreadAway,
         })
       : null;
+  const myInjuries = myPick
+    ? await getTeamInjuries(myPick.teamAbbr)
+    : null;
+  const poll = shouldPollLiveScores(week.games);
   const myPrior = formatPriorYearRank(myTeam?.priorYearRank);
   const myStanding = myTeam
     ? formatCurrentStanding({
@@ -159,6 +176,8 @@ export default async function PoolPage({
         basePath="/pool"
       />
 
+      <LiveScoresRefresh weekNumber={week.number} poll={poll} />
+
       <section className="card-glass p-4">
         <p className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">
           Your pick
@@ -177,9 +196,24 @@ export default async function PoolPage({
               {myPick.game && (
                 <p className="text-sm text-[var(--text-muted)]">
                   {myPick.game.awayAbbr} @ {myPick.game.homeAbbr}
-                  {myPick.game.status === "final" &&
-                    myPick.game.scoreAway != null &&
-                    ` · ${myPick.game.scoreAway}–${myPick.game.scoreHome}`}
+                  {formatScoreLine(myPick.game)
+                    ? ` · ${formatScoreLine(myPick.game)}`
+                    : ""}
+                </p>
+              )}
+              {myInjuries && !myInjuries.failed && (
+                <p className="mt-1">
+                  <Link
+                    href={`/team/${myPick.teamAbbr}`}
+                    prefetch={false}
+                    className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-gold-400/30 hover:text-gold-400"
+                  >
+                    {formatInjuryChip(myInjuries.counts) ? (
+                      <InjuryChip counts={myInjuries.counts} />
+                    ) : (
+                      "Injury report"
+                    )}
+                  </Link>
                 </p>
               )}
               {myFav && (
@@ -262,11 +296,9 @@ export default async function PoolPage({
                         {game.awayAbbr} @ {game.homeAbbr}
                       </p>
                       <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                        {formatKickoff(game.kickoff)}
-                        {isFinal &&
-                          game.scoreAway != null &&
-                          game.scoreHome != null &&
-                          ` · ${game.scoreAway}–${game.scoreHome}`}
+                        {isLive || isFinal
+                          ? formatScoreLine(game) || formatKickoff(game.kickoff)
+                          : formatKickoff(game.kickoff)}
                       </p>
                     </div>
                     {isLive && (

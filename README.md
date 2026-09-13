@@ -62,7 +62,8 @@ Demo credentials work without Google keys.
 - Mulligan auto-burn → `one_loss`; second loss → `eliminated`
 - Participants list sorted undefeated → one_loss → eliminated, nickname A–Z
 - Own pick always visible; after lock show matchup + choice; spreads on pick UI
-- Live/simulated scores + auto-grade finals; admin simulate button
+- Live ESPN scores (poll ~45s while games are on) + auto-grade finals; admin simulate button
+- Near-live ESPN injury report on team pages and pick-adjacent chips (Out / Doubtful / Questionable)
 - Light admin: lock override, remove player, force grade, **audit log**
 - **Import Week picks** (CSV / paste) for groups mid-season — counts for grading/mulligan/reuse
 - Season-end tiebreak helpers (fewest losses → weeks survived → nickname A–Z)
@@ -130,8 +131,18 @@ AUTH_TRUST_HOST=false
 - Weekly + season banter / mute
 - SMS (Twilio), digests (Resend), WhatsApp stub
 - Notification preference centre (close-game alerts off by default)
-- Team detail pages with demo injury badges
+- Team detail pages already show ESPN injury report (not demo stubs)
 - Full visual polish / motion pass
+
+## Live scores & injuries
+
+**Scores (live):** ESPN’s public NFL scoreboard JSON (`site.web.api.espn.com`, fallback `site.api.espn.com`). No API key. `/scores`, Home, Pick, and Schedule sync on load and poll about every 45s during a live kickoff window. Finals auto-grade picks.
+
+**Injuries (near-live):** same ESPN public injury report JSON. Cached ~12 minutes. Team pages list Out / Doubtful / Questionable / IR / suspension. Pick / Home / Schedule show compact Out·Doubtful·Q chips. This is **not** the official NFL club report and has **no SLA** — ESPN’s undocumented endpoints can 403 or change. `data/sample_injury_news.json` is schema-only and is **not** shown in the UI.
+
+**Not live:** spreads/odds stay seeded; no paid SportsDataIO / API-Sports key is required for Hobby.
+
+See [DEPLOY.md](DEPLOY.md) and [data/data_sources.json](data/data_sources.json).
 
 ## Data
 

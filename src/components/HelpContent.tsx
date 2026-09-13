@@ -142,8 +142,8 @@ export function HelpContent() {
       </section>
       <section id="9-live-scores-digests">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">9. Live scores &amp; digests</h2>
-        <p className="text-[var(--text-muted)] mb-2">**Scores** pulls live and final results from ESPN while games are on, and refreshes during kickoff windows. When a game reaches **final**, picks auto-grade.</p>
-        <p className="text-[var(--text-muted)] mb-2">Use the week dropdown (and arrows) to check past weeks. Live games show a **LIVE** badge and clock when ESPN has them in progress.</p>
+        <p className="text-[var(--text-muted)] mb-2"><strong>Scores</strong> pulls live and final results from ESPN while games are on, and refreshes during kickoff windows (Home, Scores, Pick, Schedule). When a game reaches <strong>final</strong>, picks auto-grade.</p>
+        <p className="text-[var(--text-muted)] mb-2">Use the week dropdown (and arrows) to check past weeks. Live games show a <strong>LIVE</strong> badge and clock when ESPN has them in progress.</p>
         <p className="text-[var(--text-muted)] mb-2"><strong>Coming later:</strong> weekly picks digests and close-game alerts.</p>
         <p className="text-[var(--text-muted)] mb-2">If a score or grade looks wrong, pull to refresh; if it’s still off, ping your commissioner.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
@@ -152,7 +152,8 @@ export function HelpContent() {
         <h2 className="text-lg font-semibold text-gold-400 mb-2">10. League, Schedule &amp; team research</h2>
         <p className="text-[var(--text-muted)] mb-2">**League** shows NFL standings (by division / overall). The **2025 rank** column is last season’s composite power rank by team (1 = strongest, 32 = weakest) — research only, not this year’s W-L.</p>
         <p className="text-[var(--text-muted)] mb-2">**Schedule** lists this week’s games and future weeks (dropdown + arrows). Tap a team for research.</p>
-        <p className="text-[var(--text-muted)] mb-2">**Team pages** cover roster (starting offence / defence / special teams), news links, and record. From **This week’s games**, logos and names open research; **Pick** stays on its own button.</p>
+        <p className="text-[var(--text-muted)] mb-2"><strong>Team pages</strong> cover roster, an ESPN injury report (Out / Doubtful / Questionable / IR / suspension), news headlines, and record. Injury chips on Pick / Home / Schedule are a compact count — tap the team for names. This is ESPN&apos;s public list, not the official NFL club report.</p>
+        <p className="text-[var(--text-muted)] mb-2">From <strong>This week&apos;s games</strong>, logos and names open research; <strong>Pick</strong> stays on its own button.</p>
         <p className="text-[var(--text-muted)] mb-2">Spreads and favourites in the pick flow are informational only.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>

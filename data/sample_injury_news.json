@@ -4,7 +4,8 @@
   "_notes": [
     "All injury and news rows below are FICTIONAL stubs OR clearly labeled HISTORICAL examples for schema/UI wiring.",
     "Do NOT treat any status, injury, or headline as current fact for the 2026 NFL season.",
-    "Builders should replace this file with live feeds once API keys and scrapers exist."
+    "UI reads ESPN public injuries (src/lib/live-injuries.ts), not this file.",
+    "Keep this file as schema reference only — do not seed current 2026 statuses from it."
   ],
   "injuries": [
     {
