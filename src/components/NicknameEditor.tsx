@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import { ModalDialog } from "@/components/ModalDialog";
 import { PhoneEditor } from "@/components/PhoneEditor";
 
 const MAX_NICKNAME = 24;
@@ -113,67 +114,60 @@ export function NicknameEditor({
       </div>
 
       {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={dialogTitleId}
-          onClick={(e) => {
-            if (e.target === e.currentTarget && !busy) setOpen(false);
-          }}
+        <ModalDialog
+          labelledBy={dialogTitleId}
+          onBackdropClick={busy ? undefined : () => setOpen(false)}
         >
-          <div className="card-glass w-full max-w-sheet p-5 space-y-3">
-            <h2 id={dialogTitleId} className="font-semibold text-lg text-gold-400">
-              Change nickname
-            </h2>
-            <p className="text-xs text-[var(--text-muted)]">
-              Must be unique in this pool (case doesn’t matter). Max{" "}
-              {MAX_NICKNAME} characters.
+          <h2 id={dialogTitleId} className="font-semibold text-lg text-gold-400">
+            Change nickname
+          </h2>
+          <p className="text-xs text-[var(--text-muted)]">
+            Must be unique in this pool (case doesn’t matter). Max{" "}
+            {MAX_NICKNAME} characters.
+          </p>
+          <label className="block text-sm">
+            <span className="text-[var(--text-muted)]">Nickname</span>
+            <input
+              ref={inputRef}
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              maxLength={MAX_NICKNAME}
+              disabled={busy}
+              className="mt-1 w-full"
+              autoComplete="nickname"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  void save();
+                }
+                if (e.key === "Escape" && !busy) setOpen(false);
+              }}
+            />
+          </label>
+          {error && (
+            <p className="text-crimson-400 text-sm" role="alert">
+              {error}
             </p>
-            <label className="block text-sm">
-              <span className="text-[var(--text-muted)]">Nickname</span>
-              <input
-                ref={inputRef}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                maxLength={MAX_NICKNAME}
-                disabled={busy}
-                className="mt-1 w-full"
-                autoComplete="nickname"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    void save();
-                  }
-                  if (e.key === "Escape" && !busy) setOpen(false);
-                }}
-              />
-            </label>
-            {error && (
-              <p className="text-crimson-400 text-sm" role="alert">
-                {error}
-              </p>
-            )}
-            <div className="flex gap-2 pt-1">
-              <button
-                type="button"
-                className="btn-secondary flex-1"
-                disabled={busy}
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="btn-primary flex-1"
-                disabled={busy}
-                onClick={() => void save()}
-              >
-                {busy ? "Saving…" : "Save"}
-              </button>
-            </div>
+          )}
+          <div className="flex gap-2 pt-1">
+            <button
+              type="button"
+              className="btn-secondary flex-1"
+              disabled={busy}
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn-primary flex-1"
+              disabled={busy}
+              onClick={() => void save()}
+            >
+              {busy ? "Saving…" : "Save"}
+            </button>
           </div>
-        </div>
+        </ModalDialog>
       )}
     </>
   );
