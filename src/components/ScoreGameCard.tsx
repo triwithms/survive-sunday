@@ -4,6 +4,7 @@ import {
   formatScoresStatus,
   isFinalGame,
   isLiveGame,
+  possessionAbbrFromSituation,
 } from "@/lib/game-display";
 
 export type ScoreGameCardGame = {
@@ -26,19 +27,21 @@ function ScoreTeamRow({
   score,
   leading,
   live,
+  hasBall,
 }: {
   abbr: string;
   logoUrl: string | null;
   score: number | null;
   leading: boolean;
   live: boolean;
+  hasBall: boolean;
 }) {
   return (
     <Link
       href={`/team/${abbr}`}
       prefetch={false}
       className="flex items-center gap-2 min-h-11 min-w-0 rounded-md px-0.5 -mx-0.5 hover:bg-gold-400/5 active:bg-gold-400/10"
-      aria-label={`Team details for ${abbr}`}
+      aria-label={`Team details for ${abbr}${hasBall ? ", has the ball" : ""}`}
     >
       <TeamLogo abbr={abbr} logoUrl={logoUrl} size={28} />
       <span
@@ -47,6 +50,14 @@ function ScoreTeamRow({
         }`}
       >
         {abbr}
+        {hasBall ? (
+          <span
+            className="ml-1 text-[10px] font-semibold uppercase tracking-wide text-sky-400"
+            aria-hidden
+          >
+            ●
+          </span>
+        ) : null}
       </span>
       <span
         className={`ml-auto w-9 text-right font-mono text-xl tabular-nums ${
@@ -77,9 +88,12 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
       game.scoreHome > game.scoreAway) ||
     (isLive && (game.scoreHome ?? 0) > (game.scoreAway ?? 0));
 
+  const hasBall = possessionAbbrFromSituation(status.situation);
   const aria = `${game.awayAbbr} ${game.scoreAway ?? "–"} at ${game.homeAbbr} ${
     game.scoreHome ?? "–"
-  }, ${status.primary}${status.secondary ? `, ${status.secondary}` : ""}`;
+  }, ${status.primary}${status.secondary ? `, ${status.secondary}` : ""}${
+    status.situation ? `, ${status.situation}` : ""
+  }`;
 
   return (
     <li
@@ -94,6 +108,7 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
             score={game.scoreAway}
             leading={awayLead}
             live={isLive}
+            hasBall={hasBall === game.awayAbbr}
           />
           <ScoreTeamRow
             abbr={game.homeAbbr}
@@ -101,6 +116,7 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
             score={game.scoreHome}
             leading={homeLead}
             live={isLive}
+            hasBall={hasBall === game.homeAbbr}
           />
         </div>
         <div className="shrink-0 text-right pl-1">
@@ -138,6 +154,11 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
           )}
         </div>
       </div>
+      {status.kind === "live" && status.situation ? (
+        <p className="mt-1.5 text-xs leading-snug text-[var(--text-primary)]">
+          {status.situation}
+        </p>
+      ) : null}
     </li>
   );
 }

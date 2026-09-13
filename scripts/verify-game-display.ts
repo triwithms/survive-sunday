@@ -6,9 +6,12 @@
 import assert from "node:assert/strict";
 import {
   espnClockFromNote,
+  espnSituationFromNote,
+  formatEspnSituation,
   formatKickoffForScores,
   formatScoreLine,
   formatScoresStatus,
+  possessionAbbrFromSituation,
   shouldPollLiveScores,
 } from "../src/lib/game-display";
 
@@ -22,6 +25,45 @@ assert.equal(espnClockFromNote("Final · ESPN"), null);
 assert.equal(espnClockFromNote("Final/OT · ESPN"), "Final/OT");
 assert.equal(espnClockFromNote(null), null);
 assert.equal(espnClockFromNote("  "), null);
+assert.equal(
+  espnClockFromNote("Q4 5:21 · MIA ball · 2nd & 11 · MIA 26 · ESPN"),
+  "Q4 5:21"
+);
+assert.equal(
+  espnSituationFromNote("Q4 5:21 · MIA ball · 2nd & 11 · MIA 26 · ESPN"),
+  "MIA ball · 2nd & 11 · MIA 26"
+);
+assert.equal(espnSituationFromNote("Q3 4:21 · ESPN"), null);
+assert.equal(
+  formatEspnSituation({
+    possession: "12",
+    shortDownDistanceText: "2nd & 7",
+    possessionText: "KC 33",
+  }),
+  "KC ball · 2nd & 7 · KC 33"
+);
+assert.equal(
+  formatEspnSituation({
+    possession: "15",
+    shortDownDistanceText: "2nd & 11",
+    possessionText: "MIA 26",
+    down: 2,
+    distance: 11,
+  }),
+  "MIA ball · 2nd & 11 · MIA 26"
+);
+assert.equal(
+  formatEspnSituation({
+    possession: "21",
+    shortDownDistanceText: "2nd & 8",
+    possessionText: "WSH 45",
+  }),
+  "PHI ball · 2nd & 8 · WAS 45"
+);
+assert.equal(formatEspnSituation(null), null);
+assert.equal(formatEspnSituation({}), null);
+assert.equal(possessionAbbrFromSituation("KC ball · 2nd & 7 · KC 33"), "KC");
+assert.equal(possessionAbbrFromSituation(null), null);
 
 const sundayAfternoon = new Date("2026-09-13T17:00:00.000Z"); // 1:00 p.m. ET
 const sundayEvening = new Date("2026-09-13T20:00:00.000Z");
@@ -43,7 +85,25 @@ const live = formatScoresStatus({
   scoreHome: 14,
   note: "Q3 4:21 · ESPN",
 });
-assert.deepEqual(live, { kind: "live", primary: "Q3 4:21", secondary: "LIVE" });
+assert.deepEqual(live, {
+  kind: "live",
+  primary: "Q3 4:21",
+  secondary: "LIVE",
+  situation: null,
+});
+
+const liveSit = formatScoresStatus({
+  status: "live",
+  scoreAway: 13,
+  scoreHome: 27,
+  note: "Q4 5:21 · MIA ball · 2nd & 11 · MIA 26 · ESPN",
+});
+assert.deepEqual(liveSit, {
+  kind: "live",
+  primary: "Q4 5:21",
+  secondary: "LIVE",
+  situation: "MIA ball · 2nd & 11 · MIA 26",
+});
 
 const liveNoClock = formatScoresStatus({
   status: "live",
@@ -55,6 +115,7 @@ assert.deepEqual(liveNoClock, {
   kind: "live",
   primary: "LIVE",
   secondary: null,
+  situation: null,
 });
 
 const endPeriod = formatScoresStatus({
@@ -72,7 +133,12 @@ const finalGame = formatScoresStatus({
   scoreHome: 10,
   note: "Final · ESPN",
 });
-assert.deepEqual(finalGame, { kind: "final", primary: "Final", secondary: null });
+assert.deepEqual(finalGame, {
+  kind: "final",
+  primary: "Final",
+  secondary: null,
+  situation: null,
+});
 
 const finalOt = formatScoresStatus({
   status: "final",
@@ -104,7 +170,7 @@ assert.equal(
     scoreHome: 14,
     note: "Q3 4:21 · ESPN",
   }),
-  "17–14 · Q3 4:21 · ESPN"
+    "17–14 · Q3 4:21"
 );
 assert.equal(
   shouldPollLiveScores([{ status: "live", kickoff: new Date() }]),

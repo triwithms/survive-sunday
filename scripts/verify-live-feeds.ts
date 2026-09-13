@@ -70,7 +70,7 @@ assert(
     scoreAway: 17,
     scoreHome: 14,
     note: "Q3 4:21 · ESPN",
-  }) === "17–14 · Q3 4:21 · ESPN",
+  }) === "17–14 · Q3 4:21",
   "live score line"
 );
 assert(

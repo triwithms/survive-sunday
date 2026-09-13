@@ -1,5 +1,7 @@
 /** Client-safe score / clock helpers for pool, scores, pick, schedule. */
 
+import { abbrFromEspnTeamId, normAbbr } from "@/lib/espn-teams";
+
 /** True when Scores/Home should keep polling ESPN (live window). */
 export function shouldPollLiveScores(
   games: { status: string; kickoff: Date | string }[],
@@ -35,17 +37,104 @@ export const NFL_DISPLAY_TZ = "America/New_York";
 
 const ESPN_NOTE_SOURCE = /\s*·\s*ESPN\s*$/i;
 
+export type EspnNoteParts = {
+  clock: string | null;
+  situation: string | null;
+};
+
+/** Split Game.note into clock + optional live situation (possession / down / spot). */
+export function splitEspnGameNote(
+  note: string | null | undefined
+): EspnNoteParts {
+  if (!note) return { clock: null, situation: null };
+  const cleaned = note.replace(ESPN_NOTE_SOURCE, "").trim();
+  if (!cleaned) return { clock: null, situation: null };
+  const parts = cleaned.split(/\s*·\s*/).filter(Boolean);
+  const first = parts[0] ?? "";
+  const rest = parts.slice(1).join(" · ") || null;
+  if (/^live$/i.test(first)) return { clock: null, situation: rest };
+  if (/^final$/i.test(first)) return { clock: null, situation: rest };
+  return { clock: first, situation: rest };
+}
+
 /**
  * Period / clock / shortDetail already stored on Game.note by ESPN sync.
  * Does not invent a clock. Returns null when the feed only said Live or Final.
  */
 export function espnClockFromNote(note: string | null | undefined): string | null {
-  if (!note) return null;
-  const cleaned = note.replace(ESPN_NOTE_SOURCE, "").trim();
-  if (!cleaned) return null;
-  if (/^live$/i.test(cleaned)) return null;
-  if (/^final$/i.test(cleaned)) return null;
-  return cleaned;
+  return splitEspnGameNote(note).clock;
+}
+
+/** Live situation already stored on Game.note (possession / down / yard line). */
+export function espnSituationFromNote(
+  note: string | null | undefined
+): string | null {
+  return splitEspnGameNote(note).situation;
+}
+
+export type EspnSituationBits = {
+  possession?: string | null;
+  shortDownDistanceText?: string | null;
+  possessionText?: string | null;
+  downDistanceText?: string | null;
+  down?: number | null;
+  distance?: number | null;
+};
+
+function possessionAbbr(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const fromId = abbrFromEspnTeamId(raw);
+  if (fromId) return fromId;
+  if (/^[A-Za-z]{2,3}$/.test(raw.trim())) return normAbbr(raw);
+  return null;
+}
+
+function downAndDistance(sit: EspnSituationBits): string | null {
+  const short = sit.shortDownDistanceText?.trim();
+  if (short) return short;
+  if (sit.down != null && sit.down >= 1 && sit.distance != null && sit.distance >= 0) {
+    const ord =
+      sit.down === 1
+        ? "1st"
+        : sit.down === 2
+          ? "2nd"
+          : sit.down === 3
+            ? "3rd"
+            : sit.down === 4
+              ? "4th"
+              : `${sit.down}th`;
+    return `${ord} & ${sit.distance}`;
+  }
+  return null;
+}
+
+/**
+ * Plain-English live situation from ESPN scoreboard fields.
+ * Does not invent a down or spot — omits missing pieces.
+ */
+export function formatEspnSituation(
+  sit: EspnSituationBits | null | undefined
+): string | null {
+  if (!sit) return null;
+  const ball = possessionAbbr(sit.possession);
+  const down = downAndDistance(sit);
+  const spot = sit.possessionText?.trim().replace(/\bWSH\b/gi, "WAS") || null;
+  const parts: string[] = [];
+  if (ball) parts.push(`${ball} ball`);
+  if (down) parts.push(down);
+  if (spot) parts.push(spot);
+  if (parts.length) return parts.join(" · ");
+  const fallback = sit.downDistanceText?.trim().replace(/\bWSH\b/gi, "WAS");
+  return fallback || null;
+}
+
+/** Team with the ball from a stored situation line ("KC ball · …"). */
+export function possessionAbbrFromSituation(
+  situation: string | null | undefined
+): string | null {
+  const m = situation?.match(/^([A-Za-z]{2,3})\s+ball\b/i);
+  if (!m) return null;
+  return normAbbr(m[1]);
 }
 
 /** Compact kickoff: "Today 1:00 p.m. ET" or "Mon 8:15 p.m. ET". */
@@ -92,6 +181,8 @@ export type ScoresStatusView = {
   primary: string;
   /** LIVE, network, or extra ESPN detail. */
   secondary: string | null;
+  /** Possession / down / yard line for live games. */
+  situation: string | null;
 };
 
 /** Phone-friendly Scores status from stored ESPN note + kickoff (no fake clock). */
@@ -105,20 +196,22 @@ export function formatScoresStatus(
       kind: "live",
       primary: clock || "LIVE",
       secondary: clock ? "LIVE" : null,
+      situation: espnSituationFromNote(game.note),
     };
   }
   if (isFinalGame(game.status)) {
     const extra = espnClockFromNote(game.note);
     if (extra && /^final/i.test(extra)) {
-      return { kind: "final", primary: extra, secondary: null };
+      return { kind: "final", primary: extra, secondary: null, situation: null };
     }
-    return { kind: "final", primary: "Final", secondary: extra };
+    return { kind: "final", primary: "Final", secondary: extra, situation: null };
   }
   const kick = formatKickoffForScores(game.kickoff, now);
   return {
     kind: "scheduled",
     primary: kick || "Scheduled",
     secondary: game.network?.trim() || null,
+    situation: null,
   };
 }
 
@@ -132,7 +225,7 @@ export function formatScoreLine(game: GameScoreBits): string | null {
       ? `${game.scoreAway}–${game.scoreHome}`
       : null;
   if (live) {
-    const clock = game.note?.trim();
+    const clock = espnClockFromNote(game.note);
     if (scored && clock) return `${scored} · ${clock}`;
     if (scored) return `LIVE ${scored}`;
     return clock || "LIVE";

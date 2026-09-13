@@ -8,6 +8,7 @@ import {
 import { fetchEspnJson, normAbbr } from "@/lib/espn";
 import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
 import { scheduleScoreUpdate } from "@/lib/notification-events";
+import { formatEspnSituation } from "@/lib/game-display";
 
 /** ESPN → app team abbreviation. */
 export function fromEspnAbbr(abbr: string): string {
@@ -21,6 +22,7 @@ export type EspnGameSnapshot = {
   scoreAway: number | null;
   scoreHome: number | null;
   clockLabel: string | null;
+  situationLabel: string | null;
   detail: string | null;
 };
 
@@ -30,9 +32,19 @@ type EspnCompetitor = {
   team: { abbreviation: string };
 };
 
+type EspnSituation = {
+  possession?: string;
+  shortDownDistanceText?: string;
+  possessionText?: string;
+  downDistanceText?: string;
+  down?: number;
+  distance?: number;
+};
+
 type EspnEvent = {
   competitions?: Array<{
     competitors?: EspnCompetitor[];
+    situation?: EspnSituation;
     status?: {
       displayClock?: string;
       period?: number;
@@ -138,6 +150,8 @@ export async function fetchEspnWeekScoreboard(
         type?.shortDetail,
         status
       ),
+      situationLabel:
+        status === "live" ? formatEspnSituation(comp?.situation) : null,
       detail: type?.detail || type?.shortDetail || null,
     });
   }
@@ -187,9 +201,9 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
 
     const note =
       snap.status === "live"
-        ? snap.clockLabel
-          ? `${snap.clockLabel} · ESPN`
-          : "Live · ESPN"
+        ? [snap.clockLabel || "Live", snap.situationLabel, "ESPN"]
+            .filter(Boolean)
+            .join(" · ")
         : snap.status === "final"
           ? snap.clockLabel || "Final · ESPN"
           : snap.clockLabel
