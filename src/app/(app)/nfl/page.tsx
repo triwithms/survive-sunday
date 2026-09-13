@@ -7,7 +7,7 @@ import { NflStandingsClient } from "@/components/NflStandingsClient";
 import { isDemoMode } from "@/lib/pool-mode";
 import fs from "fs";
 import path from "path";
-import { syncTeamStandingsFromEspn } from "@/lib/live-scores";
+import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
