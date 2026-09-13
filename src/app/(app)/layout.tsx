@@ -83,7 +83,7 @@ export default async function AppLayout({
           >
             <HeaderWeekNav weeks={weekNav} currentWeek={currentWeek} />
           </Suspense>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 max-w-[38%] sm:max-w-[42%]">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 max-w-[48%] sm:max-w-[46%]">
             {membership.role === "admin" && (
               <Link
                 href="/admin#pool-mode"

@@ -176,6 +176,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
           <li className="text-[var(--text-primary)]">**Cell number** is optional but recommended for missing-pick SMS and for password-reset texts. You can skip the soft prompt and add or edit it later from the header near your nickname.</li>
           <li className="text-[var(--text-primary)]">**Forgot password:** on the sign-in page, tap Forgot password. We send a 6-digit code to your email, or a text if a cell is saved. Demo seats (`@survivesunday.demo`) always use password <strong>demo1234</strong> — no reset needed.</li>
+          <li className="text-[var(--text-primary)]">**Sign out:** tap <strong>Sign out</strong> in the header (top right, under your nickname), on Admin next to your commissioner login, or on this Help page. One tap signs you out and takes you to Sign in.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">To leave a pool or request data deletion, use the account/privacy controls (or contact your commissioner) and see the privacy policy stub linked from settings.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
@@ -189,6 +190,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Missed SMS | Add or update your cell in the header (near nickname). Confirm the number is correct. |
 | Forgot password | Sign in → Forgot password. Use the email on your account. Demo seats use demo1234. |
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
+| Want to switch account | Header → <strong>Sign out</strong> (also on Admin and Help). Then Sign in. |
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
 | Can’t change my pick | Lock has passed — picks are frozen. |</pre>

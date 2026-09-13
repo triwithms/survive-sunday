@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { ModalDialog } from "@/components/ModalDialog";
 import { PhoneEditor } from "@/components/PhoneEditor";
+import { SignOutButton } from "@/components/SignOutButton";
 
 const MAX_NICKNAME = 24;
 
@@ -86,7 +87,7 @@ export function NicknameEditor({
 
   return (
     <>
-      <div className="text-right text-xs min-w-0 overflow-hidden">
+      <div className="text-right text-xs min-w-0">
         <div className="flex items-center justify-end gap-1.5 min-w-0">
           <div
             className="text-[var(--text-primary)] font-medium truncate max-w-[6rem] sm:max-w-[8.5rem]"
@@ -99,7 +100,7 @@ export function NicknameEditor({
           </div>
           <button
             type="button"
-            className="shrink-0 text-[10px] sm:text-xs text-gold-400 underline underline-offset-2 hover:text-gold-500"
+            className="shrink-0 text-[10px] sm:text-xs text-gold-400 underline underline-offset-2 hover:text-gold-500 min-h-11"
             onClick={() => setOpen(true)}
             data-testid="change-nickname"
             aria-label="Change nickname"
@@ -108,8 +109,14 @@ export function NicknameEditor({
           </button>
           <PhoneEditor phoneE164={phoneE164} softPrompt={phoneSoftPrompt} />
         </div>
-        <div className="text-[var(--text-muted)] capitalize truncate">
-          {statusLabel}
+        <div className="flex items-center justify-end gap-2 min-w-0">
+          <div className="text-[var(--text-muted)] capitalize truncate">
+            {statusLabel}
+          </div>
+          <SignOutButton
+            next="/login"
+            className="shrink-0 text-[10px] sm:text-xs text-gold-400 underline underline-offset-2 hover:text-gold-500 min-h-11"
+          />
         </div>
       </div>
 

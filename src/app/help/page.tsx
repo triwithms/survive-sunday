@@ -6,6 +6,7 @@ import { isDemoMode } from "@/lib/pool-mode";
 import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { BottomNav } from "@/components/BottomNav";
+import { SignOutButton } from "@/components/SignOutButton";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -35,6 +36,17 @@ export default async function HelpPage() {
         <p className="text-sm text-[var(--text-muted)] mb-4">
           Canadian English · 2026/27 · Wave 1 live / Wave 2 coming soon
         </p>
+        {membership && (
+          <div className="card-glass p-4 mb-6 space-y-2">
+            <p className="text-sm text-[var(--text-primary)] font-medium">
+              Signed in as {membership.nickname}
+            </p>
+            <p className="text-xs text-[var(--text-muted)]">
+              Sign out is also in the header (top right) and on Admin.
+            </p>
+            <SignOutButton next="/login" />
+          </div>
+        )}
         <HelpContent showDemoCopy={demoMode} />
       </main>
       <FooterDisclaimer />
