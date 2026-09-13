@@ -151,7 +151,13 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       </section>
       <section id="10-team-pages">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">10. League, Schedule &amp; team research</h2>
-        <p className="text-[var(--text-muted)] mb-2">**League** shows NFL standings (by division / overall). The **2025 rank** column is last season’s composite power rank by team (1 = strongest, 32 = weakest) — research only, not this year’s W-L.</p>
+        <p className="text-[var(--text-muted)] mb-2">
+          **League** shows NFL standings (by division / overall).
+          {showDemoCopy
+            ? " Demo mode may show a practice table."
+            : " **W-L** is this season from ESPN."}{" "}
+          The **2025 rank** column is last season’s composite power rank by team (1 = strongest, 32 = weakest) — research only, not this year’s W-L.
+        </p>
         <p className="text-[var(--text-muted)] mb-2">**Schedule** lists this week’s games and future weeks (dropdown + arrows). Tap a team for research.</p>
         <p className="text-[var(--text-muted)] mb-2"><strong>Team pages</strong> cover roster, an ESPN injury report (Out / Doubtful / Questionable / IR / suspension), news headlines, and record. Injury chips on Pick / Home / Schedule are a compact count — tap the team for names. This is ESPN&apos;s public list, not the official NFL club report.</p>
         <p className="text-[var(--text-muted)] mb-2">From <strong>This week&apos;s games</strong>, logos and names open research; <strong>Pick</strong> stays on its own button.</p>
@@ -176,7 +182,12 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; tap **Account** in the header, then **Change nickname**. New members create a nickname when they join.</li>
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
           <li className="text-[var(--text-primary)]">**Cell number** is optional but recommended for missing-pick SMS and for password-reset texts. You can skip the soft prompt and add or edit it later from the header near your nickname.</li>
-          <li className="text-[var(--text-primary)]">**Forgot password:** on the sign-in page, tap Forgot password. We send a 6-digit code to your email, or a text if a cell is saved. Demo seats (`@survivesunday.demo`) always use password <strong>demo1234</strong> — no reset needed.</li>
+          <li className="text-[var(--text-primary)]">
+            **Forgot password:** on the sign-in page, tap Forgot password. We send a 6-digit code to your email, or a text if a cell is saved.
+            {showDemoCopy
+              ? " Demo seats (@survivesunday.demo) always use password demo1234 — no reset needed."
+              : " Use the email you joined with."}
+          </li>
           <li className="text-[var(--text-primary)]">**Sign out:** tap <strong>Account</strong> in the header (top right), then <strong>Sign out</strong>. It is also on Admin and this Help page. One tap signs you out and takes you to Sign in.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">To leave a pool or request data deletion, use the account/privacy controls (or contact your commissioner) and see the privacy policy stub linked from settings.</p>
@@ -184,17 +195,17 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       </section>
       <section id="13-troubleshooting">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">13. Troubleshooting</h2>
-        <pre className="card-glass p-3 text-xs overflow-x-auto whitespace-pre-wrap mb-2">| Symptom | Likely fix |
+        <pre className="card-glass p-3 text-xs overflow-x-auto whitespace-pre-wrap mb-2">{`| Symptom | Likely fix |
 |---------|------------|
 | Pick button disabled | Team already used, team on bye, or week already locked. |
 | Can’t see mates’ picks | Week hasn’t locked yet — hang tight until first kickoff. |
 | Missed SMS | Add or update your cell in the header (near nickname). Confirm the number is correct. |
-| Forgot password | Sign in → Forgot password. Use the email on your account. Demo seats use demo1234. |
+| Forgot password | Sign in → Forgot password. Use the email on your account.${showDemoCopy ? " Demo seats use demo1234." : ""} |
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
-| Want to switch account | Header → <strong>Account</strong> → <strong>Sign out</strong> (also on Admin and Help). Then Sign in. |
+| Want to switch account | Header → Account → Sign out (also on Admin and Help). Then Sign in. |
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
-| Can’t change my pick | After Week 1, lock freezes picks. In Week 1 you can still change until **your** pick’s kickoff, but only onto a game that has not started. |</pre>
+| Can’t change my pick | Weeks 2+ freeze at week lock. Week 1: you can still change until your pick’s kickoff, but only onto a game that has not started. |`}</pre>
         <p className="text-[var(--text-muted)] mb-2">Still stuck? Ask your commissioner or check the pool notice for schedule overrides.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -210,7 +221,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Roster:** open **Admin → Roster** to see every nickname and real name, and fix either if it’s wrong. Each change is audit-logged.</li>
           <li className="text-[var(--text-primary)]">**Roles:** one login can be a **Player** and an **Administrator**. If you have both, use **Playing as …** / **Admin tools** to switch. Players without Admin never see Admin tools. You can **Make administrator** for someone already in the pool (they stay on the board). The pool always keeps at least one administrator. A later **Watcher** role (follow the board, no picks) is reserved and not in the app yet.</li>
           <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> resend digests or late-pick reminders.</li>
-          <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> enable the WhatsApp group stub and Twilio / Resend configuration.</li>
+          <li className="text-[var(--text-primary)]"><strong>Forgot password email</strong> already uses Resend (owner sets the two keys on Vercel). <strong>Wave 2 — Coming soon:</strong> WhatsApp group stub.</li>
           {showDemoCopy && (
             <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> mark demo-mode team data so “demo” labels stay honest.</li>
           )}
@@ -268,7 +279,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
         <ol className="list-decimal pl-5 space-y-1 mb-2">
           <li>Open **Commissioner → Import week picks**.</li>
           <li>Upload a CSV or paste rows: `nickname,team` (or `email,team`).</li>
-          <li>Example file: `/examples/week1-picks-import.csv`.</li>
+          <li>Use the official Week 1 list in the owner handoff — not `/examples/week1-picks-import.csv` (leftover demo sample).</li>
           <li>Imported picks are marked **imported**, written to the **audit log**, and follow normal rules: visible after lock, graded when games are final, mulligan / elimination applied, team reuse enforced.</li>
           <li>If you need to force a mid-season import that reuses a team, tick the override — that is also audited.</li>
         </ol>
