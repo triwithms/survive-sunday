@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
 import type { OtpChannel } from "@/lib/otp";
 
@@ -34,6 +34,7 @@ export function ForgotPasswordForm() {
   const [info, setInfo] = useState("");
   const [busy, setBusy] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const sending = useRef(false);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -42,6 +43,8 @@ export function ForgotPasswordForm() {
   }, [cooldown]);
 
   async function sendCode(channel?: OtpChannel) {
+    if (sending.current) return;
+    sending.current = true;
     setBusy(true);
     setErr("");
     setInfo("");
@@ -65,7 +68,10 @@ export function ForgotPasswordForm() {
         data?.channel ? data : data?.status
       ) as ChallengeView | undefined;
       if (status?.channel && status.destinationMasked) {
-        setView(status);
+        setView((prev) => ({
+          ...status,
+          devCode: status.devCode ?? prev?.devCode,
+        }));
         setCooldown(status.resendAvailableInSec ?? 0);
       }
       if (!res.ok) {
@@ -84,6 +90,7 @@ export function ForgotPasswordForm() {
     } catch {
       setErr("Could not send a code. Check your connection and try again.");
     } finally {
+      sending.current = false;
       setBusy(false);
     }
   }

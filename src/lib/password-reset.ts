@@ -151,10 +151,11 @@ async function sendResetCode(
     orderBy: { createdAt: "desc" },
   });
 
+  const createdMs = existing ? Date.now() - existing.createdAt.getTime() : Infinity;
   if (
     existing &&
     existing.channel === channel &&
-    secondsUntil(existing.lastSentAt, OTP.resendCooldownMs) > 0
+    (secondsUntil(existing.lastSentAt, OTP.resendCooldownMs) > 0 || createdMs < 5000)
   ) {
     return {
       ok: true,
