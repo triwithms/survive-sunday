@@ -60,10 +60,12 @@ function ScoreTeamRow({
       </span>
       {hasBall ? (
         <span
-          className="inline-block h-2 w-2 shrink-0 rounded-full bg-gold-400"
+          className="shrink-0 text-[13px] leading-none"
           title="Has the ball"
           aria-hidden
-        />
+        >
+          🏈
+        </span>
       ) : null}
       <span
         className={`ml-auto w-9 text-right font-mono text-xl tabular-nums ${
@@ -135,8 +137,14 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
     game.scoreHome ?? "–"
   }, ${
     bug
-      ? [bug.down, bug.periodLine, bug.spot].filter(Boolean).join(", ") ||
-        status.primary
+      ? [
+          hasBall ? `${hasBall} has the ball` : null,
+          bug.down,
+          bug.periodLine,
+          bug.spot,
+        ]
+          .filter(Boolean)
+          .join(", ") || status.primary
       : `${status.primary}${status.secondary ? `, ${status.secondary}` : ""}`
   }`;
 
