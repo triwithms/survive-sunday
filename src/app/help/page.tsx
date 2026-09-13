@@ -42,7 +42,8 @@ export default async function HelpPage() {
               Signed in as {membership.nickname}
             </p>
             <p className="text-xs text-[var(--text-muted)]">
-              Sign out is also in the header (top right) and on Admin.
+              Sign out is also under <strong>Account</strong> in the header
+              (top right) and on Admin.
             </p>
             <SignOutButton next="/login" />
           </div>

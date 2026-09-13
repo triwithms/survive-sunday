@@ -9,9 +9,21 @@ type Props = {
   phoneE164: string | null;
   /** Soft prompt when never set and never skipped */
   softPrompt: boolean;
+  hideTrigger?: boolean;
+  triggerClassName?: string;
+  /** Open the edit dialog from Account (not the first-run soft prompt). */
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-export function PhoneEditor({ phoneE164, softPrompt }: Props) {
+export function PhoneEditor({
+  phoneE164,
+  softPrompt,
+  hideTrigger = false,
+  triggerClassName,
+  open: openProp,
+  onOpenChange,
+}: Props) {
   const router = useRouter();
   const dialogTitleId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -30,6 +42,15 @@ export function PhoneEditor({ phoneE164, softPrompt }: Props) {
   useEffect(() => {
     setSoftOpen(softPrompt);
   }, [softPrompt]);
+
+  useEffect(() => {
+    if (openProp) {
+      setSoftOpen(false);
+      setOpen(true);
+    } else if (openProp === false) {
+      setOpen(false);
+    }
+  }, [openProp]);
 
   useEffect(() => {
     if (open || softOpen) {
@@ -63,6 +84,7 @@ export function PhoneEditor({ phoneE164, softPrompt }: Props) {
       }
       setOpen(false);
       setSoftOpen(false);
+      onOpenChange?.(false);
       router.refresh();
     } catch {
       setError("Network error — try again");
@@ -93,6 +115,7 @@ export function PhoneEditor({ phoneE164, softPrompt }: Props) {
         return;
       }
       setSoftOpen(false);
+      onOpenChange?.(false);
       router.refresh();
     } catch {
       setError("Network error — try again");
@@ -106,24 +129,35 @@ export function PhoneEditor({ phoneE164, softPrompt }: Props) {
 
   return (
     <>
-      <button
-        type="button"
-        className="shrink-0 text-[10px] sm:text-xs text-gold-400 underline underline-offset-2 hover:text-gold-500"
-        onClick={() => {
-          setSoftOpen(false);
-          setOpen(true);
-        }}
-        data-testid="change-phone"
-        aria-label={phoneE164 ? "Change cell number" : "Add cell number"}
-      >
-        {phoneE164 ? "Cell" : "Add cell"}
-      </button>
+      {!hideTrigger && (
+        <button
+          type="button"
+          className={
+            triggerClassName ??
+            "shrink-0 text-[10px] sm:text-xs text-gold-400 underline underline-offset-2 hover:text-gold-500 min-h-11"
+          }
+          onClick={() => {
+            setSoftOpen(false);
+            setOpen(true);
+            onOpenChange?.(true);
+          }}
+          data-testid="change-phone"
+          aria-label={phoneE164 ? "Change cell number" : "Add cell number"}
+        >
+          {phoneE164 ? "Cell" : "Add cell"}
+        </button>
+      )}
 
       {dialogOpen && (
         <ModalDialog
           labelledBy={dialogTitleId}
           onBackdropClick={
-            busy || isSoft ? undefined : () => setOpen(false)
+            busy || isSoft
+              ? undefined
+              : () => {
+                  setOpen(false);
+                  onOpenChange?.(false);
+                }
           }
         >
           <h2
@@ -166,7 +200,10 @@ export function PhoneEditor({ phoneE164, softPrompt }: Props) {
                   e.preventDefault();
                   void save();
                 }
-                if (e.key === "Escape" && !busy && !isSoft) setOpen(false);
+                if (e.key === "Escape" && !busy && !isSoft) {
+                  setOpen(false);
+                  onOpenChange?.(false);
+                }
               }}
             />
           </label>
@@ -191,7 +228,10 @@ export function PhoneEditor({ phoneE164, softPrompt }: Props) {
                 type="button"
                 className="btn-secondary flex-1"
                 disabled={busy}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  onOpenChange?.(false);
+                }}
               >
                 Cancel
               </button>

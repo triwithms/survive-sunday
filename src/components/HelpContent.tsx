@@ -12,7 +12,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Pick one team each week** to win. You can’t reuse a team you’ve already picked, and bye-week teams are off the board.</li>
           <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). Submit before then; after lock, everyone’s picks go public.</li>
           <li className="text-[var(--text-primary)]">**You get one mulligan.** Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you.</li>
-          <li className="text-[var(--text-primary)]">**Invite link**, then **Google** or email/password to sign in. You stay signed in on that phone or computer. Forgot the password? Use **Forgot password** on the sign-in page — we email or text a code. Returning BM Boys already have a nickname — use **Change nickname** in the header to edit it. New joiners create a nickname on join (unique within the pool).</li>
+          <li className="text-[var(--text-primary)]">**Invite link**, then **Google** or email/password to sign in. You stay signed in on that phone or computer. Forgot the password? Use **Forgot password** on the sign-in page — we email or text a code. Returning BM Boys already have a nickname — tap **Account** in the header, then **Change nickname**. New joiners create a nickname on join (unique within the pool).</li>
           <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for missing-pick SMS (you can skip and change it later in the header). Wave 2 social features are marked below as coming soon.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">---</p>
@@ -28,7 +28,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       <section id="2-how-to-play-quick-start">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">2. How to play (quick start)</h2>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
-          <li>Join with your **invite link or code** and sign in with **Google** or **email and password**. Returning BM Boys: your nickname is already set — use **Change nickname** in the header if you want something different. New joiners: create a nickname on join (unique within the pool).</li>
+          <li>Join with your **invite link or code** and sign in with **Google** or **email and password**. Returning BM Boys: your nickname is already set — tap **Account** then **Change nickname** if you want something different. New joiners: create a nickname on join (unique within the pool).</li>
           <li>Open **Pick** and choose from **This week’s games** — pick **exactly one** NFL team to win. Use the arrows beside the **W#** badge in the header to flip to other weeks.</li>
           <li>Submit before the **Pick deadline** (header countdown) — the week locks at the kickoff of the first game that week (usually Thursday Night Football). Past weeks stay read-only after lock; future weeks show that week’s games if they’re already in the app.</li>
           <li>If your team wins, you survive. If it loses, your mulligan absorbs the first hit (you’re still alive with one loss) or a second loss eliminates you.</li>
@@ -172,11 +172,11 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h2 className="text-lg font-semibold text-gold-400 mb-2">12. Privacy &amp; accounts</h2>
         <p className="text-[var(--text-muted)] mb-2">Pools are **private and invite-only**. Join with an invite link or code, then sign in with **Google** or **email and password**.</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
-          <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; use **Change nickname** in the app header to edit it. New members create a nickname when they join.</li>
+          <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; tap **Account** in the header, then **Change nickname**. New members create a nickname when they join.</li>
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
           <li className="text-[var(--text-primary)]">**Cell number** is optional but recommended for missing-pick SMS and for password-reset texts. You can skip the soft prompt and add or edit it later from the header near your nickname.</li>
           <li className="text-[var(--text-primary)]">**Forgot password:** on the sign-in page, tap Forgot password. We send a 6-digit code to your email, or a text if a cell is saved. Demo seats (`@survivesunday.demo`) always use password <strong>demo1234</strong> — no reset needed.</li>
-          <li className="text-[var(--text-primary)]">**Sign out:** tap <strong>Sign out</strong> in the header (top right, under your nickname), on Admin next to your commissioner login, or on this Help page. One tap signs you out and takes you to Sign in.</li>
+          <li className="text-[var(--text-primary)]">**Sign out:** tap <strong>Account</strong> in the header (top right), then <strong>Sign out</strong>. It is also on Admin and this Help page. One tap signs you out and takes you to Sign in.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">To leave a pool or request data deletion, use the account/privacy controls (or contact your commissioner) and see the privacy policy stub linked from settings.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
@@ -190,7 +190,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Missed SMS | Add or update your cell in the header (near nickname). Confirm the number is correct. |
 | Forgot password | Sign in → Forgot password. Use the email on your account. Demo seats use demo1234. |
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
-| Want to switch account | Header → <strong>Sign out</strong> (also on Admin and Help). Then Sign in. |
+| Want to switch account | Header → <strong>Account</strong> → <strong>Sign out</strong> (also on Admin and Help). Then Sign in. |
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
 | Can’t change my pick | Lock has passed — picks are frozen. |</pre>

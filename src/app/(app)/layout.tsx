@@ -18,7 +18,7 @@ import {
   weeksForParticipants,
 } from "@/lib/pool-mode";
 import Link from "next/link";
-import { NicknameEditor } from "@/components/NicknameEditor";
+import { AccountMenu } from "@/components/AccountMenu";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -83,28 +83,17 @@ export default async function AppLayout({
           >
             <HeaderWeekNav weeks={weekNav} currentWeek={currentWeek} />
           </Suspense>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 max-w-[48%] sm:max-w-[46%]">
-            {membership.role === "admin" && (
-              <Link
-                href="/admin#pool-mode"
-                prefetch={false}
-                className="text-xs text-gold-400 underline underline-offset-2 shrink-0"
-              >
-                Admin
-              </Link>
-            )}
-            <NicknameEditor
-              nickname={membership.nickname}
-              statusLabel={membership.status.replace("_", " ")}
-              userId={session.user.id}
-              role={membership.role}
-              phoneE164={membership.user.phoneE164}
-              phoneSoftPrompt={
-                membership.user.phoneE164 == null &&
-                membership.user.phoneSkippedAt == null
-              }
-            />
-          </div>
+          <AccountMenu
+            nickname={membership.nickname}
+            statusLabel={membership.status.replace("_", " ")}
+            userId={session.user.id}
+            role={membership.role}
+            phoneE164={membership.user.phoneE164}
+            phoneSoftPrompt={
+              membership.user.phoneE164 == null &&
+              membership.user.phoneSkippedAt == null
+            }
+          />
         </div>
         <HeaderNav
           canChangePick={canChangePick}
