@@ -13,7 +13,13 @@ export const CLAIM_ERRORS = {
   alreadyClaimed:
     "This seat is already claimed. Sign in instead, or ask the commissioner if that’s you.",
   emailTaken: "That email already has an account. Sign in instead, or pick a different email.",
+  emailOnOtherSeat:
+    "That email is already on another player seat. Sign in instead, or pick a different email.",
+  emailPasswordMismatch:
+    "That email already has an account. Use the password you already sign in with (your commissioner login), not a new one.",
   alreadyInPool: "Already in this pool",
+  alreadyCommissioner:
+    "This email is already the commissioner login. Pick your player name from the list (for example Gams) and use that same password.",
   nicknameTaken: "Nickname already taken in this pool",
 } as const;
 
@@ -33,8 +39,14 @@ export type SeatMemberRow = {
   user: { email: string | null };
 };
 
+export type EmailOwnerInfo = {
+  id: string;
+  hasPlayerSeat: boolean;
+  hasAdminSeat: boolean;
+};
+
 export type ClaimDecision =
-  | { ok: true; action: "convert-practice"; userId: string }
+  | { ok: true; action: "convert-practice" | "attach-to-existing"; userId: string }
   | { ok: false; status: number; error: string };
 
 /**
@@ -79,7 +91,7 @@ export function seatsFromMemberships(members: SeatMemberRow[]): ClaimableSeat[] 
 export function decideClaim(args: {
   seat: { role: string; userId: string; email: string | null } | null;
   newEmail: string;
-  emailOwner: { id: string } | null;
+  emailOwner: EmailOwnerInfo | null;
 }): ClaimDecision {
   if (!args.seat) {
     return { ok: false, status: 404, error: CLAIM_ERRORS.seatMissing };
@@ -94,7 +106,15 @@ export function decideClaim(args: {
     return { ok: false, status: 400, error: CLAIM_ERRORS.demoEmail };
   }
   if (args.emailOwner && args.emailOwner.id !== args.seat.userId) {
-    return { ok: false, status: 409, error: CLAIM_ERRORS.emailTaken };
+    if (args.emailOwner.hasPlayerSeat) {
+      return { ok: false, status: 409, error: CLAIM_ERRORS.emailOnOtherSeat };
+    }
+    // Commissioner (or any login with no player seat) can attach this seat.
+    return {
+      ok: true,
+      action: "attach-to-existing",
+      userId: args.emailOwner.id,
+    };
   }
   return { ok: true, action: "convert-practice", userId: args.seat.userId };
 }

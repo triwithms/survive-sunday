@@ -95,20 +95,31 @@ if (!missing.ok) assert.equal(missing.error, CLAIM_ERRORS.seatMissing);
 const taken = decideClaim({
   seat: { role: "member", userId: "u-gams", email: "gams@survivesunday.demo" },
   newEmail: "taken@example.com",
-  emailOwner: { id: "someone-else" },
+  emailOwner: { id: "someone-else", hasPlayerSeat: true, hasAdminSeat: false },
 });
 assert.equal(taken.ok, false);
 if (!taken.ok) {
   assert.equal(taken.status, 409);
-  assert.equal(taken.error, CLAIM_ERRORS.emailTaken);
+  assert.equal(taken.error, CLAIM_ERRORS.emailOnOtherSeat);
 }
 
 const sameUser = decideClaim({
   seat: { role: "member", userId: "u-gams", email: "gams@survivesunday.demo" },
   newEmail: "robert@example.com",
-  emailOwner: { id: "u-gams" },
+  emailOwner: { id: "u-gams", hasPlayerSeat: true, hasAdminSeat: false },
 });
 assert.equal(sameUser.ok, true);
+
+const commishEmail = decideClaim({
+  seat: { role: "member", userId: "u-gams", email: "gams@survivesunday.demo" },
+  newEmail: "robertgama@gmail.com",
+  emailOwner: { id: "u-commish", hasPlayerSeat: false, hasAdminSeat: true },
+});
+assert.deepEqual(commishEmail, {
+  ok: true,
+  action: "attach-to-existing",
+  userId: "u-commish",
+});
 
 const demoEmail = decideClaim({
   seat: { role: "member", userId: "u-gams", email: "gams@survivesunday.demo" },

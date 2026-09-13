@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 import { joinOrClaimSeat } from "@/lib/claim-seat-db";
 
 export async function POST(req: Request) {
@@ -9,6 +10,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
+  const session = await auth();
   const result = await joinOrClaimSeat({
     inviteCode: typeof body.inviteCode === "string" ? body.inviteCode : "",
     email: typeof body.email === "string" ? body.email : "",
@@ -16,6 +18,7 @@ export async function POST(req: Request) {
     membershipId: typeof body.membershipId === "string" ? body.membershipId : "",
     nickname: typeof body.nickname === "string" ? body.nickname : "",
     realName: typeof body.realName === "string" ? body.realName : "",
+    sessionUserId: session?.user?.id,
   });
 
   if (!result.ok) {

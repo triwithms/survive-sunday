@@ -90,7 +90,7 @@ export function JoinForm({ seats }: { seats: ClaimableSeat[] }) {
       <p className="text-[var(--text-muted)] text-sm mb-6">
         {newPlayer
           ? "Invite-only. Choose a nickname your friends will recognise."
-          : "Pick yourself from the live roster, then set your own email and password. Your Week 1 picks stay with that name."}
+          : "Pick yourself from the live roster, then set your own email and password. Your Week 1 picks stay with that name. Already the commissioner? Use that same email and the password you already sign in with."}
       </p>
       <form onSubmit={onSubmit} className="space-y-4 card-glass p-5">
         <label className="block text-sm">

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { getMembershipForUser } from "@/lib/session";
+import { getUserPoolContext } from "@/lib/session";
 import { Suspense } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
@@ -32,8 +32,11 @@ export default async function AppLayout({
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const membership = await getMembershipForUser(session.user.id);
+  const ctx = await getUserPoolContext(session.user.id);
+  const membership = ctx.membership;
   if (!membership) redirect("/join");
+  const isAdmin = ctx.isAdmin;
+  const isPlayer = membership.role !== "admin";
 
   const currentWeek = effectiveCurrentWeek(
     membership.pool.mode,
@@ -59,11 +62,10 @@ export default async function AppLayout({
     lockAt: effectiveLockAt(row).toISOString(),
   }));
   const canChangePick =
-    !locked && membership.status !== "eliminated" && membership.role !== "admin";
-  const showMutedChangePick =
-    !locked && membership.role === "admin";
+    !locked && membership.status !== "eliminated" && isPlayer;
+  const showMutedChangePick = !locked && isAdmin && !isPlayer;
   const showDemoLockToggle =
-    isDemoMode(membership.pool.mode) && membership.role === "admin";
+    isDemoMode(membership.pool.mode) && isAdmin;
 
   return (
     <div key={session.user.id} className="min-h-dvh flex flex-col pb-24 overflow-x-hidden max-w-full">
@@ -107,7 +109,7 @@ export default async function AppLayout({
         {children}
       </div>
       <FooterDisclaimer />
-      <BottomNav isAdmin={membership.role === "admin"} />
+      <BottomNav isAdmin={isAdmin} />
     </div>
   );
 }

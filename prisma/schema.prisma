@@ -110,7 +110,9 @@ model Membership {
   user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   picks             Pick[]
 
-  @@unique([poolId, userId])
+  /// A user may hold the commissioner spectator seat and a player seat
+  /// (e.g. Gams) in the same pool. Lookups use this index.
+  @@index([poolId, userId])
   @@unique([poolId, nickname])
 }
 

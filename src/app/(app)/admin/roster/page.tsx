@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { getMembershipForUser } from "@/lib/session";
+import { getUserPoolContext } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -13,9 +13,10 @@ export const revalidate = 0;
 export default async function RosterPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
-  const me = await getMembershipForUser(session.user.id);
+  const ctx = await getUserPoolContext(session.user.id);
+  const me = ctx.membership;
   if (!me) redirect("/join");
-  if (me.role !== "admin") {
+  if (!ctx.isAdmin) {
     return (
       <div className="card-glass p-5 space-y-4">
         <div>

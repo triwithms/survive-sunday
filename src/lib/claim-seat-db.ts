@@ -45,6 +45,8 @@ export type JoinOrClaimInput = {
   membershipId?: string;
   nickname?: string;
   realName?: string;
+  /** Signed-in user claiming their own player seat (skip password re-check). */
+  sessionUserId?: string;
 };
 
 export type JoinOrClaimResult =
@@ -68,14 +70,38 @@ function normalizeJoinFields(input: JoinOrClaimInput) {
   };
 }
 
+async function ownerInfoForEmail(
+  tx: {
+    user: { findUnique: typeof prisma.user.findUnique };
+    membership: { findMany: typeof prisma.membership.findMany };
+  },
+  email: string,
+  poolId: string
+) {
+  const user = await tx.user.findUnique({
+    where: { email },
+    select: { id: true, passwordHash: true },
+  });
+  if (!user) return null;
+  const seats = await tx.membership.findMany({
+    where: { poolId, userId: user.id },
+    select: { role: true },
+  });
+  return {
+    id: user.id,
+    passwordHash: user.passwordHash,
+    hasPlayerSeat: seats.some((s) => s.role !== "admin"),
+    hasAdminSeat: seats.some((s) => s.role === "admin"),
+  };
+}
+
 async function claimPracticeSeat(args: {
   poolId: string;
   membershipId: string;
   email: string;
   password: string;
+  sessionUserId?: string;
 }): Promise<JoinOrClaimResult> {
-  const passwordHash = await bcrypt.hash(args.password, 10);
-
   try {
     const claimed = await prisma.$transaction(async (tx) => {
       const seat = await tx.membership.findFirst({
@@ -83,10 +109,7 @@ async function claimPracticeSeat(args: {
         include: { user: { select: { id: true, email: true, name: true } } },
       });
 
-      const emailOwner = await tx.user.findUnique({
-        where: { email: args.email },
-        select: { id: true },
-      });
+      const emailOwner = await ownerInfoForEmail(tx, args.email, args.poolId);
 
       const decision = decideClaim({
         seat: seat
@@ -97,15 +120,71 @@ async function claimPracticeSeat(args: {
       });
       if (!decision.ok) return decision;
 
+      if (decision.action === "attach-to-existing") {
+        const signedInOwner =
+          Boolean(args.sessionUserId) && args.sessionUserId === decision.userId;
+        if (!signedInOwner) {
+          const hash = emailOwner?.passwordHash;
+          const passwordOk = hash
+            ? await bcrypt.compare(args.password, hash)
+            : false;
+          if (!passwordOk) {
+            return {
+              ok: false as const,
+              status: 401,
+              error: CLAIM_ERRORS.emailPasswordMismatch,
+            };
+          }
+        }
+
+        const oldUserId = seat!.userId;
+        await tx.membership.update({
+          where: { id: seat!.id },
+          data: { userId: decision.userId },
+        });
+        if (oldUserId !== decision.userId) {
+          const leftover = await tx.membership.count({
+            where: { userId: oldUserId },
+          });
+          if (leftover === 0) {
+            await tx.user.delete({ where: { id: oldUserId } });
+          }
+        }
+
+        await tx.auditLog.create({
+          data: {
+            poolId: args.poolId,
+            actorId: decision.userId,
+            action: "claim_seat",
+            targetType: "membership",
+            targetId: seat!.id,
+            details: JSON.stringify({
+              nickname: seat!.nickname,
+              from: seat!.user.email,
+              to: args.email,
+              note: "Player seat attached to existing commissioner login",
+            }),
+          },
+        });
+
+        return {
+          ok: true as const,
+          membershipId: seat!.id,
+          email: args.email,
+          claimed: true as const,
+        };
+      }
+
       const displayName = seat!.realName || seat!.nickname || args.email;
       await tx.user.update({
         where: { id: decision.userId },
         data: {
           email: args.email,
-          passwordHash,
-          name: seat!.user.name && !isDemoEmail(seat!.user.email)
-            ? seat!.user.name
-            : displayName,
+          passwordHash: await bcrypt.hash(args.password, 10),
+          name:
+            seat!.user.name && !isDemoEmail(seat!.user.email)
+              ? seat!.user.name
+              : displayName,
         },
       });
 
@@ -159,11 +238,15 @@ async function joinAsNewPlayer(args: {
 
   let user = await prisma.user.findUnique({ where: { email: args.email } });
   if (user) {
-    const existing = await prisma.membership.findUnique({
-      where: { poolId_userId: { poolId: args.poolId, userId: user.id } },
+    const existing = await prisma.membership.findMany({
+      where: { poolId: args.poolId, userId: user.id },
+      select: { role: true },
     });
-    if (existing) {
+    if (existing.some((s) => s.role !== "admin")) {
       return { ok: false, status: 409, error: CLAIM_ERRORS.alreadyInPool };
+    }
+    if (existing.some((s) => s.role === "admin")) {
+      return { ok: false, status: 409, error: CLAIM_ERRORS.alreadyCommissioner };
     }
   } else {
     user = await prisma.user.create({
@@ -226,6 +309,7 @@ export async function joinOrClaimSeat(
       membershipId,
       email,
       password,
+      sessionUserId: input.sessionUserId,
     });
   }
 

@@ -83,6 +83,17 @@ async function dropAbandonedTables(prisma: PrismaClient) {
   }
 }
 
+/** One login may hold commissioner + player seats in the same pool. */
+async function ensureDualMembershipIndex(prisma: PrismaClient) {
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Membership" DROP CONSTRAINT IF EXISTS "Membership_poolId_userId_key"
+  `);
+  await prisma.$executeRawUnsafe(`
+    CREATE INDEX IF NOT EXISTS "Membership_poolId_userId_idx"
+    ON "Membership" ("poolId", "userId")
+  `);
+}
+
 async function ensurePoolModeColumn(prisma: PrismaClient) {
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "Pool" ADD COLUMN IF NOT EXISTS "mode" TEXT NOT NULL DEFAULT 'demo'
@@ -175,6 +186,7 @@ async function main() {
     // Real-mode PR #10 may not have applied if db push refused to drop
     // leftover OtpChallenge rows. Add the column without touching data.
     await ensurePoolModeColumn(prisma);
+    await ensureDualMembershipIndex(prisma);
   });
 
   const pushed = pushSchema(env);
@@ -190,6 +202,7 @@ async function main() {
     }
     await withPrisma(url, async (prisma) => {
       await ensurePoolModeColumn(prisma);
+      await ensureDualMembershipIndex(prisma);
       await ensureOtpChallengeTable(prisma);
       await assertRequiredSchema(prisma);
     });

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireUser, getMembershipForUser } from "@/lib/session";
+import { requireUser, getUserPoolContext } from "@/lib/session";
 import { isDemoMode } from "@/lib/pool-mode";
 import {
   ensureWeekLockedEffects,
@@ -148,11 +148,12 @@ export async function POST(req: Request) {
   const user = await requireUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const membership = await getMembershipForUser(user.id);
+  const ctx = await getUserPoolContext(user.id);
+  const membership = ctx.membership;
   if (!membership) {
     return NextResponse.json({ error: "No pool membership" }, { status: 403 });
   }
-  if (!isDemoMode(membership.pool.mode) || membership.role !== "admin") {
+  if (!isDemoMode(membership.pool.mode) || !ctx.isAdmin) {
     return NextResponse.json(
       { error: "Testing lock toggle is only available to the commissioner in Demo mode" },
       { status: 403 }
@@ -245,8 +246,9 @@ export async function GET() {
   const user = await requireUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const membership = await getMembershipForUser(user.id);
-  if (!membership || !isDemoMode(membership.pool.mode) || membership.role !== "admin") {
+  const ctx = await getUserPoolContext(user.id);
+  const membership = ctx.membership;
+  if (!membership || !isDemoMode(membership.pool.mode) || !ctx.isAdmin) {
     return NextResponse.json({ demo: false });
   }
 

@@ -211,7 +211,7 @@ Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is 
 ### Real login / join
 
 - **Sign in** (`/login`): email + password, or Google if keys are set.
-- **Join** (`/join`): pick yourself from the **live roster** (nickname + real name), invite code **`SUNDAY26`**, then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. If the seat already has a real email, the page says it is claimed — Sign in instead. Practice `@survivesunday.demo` seats are claimable. People not on the list can still join as a new player.
+- **Join** (`/join`): pick yourself from the **live roster** (nickname + real name), invite code **`SUNDAY26`**, then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. If the seat already has a real email, the page says it is claimed — Sign in instead. Practice `@survivesunday.demo` seats are claimable. **Commissioner email can also claim a player seat** (Gams) — same login then sees the board and Admin. People not on the list can still join as a new player.
 - **Forgot password?** on the sign-in page: we email (or text) a 6-digit code → new password → signed back in. Demo seats stay on **demo1234**. This is **not** a code at every login.
 
 The **Forgot password?** screen is on `main` (merged PR #7). It still needs the two Resend keys in section 4, or the page will say we couldn’t send a code. Optional Twilio for texts. Do not claim codes are sending until those keys are set and Production is Redeployed.

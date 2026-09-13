@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
-import { getMembershipForUser } from "@/lib/session";
+import { getUserPoolContext } from "@/lib/session";
 import { HelpContent } from "@/components/HelpContent";
 import { isDemoMode } from "@/lib/pool-mode";
 import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
@@ -13,9 +13,10 @@ export const revalidate = 0;
 
 export default async function HelpPage() {
   const session = await auth();
-  const membership = session?.user?.id
-    ? await getMembershipForUser(session.user.id)
+  const ctx = session?.user?.id
+    ? await getUserPoolContext(session.user.id)
     : null;
+  const membership = ctx?.membership ?? null;
   const demoMode = membership
     ? isDemoMode(membership.pool.mode)
     : isDemoMode(await getPrimaryPoolMode());
@@ -51,7 +52,7 @@ export default async function HelpPage() {
         <HelpContent showDemoCopy={demoMode} />
       </main>
       <FooterDisclaimer />
-      {membership && <BottomNav isAdmin={membership.role === "admin"} />}
+      {membership && <BottomNav isAdmin={Boolean(ctx?.isAdmin)} />}
     </div>
   );
 }

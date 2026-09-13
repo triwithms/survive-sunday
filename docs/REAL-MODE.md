@@ -56,7 +56,8 @@ The list is the **live Admin roster** (current nicknames + real names), not a ha
 3. That login attaches to the existing membership. Week 1 picks stay with that person — you do not get a second “Gams”.
 4. If that seat already has a real (non-practice) email: **already claimed — Sign in instead** (or ask the commissioner).
 5. Practice `@survivesunday.demo` seats **are** claimable by the real person.
-6. Nicknames still change on **Admin → Roster** or **Change nickname**. The list always shows the current names.
+6. **Same email for commissioner and player is OK.** If you already saved `robertgama@gmail.com` as the commissioner login, pick **Gams** on Join and use that same email and the password you already sign in with. One login then sees Gams on the board **and** Admin. Do not invent a second email.
+7. Nicknames still change on **Admin → Roster** or **Change nickname**. The list always shows the current names.
 
 ---
 
