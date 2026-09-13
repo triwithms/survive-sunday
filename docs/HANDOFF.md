@@ -86,6 +86,8 @@ Open: [vercel.com](https://vercel.com) → team **nfl-pool** → project **survi
 |------|----------------|
 | `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | “Continue with Google” on `/login`. Demo picker works without these. |
 
+Live scores and injuries use **ESPN public JSON** — no Vercel key. See [DEPLOY.md](../DEPLOY.md).
+
 ### Not on the live app today
 
 There are **no** email or SMS send keys on `main` (no Resend / Twilio lines in `.env.example`). Friends can **save a cell number** for later missing-pick texts; texts are **not sent yet**.
@@ -169,6 +171,12 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 - Before lock: only **your** pick is visible.
 - After lock: everyone’s picks show; missed picks are applied once; finals are graded.
 
+### Scores & injuries
+
+- **Scores** (and Home / Pick / Schedule) refresh from ESPN while games are on. Finals auto-grade.
+- **Team pages** show ESPN’s public injury report (not official NFL). Compact Out / Doubtful / Q chips appear next to picks.
+- If ESPN is blocked or down, last saved scores stay; injury cards say the feed failed and link out.
+
 ### Standings / in vs out
 
 - **Home** (`/pool`) and **Board** (`/standings`): undefeated → one loss → eliminated, then nickname A–Z.
@@ -231,6 +239,8 @@ Labelled so a free chat does **not** wander into extras. **MUST** means keep it 
 ### BONUS (do not start unless you ask)
 
 - **Live odds-based favourite strength meter** on the pick screen until kickoff. Today the pick screen shows a **static** spread from seeded data, not a live meter.
+
+Live **scores** and **injury report** (ESPN public JSON) are already wired — not a bonus.
 
 ### Later / Wave 2 (do not confuse with MUST)
 

@@ -24,6 +24,6 @@
     "Logo CDN URLs can be brittle",
     "2026 roster churn noted in team_profiles_meta (e.g. Garrett\u2192LAR, Tua\u2192ATL)",
     "Odds/NFL live often need paid tiers beyond free samples",
-    "sample_injury_news is stub shapes only"
+    "sample_injury_news is stub shapes only — UI uses live ESPN injuries"
   ]
 }

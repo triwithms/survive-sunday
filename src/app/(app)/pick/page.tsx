@@ -4,6 +4,12 @@ import { prisma } from "@/lib/db";
 import { isWeekLocked, ensureWeekLockedEffects, parseUsedTeams, MISSED_TEAM } from "@/lib/grading";
 import { redirect } from "next/navigation";
 import { PickClient } from "@/components/PickClient";
+import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
+import {
+  syncWeekScoresFromEspn,
+  shouldPollLiveScores,
+} from "@/lib/live-scores";
+import { getInjuryCountsByTeam } from "@/lib/live-injuries";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -24,6 +30,13 @@ export default async function PickPage() {
   } catch (e) {
     console.error("pick lock effects skipped", e);
   }
+  const [, injuryFeed] = await Promise.all([
+    syncWeekScoresFromEspn(weekRef.id).catch((e) => {
+      console.error("pick espn score sync skipped", e);
+      return null;
+    }),
+    getInjuryCountsByTeam(),
+  ]);
 
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: weekRef.id },
@@ -60,6 +73,7 @@ export default async function PickPage() {
 
   const teams = await prisma.team.findMany({ orderBy: { abbr: "asc" } });
   const teamByAbbr = new Map(teams.map((t) => [t.abbr, t]));
+  const poll = shouldPollLiveScores(week.games);
 
   function sidePayload(abbr: string) {
     const t = teamByAbbr.get(abbr);
@@ -69,6 +83,11 @@ export default async function PickPage() {
       logoUrl: t?.logoUrl ?? null,
       alreadyUsed: used.includes(abbr),
       priorYearRank: t?.priorYearRank ?? null,
+      injuries: injuryFeed.byTeam.get(abbr) ?? {
+        out: 0,
+        doubtful: 0,
+        questionable: 0,
+      },
       standing: t
         ? {
             wins: t.wins,
@@ -89,6 +108,10 @@ export default async function PickPage() {
         ? g.kickoff.toISOString()
         : "",
     network: g.network,
+    status: g.status,
+    scoreAway: g.scoreAway,
+    scoreHome: g.scoreHome,
+    note: g.note,
     spreadHome: g.spreadHome,
     spreadAway: g.spreadAway,
     mlHome: g.mlHome,
@@ -98,12 +121,15 @@ export default async function PickPage() {
   }));
 
   return (
-    <PickClient
-      weekNumber={week.number}
-      locked={locked}
-      eliminated={eliminated}
-      currentPick={currentAbbr}
-      games={games}
-    />
+    <>
+      <LiveScoresRefresh weekNumber={week.number} poll={poll} />
+      <PickClient
+        weekNumber={week.number}
+        locked={locked}
+        eliminated={eliminated}
+        currentPick={currentAbbr}
+        games={games}
+      />
+    </>
   );
 }

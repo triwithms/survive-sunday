@@ -1,6 +1,12 @@
 import "server-only";
 import fs from "fs";
 import path from "path";
+import {
+  ESPN_TEAM_IDS,
+  espnAbbr,
+  fetchEspnJson,
+  normAbbr,
+} from "@/lib/espn";
 
 /** Server-only team research: profiles/rosters JSON + live ESPN news (TTL cache). Do not import from client components. */
 
@@ -120,11 +126,6 @@ let rosterMeta: {
   rolesApproximate: boolean;
 } | null = null;
 
-function normAbbr(abbr: string): string {
-  const u = abbr.toUpperCase();
-  return u === "WSH" ? "WAS" : u;
-}
-
 export function getTeamProfile(abbr: string): TeamProfile | null {
   if (!profilesCache) {
     const rows = loadJson<TeamProfile[]>("team_profiles.json");
@@ -135,6 +136,7 @@ export function getTeamProfile(abbr: string): TeamProfile | null {
   return profilesCache.get(normAbbr(abbr)) ?? null;
 }
 
+/** Schema-only sample file. Do not show in UI — use getTeamInjuries(). */
 export function getSampleInjuryNews(abbr: string): {
   injuries: InjuryRow[];
   news: NewsRow[];
@@ -156,48 +158,6 @@ export function getSampleInjuryNews(abbr: string): {
     ),
   };
 }
-
-/** App abbr (WAS) → ESPN site abbreviation (WSH). */
-function espnAbbr(abbr: string): string {
-  const key = normAbbr(abbr);
-  return key === "WAS" ? "WSH" : key;
-}
-
-/** ESPN site API team ids (stable for NFL). */
-const ESPN_TEAM_IDS: Record<string, string> = {
-  ARI: "22",
-  ATL: "1",
-  BAL: "33",
-  BUF: "2",
-  CAR: "29",
-  CHI: "3",
-  CIN: "4",
-  CLE: "5",
-  DAL: "6",
-  DEN: "7",
-  DET: "8",
-  GB: "9",
-  HOU: "34",
-  IND: "11",
-  JAX: "30",
-  KC: "12",
-  LV: "13",
-  LAC: "24",
-  LAR: "14",
-  MIA: "15",
-  MIN: "16",
-  NE: "17",
-  NO: "18",
-  NYG: "19",
-  NYJ: "20",
-  PHI: "21",
-  PIT: "23",
-  SF: "25",
-  SEA: "26",
-  TB: "27",
-  TEN: "10",
-  WAS: "28",
-};
 
 const NFL_TEAM_SLUGS: Record<string, string> = {
   ARI: "arizona-cardinals",
@@ -293,21 +253,9 @@ async function fetchEspnTeamNewsRaw(abbr: string): Promise<TeamNewsItem[]> {
   const teamId = ESPN_TEAM_IDS[key];
   if (!teamId) return [];
 
-  const url = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/news?team=${encodeURIComponent(teamId)}&limit=20`;
-  const res = await fetch(url, {
-    headers: {
-      Accept: "application/json",
-      // ESPN edge returns 403 HTML for some bot-like UAs; a normal browser UA works.
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-    },
-    // Avoid Next fetch cache fighting our own TTL map; this module caches.
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    throw new Error(`ESPN news HTTP ${res.status}`);
-  }
-  const data = (await res.json()) as { articles?: EspnArticle[] };
+  const data = await fetchEspnJson<{ articles?: EspnArticle[] }>(
+    `/apis/site/v2/sports/football/nfl/news?team=${encodeURIComponent(teamId)}&limit=20`
+  );
   const articles = Array.isArray(data.articles) ? data.articles : [];
   const seen = new Set<string>();
   const items: TeamNewsItem[] = [];

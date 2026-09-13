@@ -52,3 +52,16 @@ npm run seed
 
 - Local SQLite (`file:./dev.db`) is **not** used for the deploy path. Locally, point `DATABASE_URL` at Neon free or a local Postgres instance (see `.env.example`).
 - Standard Prisma `provider = "postgresql"` + Neon pooled `DATABASE_URL` is enough — no `@prisma/adapter-neon` required for this Hobby setup.
+
+## Live scores & injuries (no paid keys)
+
+Hobby path uses **ESPN public JSON** (undocumented site API). Nothing to set in Vercel for this:
+
+| Feed | Source | Auth | Notes |
+|---|---|---|---|
+| Live / final scores | `site.web.api.espn.com/.../nfl/scoreboard` (fallback `site.api.espn.com`) | none | Sync + ~45s poll in a live window. Finals auto-grade. |
+| Injury report | `.../nfl/injuries` | none | Cached ~12 min. Labeled ESPN report, not official NFL. |
+
+Optional later (not wired): `API_SPORTS_KEY` for API-Sports (free ~100 req/day) if ESPN blocks Vercel. Do **not** commit keys. SportsDataIO trial data is scrambled — do not show as real.
+
+ToS: private friends pool only; we do not redistribute a commercial score feed. ESPN/NFL marks stay theirs. Endpoints can break without notice.
