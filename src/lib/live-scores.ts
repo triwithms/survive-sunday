@@ -16,6 +16,7 @@ export function fromEspnAbbr(abbr: string): string {
 }
 
 export type EspnGameSnapshot = {
+  eventId: string | null;
   awayAbbr: string;
   homeAbbr: string;
   status: "scheduled" | "live" | "final";
@@ -23,6 +24,8 @@ export type EspnGameSnapshot = {
   scoreHome: number | null;
   clockLabel: string | null;
   situationLabel: string | null;
+  timeoutsAway: number | null;
+  timeoutsHome: number | null;
   detail: string | null;
 };
 
@@ -39,9 +42,12 @@ type EspnSituation = {
   downDistanceText?: string;
   down?: number;
   distance?: number;
+  homeTimeouts?: number;
+  awayTimeouts?: number;
 };
 
 type EspnEvent = {
+  id?: string;
   competitions?: Array<{
     competitors?: EspnCompetitor[];
     situation?: EspnSituation;
@@ -138,7 +144,16 @@ export async function fetchEspnWeekScoreboard(
       away.score != null && away.score !== "" ? Number(away.score) : null;
     const scoreHome =
       home.score != null && home.score !== "" ? Number(home.score) : null;
+    const timeoutsAway =
+      typeof comp?.situation?.awayTimeouts === "number"
+        ? comp.situation.awayTimeouts
+        : null;
+    const timeoutsHome =
+      typeof comp?.situation?.homeTimeouts === "number"
+        ? comp.situation.homeTimeouts
+        : null;
     out.push({
+      eventId: event.id ? String(event.id) : null,
       awayAbbr: fromEspnAbbr(away.team.abbreviation),
       homeAbbr: fromEspnAbbr(home.team.abbreviation),
       status,
@@ -152,6 +167,8 @@ export async function fetchEspnWeekScoreboard(
       ),
       situationLabel:
         status === "live" ? formatEspnSituation(comp?.situation) : null,
+      timeoutsAway,
+      timeoutsHome,
       detail: type?.detail || type?.shortDetail || null,
     });
   }
@@ -161,6 +178,18 @@ export async function fetchEspnWeekScoreboard(
 
 function matchKey(away: string, home: string) {
   return `${away}@${home}`;
+}
+
+export function buildEspnGameNote(
+  snap: Pick<EspnGameSnapshot, "status" | "clockLabel" | "situationLabel">
+): string | null {
+  if (snap.status === "live") {
+    return [snap.clockLabel || "Live", snap.situationLabel, "ESPN"]
+      .filter(Boolean)
+      .join(" · ");
+  }
+  if (snap.status === "final") return snap.clockLabel || "Final · ESPN";
+  return snap.clockLabel ? `${snap.clockLabel} · ESPN` : null;
 }
 
 /**
@@ -199,16 +228,7 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
     else if (snap.status === "final") final += 1;
     else scheduled += 1;
 
-    const note =
-      snap.status === "live"
-        ? [snap.clockLabel || "Live", snap.situationLabel, "ESPN"]
-            .filter(Boolean)
-            .join(" · ")
-        : snap.status === "final"
-          ? snap.clockLabel || "Final · ESPN"
-          : snap.clockLabel
-            ? `${snap.clockLabel} · ESPN`
-            : null;
+    const note = buildEspnGameNote(snap);
 
     const nextScores =
       snap.status === "scheduled"
