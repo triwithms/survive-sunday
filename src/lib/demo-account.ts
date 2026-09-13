@@ -53,12 +53,12 @@ const DEMO_PROFILES: Record<
   },
   "long-snapper@survivesunday.demo": {
     nickname: "Long Snapper",
-    realName: "J S",
+    realName: "John Stilo",
     role: "member",
   },
   "steve@survivesunday.demo": {
     nickname: "Steve",
-    realName: "Steve",
+    realName: "Steve Venerus",
     role: "member",
   },
 };
