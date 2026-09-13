@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { INVITE_CODE } from "@/lib/constants";
-import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
+import { submitCredentialsLogin } from "@/lib/client-auth";
 
 export default function JoinPage() {
   const [inviteCode, setInviteCode] = useState(INVITE_CODE);
@@ -14,7 +13,6 @@ export default function JoinPage() {
   const [realName, setRealName] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
-  const router = useRouter();
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,15 +36,8 @@ export default function JoinPage() {
         setErr(data.error || `Join failed (HTTP ${res.status})`);
         return;
       }
-      const login = await signInCredentials(email, password);
-      if (!login.ok) {
-        setErr(
-          `Account created, but sign-in failed (${login.error || "unknown"}). Use Sign in on this same link.`
-        );
-        router.push("/login");
-        return;
-      }
-      afterAuthNavigate("/pool");
+      submitCredentialsLogin(email, password, "/pool");
+      return;
     } catch (err) {
       const msg = err instanceof Error ? err.message : "network";
       setErr(`Join failed: ${msg}`);

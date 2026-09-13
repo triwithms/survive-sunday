@@ -130,3 +130,32 @@ export function afterAuthNavigate(path: string) {
     window.location.assign("/pool");
   }
 }
+
+/**
+ * Native form POST to /api/login so Safari stores the session cookie.
+ * Fetch + /api/auth/callback/credentials often bounces iPhone back to /login.
+ */
+export function submitCredentialsLogin(
+  email: string,
+  password: string,
+  callbackUrl = "/pool"
+) {
+  if (typeof document === "undefined") return;
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "/api/login";
+  form.style.display = "none";
+  const fields: Array<[string, string]> = [
+    ["email", email],
+    ["password", password],
+    ["callbackUrl", callbackUrl],
+  ];
+  for (const [name, value] of fields) {
+    const input = document.createElement("input");
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  }
+  document.body.appendChild(form);
+  form.submit();
+}

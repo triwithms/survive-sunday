@@ -125,7 +125,15 @@ function rewriteCallbackUrlCookie(cookie: string, origin: string): string {
   return `${name}=${encodeURIComponent(rewritten)}${attrs}`;
 }
 
-/** Point Location + callback-url cookie at the request Host when Auth.js used localhost / example.com. */
+/**
+ * Point Location + callback-url cookie at the request Host when Auth.js used
+ * localhost / example.com.
+ *
+ * Copy Set-Cookie via getSetCookie() — never Headers.get("set-cookie").
+ * get() joins cookies with commas, and Expires already contains a comma
+ * (`Expires=Sun, 13 Dec 2026 …`). Safari rejects that mangled header, so
+ * the session never sticks and the user bounces back to /login.
+ */
 export function rewriteAuthResponse(req: Request, res: Response): Response {
   const origin = requestPublicOrigin(req);
   if (!origin) return res;
@@ -133,16 +141,23 @@ export function rewriteAuthResponse(req: Request, res: Response): Response {
   const headers = new Headers();
   res.headers.forEach((value, key) => {
     const lower = key.toLowerCase();
+    if (lower === "set-cookie") {
+      return;
+    }
     if (lower === "location") {
       headers.append(key, rewriteUrlToOrigin(value, origin));
       return;
     }
-    if (lower === "set-cookie") {
-      headers.append(key, rewriteCallbackUrlCookie(value, origin));
-      return;
-    }
     headers.append(key, value);
   });
+
+  const setCookies =
+    typeof res.headers.getSetCookie === "function"
+      ? res.headers.getSetCookie()
+      : [];
+  for (const cookie of setCookies) {
+    headers.append("set-cookie", rewriteCallbackUrlCookie(cookie, origin));
+  }
 
   return new Response(res.body, {
     status: res.status,
