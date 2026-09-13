@@ -1,3 +1,5 @@
+import { NextRequest } from "next/server";
+
 /** Host / redirect helpers so Auth.js follows the public Host (tunnel), not localhost. */
 
 export function isLoopbackHost(host: string): boolean {
@@ -122,7 +124,8 @@ export function requestWithPublicOrigin(req: Request): Request {
       init.body = req.body;
       init.duplex = "half";
     }
-    return new Request(next, init);
+    // Keep NextRequest so Auth.js reqWithEnvURL can read nextUrl.
+    return new NextRequest(next, init);
   } catch {
     return req;
   }

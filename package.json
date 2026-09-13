@@ -14,6 +14,8 @@
     "postinstall": "prisma generate",
     "setup": "prisma generate && prisma db push && tsx prisma/seed.ts",
     "verify:session": "node scripts/verify-session-identity.mjs",
+    "verify:auth-https": "node scripts/verify-auth-https-cookies.mjs",
+    "verify:demo-enter": "node scripts/verify-demo-enter.mjs",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {

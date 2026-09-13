@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { AuthError } from "next-auth";
-import { signIn } from "@/lib/auth";
-import { requestAbsolute } from "@/lib/request-host";
+import { redirect } from "next/navigation";
+import { signInDemoCredentials } from "@/lib/demo-session";
 
 /**
- * Form + JSON demo login. Sets Auth.js session cookie, then 303 to a
- * same-origin handoff page (Safari often shows "can't open page" on a
- * direct POST→/pool redirect through the tunnel; refresh then works).
+ * Form + JSON demo login. Auth.js writes the session via `cookies().set()`.
+ * Success must `redirect()` (not `NextResponse.redirect`) so those cookies
+ * stay on the response. A 303 built by hand was landing on /signed-in
+ * with no session cookie → `?error=NoSession`.
  */
 export async function POST(req: Request) {
   const wantsJson = (req.headers.get("accept") ?? "").includes("application/json");
@@ -32,26 +32,19 @@ export async function POST(req: Request) {
     /* defaults */
   }
 
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      redirectTo: "/pool",
-    });
-  } catch (e) {
-    const code = e instanceof AuthError ? e.type : "CredentialsSignin";
+  const result = await signInDemoCredentials(email, password, "/pool");
+  if (!result.ok) {
     if (wantsJson) {
-      return NextResponse.json({ ok: false, error: code }, { status: 401 });
+      return NextResponse.json(
+        { ok: false, error: result.error },
+        { status: 401 }
+      );
     }
-    const url = new URL(requestAbsolute(req, "/"));
-    url.searchParams.set("error", code);
-    return NextResponse.redirect(url, 303);
+    redirect(`/?error=${encodeURIComponent(result.error)}`);
   }
 
   if (wantsJson) {
-    return NextResponse.json({ ok: true, next: "/signed-in" });
+    return NextResponse.json({ ok: true, next: "/pool" });
   }
-  // Always use the public Host (tunnel), never req.url (localhost behind cloudflared).
-  return NextResponse.redirect(requestAbsolute(req, "/signed-in"), 303);
+  redirect("/pool");
 }

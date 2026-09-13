@@ -36,6 +36,8 @@ function friendlyError(code: string): string {
 
 /**
  * Native form POST to /api/demo-enter — no client CSRF / fetch.
+ * The route calls Auth.js signIn then next/navigation redirect() so the
+ * session cookie is kept (a hand-built 303 was dropping it).
  * Uncontrolled select (defaultValue) so SSR HTML and hydration always match;
  * a controlled value= was unnecessary for native POST and could toast on
  * stale SW chunks after landing copy/roster changes.

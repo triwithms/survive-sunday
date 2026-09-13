@@ -20,7 +20,7 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 
 | Variable | Value |
 |---|---|
-| `AUTH_SECRET` | Long random string (e.g. `openssl rand -base64 32`) |
+| `AUTH_SECRET` | Long random string (e.g. `openssl rand -base64 32`). **Required** — without it Auth.js 500s every `/api/auth/*` route and demo login cannot create a session. |
 | `AUTH_TRUST_HOST` | `true` |
 | `NEXT_PUBLIC_APP_URL` | Your production URL (e.g. `https://survive-sunday.vercel.app`) |
 | `AUTH_URL` | Same production URL |

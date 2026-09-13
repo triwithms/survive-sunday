@@ -45,73 +45,27 @@ if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
 
 /**
  * Auth.js pins AUTH_URL as the request origin (reqWithEnvURL + createActionURL).
- * A tunnel https AUTH_URL then marks cookies Secure / __Secure- / __Host-,
- * so they never stick on http://localhost:3000 — QA gets bounced to /join.
+ * A leftover localhost AUTH_URL on Vercel would rewrite every auth request
+ * to http://localhost:3000. Only strip loopback URLs; keep a real public
+ * AUTH_URL (production / tunnel) so Host + cookies stay on that origin.
  *
- * AUTH_TRUST_HOST=true (and trustHost: true) → drop AUTH_URL so the incoming
- * Host + x-forwarded-proto win. Localhost stays HTTP/non-Secure; the
- * loca.lt tunnel stays HTTPS/Secure. AUTH_URL in .env is the documented
- * default / fallback when AUTH_TRUST_HOST is unset.
+ * Do not customize cookie names. Auth.js defaults pick `authjs.*` on HTTP
+ * and `__Secure-` / `__Host-` on HTTPS. Overriding names while also toggling
+ * useSecureCookies caused CSRF/session handler 500s on Vercel HTTPS.
  */
-const trustHost =
-  process.env.AUTH_TRUST_HOST === "true" ||
-  process.env.AUTH_TRUST_HOST === "1" ||
-  true;
-
-if (trustHost) {
-  delete process.env.AUTH_URL;
-  delete process.env.NEXTAUTH_URL;
-}
-
-function requestIsHttps(req?: NextRequest | Request): boolean {
-  if (req) {
-    const forwarded = req.headers.get("x-forwarded-proto");
-    if (forwarded) return forwarded.split(",")[0].trim() === "https";
-    try {
-      return new URL(req.url).protocol === "https:";
-    } catch {
-      /* fall through */
+for (const key of ["AUTH_URL", "NEXTAUTH_URL"] as const) {
+  const raw = process.env[key];
+  if (!raw) continue;
+  try {
+    if (isLoopbackHost(new URL(raw).host)) {
+      delete process.env[key];
     }
+  } catch {
+    delete process.env[key];
   }
-  const fallback = process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "";
-  return fallback.startsWith("https://");
-}
-
-/** Stable names (no __Secure-/__Host- prefix) so HTTP + HTTPS share cookies. */
-function cookieOptions(secure: boolean) {
-  return {
-    sessionToken: {
-      name: "authjs.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax" as const,
-        path: "/",
-        secure,
-      },
-    },
-    callbackUrl: {
-      name: "authjs.callback-url",
-      options: {
-        httpOnly: true,
-        sameSite: "lax" as const,
-        path: "/",
-        secure,
-      },
-    },
-    csrfToken: {
-      name: "authjs.csrf-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax" as const,
-        path: "/",
-        secure,
-      },
-    },
-  };
 }
 
 function authConfig(req?: NextRequest): NextAuthConfig {
-  const secure = requestIsHttps(req);
   return {
     providers,
     session: { strategy: "jwt" },
@@ -155,11 +109,7 @@ function authConfig(req?: NextRequest): NextAuthConfig {
       },
     },
     trustHost: true,
-    // Keep cookie names unprefixed; set Secure via options when the request is HTTPS.
-    // useSecureCookies:true would expect __Secure- names and breaks CSRF on Vercel.
-    useSecureCookies: false,
-    cookies: cookieOptions(secure),
-    secret: process.env.AUTH_SECRET,
+    secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   };
 }
 
