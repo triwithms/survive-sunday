@@ -16,7 +16,9 @@ import {
   type RosterPlayer,
   type TeamNewsItem,
 } from "@/lib/team-research";
+import { getTeamInjuries, type LiveInjury } from "@/lib/live-injuries";
 import { formatWinPct } from "@/lib/standings-format";
+import { InjuryChip } from "@/components/InjuryChip";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -124,6 +126,76 @@ function formatNewsDate(iso: string | null | undefined): string | null {
   }
 }
 
+function formatInjuryWhen(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const t = Date.parse(iso);
+  if (!Number.isFinite(t)) return null;
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short",
+    }).format(new Date(t));
+  } catch {
+    return iso.slice(0, 10);
+  }
+}
+
+function statusChipClass(status: string): string {
+  const s = status.toLowerCase();
+  if (s === "out" || s === "suspension" || s === "suspended") {
+    return "chip-eliminated";
+  }
+  if (s === "doubtful") return "chip-live";
+  return "chip-one-loss";
+}
+
+function InjuryList({ rows }: { rows: LiveInjury[] }) {
+  return (
+    <ul className="divide-y divide-stadium-border text-sm">
+      {rows.map((row) => {
+        const when = formatInjuryWhen(row.updated);
+        const name = row.playerUrl ? (
+          <a
+            href={row.playerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline decoration-gold-400/40 underline-offset-2 hover:decoration-gold-400"
+          >
+            {row.player}
+          </a>
+        ) : (
+          <span className="font-medium">{row.player}</span>
+        );
+        return (
+          <li key={`${row.player}-${row.status}-${row.injury}`} className="py-2.5 space-y-1">
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+              <span className="font-mono text-xs text-gold-400 w-8 shrink-0">
+                {row.position}
+              </span>
+              <span className="min-w-0 flex-1 break-words">{name}</span>
+              <span className={`chip text-xs shrink-0 ${statusChipClass(row.status)}`}>
+                {row.status}
+              </span>
+            </div>
+            <p className="text-xs text-[var(--text-muted)] pl-10">
+              {row.injury}
+              {when ? ` · ${when}` : ""}
+            </p>
+            {row.comment && (
+              <p className="text-xs text-[var(--text-muted)] pl-10 leading-relaxed">
+                {row.comment}
+              </p>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 function NewsList({ items }: { items: TeamNewsItem[] }) {
   return (
     <ul className="space-y-3 text-base">
@@ -173,6 +245,7 @@ export default async function TeamResearchPage({
   const profile = getTeamProfile(abbr);
   const roster = getTeamRoster(abbr);
   const news = await getTeamNews(abbr);
+  const injuries = await getTeamInjuries(abbr);
   const standing = {
     wins: team.wins,
     losses: team.losses,
@@ -331,6 +404,80 @@ export default async function TeamResearchPage({
                 <PlayerRows players={roster.special_teams} />
               )}
             </div>
+          </>
+        )}
+      </section>
+
+      <section className="card-glass p-4 space-y-3">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h2 className="text-xl font-semibold text-gold-400">Injuries</h2>
+          {!injuries.failed && injuries.injuries.length > 0 && (
+            <span className="chip chip-gold text-xs">ESPN report</span>
+          )}
+          <InjuryChip counts={injuries.counts} />
+        </div>
+        <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          Near-live ESPN public injury report (Out, Doubtful, Questionable, IR,
+          suspension). Not the official NFL club report and not medical advice.
+          Cached a few minutes; pull to refresh.
+        </p>
+        {injuries.failed ? (
+          <div className="space-y-2 text-base text-[var(--text-muted)]">
+            <p>
+              Couldn&apos;t load the ESPN injury feed right now. Check the
+              official lists:
+            </p>
+            <ul className="flex flex-wrap gap-3 text-base">
+              <li>
+                <a
+                  href={injuries.espnInjuriesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold-400 underline underline-offset-2"
+                >
+                  ESPN injuries · {team.abbr}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={injuries.nflInjuriesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold-400 underline underline-offset-2"
+                >
+                  NFL.com injuries
+                </a>
+              </li>
+            </ul>
+          </div>
+        ) : injuries.injuries.length === 0 ? (
+          <p className="text-base text-[var(--text-muted)]">
+            No Out / Doubtful / Questionable / IR / suspension names on the
+            current ESPN report for this team.
+          </p>
+        ) : (
+          <>
+            <InjuryList rows={injuries.injuries} />
+            <p className="text-sm text-[var(--text-muted)] pt-1">
+              Full lists:{" "}
+              <a
+                href={injuries.espnInjuriesUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-gold-400"
+              >
+                ESPN
+              </a>
+              {" · "}
+              <a
+                href={injuries.nflInjuriesUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-gold-400"
+              >
+                NFL.com
+              </a>
+            </p>
           </>
         )}
       </section>

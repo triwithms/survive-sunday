@@ -2,17 +2,64 @@ import { NextRequest } from "next/server";
 
 /** Host / redirect helpers so Auth.js follows the public Host (tunnel), not localhost. */
 
-export function isLoopbackHost(host: string): boolean {
+export function hostnameOf(host: string): string {
   const raw = host.toLowerCase().trim();
-  const hostname = raw.startsWith("[")
-    ? raw.slice(1, raw.indexOf("]"))
-    : raw.split(":")[0];
+  if (raw.startsWith("[")) {
+    const end = raw.indexOf("]");
+    return end >= 0 ? raw.slice(1, end) : raw;
+  }
+  return raw.split(":")[0];
+}
+
+export function isLoopbackHost(host: string): boolean {
+  const hostname = hostnameOf(host);
   return (
     hostname === "localhost" ||
     hostname === "127.0.0.1" ||
     hostname === "::1" ||
     hostname === "0.0.0.0"
   );
+}
+
+/** IANA reserved example.* names and www. variants — common AUTH_URL placeholders. */
+const PLACEHOLDER_AUTH_HOSTS = new Set([
+  "example.com",
+  "example.net",
+  "example.org",
+  "example.edu",
+]);
+
+export function isPlaceholderAuthHost(host: string): boolean {
+  const hostname = hostnameOf(host);
+  const bare = hostname.startsWith("www.") ? hostname.slice(4) : hostname;
+  return PLACEHOLDER_AUTH_HOSTS.has(bare);
+}
+
+/** Loopback, IANA example.* placeholders, or an unparseable AUTH_URL. */
+export function isIgnoredAuthHost(host: string): boolean {
+  return isLoopbackHost(host) || isPlaceholderAuthHost(host);
+}
+
+export function isIgnoredAuthUrl(raw: string): boolean {
+  try {
+    return isIgnoredAuthHost(new URL(raw).host);
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * AUTH_URL / NEXTAUTH_URL pin Auth.js origin (reqWithEnvURL). Drop values
+ * that cannot be a real public site so Host + AUTH_TRUST_HOST win.
+ */
+export function stripIgnoredAuthUrlEnv(
+  env: Record<string, string | undefined> = process.env,
+): void {
+  for (const key of ["AUTH_URL", "NEXTAUTH_URL"] as const) {
+    const raw = env[key];
+    if (!raw) continue;
+    if (isIgnoredAuthUrl(raw)) delete env[key];
+  }
 }
 
 /** Public origin from Host / x-forwarded-* when the request is not loopback. */
@@ -44,7 +91,7 @@ export function rewriteUrlToOrigin(url: string, origin: string): string {
   if (url.startsWith("/")) return `${origin}${url}`;
   try {
     const parsed = new URL(url);
-    if (isLoopbackHost(parsed.host)) {
+    if (isIgnoredAuthHost(parsed.host)) {
       return `${origin}${parsed.pathname}${parsed.search}${parsed.hash}`;
     }
     return url;
@@ -78,7 +125,7 @@ function rewriteCallbackUrlCookie(cookie: string, origin: string): string {
   return `${name}=${encodeURIComponent(rewritten)}${attrs}`;
 }
 
-/** Point Location + callback-url cookie at the request Host when Auth.js used localhost. */
+/** Point Location + callback-url cookie at the request Host when Auth.js used localhost / example.com. */
 export function rewriteAuthResponse(req: Request, res: Response): Response {
   const origin = requestPublicOrigin(req);
   if (!origin) return res;

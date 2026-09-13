@@ -5,7 +5,11 @@ import type { NextAuthConfig } from "next-auth";
 import type { NextRequest } from "next/server";
 import type { Provider } from "next-auth/providers";
 import { userFromCredentials } from "./credentials-user";
-import { isLoopbackHost, requestPublicOrigin } from "./request-host";
+import {
+  isIgnoredAuthHost,
+  requestPublicOrigin,
+  stripIgnoredAuthUrlEnv,
+} from "./request-host";
 
 const providers: Provider[] = [
   Credentials({
@@ -35,25 +39,14 @@ if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
 
 /**
  * Auth.js pins AUTH_URL as the request origin (reqWithEnvURL + createActionURL).
- * A leftover localhost AUTH_URL on Vercel would rewrite every auth request
- * to http://localhost:3000. Only strip loopback URLs; keep a real public
- * AUTH_URL (production / tunnel) so Host + cookies stay on that origin.
+ * Leftover localhost or placeholder AUTH_URL (https://example.com) on Vercel
+ * rewrites every auth request to the wrong origin and 500s CSRF/session.
+ * Strip those; keep a real public AUTH_URL (production / tunnel).
  *
  * Do not customize cookie names. Auth.js defaults pick `authjs.*` on HTTP
- * and `__Secure-` / `__Host-` on HTTPS. Overriding names while also toggling
- * useSecureCookies caused CSRF/session handler 500s on Vercel HTTPS.
+ * and `__Secure-` / `__Host-` on HTTPS.
  */
-for (const key of ["AUTH_URL", "NEXTAUTH_URL"] as const) {
-  const raw = process.env[key];
-  if (!raw) continue;
-  try {
-    if (isLoopbackHost(new URL(raw).host)) {
-      delete process.env[key];
-    }
-  } catch {
-    delete process.env[key];
-  }
-}
+stripIgnoredAuthUrlEnv();
 
 function authConfig(req?: NextRequest): NextAuthConfig {
   return {
@@ -91,7 +84,7 @@ function authConfig(req?: NextRequest): NextAuthConfig {
         if (url.startsWith("/")) return `${origin}${url}`;
         try {
           const parsed = new URL(url);
-          if (publicOrigin && isLoopbackHost(parsed.host)) {
+          if (publicOrigin && isIgnoredAuthHost(parsed.host)) {
             return `${publicOrigin}${parsed.pathname}${parsed.search}${parsed.hash}`;
           }
           if (parsed.origin === origin || parsed.origin === baseUrl) {

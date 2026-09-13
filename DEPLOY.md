@@ -23,32 +23,44 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 | `AUTH_SECRET` | Long random string (e.g. `openssl rand -base64 32`). **Required** — without it Auth.js 500s every `/api/auth/*` route and demo login cannot create a session. |
 | `AUTH_TRUST_HOST` | `true` |
 | `NEXT_PUBLIC_APP_URL` | Your production URL (e.g. `https://survive-sunday.vercel.app`) |
-| `AUTH_URL` | Same production URL |
+| `AUTH_URL` | Same production URL, or **omit**. `https://example.com` (and other IANA example.* placeholders) is ignored so request Host wins. |
 
 `DATABASE_URL` should already be set by the Neon integration — do not paste secrets into the repo.
 
-## 3b. Forgot-password codes (email + SMS)
+## 3b. Forgot password today — two keys (email)
 
-Friends stay signed in on their phone. We do **not** ask for a code at every sign-in.
+Friends stay signed in. We do **not** ask for a code at every sign-in.
 
-If someone forgets their password: Sign in → **Forgot password** → we send a **6-digit code** (email, or a text if they saved a cell number) → they pick a new password and are signed back in.
+If they forget the password: Sign in → **Forgot password?** → 6-digit code by email → new password → back in the pool.
 
-Demo seats (`@survivesunday.demo`) always use password **demo1234**. No reset.
+Demo seats (`@survivesunday.demo`) always use **demo1234**. No reset.
 
-Set these in Vercel when you want real emails/texts. Both providers have a free/trial tier.
+**Minimum for friends today** (Vercel → nfl-pool → survive-sunday → Settings → Environment Variables → Production):
 
-| Variable | Value |
+| Variable | What to paste |
 |---|---|
-| `RESEND_API_KEY` | From [resend.com](https://resend.com) (free tier). Needed to email reset codes in production. |
-| `RESEND_FROM_EMAIL` | A From address Resend has verified, e.g. `Survive Sunday <noreply@yourdomain.com>`. |
-| `TWILIO_ACCOUNT_SID` | From [twilio.com](https://www.twilio.com) (trial is fine). Optional. |
+| `RESEND_API_KEY` | API key from [resend.com](https://resend.com) (free). |
+| `RESEND_FROM_EMAIL` | A From address Resend has **verified**, e.g. `Survive Sunday <noreply@yourdomain.com>`. |
+
+Click-by-click:
+
+1. Sign up at [resend.com](https://resend.com) (free).
+2. **Domains → Add domain** for a domain you own. Add the DNS records Resend shows. Wait until it says **Verified**.
+3. **API Keys → Create**. Copy the key once.
+4. In Vercel, add the two names above. Environment: **Production** (add Preview too if you want to test the preview URL first).
+5. Merge this pull request. If you added the keys after a deploy already ran, open Vercel → Deployments → the latest Production row → ⋮ → **Redeploy**.
+
+Without those two keys, Forgot password says we couldn’t send a code.
+
+Optional texts (only if a friend saved a cell). Skip for today if email is enough:
+
+| Variable | What to paste |
+|---|---|
+| `TWILIO_ACCOUNT_SID` | From [twilio.com](https://www.twilio.com) (trial is fine) |
 | `TWILIO_AUTH_TOKEN` | Twilio auth token |
-| `TWILIO_FROM_NUMBER` | Your Twilio number in E.164, e.g. `+14165551234` |
+| `TWILIO_FROM_NUMBER` | Your Twilio number, e.g. `+14165551234` |
 
-Without those keys:
-
-- **Production:** Forgot password will say we couldn’t send a code.
-- **Local `next dev`:** the code is printed in the terminal and shown on the page so you can test without a provider.
+Local `next dev` without keys: the code is printed in the terminal and shown on the page.
 
 ## 4. Build / first schema + seed
 
@@ -75,3 +87,16 @@ npm run seed
 
 - Local SQLite (`file:./dev.db`) is **not** used for the deploy path. Locally, point `DATABASE_URL` at Neon free or a local Postgres instance (see `.env.example`).
 - Standard Prisma `provider = "postgresql"` + Neon pooled `DATABASE_URL` is enough — no `@prisma/adapter-neon` required for this Hobby setup.
+
+## Live scores & injuries (no paid keys)
+
+Hobby path uses **ESPN public JSON** (undocumented site API). Nothing to set in Vercel for this:
+
+| Feed | Source | Auth | Notes |
+|---|---|---|---|
+| Live / final scores | `site.web.api.espn.com/.../nfl/scoreboard` (fallback `site.api.espn.com`) | none | Sync + ~45s poll in a live window. Finals auto-grade. |
+| Injury report | `.../nfl/injuries` | none | Cached ~12 min. Labeled ESPN report, not official NFL. |
+
+Optional later (not wired): `API_SPORTS_KEY` for API-Sports (free ~100 req/day) if ESPN blocks Vercel. Do **not** commit keys. SportsDataIO trial data is scrambled — do not show as real.
+
+ToS: private friends pool only; we do not redistribute a commercial score feed. ESPN/NFL marks stay theirs. Endpoints can break without notice.

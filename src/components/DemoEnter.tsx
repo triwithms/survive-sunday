@@ -17,8 +17,8 @@ const DEMOS = [
   { email: "deep-and-delicious@survivesunday.demo", label: "Deep and Delicious — Kent Richmond" },
   { email: "gdogss@survivesunday.demo", label: "Gdogss — Tony Gyuro" },
   { email: "jimmyc@survivesunday.demo", label: "JimmyC — Jim Coulson" },
-  { email: "long-snapper@survivesunday.demo", label: "Long Snapper — J S" },
-  { email: "steve@survivesunday.demo", label: "Steve — Steve" },
+  { email: "long-snapper@survivesunday.demo", label: "Long Snapper — John Stilo" },
+  { email: "steve@survivesunday.demo", label: "Steve — Steve Venerus" },
 ];
 
 function friendlyError(code: string): string {
