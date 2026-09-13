@@ -1,5 +1,5 @@
 /**
- * Vercel build helper: sync Prisma schema and seed the demo pool if empty.
+ * Vercel build helper: sync Prisma schema, patch live roster names, seed if empty.
  *
  *   tsx scripts/ensure-production-db.ts
  *
@@ -10,6 +10,9 @@
 import { spawnSync } from "child_process";
 import { PrismaClient } from "@prisma/client";
 import { prismaDatasourceUrl } from "../src/lib/prisma-url";
+import { applyCanonicalRosterNames } from "../src/lib/roster-name-patch";
+import { ensureLiveWeekIsolation } from "../src/lib/week-isolation";
+import { isLiveMode } from "../src/lib/pool-mode";
 
 function run(cmd: string, args: string[], env: NodeJS.ProcessEnv) {
   const result = spawnSync(cmd, args, { stdio: "inherit", env });
@@ -39,36 +42,36 @@ async function main() {
     if (pool) {
       const users = await prisma.user.count();
       try {
-        const patches = [
-          {
-            nickname: "Long Snapper",
-            from: "J S",
-            to: "John Stilo",
-          },
-          {
-            nickname: "Steve",
-            from: "Steve",
-            to: "Steve Venerus",
-          },
-        ];
-        for (const patch of patches) {
-          const result = await prisma.membership.updateMany({
-            where: {
-              poolId: pool.id,
-              nickname: patch.nickname,
-              realName: patch.from,
-            },
-            data: { realName: patch.to },
-          });
-          if (result.count > 0) {
+        const result = await applyCanonicalRosterNames(prisma, pool.id);
+        if (result.updated.length === 0) {
+          console.log("[ensure-db] roster real names already canonical");
+        } else {
+          for (const row of result.updated) {
             console.log(
-              `[ensure-db] updated ${patch.nickname} realName ${patch.from} → ${patch.to} (${result.count})`
+              `[ensure-db] updated ${row.nickname} realName ${row.from ?? "(empty)"} → ${row.to}`
             );
           }
         }
       } catch (error) {
         console.warn(
           "[ensure-db] roster realName patch skipped (build continues)",
+          error
+        );
+      }
+      try {
+        if (isLiveMode(pool.mode)) {
+          const isolation = await ensureLiveWeekIsolation(prisma, pool);
+          if (isolation.changed) {
+            console.log(
+              `[ensure-db] live pool snapped to Week ${isolation.currentWeek}, cleared ${isolation.clearedPicks} Week 2 picks`
+            );
+          } else {
+            console.log("[ensure-db] live pool already on Week 1");
+          }
+        }
+      } catch (error) {
+        console.warn(
+          "[ensure-db] live week isolation skipped (build continues)",
           error
         );
       }

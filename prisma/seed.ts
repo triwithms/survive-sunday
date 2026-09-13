@@ -228,6 +228,7 @@ async function main() {
       season: demo.season || "2026/27",
       inviteCode: "SUNDAY26",
       currentWeek: 2,
+      mode: "demo",
     },
   });
 

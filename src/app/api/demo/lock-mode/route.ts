@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireUser, getMembershipForUser } from "@/lib/session";
-import { INVITE_CODE } from "@/lib/constants";
+import { isDemoMode } from "@/lib/pool-mode";
 import {
   ensureWeekLockedEffects,
   isWeekLocked,
@@ -13,7 +13,7 @@ import {
 
 /**
  * Demo/testing toggle: After deadline | Before deadline for the current week.
- * API mode keys stay after_lock / before_lock. Allowed for any SUNDAY26 member.
+ * API mode keys stay after_lock / before_lock. Commissioner-only in Demo mode.
  *
  * after_lock  — set lockOverrideAt to past, apply lock effects, then replace
  *               MISS with source=demo Week picks (testing only — not real picks)
@@ -152,9 +152,9 @@ export async function POST(req: Request) {
   if (!membership) {
     return NextResponse.json({ error: "No pool membership" }, { status: 403 });
   }
-  if (membership.pool.inviteCode !== INVITE_CODE) {
+  if (!isDemoMode(membership.pool.mode) || membership.role !== "admin") {
     return NextResponse.json(
-      { error: "Demo lock mode is only available on the demo pool" },
+      { error: "Testing lock toggle is only available to the commissioner in Demo mode" },
       { status: 403 }
     );
   }
@@ -246,7 +246,7 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const membership = await getMembershipForUser(user.id);
-  if (!membership || membership.pool.inviteCode !== INVITE_CODE) {
+  if (!membership || !isDemoMode(membership.pool.mode) || membership.role !== "admin") {
     return NextResponse.json({ demo: false });
   }
 

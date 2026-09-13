@@ -64,6 +64,8 @@ model Pool {
   season      String
   inviteCode  String       @unique
   currentWeek Int          @default(1)
+  /// demo = practise picker / demo copy. live = real private pool (no participant "demo" UX).
+  mode        String       @default("demo") // demo | live
   createdAt   DateTime     @default(now())
   memberships Membership[]
   weeks       Week[]

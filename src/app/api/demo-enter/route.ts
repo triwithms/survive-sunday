@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { ensureDemoAccount } from "@/lib/demo-account";
 import { signInDemoCredentials } from "@/lib/demo-session";
+import { isLiveMode } from "@/lib/pool-mode";
+import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
 
 /**
  * Form + JSON demo login. Auth.js writes the session via `cookies().set()`.
@@ -31,6 +33,17 @@ export async function POST(req: Request) {
     }
   } catch {
     /* defaults */
+  }
+
+  const poolMode = await getPrimaryPoolMode();
+  if (isLiveMode(poolMode)) {
+    if (wantsJson) {
+      return NextResponse.json(
+        { ok: false, error: "UseSignIn" },
+        { status: 403 }
+      );
+    }
+    redirect("/login");
   }
 
   try {

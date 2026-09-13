@@ -2,6 +2,8 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
 import { HelpContent } from "@/components/HelpContent";
+import { isDemoMode } from "@/lib/pool-mode";
+import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { BottomNav } from "@/components/BottomNav";
 
@@ -13,6 +15,9 @@ export default async function HelpPage() {
   const membership = session?.user?.id
     ? await getMembershipForUser(session.user.id)
     : null;
+  const demoMode = membership
+    ? isDemoMode(membership.pool.mode)
+    : isDemoMode(await getPrimaryPoolMode());
 
   return (
     <div
@@ -30,7 +35,7 @@ export default async function HelpPage() {
         <p className="text-sm text-[var(--text-muted)] mb-4">
           Canadian English · 2026/27 · Wave 1 live / Wave 2 coming soon
         </p>
-        <HelpContent />
+        <HelpContent showDemoCopy={demoMode} />
       </main>
       <FooterDisclaimer />
       {membership && <BottomNav isAdmin={membership.role === "admin"} />}
