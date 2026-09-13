@@ -45,7 +45,7 @@ export default async function HelpPage() {
               Sign out is also under <strong>Account</strong> in the header
               (top right) and on Admin.
             </p>
-            <SignOutButton next="/login" />
+            <SignOutButton next="/login" className="btn-danger w-full" />
           </div>
         )}
         <HelpContent showDemoCopy={demoMode} />

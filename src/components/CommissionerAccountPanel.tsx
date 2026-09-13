@@ -73,7 +73,7 @@ export function CommissionerAccountPanel({
             and the password you just chose. After that you can switch to Real
             mode and reset the pool.
           </p>
-          <SignOutButton next="/login" className="btn-primary w-full">
+          <SignOutButton next="/login" className="btn-danger w-full">
             Sign out
           </SignOutButton>
         </div>
@@ -127,7 +127,7 @@ export function CommissionerAccountPanel({
       )}
 
       {!doneEmail && (
-        <SignOutButton next="/login" className="btn-secondary w-full">
+        <SignOutButton next="/login" className="btn-danger w-full">
           Sign out
         </SignOutButton>
       )}

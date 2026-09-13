@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { ModalDialog } from "@/components/ModalDialog";
 import { PhoneEditor } from "@/components/PhoneEditor";
 import { SignOutButton } from "@/components/SignOutButton";
@@ -100,11 +101,13 @@ export function AccountMenu({
         onClick={() => setMenuOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={menuOpen}
+        aria-label="Account menu — nickname, cell, and Sign out"
         data-testid="account-menu"
         data-user-id={userId}
         data-user-role={role}
       >
         Account
+        <ChevronDown className="ml-1 h-4 w-4" aria-hidden />
       </button>
 
       {menuOpen && (
@@ -127,6 +130,7 @@ export function AccountMenu({
               {statusLabel}
             </p>
           </div>
+          <SignOutButton next="/login" className="btn-danger w-full" />
           {role === "admin" && (
             <Link
               href="/admin#pool-mode"
@@ -159,7 +163,6 @@ export function AccountMenu({
           >
             {phoneE164 ? "Edit cell number" : "Add cell number"}
           </button>
-          <SignOutButton next="/login" className="btn-primary w-full" />
           <button
             type="button"
             className={rowBtn}

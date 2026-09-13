@@ -7,6 +7,7 @@ import { AdminPanel } from "@/components/AdminPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 import { PoolModePanel } from "@/components/PoolModePanel";
 import { CommissionerAccountPanel } from "@/components/CommissionerAccountPanel";
+import { SignOutButton } from "@/components/SignOutButton";
 import {
   effectiveCurrentWeek,
   isDemoEmail,
@@ -76,6 +77,13 @@ export default async function AdminPage() {
           Demo only.
         </p>
       </div>
+
+      <section className="card-glass p-4 space-y-2">
+        <p className="text-sm text-[var(--text-primary)] font-medium">
+          Signed in as commissioner
+        </p>
+        <SignOutButton next="/login" className="btn-danger w-full" />
+      </section>
 
       <PoolModePanel
         initialMode={normalizePoolMode(me.pool.mode)}
