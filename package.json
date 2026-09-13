@@ -24,6 +24,7 @@
     "verify:roster-names": "tsx scripts/verify-roster-name-patch.ts",
     "verify:week-isolation": "tsx scripts/verify-week-isolation.ts",
     "verify:claim-seat": "tsx scripts/verify-claim-seat.ts",
+    "verify:roles": "tsx scripts/verify-roles.ts",
     "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
     "verify:login-error": "tsx scripts/verify-login-error.ts",
     "verify:auth-rewrite": "tsx scripts/verify-auth-rewrite.ts",

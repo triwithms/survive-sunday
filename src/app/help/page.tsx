@@ -1,12 +1,15 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { auth } from "@/lib/auth";
 import { getUserPoolContext } from "@/lib/session";
+import { ROLE_VIEW_COOKIE, resolveRoleView } from "@/lib/roles";
 import { HelpContent } from "@/components/HelpContent";
 import { isDemoMode } from "@/lib/pool-mode";
 import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { BottomNav } from "@/components/BottomNav";
 import { SignOutButton } from "@/components/SignOutButton";
+import { RoleSwitcher } from "@/components/RoleSwitcher";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -17,6 +20,12 @@ export default async function HelpPage() {
     ? await getUserPoolContext(session.user.id)
     : null;
   const membership = ctx?.membership ?? null;
+  const cookieStore = await cookies();
+  const roleView = resolveRoleView({
+    isPlayer: Boolean(ctx?.isPlayer),
+    isAdmin: Boolean(ctx?.isAdmin),
+    requested: cookieStore.get(ROLE_VIEW_COOKIE)?.value,
+  });
   const demoMode = membership
     ? isDemoMode(membership.pool.mode)
     : isDemoMode(await getPrimaryPoolMode());
@@ -37,6 +46,14 @@ export default async function HelpPage() {
         <p className="text-sm text-[var(--text-muted)] mb-4">
           Canadian English · 2026/27 · Wave 1 live / Wave 2 coming soon
         </p>
+        {ctx?.isPlayer && ctx.isAdmin && membership && (
+          <div className="mb-4">
+            <RoleSwitcher
+              playerName={membership.nickname}
+              activeView={roleView}
+            />
+          </div>
+        )}
         {membership && (
           <div className="card-glass p-4 mb-6 space-y-2">
             <p className="text-sm text-[var(--text-primary)] font-medium">
@@ -52,7 +69,7 @@ export default async function HelpPage() {
         <HelpContent showDemoCopy={demoMode} />
       </main>
       <FooterDisclaimer />
-      {membership && <BottomNav isAdmin={Boolean(ctx?.isAdmin)} />}
+      {membership && <BottomNav isAdmin={roleView === "admin"} />}
     </div>
   );
 }

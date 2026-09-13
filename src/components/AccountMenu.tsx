@@ -18,6 +18,7 @@ type Props = {
   statusLabel: string;
   userId: string;
   role: string;
+  showAdmin?: boolean;
   phoneE164: string | null;
   phoneSoftPrompt: boolean;
 };
@@ -27,6 +28,7 @@ export function AccountMenu({
   statusLabel,
   userId,
   role,
+  showAdmin,
   phoneE164,
   phoneSoftPrompt,
 }: Props) {
@@ -131,7 +133,7 @@ export function AccountMenu({
             </p>
           </div>
           <SignOutButton next="/login" className="btn-danger w-full" />
-          {role === "admin" && (
+          {(showAdmin ?? role === "admin") && (
             <Link
               href="/admin#pool-mode"
               prefetch={false}

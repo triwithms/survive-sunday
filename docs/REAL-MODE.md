@@ -56,8 +56,10 @@ The list is the **live Admin roster** (current nicknames + real names), not a ha
 3. That login attaches to the existing membership. Week 1 picks stay with that person — you do not get a second “Gams”.
 4. If that seat already has a real (non-practice) email: **already claimed — Sign in instead** (or ask the commissioner).
 5. Practice `@survivesunday.demo` seats **are** claimable by the real person.
-6. **Same email for commissioner and player is OK.** If you already saved `robertgama@gmail.com` as the commissioner login, pick **Gams** on Join and use that same email and the password you already sign in with. One login then sees Gams on the board **and** Admin. Do not invent a second email.
-7. Nicknames still change on **Admin → Roster** or **Change nickname**. The list always shows the current names.
+6. **Same email for commissioner and player is OK.** If you already saved `robertgama@gmail.com` as the commissioner login, pick **Gams** on Join and use that same email and the password you already sign in with. One login then holds both roles: **Player** (Gams on the board) and **Administrator**. Do not invent a second email.
+7. When you have both roles, a gold switch appears: **Playing as Gams** | **Admin tools**. Player view hides Admin. Admin view shows Admin. Friends who are only players never see Admin tools.
+8. On **Admin**, you can **Make administrator** for someone already in the pool (confirm first). They stay on the board. You can remove Admin later if at least one administrator remains.
+9. Nicknames still change on **Admin → Roster** or **Change nickname**. The list always shows the current names.
 
 ---
 
@@ -130,6 +132,7 @@ Example file: `/examples/week1-picks-import.csv`
 4. When you want a clean Week 1 board, **Reset pool**.
 5. **Import week 1 picks**.
 6. Send friends to **Join the pool** with invite code **`SUNDAY26`**. They pick their name from the live roster (nickname + real name), then set their own email and password. Already-claimed seats say so in plain English.
+7. If you also play (Gams), claim that seat with your commissioner email, then use **Playing as Gams** / **Admin tools** to switch. To give a friend Admin tools, open Admin → **Administrators** → **Make administrator**.
 
 ---
 

@@ -94,6 +94,13 @@ async function ensureDualMembershipIndex(prisma: PrismaClient) {
   `);
 }
 
+/** Player seats can also hold Administrator tools (promote) without leaving the board. */
+async function ensureMembershipIsAdminColumn(prisma: PrismaClient) {
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "isAdmin" BOOLEAN NOT NULL DEFAULT false
+  `);
+}
+
 async function ensurePoolModeColumn(prisma: PrismaClient) {
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "Pool" ADD COLUMN IF NOT EXISTS "mode" TEXT NOT NULL DEFAULT 'demo'
@@ -187,6 +194,7 @@ async function main() {
     // leftover OtpChallenge rows. Add the column without touching data.
     await ensurePoolModeColumn(prisma);
     await ensureDualMembershipIndex(prisma);
+    await ensureMembershipIsAdminColumn(prisma);
   });
 
   const pushed = pushSchema(env);
@@ -203,6 +211,7 @@ async function main() {
     await withPrisma(url, async (prisma) => {
       await ensurePoolModeColumn(prisma);
       await ensureDualMembershipIndex(prisma);
+      await ensureMembershipIsAdminColumn(prisma);
       await ensureOtpChallengeTable(prisma);
       await assertRequiredSchema(prisma);
     });

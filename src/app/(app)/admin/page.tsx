@@ -4,10 +4,16 @@ import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AdminPanel } from "@/components/AdminPanel";
+import { AdminRolesPanel } from "@/components/AdminRolesPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 import { PoolModePanel } from "@/components/PoolModePanel";
 import { CommissionerAccountPanel } from "@/components/CommissionerAccountPanel";
 import { SignOutButton } from "@/components/SignOutButton";
+import {
+  canDemoteAdmin,
+  isAdministrator,
+  isPlayerSeat,
+} from "@/lib/roles";
 import {
   effectiveCurrentWeek,
   isDemoEmail,
@@ -69,9 +75,9 @@ export default async function AdminPage() {
           Commissioner
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          Light admin — your login, pool mode, reset, roster, lock override,
-          import picks, simulate scores, remove players. Pick and name edits
-          are always audited.
+          Light admin — your login, pool mode, reset, roster, administrators,
+          lock override, import picks, simulate scores, remove players. Pick
+          and name edits are always audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
           Mode switch is the first card below. Real mode is Week 1. Week 2 is
@@ -94,6 +100,32 @@ export default async function AdminPage() {
       <CommissionerAccountPanel
         currentEmail={session.user.email ?? me.user.email ?? null}
         isPracticeLogin={isDemoEmail(session.user.email ?? me.user.email)}
+      />
+
+      <AdminRolesPanel
+        members={members.map((m) => ({
+          id: m.id,
+          nickname: m.nickname,
+          realName: m.realName,
+          role: m.role,
+          isAdmin: m.isAdmin,
+          isYou: m.userId === session.user.id,
+        }))}
+        canDemoteMembershipIds={members
+          .filter(
+            (m) =>
+              isPlayerSeat(m) &&
+              isAdministrator(m) &&
+              canDemoteAdmin(
+                members.map((row) => ({
+                  role: row.role,
+                  isAdmin: row.isAdmin,
+                  userId: row.userId,
+                })),
+                m.userId
+              )
+          )
+          .map((m) => m.id)}
       />
 
       <Link

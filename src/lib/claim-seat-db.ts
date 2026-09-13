@@ -85,13 +85,13 @@ async function ownerInfoForEmail(
   if (!user) return null;
   const seats = await tx.membership.findMany({
     where: { poolId, userId: user.id },
-    select: { role: true },
+    select: { role: true, isAdmin: true },
   });
   return {
     id: user.id,
     passwordHash: user.passwordHash,
     hasPlayerSeat: seats.some((s) => s.role !== "admin"),
-    hasAdminSeat: seats.some((s) => s.role === "admin"),
+    hasAdminSeat: seats.some((s) => s.role === "admin" || s.isAdmin),
   };
 }
 
@@ -140,7 +140,10 @@ async function claimPracticeSeat(args: {
         const oldUserId = seat!.userId;
         await tx.membership.update({
           where: { id: seat!.id },
-          data: { userId: decision.userId },
+          data: {
+            userId: decision.userId,
+            isAdmin: Boolean(emailOwner?.hasAdminSeat),
+          },
         });
         if (oldUserId !== decision.userId) {
           const leftover = await tx.membership.count({
@@ -240,12 +243,12 @@ async function joinAsNewPlayer(args: {
   if (user) {
     const existing = await prisma.membership.findMany({
       where: { poolId: args.poolId, userId: user.id },
-      select: { role: true },
+      select: { role: true, isAdmin: true },
     });
     if (existing.some((s) => s.role !== "admin")) {
       return { ok: false, status: 409, error: CLAIM_ERRORS.alreadyInPool };
     }
-    if (existing.some((s) => s.role === "admin")) {
+    if (existing.some((s) => s.role === "admin" || s.isAdmin)) {
       return { ok: false, status: 409, error: CLAIM_ERRORS.alreadyCommissioner };
     }
   } else {

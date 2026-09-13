@@ -100,6 +100,9 @@ model Membership {
   nickname          String
   realName          String?
   role              String           @default("member") // admin | member
+  /// Administrator tools, without leaving the player board. role=admin is
+  /// still the spectator commissioner seat (not on the board).
+  isAdmin           Boolean          @default(false)
   status            String           @default("undefeated") // undefeated | one_loss | eliminated
   mulliganRemaining Boolean          @default(true)
   losses            Int              @default(0)

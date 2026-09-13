@@ -2,6 +2,7 @@ import { auth } from "./auth";
 import { prisma } from "./db";
 import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
 import { ensureLiveWeekIsolation } from "./week-isolation";
+import { isAdministrator, isPlayerSeat } from "./roles";
 
 const membershipInclude = {
   pool: true,
@@ -13,13 +14,17 @@ export function preferPlayerMembership<T extends { role: string }>(
   memberships: T[]
 ): T | null {
   if (!memberships.length) return null;
-  return memberships.find((m) => m.role !== "admin") ?? memberships[0] ?? null;
+  return memberships.find((m) => isPlayerSeat(m)) ?? memberships[0] ?? null;
 }
 
-export function adminMembershipOf<T extends { role: string }>(
+export function adminMembershipOf<T extends { role: string; isAdmin?: boolean }>(
   memberships: T[]
 ): T | null {
-  return memberships.find((m) => m.role === "admin") ?? null;
+  return (
+    memberships.find((m) => m.role === "admin") ??
+    memberships.find((m) => isAdministrator(m)) ??
+    null
+  );
 }
 
 export async function requireUser() {
@@ -37,8 +42,8 @@ async function loadMemberships(userId: string) {
 }
 
 /**
- * One login can hold the commissioner spectator seat and a player seat.
- * `membership` is the player seat when both exist (Gams picks / board).
+ * One login can be Player (board / picks) and Administrator (Admin tools).
+ * `membership` is the player seat when both exist (e.g. Gams).
  */
 export async function getUserPoolContext(userId: string) {
   let memberships = await loadMemberships(userId);
@@ -49,10 +54,15 @@ export async function getUserPoolContext(userId: string) {
       memberships = await loadMemberships(userId);
     }
   }
+  const membership = preferPlayerMembership(memberships);
+  const adminMembership = adminMembershipOf(memberships);
+  const isPlayer = Boolean(membership && isPlayerSeat(membership));
+  const isAdmin = memberships.some((m) => isAdministrator(m));
   return {
-    membership: preferPlayerMembership(memberships),
-    adminMembership: adminMembershipOf(memberships),
-    isAdmin: Boolean(adminMembershipOf(memberships)),
+    membership,
+    adminMembership,
+    isAdmin,
+    isPlayer,
     memberships,
   };
 }
@@ -66,6 +76,6 @@ export async function requireAdmin() {
   const user = await requireUser();
   if (!user) return null;
   const ctx = await getUserPoolContext(user.id);
-  if (!ctx.adminMembership) return null;
-  return { user, membership: ctx.adminMembership };
+  if (!ctx.isAdmin || !ctx.membership) return null;
+  return { user, membership: ctx.adminMembership ?? ctx.membership };
 }
