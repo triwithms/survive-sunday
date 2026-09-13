@@ -102,7 +102,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       </section>
       <section id="4-seeing-others-picks">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">4. Seeing others’ picks</h2>
-        <p className="text-[var(--text-muted)] mb-2">**Before lock:** you only see your own pick (or an empty “still deciding” state). Everyone else shows as hidden — think silhouettes and “reveals after kickoff.” The Board still lists participants in a **status ladder**: **undefeated → one loss → eliminated**, then nickname **A–Z** within each group.</p>
+        <p className="text-[var(--text-muted)] mb-2">**Before lock:** you only see your own pick (or an empty “still deciding” state). Everyone else shows as hidden — think silhouettes and “reveals after kickoff.” The Board still lists participants in a **status ladder**: **undefeated → one loss → eliminated**, then most weeks survived, then fewest losses, then nickname **A–Z** within each group.</p>
         <p className="text-[var(--text-muted)] mb-2">**After lock:** all picks for the week are revealed. The Board switches to **Picks by game**:</p>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
           <li>Games ordered by **kickoff** (earliest first)  </li>
@@ -232,7 +232,7 @@ Imported picks are real pool data. They affect:</h3>
           <li className="text-[var(--text-primary)]">**Grading** — wins and losses update status the same way live weeks do.</li>
           <li className="text-[var(--text-primary)]">**Mulligan** — a first wrong (or missed) imported pick still auto-burns the mulligan → **one loss**.</li>
           <li className="text-[var(--text-primary)]">**Team reuse** — imported teams are struck from that player’s list for the rest of the season.</li>
-          <li className="text-[var(--text-primary)]">**Standings** — the board sorts **undefeated → one loss → eliminated**, then nickname A–Z, using the imported history.</li>
+          <li className="text-[var(--text-primary)]">**Standings** — the board sorts **undefeated → one loss → eliminated**, then most weeks survived, then fewest losses, then nickname A–Z, using the imported history.</li>
         </ul>
         <h3 className="font-semibold mt-3 mb-1">How commissioners do it
 1. Open the admin **Import prior picks** flow (CSV upload or on-screen form).
@@ -250,7 +250,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **Pick deadline** | Header countdown to lock — first kickoff of the week; after that picks freeze. |
 | **Lock** | Same moment as the pick deadline: picks freeze and become visible to everyone. |
 | **This week’s games** | The list of matchups you pick from on the Pick screen (not “slate”). |
-| **Board** | Pool board: pre-lock status ladder (undefeated → one loss → eliminated); after lock, picks by kickoff-ordered games then away/home clusters. |
+| **Board** | Pool board: pre-lock status ladder (undefeated → one loss → eliminated, then most weeks survived); after lock, picks by kickoff-ordered games then away/home clusters. |
 | **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock). |
 | **Digest** | **Coming later:** post-lock summary of everyone’s picks. |

@@ -96,7 +96,8 @@ export default async function StandingsPage() {
               : "Current week unavailable"}
           </p>
           <p className="text-sm text-[var(--text-muted)]">
-            Sorted undefeated → one loss → eliminated, then nickname A–Z.
+            Sorted undefeated → one loss → eliminated, then most weeks
+            survived, then fewest losses, then nickname A–Z.
             {!revealAllPicks
               ? " Others' picks stay hidden until the deadline."
               : ""}
