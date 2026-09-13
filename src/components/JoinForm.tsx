@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { INVITE_CODE } from "@/lib/constants";
-import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
+import {
+  afterAuthNavigate,
+  submitCredentialsLogin,
+} from "@/lib/client-auth";
 import type { ClaimableSeat } from "@/lib/claim-seat";
 import { CLAIM_ERRORS } from "@/lib/claim-seat";
 import { normalizeAuthPassword } from "@/lib/auth-credentials";
@@ -32,7 +35,6 @@ export function JoinForm({
   const [newPlayer, setNewPlayer] = useState(seats.length === 0);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     if (signedIn?.email && !email) setEmail(signedIn.email);
@@ -103,15 +105,9 @@ export function JoinForm({
         afterAuthNavigate("/pool");
         return;
       }
-      const login = await signInCredentials(claimEmail, claimPassword || password);
-      if (!login.ok) {
-        setErr(
-          `Account created, but sign-in failed (${login.error || "unknown"}). Use Sign in on this same link.`
-        );
-        router.push("/login");
-        return;
-      }
-      afterAuthNavigate("/pool");
+      // Native /api/login POST so Safari keeps the session cookie (same as Sign in).
+      submitCredentialsLogin(claimEmail, claimPassword || password, "/pool");
+      return;
     } catch (error) {
       const msg = error instanceof Error ? error.message : "network";
       setErr(`Join failed: ${msg}`);
