@@ -64,20 +64,18 @@ export default async function AdminPage() {
           are always audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Going live: save your real commissioner login, switch to{" "}
-          <strong className="text-[var(--text-primary)]">Real mode</strong>,
-          reset if the board still has practice picks, then import Week 1.
+          Mode switch is the first card below. Week 2 can stay until you reset.
         </p>
       </div>
+
+      <PoolModePanel
+        initialMode={normalizePoolMode(me.pool.mode)}
+        isPracticeLogin={isDemoEmail(session.user.email ?? me.user.email)}
+      />
 
       <CommissionerAccountPanel
         currentEmail={session.user.email ?? me.user.email ?? null}
         isPracticeLogin={isDemoEmail(session.user.email ?? me.user.email)}
-      />
-
-      <PoolModePanel
-        initialMode={normalizePoolMode(me.pool.mode)}
-        hasRealCommissioner={!isDemoEmail(session.user.email ?? me.user.email)}
       />
 
       <Link

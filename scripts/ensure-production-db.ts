@@ -1,5 +1,5 @@
 /**
- * Vercel build helper: sync Prisma schema and seed the demo pool if empty.
+ * Vercel build helper: sync Prisma schema, patch live roster names, seed if empty.
  *
  *   tsx scripts/ensure-production-db.ts
  *
@@ -10,6 +10,7 @@
 import { spawnSync } from "child_process";
 import { PrismaClient } from "@prisma/client";
 import { prismaDatasourceUrl } from "../src/lib/prisma-url";
+import { applyCanonicalRosterNames } from "../src/lib/roster-name-patch";
 
 function run(cmd: string, args: string[], env: NodeJS.ProcessEnv) {
   const result = spawnSync(cmd, args, { stdio: "inherit", env });
@@ -39,30 +40,13 @@ async function main() {
     if (pool) {
       const users = await prisma.user.count();
       try {
-        const patches = [
-          {
-            nickname: "Long Snapper",
-            from: "J S",
-            to: "John Stilo",
-          },
-          {
-            nickname: "Steve",
-            from: "Steve",
-            to: "Steve Venerus",
-          },
-        ];
-        for (const patch of patches) {
-          const result = await prisma.membership.updateMany({
-            where: {
-              poolId: pool.id,
-              nickname: patch.nickname,
-              realName: patch.from,
-            },
-            data: { realName: patch.to },
-          });
-          if (result.count > 0) {
+        const result = await applyCanonicalRosterNames(prisma, pool.id);
+        if (result.updated.length === 0) {
+          console.log("[ensure-db] roster real names already canonical");
+        } else {
+          for (const row of result.updated) {
             console.log(
-              `[ensure-db] updated ${patch.nickname} realName ${patch.from} → ${patch.to} (${result.count})`
+              `[ensure-db] updated ${row.nickname} realName ${row.from ?? "(empty)"} → ${row.to}`
             );
           }
         }

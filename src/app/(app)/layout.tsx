@@ -69,7 +69,7 @@ export default async function AppLayout({
           <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0 max-w-[42%]">
             {membership.role === "admin" && (
               <Link
-                href="/admin"
+                href="/admin#pool-mode"
                 prefetch={false}
                 className="text-xs text-gold-400 underline underline-offset-2 shrink-0"
               >

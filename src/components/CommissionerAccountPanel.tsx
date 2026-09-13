@@ -51,16 +51,18 @@ export function CommissionerAccountPanel({
       <div>
         <h2 className="font-semibold">Your commissioner login</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Friends should never use a practice login. Set the email and password
-          you will use after Real mode. Then sign out and sign in with that
-          email.
+          {isPracticeLogin
+            ? "This is still a practice login. Save your real email and password, sign out, then sign in with those. After that, reset can wipe practice seats."
+            : "Commissioner login is ready. After Real mode and reset, sign in on the Sign in page with this email — not a practice address."}
         </p>
       </div>
       <p className="text-sm">
         Current login:{" "}
         <span className="font-mono break-all">{currentEmail || "unknown"}</span>
-        {isPracticeLogin && (
+        {isPracticeLogin ? (
           <span className="chip chip-gold ml-2">Practice — replace this</span>
+        ) : (
+          <span className="chip chip-gold ml-2">Ready</span>
         )}
       </p>
 

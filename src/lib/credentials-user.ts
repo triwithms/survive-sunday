@@ -25,6 +25,11 @@ export async function lookupUserByEmail(email: string): Promise<CredentialRecord
 /**
  * Resolve a credentials login. Must not throw — Auth.js wraps authorize
  * exceptions as CallbackRouteError (HTTP path shows Configuration).
+ *
+ * In Real (live) mode:
+ * - Practice member emails cannot sign in.
+ * - Practice commissioner may sign in only until a real commissioner email exists
+ *   (so turning Demo off does not lock the owner out).
  */
 export async function userFromCredentials(
   email: string,
@@ -32,15 +37,25 @@ export async function userFromCredentials(
   lookup: (email: string) => Promise<CredentialRecord | null> = lookupUserByEmail
 ): Promise<AuthorizedUser | null> {
   try {
+    const user = await lookup(email);
+    if (!user?.passwordHash) return null;
+
     if (isDemoEmail(email)) {
       const pool = await prisma.pool.findUnique({
         where: { inviteCode: INVITE_CODE },
-        select: { mode: true },
+        select: { id: true, mode: true },
       });
-      if (isLiveMode(pool?.mode)) return null;
+      if (isLiveMode(pool?.mode) && pool) {
+        const admins = await prisma.membership.findMany({
+          where: { poolId: pool.id, role: "admin" },
+          select: { userId: true, user: { select: { email: true } } },
+        });
+        const hasRealCommissioner = admins.some((a) => !isDemoEmail(a.user.email));
+        const isPracticeAdmin = admins.some((a) => a.userId === user.id);
+        if (hasRealCommissioner || !isPracticeAdmin) return null;
+      }
     }
-    const user = await lookup(email);
-    if (!user?.passwordHash) return null;
+
     const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) return null;
     return {

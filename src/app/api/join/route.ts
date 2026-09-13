@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { INVITE_CODE } from "@/lib/constants";
+import { isDemoEmail, isLiveMode } from "@/lib/pool-mode";
 
 export async function POST(req: Request) {
   const body = await req.json();
   const {
     inviteCode,
-    email,
+    email: rawEmail,
     password,
     nickname,
     realName,
@@ -19,6 +20,8 @@ export async function POST(req: Request) {
     realName?: string;
   };
 
+  const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
+
   if (!inviteCode || !email || !password || !nickname) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
@@ -29,6 +32,12 @@ export async function POST(req: Request) {
   const pool = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
   if (!pool) {
     return NextResponse.json({ error: "Pool not found — run seed" }, { status: 404 });
+  }
+  if (isDemoEmail(email) && isLiveMode(pool.mode)) {
+    return NextResponse.json(
+      { error: "Use your own email to join" },
+      { status: 400 }
+    );
   }
 
   const existingNick = await prisma.membership.findUnique({

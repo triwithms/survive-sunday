@@ -16,10 +16,10 @@ type Preview = {
 
 export function PoolModePanel({
   initialMode,
-  hasRealCommissioner = false,
+  isPracticeLogin = false,
 }: {
   initialMode: PoolMode;
-  hasRealCommissioner?: boolean;
+  isPracticeLogin?: boolean;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<PoolMode>(initialMode);
@@ -29,7 +29,7 @@ export function PoolModePanel({
   const [preview, setPreview] = useState<Preview | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [typed, setTyped] = useState("");
-  const [switchToLive, setSwitchToLive] = useState(hasRealCommissioner);
+  const [switchToLive, setSwitchToLive] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -56,12 +56,6 @@ export function PoolModePanel({
 
   async function setPoolMode(next: PoolMode) {
     if (next === mode) return;
-    if (next === "live" && !hasRealCommissioner) {
-      setErr(
-        "Set your real commissioner login first (the box above). Then you can switch to Real mode."
-      );
-      return;
-    }
     setBusy(true);
     setErr("");
     setMsg("");
@@ -79,7 +73,7 @@ export function PoolModePanel({
       setMode(next);
       setMsg(
         next === "live"
-          ? "Real mode is on. Friends now see join and sign-in only — no demo picker or the word “demo”."
+          ? "Real mode is on. Friends now see Join and Sign in only — no practice picker, no practice passwords."
           : "Demo mode is on. The practice account picker is visible on the home and sign-in pages."
       );
       router.refresh();
@@ -132,12 +126,18 @@ export function PoolModePanel({
 
   return (
     <div className="space-y-4">
-      <section className="card-glass p-4 space-y-3">
+      <section
+        id="pool-mode"
+        className="card-glass p-4 space-y-3 border border-gold-400/40"
+      >
         <div>
-          <h2 className="font-semibold">Pool mode</h2>
+          <p className="text-xs font-medium tracking-wide uppercase text-gold-400">
+            Do this on your phone
+          </p>
+          <h2 className="font-semibold text-lg mt-1">Real mode vs Demo mode</h2>
           <p className="text-sm text-[var(--text-muted)] mt-1">
-            Real mode is for the actual season. Demo mode is only for you to try
-            the app with practice accounts.
+            Tap a button to switch. Real mode hides the practice picker and the
+            word “demo” from friends. Demo mode is only for you to try the app.
           </p>
         </div>
         <p className="text-sm">
@@ -146,40 +146,42 @@ export function PoolModePanel({
             {isLive ? "Real mode" : "Demo mode"}
           </span>
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
-            className={isLive ? "btn-primary" : "btn-secondary"}
-            disabled={busy || isLive || !hasRealCommissioner}
+            className={`${isLive ? "btn-primary" : "btn-secondary"} text-base min-h-[52px]`}
+            disabled={busy || isLive}
             onClick={() => setPoolMode("live")}
           >
-            Switch to Real mode
+            Real mode
           </button>
           <button
             type="button"
-            className={!isLive ? "btn-primary" : "btn-secondary"}
+            className={`${!isLive ? "btn-primary" : "btn-secondary"} text-base min-h-[52px]`}
             disabled={busy || !isLive}
             onClick={() => setPoolMode("demo")}
           >
-            Switch to Demo mode
+            Demo mode
           </button>
         </div>
-        {!hasRealCommissioner && (
-          <p className="text-sm text-crimson-400">
-            Real mode stays locked until you save a real commissioner email
-            above (not a practice login).
+        {isPracticeLogin && (
+          <p className="text-sm text-[var(--text-muted)]">
+            You can turn Real mode on now. Then save your real email in{" "}
+            <strong className="text-[var(--text-primary)]">
+              Your commissioner login
+            </strong>{" "}
+            below so you can sign back in. Friends will not see practice emails
+            or passwords.
           </p>
         )}
         <ul className="text-xs text-[var(--text-muted)] list-disc pl-5 space-y-1">
           <li>
             <strong className="text-[var(--text-primary)]">Real:</strong> home
-            and sign-in show Join and Sign in only. No account picker. Friends
-            never see the word “demo”.
+            and sign-in show Join and Sign in only. No account picker.
           </li>
           <li>
             <strong className="text-[var(--text-primary)]">Demo:</strong>{" "}
-            practice picker, demo accounts, and testing tools stay available
-            (this Admin page).
+            practice picker and testing tools stay on this Admin page.
           </li>
         </ul>
       </section>
@@ -188,8 +190,8 @@ export function PoolModePanel({
         <div>
           <h2 className="font-semibold text-crimson-400">Reset pool</h2>
           <p className="text-sm text-[var(--text-muted)] mt-1">
-            Use this before you import real Week 1 picks. It clears practice
-            data so the board starts clean. It does{" "}
+            Optional. Week 2 can stay until you are ready. Reset when you want
+            a clean board before importing real Week 1 picks. It does{" "}
             <strong className="text-[var(--text-primary)]">not</strong> wipe
             sign-in settings, the schedule, or your commissioner account.
           </p>
@@ -246,16 +248,10 @@ export function PoolModePanel({
               <input
                 type="checkbox"
                 className="mt-1"
-                checked={switchToLive && hasRealCommissioner}
-                disabled={!hasRealCommissioner}
+                checked={switchToLive}
                 onChange={(e) => setSwitchToLive(e.target.checked)}
               />
-              <span>
-                Also switch to Real mode after reset
-                {hasRealCommissioner
-                  ? " (recommended)"
-                  : " — save a real commissioner login first"}
-              </span>
+              <span>Also switch to Real mode after reset (recommended)</span>
             </label>
             <input
               value={typed}

@@ -18,6 +18,7 @@
     "verify:demo-enter": "node scripts/verify-demo-enter.mjs",
     "verify:credentials-authorize": "tsx scripts/verify-credentials-authorize.ts",
     "verify:pool-mode": "tsx scripts/verify-pool-mode.ts",
+    "verify:roster-names": "tsx scripts/verify-roster-name-patch.ts",
     "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
     "verify:live-feeds": "tsx scripts/verify-live-feeds.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"

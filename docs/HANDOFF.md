@@ -206,9 +206,11 @@ On `main`, stay-logged-in is the normal Auth.js cookie (about **30 days**). Clea
 
 ## 8. Commissioner admin
 
-**Admin** is the gold link in the top-right of the header. The **first card** is **Real mode vs Demo mode**.
+**Admin** is the gold link in the top-right of the header. The **first card** is **Real mode vs Demo mode** — two big buttons. Tap **Real mode** for Week 1 (this NFL week). Week 2 is Demo-only.
 
-While Demo mode is on you can **Enter as commissioner** (`admin@survivesunday.demo` / `demo1234`) to reach Admin and set a real login.
+First real commissioner login: Admin → **Your commissioner login** → your real email + password → save → sign out → **Sign in** with that email. Do not keep using `admin@survivesunday.demo` after that. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
+
+While Demo mode is on you can still **Enter as commissioner** (`admin@survivesunday.demo` / `demo1234`) to reach Admin and set the real login.
 
 | Tool | What it does |
 |------|----------------|

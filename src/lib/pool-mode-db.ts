@@ -2,9 +2,14 @@ import "server-only";
 import { prisma } from "./db";
 import { INVITE_CODE } from "./constants";
 import { isDemoEmail, normalizePoolMode, type PoolMode } from "./pool-mode";
+import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
 
 export async function getPrimaryPool() {
-  return prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
+  const pool = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
+  if (pool) {
+    await applyCanonicalRosterNamesThrottled(prisma, pool.id);
+  }
+  return pool;
 }
 
 export async function poolHasRealCommissioner(poolId: string): Promise<boolean> {
@@ -20,7 +25,10 @@ export async function getPrimaryPoolMode(): Promise<PoolMode> {
     const pool = await getPrimaryPool();
     return normalizePoolMode(pool?.mode);
   } catch (error) {
-    console.error("[pool-mode] lookup failed — defaulting to demo", error);
-    return "demo";
+    // Production: hide practice UX if the database hiccups. Local/dev: keep picker.
+    const fallback =
+      process.env.NODE_ENV === "production" ? "live" : "demo";
+    console.error(`[pool-mode] lookup failed — defaulting to ${fallback}`, error);
+    return fallback;
   }
 }

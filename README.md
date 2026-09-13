@@ -31,14 +31,18 @@ npm install && npx prisma db push && npm run seed && npm run build
 
 ## Real mode vs Demo mode (commissioner)
 
-Production should feel like a **private pool**, not a try-it-out site. The commissioner switches this in **Admin → Pool mode**.
+The switch is on **Admin** (gold link, top-right) → **first card: Real mode vs Demo mode**. Two big buttons, phone-friendly.
 
 | Mode | Friends see |
 |------|-------------|
-| **Real** | Join + Sign in only. No “demo” wording. |
+| **Real** | Join + Sign in only. No “demo” wording. No practice picker or passwords. |
 | **Demo** | Practice account picker and demo copy (for you to try the app). |
 
-**Go live for Week 1:** Admin → save your **real commissioner login** → **Reset pool** (type `RESET`; leave “switch to Real mode” ticked) → **Roster** if names need fixing → **Import week picks**. Step-by-step: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
+**First real commissioner login:** Admin → **Your commissioner login** → your email + password → sign out → Sign in with that email.
+
+**Go live for Week 1:** tap **Real mode** (Week 2 can stay) → save real login → later **Reset pool** if you want a clean board → **Roster** if names need fixing → **Import week picks**. Step-by-step: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
+
+Live roster names (Long Snapper → John Stilo, Steve → Steve Venerus) are patched on the production database at deploy — seed-only is not enough.
 
 ## Demo login
 

@@ -91,7 +91,7 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
         <p className="text-xs text-[var(--text-muted)]">
           {demoMode
             ? "Google works when AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET are set. Demo accounts work without Google."
-            : "Google works when it is set up. You can always use email and password."}
+            : "Use the email and password you created. Practice logins no longer work."}
         </p>
       </form>
 

@@ -4,10 +4,10 @@ import { requireAdmin } from "@/lib/session";
 import {
   POOL_MODE_DEMO,
   POOL_MODE_LIVE,
+  isDemoEmail,
   normalizePoolMode,
   type PoolMode,
 } from "@/lib/pool-mode";
-import { poolHasRealCommissioner } from "@/lib/pool-mode-db";
 
 export async function GET() {
   const admin = await requireAdmin();
@@ -33,18 +33,7 @@ export async function POST(req: Request) {
   }
 
   const mode: PoolMode = requested;
-  if (mode === POOL_MODE_LIVE) {
-    const ready = await poolHasRealCommissioner(admin.membership.poolId);
-    if (!ready) {
-      return NextResponse.json(
-        {
-          error:
-            "Set your real commissioner login first. Real mode cannot use a practice account.",
-        },
-        { status: 400 }
-      );
-    }
-  }
+  const stillPracticeLogin = isDemoEmail(admin.user.email);
 
   const pool = await prisma.pool.update({
     where: { id: admin.membership.poolId },
@@ -60,6 +49,7 @@ export async function POST(req: Request) {
       targetId: pool.id,
       details: JSON.stringify({
         mode,
+        stillPracticeLogin,
         note:
           mode === POOL_MODE_LIVE
             ? "Real mode — participant screens hide demo picker and demo wording"
