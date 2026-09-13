@@ -72,7 +72,9 @@ async function main() {
     `demo-enter status ${enter.status}`
   );
   assert(
-    !/[?&]error=NoSession/.test(location),
+    !/[?&]error=(NoSession|CallbackRouteError|Configuration|DatabaseUnavailable)/.test(
+      location
+    ),
     `demo-enter redirected to ${location}`
   );
   assert(

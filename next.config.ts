@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Keep Prisma's query engine out of the Next bundle so Vercel functions
+  // can load it. Without this, authorize()'s first query throws and Auth.js
+  // surfaces CallbackRouteError on /api/demo-enter.
+  serverExternalPackages: ["@prisma/client", "prisma"],
+  outputFileTracingIncludes: {
+    "/*": [
+      "./node_modules/.prisma/client/**",
+      "./node_modules/@prisma/client/**",
+    ],
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "a.espncdn.com" },

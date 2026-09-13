@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "tsx scripts/ensure-production-db.ts && next build",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
@@ -16,6 +16,7 @@
     "verify:session": "node scripts/verify-session-identity.mjs",
     "verify:auth-https": "node scripts/verify-auth-https-cookies.mjs",
     "verify:demo-enter": "node scripts/verify-demo-enter.mjs",
+    "verify:credentials-authorize": "tsx scripts/verify-credentials-authorize.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {

@@ -31,6 +31,12 @@ function friendlyError(code: string): string {
   if (code === "NoSession") {
     return "Demo login failed — no session created. Refresh and try again on this same link.";
   }
+  if (code === "CallbackRouteError" || code === "Configuration") {
+    return "Demo login failed — database lookup threw during sign-in. Refresh and try again.";
+  }
+  if (code === "DatabaseUnavailable") {
+    return "Demo login failed — the pool database is not reachable. Check DATABASE_URL and seed.";
+  }
   return `Demo login failed: ${code}`;
 }
 
