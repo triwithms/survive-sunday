@@ -1,45 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
-import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
+import { friendlyLoginError, loginEmailQueryValue } from "@/lib/login-error";
 
 export function LoginForm({ demoMode }: { demoMode: boolean }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
-  const router = useRouter();
   const params = useSearchParams();
   const showDemo = demoMode && params.get("demo") === "1";
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setErr("");
-    try {
-      const res = await signInCredentials(email, password);
-      if (!res.ok) {
-        setErr(
-          res.error === "CredentialsSignin"
-            ? "Invalid email or password"
-            : res.error === "NoSession"
-              ? "Sign-in failed — no session created."
-              : `Sign-in failed: ${res.error}`
-        );
-        return;
-      }
-      router.refresh();
-      afterAuthNavigate("/pool");
-    } catch {
-      setErr("Sign-in failed (network/CSRF). Refresh and try again on this same host.");
-    } finally {
-      setBusy(false);
-    }
-  }
+  const emailPrefill = loginEmailQueryValue(params.get("email"));
+  const err = friendlyLoginError(params.get("error"));
 
   return (
     <main className="min-h-dvh mx-auto max-w-sheet px-4 py-10">
@@ -54,14 +27,30 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
         </div>
       )}
 
-      <form onSubmit={onSubmit} className="space-y-4 card-glass p-5">
+      {err && (
+        <p
+          className="mb-4 card-glass p-4 text-crimson-400 text-sm font-medium"
+          role="alert"
+          data-testid="login-error"
+        >
+          {err}
+        </p>
+      )}
+
+      <form
+        action="/api/login"
+        method="post"
+        className="space-y-4 card-glass p-5"
+        onSubmit={() => setBusy(true)}
+      >
+        <input type="hidden" name="callbackUrl" value="/pool" />
         <label className="block text-sm">
           <span className="text-[var(--text-muted)]">Email</span>
           <input
             type="email"
+            name="email"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            defaultValue={emailPrefill}
             autoComplete="email"
             className="mt-1"
           />
@@ -70,14 +59,12 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
           <span className="text-[var(--text-muted)]">Password</span>
           <input
             type="password"
+            name="password"
             required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
             className="mt-1"
           />
         </label>
-        {err && <p className="text-crimson-400 text-sm">{err}</p>}
         <p className="text-sm">
           <Link href="/login/forgot" className="text-gold-400">
             Forgot password?

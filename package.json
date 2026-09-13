@@ -24,6 +24,8 @@
     "verify:roster-names": "tsx scripts/verify-roster-name-patch.ts",
     "verify:week-isolation": "tsx scripts/verify-week-isolation.ts",
     "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
+    "verify:login-error": "tsx scripts/verify-login-error.ts",
+    "verify:auth-rewrite": "tsx scripts/verify-auth-rewrite.ts",
     "verify:live-feeds": "tsx scripts/verify-live-feeds.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },

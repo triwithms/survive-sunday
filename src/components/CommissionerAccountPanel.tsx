@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signOut } from "next-auth/react";
+import { SignOutButton } from "@/components/SignOutButton";
 
 export function CommissionerAccountPanel({
   currentEmail,
@@ -73,13 +73,9 @@ export function CommissionerAccountPanel({
             and the password you just chose. After that you can switch to Real
             mode and reset the pool.
           </p>
-          <button
-            type="button"
-            className="btn-primary w-full"
-            onClick={() => signOut({ callbackUrl: "/login" })}
-          >
-            Sign out and use the new login
-          </button>
+          <SignOutButton next="/login" className="btn-danger w-full">
+            Sign out
+          </SignOutButton>
         </div>
       ) : (
         <form onSubmit={save} className="space-y-3">
@@ -128,6 +124,12 @@ export function CommissionerAccountPanel({
             {busy ? "Saving…" : "Save real commissioner login"}
           </button>
         </form>
+      )}
+
+      {!doneEmail && (
+        <SignOutButton next="/login" className="btn-danger w-full">
+          Sign out
+        </SignOutButton>
       )}
     </section>
   );

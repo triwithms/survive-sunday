@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { afterAuthNavigate, signInCredentials } from "@/lib/client-auth";
+import { submitCredentialsLogin } from "@/lib/client-auth";
 import type { OtpChannel } from "@/lib/otp";
 
 type ChallengeView = {
@@ -123,15 +123,8 @@ export function ForgotPasswordForm() {
         );
         return;
       }
-      const login = await signInCredentials(email, password);
-      if (!login.ok) {
-        setErr(
-          "Password updated. Sign in on the next page with your new password."
-        );
-        afterAuthNavigate("/login");
-        return;
-      }
-      afterAuthNavigate("/pool");
+      submitCredentialsLogin(email, password, "/pool");
+      return;
     } catch {
       setErr("Could not finish the reset. Try again.");
     } finally {

@@ -1,11 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { ModalDialog } from "@/components/ModalDialog";
 import { PhoneEditor } from "@/components/PhoneEditor";
+import { SignOutButton } from "@/components/SignOutButton";
 
 const MAX_NICKNAME = 24;
+
+const rowBtn =
+  "btn-secondary w-full inline-flex items-center justify-center text-center";
 
 type Props = {
   nickname: string;
@@ -16,7 +22,7 @@ type Props = {
   phoneSoftPrompt: boolean;
 };
 
-export function NicknameEditor({
+export function AccountMenu({
   nickname,
   statusLabel,
   userId,
@@ -25,9 +31,12 @@ export function NicknameEditor({
   phoneSoftPrompt,
 }: Props) {
   const router = useRouter();
-  const dialogTitleId = useId();
+  const menuTitleId = useId();
+  const nickTitleId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [nickOpen, setNickOpen] = useState(false);
+  const [phoneOpen, setPhoneOpen] = useState(false);
   const [value, setValue] = useState(nickname);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -37,15 +46,15 @@ export function NicknameEditor({
   }, [nickname]);
 
   useEffect(() => {
-    if (open) {
+    if (nickOpen) {
       setError("");
       setValue(nickname);
       const t = window.setTimeout(() => inputRef.current?.focus(), 50);
       return () => window.clearTimeout(t);
     }
-  }, [open, nickname]);
+  }, [nickOpen, nickname]);
 
-  async function save() {
+  async function saveNickname() {
     const trimmed = value.trim();
     if (!trimmed) {
       setError("Nickname can’t be empty");
@@ -75,7 +84,7 @@ export function NicknameEditor({
         setError(data.error || "Couldn’t update nickname");
         return;
       }
-      setOpen(false);
+      setNickOpen(false);
       router.refresh();
     } catch {
       setError("Network error — try again");
@@ -86,39 +95,91 @@ export function NicknameEditor({
 
   return (
     <>
-      <div className="text-right text-xs min-w-0 overflow-hidden">
-        <div className="flex items-center justify-end gap-1.5 min-w-0">
-          <div
-            className="text-[var(--text-primary)] font-medium truncate max-w-[6rem] sm:max-w-[8.5rem]"
-            title={nickname}
-            data-testid="session-nickname"
-            data-user-id={userId}
-            data-user-role={role}
-          >
-            {nickname}
+      <button
+        type="button"
+        className="shrink-0 inline-flex items-center justify-center min-h-11 px-3 rounded-full border border-gold-400 text-gold-400 text-sm font-medium"
+        onClick={() => setMenuOpen(true)}
+        aria-haspopup="dialog"
+        aria-expanded={menuOpen}
+        aria-label="Account menu — nickname, cell, and Sign out"
+        data-testid="account-menu"
+        data-user-id={userId}
+        data-user-role={role}
+      >
+        Account
+        <ChevronDown className="ml-1 h-4 w-4" aria-hidden />
+      </button>
+
+      {menuOpen && (
+        <ModalDialog
+          labelledBy={menuTitleId}
+          placement="sheet"
+          onBackdropClick={() => setMenuOpen(false)}
+        >
+          <h2 id={menuTitleId} className="font-semibold text-lg text-gold-400">
+            Account
+          </h2>
+          <div>
+            <p
+              className="text-lg font-medium text-[var(--text-primary)] break-words"
+              data-testid="session-nickname"
+            >
+              {nickname}
+            </p>
+            <p className="text-sm text-[var(--text-muted)] capitalize mt-0.5">
+              {statusLabel}
+            </p>
           </div>
+          <SignOutButton next="/login" className="btn-danger w-full" />
+          {role === "admin" && (
+            <Link
+              href="/admin#pool-mode"
+              prefetch={false}
+              className={rowBtn}
+              onClick={() => setMenuOpen(false)}
+            >
+              Admin
+            </Link>
+          )}
           <button
             type="button"
-            className="shrink-0 text-[10px] sm:text-xs text-gold-400 underline underline-offset-2 hover:text-gold-500"
-            onClick={() => setOpen(true)}
+            className={rowBtn}
+            onClick={() => {
+              setMenuOpen(false);
+              setNickOpen(true);
+            }}
             data-testid="change-nickname"
-            aria-label="Change nickname"
           >
-            Change
+            Change nickname
           </button>
-          <PhoneEditor phoneE164={phoneE164} softPrompt={phoneSoftPrompt} />
-        </div>
-        <div className="text-[var(--text-muted)] capitalize truncate">
-          {statusLabel}
-        </div>
-      </div>
+          <button
+            type="button"
+            className={rowBtn}
+            onClick={() => {
+              setMenuOpen(false);
+              setPhoneOpen(true);
+            }}
+            data-testid="change-phone"
+          >
+            {phoneE164 ? "Edit cell number" : "Add cell number"}
+          </button>
+          <button
+            type="button"
+            className={rowBtn}
+            onClick={() => setMenuOpen(false)}
+          >
+            Close
+          </button>
+        </ModalDialog>
+      )}
 
-      {open && (
+      {nickOpen && (
         <ModalDialog
-          labelledBy={dialogTitleId}
-          onBackdropClick={busy ? undefined : () => setOpen(false)}
+          labelledBy={nickTitleId}
+          placement="sheet"
+          onBackdropClick={busy ? undefined : () => setNickOpen(false)}
         >
-          <h2 id={dialogTitleId} className="font-semibold text-lg text-gold-400">
+          <h2 id={nickTitleId} className="font-semibold text-lg text-gold-400">
             Change nickname
           </h2>
           <p className="text-xs text-[var(--text-muted)]">
@@ -138,9 +199,9 @@ export function NicknameEditor({
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  void save();
+                  void saveNickname();
                 }
-                if (e.key === "Escape" && !busy) setOpen(false);
+                if (e.key === "Escape" && !busy) setNickOpen(false);
               }}
             />
           </label>
@@ -154,7 +215,7 @@ export function NicknameEditor({
               type="button"
               className="btn-secondary flex-1"
               disabled={busy}
-              onClick={() => setOpen(false)}
+              onClick={() => setNickOpen(false)}
             >
               Cancel
             </button>
@@ -162,13 +223,21 @@ export function NicknameEditor({
               type="button"
               className="btn-primary flex-1"
               disabled={busy}
-              onClick={() => void save()}
+              onClick={() => void saveNickname()}
             >
               {busy ? "Saving…" : "Save"}
             </button>
           </div>
         </ModalDialog>
       )}
+
+      <PhoneEditor
+        phoneE164={phoneE164}
+        softPrompt={phoneSoftPrompt}
+        hideTrigger
+        open={phoneOpen}
+        onOpenChange={setPhoneOpen}
+      />
     </>
   );
 }

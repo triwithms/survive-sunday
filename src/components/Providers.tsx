@@ -1,19 +1,15 @@
 "use client";
 
-import { SessionProvider, useSession } from "next-auth/react";
-import { Fragment, type ReactNode } from "react";
-
-function SessionGate({ children }: { children: ReactNode }) {
-  const { data } = useSession();
-  // Remount the tree when the signed-in user changes so client state
-  // (picks, admin chrome) cannot leak across demo accounts.
-  return <Fragment key={data?.user?.id ?? "anon"}>{children}</Fragment>;
-}
+import { SessionProvider } from "next-auth/react";
+import type { ReactNode } from "react";
 
 export function Providers({ children }: { children: ReactNode }) {
+  // Do not remount children when useSession() hydrates (undefined → user id).
+  // That wipe of RSC payload shows as a blank / bounced login on Safari.
+  // Identity changes already full-document-load via afterAuthNavigate / form POST.
   return (
     <SessionProvider refetchOnWindowFocus refetchInterval={60}>
-      <SessionGate>{children}</SessionGate>
+      {children}
     </SessionProvider>
   );
 }
