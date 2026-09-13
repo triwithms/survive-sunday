@@ -44,6 +44,15 @@ export default function LandingPage() {
               Join the pool
             </Link>
           </p>
+          <p className="text-xs pt-2">
+            On your phone: add this site to your Home Screen (Safari → Share →
+            Add to Home Screen, or Chrome → Install). Once you sign in, you stay
+            signed in — just tap the icon. Forgot your password?{" "}
+            <Link href="/login/forgot" className="text-gold-400 hover:underline">
+              Reset it here
+            </Link>
+            .
+          </p>
         </div>
 
         <div className="mt-8 flex flex-col items-start gap-2 text-sm">

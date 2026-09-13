@@ -17,6 +17,8 @@
     "verify:auth-https": "node scripts/verify-auth-https-cookies.mjs",
     "verify:demo-enter": "node scripts/verify-demo-enter.mjs",
     "verify:credentials-authorize": "tsx scripts/verify-credentials-authorize.ts",
+    "verify:password-reset": "tsx scripts/verify-password-reset.ts",
+    "verify:password-reset-flow": "node scripts/verify-password-reset-flow.mjs",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {

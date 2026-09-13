@@ -48,9 +48,20 @@ AUTH_GOOGLE_SECRET=...
 
 Demo credentials work without Google keys.
 
+## Forgot password (email or text)
+
+Friends stay signed in on their phone / Home Screen app. We do **not** ask for a code at every login.
+
+If they forget the password: **Sign in → Forgot password** → 6-digit code by email (or SMS if a cell is saved) → new password → signed back in.
+
+- Demo `@survivesunday.demo` seats always use **demo1234** (no reset).
+- Production delivery: **Resend** (email) and optional **Twilio** (SMS). See `DEPLOY.md` and `.env.example`.
+- Locally, if those keys are missing, the code is printed in the server log and shown on the reset page.
+
 ## Wave 1 features
 
 - Invite code join + credentials/demo login + Google-ready Auth.js
+- Forgot-password one-time code (email / SMS); sessions stay signed in (~90 days)
 - Nickname + optional real name; pool membership; admin/member roles
 - Week 1 schedule from `data/week1-slate.json` (real 2026 slate + final scores where present)
 - Lock at first kickoff; countdown; hide others’ picks until lock

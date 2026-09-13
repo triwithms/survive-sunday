@@ -58,7 +58,12 @@ for (const key of ["AUTH_URL", "NEXTAUTH_URL"] as const) {
 function authConfig(req?: NextRequest): NextAuthConfig {
   return {
     providers,
-    session: { strategy: "jwt" },
+    session: {
+      strategy: "jwt",
+      // Stay signed in on a phone / PWA for the season. Opening the app
+      // refreshes the cookie (Auth.js default updateAge is 24h).
+      maxAge: 60 * 60 * 24 * 90,
+    },
     pages: {
       signIn: "/login",
     },

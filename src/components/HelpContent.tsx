@@ -2,7 +2,7 @@ export function HelpContent() {
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
       <aside className="card-glass border border-gold-400/30 p-4 space-y-2" aria-label="Feature availability">
-        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, joining, sign-in, and cell-number collection for missing-pick SMS.</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, joining, sign-in that stays on your phone, forgot-password codes (email or text), and cell-number collection for missing-pick SMS.</p>
         <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, notification centre, WhatsApp, weekly digests, and close-game alerts.</p>
       </aside>
       <section id="onboarding-first-run">
@@ -12,7 +12,7 @@ export function HelpContent() {
           <li className="text-[var(--text-primary)]">**Pick one team each week** to win. You can’t reuse a team you’ve already picked, and bye-week teams are off the board.</li>
           <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). Submit before then; after lock, everyone’s picks go public.</li>
           <li className="text-[var(--text-primary)]">**You get one mulligan.** Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you.</li>
-          <li className="text-[var(--text-primary)]">**Invite link**, then **Google** or email/password to sign in. Returning BM Boys already have a nickname — use **Change nickname** in the header to edit it. New joiners create a nickname on join (unique within the pool).</li>
+          <li className="text-[var(--text-primary)]">**Invite link**, then **Google** or email/password to sign in. You stay signed in on that phone or computer. Forgot the password? Use **Forgot password** on the sign-in page — we email or text a code. Returning BM Boys already have a nickname — use **Change nickname** in the header to edit it. New joiners create a nickname on join (unique within the pool).</li>
           <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for missing-pick SMS (you can skip and change it later in the header). Wave 2 social features are marked below as coming soon.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">---</p>
@@ -158,7 +158,12 @@ export function HelpContent() {
       </section>
       <section id="11-install-the-app-pwa">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">11. Install the app (PWA)</h2>
-        <p className="text-[var(--text-muted)] mb-2">Survive Sunday is a Progressive Web App. On iOS or Android, use **Add to Home Screen** for a full-screen experience, home-screen icon, and faster launch.</p>
+        <p className="text-[var(--text-muted)] mb-2">Survive Sunday works in a phone browser, on a computer, or as a Home Screen app. After you sign in once, you stay signed in on that device — open the icon and you’re in the pool. We do not ask for a code every time.</p>
+        <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
+          <li className="text-[var(--text-primary)]"><strong>iPhone / iPad (Safari):</strong> open survive-sunday.vercel.app → the Share button → <strong>Add to Home Screen</strong> → Add.</li>
+          <li className="text-[var(--text-primary)]"><strong>Android (Chrome):</strong> open the site → the three-dot menu → <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>
+          <li className="text-[var(--text-primary)]"><strong>Computer:</strong> any modern browser works. Bookmark the pool if you like.</li>
+        </ul>
         <p className="text-[var(--text-muted)] mb-2">You’ll get the dark “stadium” theme and an offline shell so the chrome still loads when the network blips. Live scores and pick submits need a connection.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -168,7 +173,8 @@ export function HelpContent() {
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; use **Change nickname** in the app header to edit it. New members create a nickname when they join.</li>
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
-          <li className="text-[var(--text-primary)]">**Cell number** is optional but recommended for missing-pick SMS. You can skip the soft prompt and add or edit it later from the header near your nickname.</li>
+          <li className="text-[var(--text-primary)]">**Cell number** is optional but recommended for missing-pick SMS and for password-reset texts. You can skip the soft prompt and add or edit it later from the header near your nickname.</li>
+          <li className="text-[var(--text-primary)]">**Forgot password:** on the sign-in page, tap Forgot password. We send a 6-digit code to your email, or a text if a cell is saved. Demo seats (`@survivesunday.demo`) always use password <strong>demo1234</strong> — no reset needed.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">To leave a pool or request data deletion, use the account/privacy controls (or contact your commissioner) and see the privacy policy stub linked from settings.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
@@ -180,6 +186,7 @@ export function HelpContent() {
 | Pick button disabled | Team already used, team on bye, or week already locked. |
 | Can’t see mates’ picks | Week hasn’t locked yet — hang tight until first kickoff. |
 | Missed SMS | Add or update your cell in the header (near nickname). Confirm the number is correct. |
+| Forgot password | Sign in → Forgot password. Use the email on your account. Demo seats use demo1234. |
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
 | Can’t change my pick | Lock has passed — picks are frozen. |</pre>

@@ -27,6 +27,29 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 
 `DATABASE_URL` should already be set by the Neon integration — do not paste secrets into the repo.
 
+## 3b. Forgot-password codes (email + SMS)
+
+Friends stay signed in on their phone. We do **not** ask for a code at every sign-in.
+
+If someone forgets their password: Sign in → **Forgot password** → we send a **6-digit code** (email, or a text if they saved a cell number) → they pick a new password and are signed back in.
+
+Demo seats (`@survivesunday.demo`) always use password **demo1234**. No reset.
+
+Set these in Vercel when you want real emails/texts. Both providers have a free/trial tier.
+
+| Variable | Value |
+|---|---|
+| `RESEND_API_KEY` | From [resend.com](https://resend.com) (free tier). Needed to email reset codes in production. |
+| `RESEND_FROM_EMAIL` | A From address Resend has verified, e.g. `Survive Sunday <noreply@yourdomain.com>`. |
+| `TWILIO_ACCOUNT_SID` | From [twilio.com](https://www.twilio.com) (trial is fine). Optional. |
+| `TWILIO_AUTH_TOKEN` | Twilio auth token |
+| `TWILIO_FROM_NUMBER` | Your Twilio number in E.164, e.g. `+14165551234` |
+
+Without those keys:
+
+- **Production:** Forgot password will say we couldn’t send a code.
+- **Local `next dev`:** the code is printed in the terminal and shown on the page so you can test without a provider.
+
 ## 4. Build / first schema + seed
 
 On first deploy (or via Vercel CLI / a one-off shell with prod `DATABASE_URL`):
