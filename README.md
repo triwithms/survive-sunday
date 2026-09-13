@@ -5,7 +5,9 @@ Locale: **en-CA**. Stack: Next.js App Router, Prisma + **Neon Postgres** (produc
 
 ## Owner / keep-up
 
-Not a coder? Start with **[docs/HANDOFF.md](docs/HANDOFF.md)** — what the app is, where it lives (GitHub + Vercel + Neon), how to deploy, common login failures, and copy-paste prompts for a **free** AI chat (no paid bot needed).
+Not a coder? Start with **[docs/HANDOFF.md](docs/HANDOFF.md)** — what is **live on `main`** vs still in an open PR, where the app lives (GitHub + Vercel + Neon), login / `AUTH_SECRET` / `AUTH_URL` pitfalls, BM Boys roster names, and copy-paste prompts for **free Grok** (or any free chat). No paid coding bot needed.
+
+If a chat and the handoff disagree, trust the GitHub **`main`** branch.
 
 ## Quick start
 
