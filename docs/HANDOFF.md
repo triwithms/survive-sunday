@@ -339,7 +339,7 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 | No “demo” labels / `demo1234` practice picker in real season mode | **Shipped** (merged [PR #10](https://github.com/triwithms/survive-sunday/pull/10)). Admin → **Real mode**. Real = Week 1 current. Week 2 stays viewable ([PR #22](https://github.com/triwithms/survive-sunday/pull/22)). Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
 | Friends pick themselves from the live roster and claim that seat | **Shipped** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)). Join + logged-out Home show **Who are you?** from the live Admin roster. Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch with **Playing as …** / **Admin tools**. Admin can promote another existing member. |
 | Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in → **Forgot password?** → 6-digit code is on `main`. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Optional Twilio for texts. Not a code at every login. **Not gated** by notification preferences. |
-| Account → Notification preferences (email/SMS toggles) | **This PR.** Per user/membership. Defaults: missing-pick / pick confirmed / results graded / mulligan-eliminated / announcements **on**; live scores / injury notes **off**. Pool sends check the toggle; password reset does not. |
+| Account → Notification preferences (email/SMS toggles) | **Open [PR #28](https://github.com/triwithms/survive-sunday/pull/28).** Per user/membership. Defaults: missing-pick / pick confirmed / results graded / mulligan-eliminated / announcements **on**; live scores / injury notes **off**. Pool sends check the toggle; password reset does not. |
 | Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** Install works. Cookie on `main` is ~**90 days** (open the app to keep it fresh). |
 
 ### Do not build (already decided)
@@ -357,7 +357,7 @@ Live **scores** and **injury report** (ESPN public JSON) are already wired on `m
 
 Lowest priority. Do **not** start unless the owner asks. None of this is on `main`.
 
-- H2H gloves animation, banter, SMS/email **weekly digests**, WhatsApp, an in-app **notification centre inbox**, extra visual polish. Listed in the README. **Account notification toggles are shipped** (this PR) — do not rebuild them. If digests ever happen, include Canadian TV (TSN / CTV / RDS / DAZN) in the copy — that is not an app feature today.
+- H2H gloves animation, banter, SMS/email **weekly digests**, WhatsApp, an in-app **notification centre inbox**, extra visual polish. Listed in the README. **Account notification toggles** are [PR #28](https://github.com/triwithms/survive-sunday/pull/28) — do not rebuild them. If digests ever happen, include Canadian TV (TSN / CTV / RDS / DAZN) in the copy — that is not an app feature today.
 - **Weekly video previews (lowest priority):** a Help and/or Home section (or a simple link) with **curated** video links for that week — about **1–2 short** (5–10 min), **1–2 medium** (10–20 min), and **1–2 long** (20 min up to ~2.5 hr). Sources: **NFL YouTube channel**, **ESPN**, and/or **TSN**. Links only / embed-friendly preview. **Not** required for core picks / board / in-vs-out. Do not invent a live video feed or scrape YouTube. Do not implement this unless the owner asks. A free or basic Grok chat may later *draft a short list of official links* if asked — that is still not a feature on `main`.
 
 ---
@@ -383,7 +383,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Survival board sort | [#21](https://github.com/triwithms/survive-sunday/pull/21), [#24](https://github.com/triwithms/survive-sunday/pull/24) | Status → weeks survived → losses → same pick → same game (earlier kickoff) → nickname A–Z. |
 | League W-L from ESPN (no demo leak) | live-standings merge (`538be1f`) | Real-mode League syncs ESPN W-L. Demo `week2-standings` seed is not shown to Real-mode friends. |
 | Week 1 pick-change until kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock.** |
-| Account → Notification preferences | this PR | Phone toggles per membership. Defaults on except live scores and injury notes. Pool email/SMS gated; Forgot password not gated. |
+| Account → Notification preferences | [PR #28](https://github.com/triwithms/survive-sunday/pull/28) | Phone toggles per membership. Defaults on except live scores and injury notes. Pool email/SMS gated; Forgot password not gated. **Not on `main` until merged.** |
 
 ### Open — not on `main` yet
 
