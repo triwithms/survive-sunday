@@ -47,17 +47,11 @@ function config() {
     secret: SECRET,
     basePath: "/api/auth",
     callbacks: {
-      async jwt({ token, user }: { token: { sub?: string }; user?: { id?: string } }) {
+      async jwt({ token, user }) {
         if (user?.id) token.sub = user.id;
         return token;
       },
-      async session({
-        session,
-        token,
-      }: {
-        session: { user?: { id?: string } };
-        token: { sub?: string };
-      }) {
+      async session({ session, token }) {
         if (session.user && token.sub) session.user.id = token.sub;
         return session;
       },
