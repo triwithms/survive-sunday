@@ -84,7 +84,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <p className="text-[var(--text-muted)] mb-2">The week locks at the **kickoff of the first scheduled game** that week. After lock:</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">**Week 1 only:** you may change an existing pick to another team whose game has **not started yet**, as long as **your current pick’s game has also not started**. Once that kickoff starts (or the game is live/final), the pick locks. A missed first pick at lock still counts as a miss — this is not a late first-pick window.</li>
-          <li className="text-[var(--text-primary)]">**After Week 1:** no pick changes after the week lock (first kickoff), unless the commissioner reopens the week.</li>
+          <li className="text-[var(--text-primary)]">**Weeks 2+ keep the normal lock:** no pick changes after first kickoff, unless the commissioner reopens the week.</li>
           <li className="text-[var(--text-primary)]">Late pickers who never selected take an automatic loss (mulligan applies if you still have it).</li>
           <li className="text-[var(--text-primary)]">Everyone’s picks become visible.</li>
         </ul>
