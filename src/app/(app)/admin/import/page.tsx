@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ImportPicksForm } from "@/components/ImportPicksForm";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
-import { isDemoMode } from "@/lib/pool-mode";
+import { effectiveCurrentWeek, isDemoMode } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -31,7 +31,7 @@ export default async function ImportPicksPage() {
     );
   }
 
-  const suggestedWeek = me.pool.currentWeek > 1 ? 1 : me.pool.currentWeek;
+  const suggestedWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
 
   return (
     <div className="space-y-6">

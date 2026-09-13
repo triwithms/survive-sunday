@@ -11,6 +11,8 @@ import { spawnSync } from "child_process";
 import { PrismaClient } from "@prisma/client";
 import { prismaDatasourceUrl } from "../src/lib/prisma-url";
 import { applyCanonicalRosterNames } from "../src/lib/roster-name-patch";
+import { ensureLiveWeekIsolation } from "../src/lib/week-isolation";
+import { isLiveMode } from "../src/lib/pool-mode";
 
 function run(cmd: string, args: string[], env: NodeJS.ProcessEnv) {
   const result = spawnSync(cmd, args, { stdio: "inherit", env });
@@ -53,6 +55,23 @@ async function main() {
       } catch (error) {
         console.warn(
           "[ensure-db] roster realName patch skipped (build continues)",
+          error
+        );
+      }
+      try {
+        if (isLiveMode(pool.mode)) {
+          const isolation = await ensureLiveWeekIsolation(prisma, pool);
+          if (isolation.changed) {
+            console.log(
+              `[ensure-db] live pool snapped to Week ${isolation.currentWeek}, cleared ${isolation.clearedPicks} Week 2 picks`
+            );
+          } else {
+            console.log("[ensure-db] live pool already on Week 1");
+          }
+        }
+      } catch (error) {
+        console.warn(
+          "[ensure-db] live week isolation skipped (build continues)",
           error
         );
       }

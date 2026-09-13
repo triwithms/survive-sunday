@@ -13,7 +13,10 @@ Invite code for friends: **`SUNDAY26`**.
 3. The **first card** on that page is **Real mode vs Demo mode**.
 4. Two big buttons: **Real mode** | **Demo mode**. The gold one is the current mode. Tap the other to switch.
 
-After you merge this change and Vercel finishes deploying, that switch is live. Week 2 can stay until you choose to reset.
+After you merge this change and Vercel finishes deploying, that switch is live.
+
+- **Real mode** = **Week 1** (this NFL week). Week 2 practice picks are cleared and friends cannot open Week 2.
+- **Demo mode** = Week 2 sandbox for you (commissioner) only.
 
 ---
 
@@ -56,9 +59,9 @@ Home page = **Join** + **Sign in** only.
 
 ---
 
-## Reset pool (optional — Week 2 can stay)
+## Reset pool (optional)
 
-Use this when you want a clean board before importing real Week 1 picks. You do **not** have to reset today.
+Real mode already uses Week 1. Use reset when you want a **clean** board before importing real Week 1 picks. You do **not** have to reset today.
 
 1. Admin → **Reset pool** (the red card under the mode switch).
 2. Read the preview.
@@ -109,7 +112,7 @@ Example file: `/examples/week1-picks-import.csv`
 
 ## Suggested order for the real season
 
-1. Tap **Admin → Real mode** so friends never see the practice picker.
+1. Tap **Admin → Real mode** — friends land on **Week 1**, Week 2 practice picks are cleared, and the practice picker is hidden.
 2. Save your **real commissioner login**, sign out, sign in with it.
 3. Fix names on **Roster** if needed (John Stilo / Steve Venerus should already be patched).
 4. When you want a clean Week 1 board, **Reset pool**.
@@ -120,7 +123,7 @@ Example file: `/examples/week1-picks-import.csv`
 
 ## If something looks wrong
 
-- Home still shows a player picker → open **Admin** and tap **Real mode**.
+- Home still shows a player picker or Week 2 → open **Admin** and tap **Real mode**.
 - Mode buttons do nothing → refresh, then tap again. You must be signed in as commissioner.
 - You cannot open Admin → sign in with your real commissioner email (or the practice commissioner via **Sign in** if you have not saved a real email yet).
 - Practice email/password fails after you saved a real login → that is intended. Use your real email.

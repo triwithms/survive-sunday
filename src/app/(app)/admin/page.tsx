@@ -7,7 +7,12 @@ import { AdminPanel } from "@/components/AdminPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 import { PoolModePanel } from "@/components/PoolModePanel";
 import { CommissionerAccountPanel } from "@/components/CommissionerAccountPanel";
-import { isDemoEmail, isDemoMode, normalizePoolMode } from "@/lib/pool-mode";
+import {
+  effectiveCurrentWeek,
+  isDemoEmail,
+  isDemoMode,
+  normalizePoolMode,
+} from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -41,7 +46,10 @@ export default async function AdminPage() {
 
   const week = await prisma.week.findUniqueOrThrow({
     where: {
-      poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },
+      poolId_number: {
+        poolId: me.poolId,
+        number: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
+      },
     },
     include: { games: true },
   });
@@ -64,7 +72,8 @@ export default async function AdminPage() {
           are always audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Mode switch is the first card below. Week 2 can stay until you reset.
+          Mode switch is the first card below. Real mode is Week 1. Week 2 is
+          Demo only.
         </p>
       </div>
 

@@ -8,6 +8,11 @@ import {
 } from "@/lib/live-scores";
 import { formatKickoff } from "@/lib/utils";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
+import {
+  effectiveCurrentWeek,
+  isSandboxWeekHidden,
+  weeksForParticipants,
+} from "@/lib/pool-mode";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -39,19 +44,24 @@ export default async function ScoresPage({
   const rawWeek = params?.week;
   const requestedWeek = Array.isArray(rawWeek) ? rawWeek[0] : rawWeek;
   const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
-  const weeks = await prisma.week.findMany({
-    where: { poolId: me.poolId },
-    orderBy: { number: "asc" },
-    include: { games: { select: { id: true } } },
-  });
+  const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
+  const weeks = weeksForParticipants(
+    me.pool.mode,
+    await prisma.week.findMany({
+      where: { poolId: me.poolId },
+      orderBy: { number: "asc" },
+      include: { games: { select: { id: true } } },
+    })
+  );
   const requestedIsValid =
     Number.isInteger(parsedWeek) &&
-    parsedWeek <= me.pool.currentWeek &&
+    parsedWeek <= currentWeek &&
+    !isSandboxWeekHidden(me.pool.mode, parsedWeek) &&
     weeks.some((week) => week.number === parsedWeek);
-  const selectedNumber = requestedIsValid ? parsedWeek : me.pool.currentWeek;
+  const selectedNumber = requestedIsValid ? parsedWeek : currentWeek;
   const selectedRef =
     weeks.find((week) => week.number === selectedNumber) ??
-    weeks.find((week) => week.number === me.pool.currentWeek) ??
+    weeks.find((week) => week.number === currentWeek) ??
     weeks[0];
 
   if (!selectedRef) {
@@ -81,7 +91,7 @@ export default async function ScoresPage({
     include: { games: { orderBy: { kickoff: "asc" } } },
   });
   const locked = isWeekLocked(week);
-  const revealAllPicks = locked || week.number < me.pool.currentWeek;
+  const revealAllPicks = locked || week.number < currentWeek;
   const members = await prisma.membership.findMany({
     where: { poolId: me.poolId },
     orderBy: { nickname: "asc" },
@@ -123,7 +133,7 @@ export default async function ScoresPage({
       <WeekSwitcher
         weeks={weekOptions}
         selectedWeek={week.number}
-        currentWeek={me.pool.currentWeek}
+        currentWeek={currentWeek}
         basePath="/scores"
       />
 

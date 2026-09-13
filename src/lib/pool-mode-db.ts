@@ -3,11 +3,16 @@ import { prisma } from "./db";
 import { INVITE_CODE } from "./constants";
 import { isDemoEmail, normalizePoolMode, type PoolMode } from "./pool-mode";
 import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
+import { ensureLiveWeekIsolation } from "./week-isolation";
 
 export async function getPrimaryPool() {
   const pool = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
   if (pool) {
     await applyCanonicalRosterNamesThrottled(prisma, pool.id);
+    const isolation = await ensureLiveWeekIsolation(prisma, pool);
+    if (isolation.changed) {
+      return prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
+    }
   }
   return pool;
 }

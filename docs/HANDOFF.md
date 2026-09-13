@@ -214,9 +214,9 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 
 | Tool | What it does |
 |------|----------------|
-| **Real mode vs Demo mode** | First card on Admin. Real = Week 1, no practice picker. Demo = Week 2 sandbox for the commissioner. |
+| **Real mode vs Demo mode** | First card on Admin. Tap **Real mode** or **Demo mode**. Real = Week 1, no practice picker. Demo = Week 2 sandbox for the commissioner. |
 | **Your commissioner login** | Replace the practice commissioner email with a real email + password. Then sign out and sign in with that email. |
-| **Reset pool** | Optional. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated, sets Week 1. Type `RESET` to confirm. Does **not** wipe Auth/env. |
+| **Reset pool** | Optional. Real mode is already Week 1. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. |
 | **Roster** | See each nickname + real name. Edit either when wrong. Audit-logged. |
 | **Import week picks** | Paste or upload `nickname,team` (or `email,team`). This is how you set or **correct a player’s pick after the fact**. Changes are written to the **audit log**. There is no single-player “edit pick” button yet. |
 | Lock controls | Reopen week, unlock (testing), lock now + missed picks, clear override. |

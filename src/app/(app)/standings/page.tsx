@@ -13,6 +13,7 @@ import { TeamLogo } from "@/components/TeamLogo";
 import { formatKickoff } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { effectiveCurrentWeek } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -24,7 +25,10 @@ export default async function StandingsPage() {
   if (!me) redirect("/join");
 
   let week = await prisma.week.findFirst({
-    where: { poolId: me.poolId, number: me.pool.currentWeek },
+    where: {
+      poolId: me.poolId,
+      number: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
+    },
     include: { picks: true },
   });
 
@@ -51,7 +55,9 @@ export default async function StandingsPage() {
   const winners = resolveSeasonWinners(participants);
 
   const locked = week ? isWeekLocked(week) : true;
-  const weekLabel = week?.label ?? `Week ${me.pool.currentWeek}`;
+  const weekLabel =
+    week?.label ??
+    `Week ${effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek)}`;
   const canChangePick =
     !locked && me.status !== "eliminated" && me.role !== "admin";
   const showMutedChange =

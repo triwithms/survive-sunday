@@ -7,6 +7,11 @@ import { resolveFavourite } from "@/lib/matchup-meta";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import { InjuryChip } from "@/components/InjuryChip";
+import {
+  effectiveCurrentWeek,
+  isSandboxWeekHidden,
+  weeksForParticipants,
+} from "@/lib/pool-mode";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
@@ -37,24 +42,27 @@ export default async function SchedulePage({
   const rawWeek = params?.week;
   const requestedWeek = Array.isArray(rawWeek) ? rawWeek[0] : rawWeek;
   const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
+  const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
 
-  const weeks = await prisma.week.findMany({
-    where: { poolId: me.poolId },
-    orderBy: { number: "asc" },
-    include: {
-      games: { orderBy: { kickoff: "asc" } },
-    },
-  });
+  const weeks = weeksForParticipants(
+    me.pool.mode,
+    await prisma.week.findMany({
+      where: { poolId: me.poolId },
+      orderBy: { number: "asc" },
+      include: {
+        games: { orderBy: { kickoff: "asc" } },
+      },
+    })
+  );
 
   const requestedIsValid =
     Number.isInteger(parsedWeek) &&
+    !isSandboxWeekHidden(me.pool.mode, parsedWeek) &&
     weeks.some((candidate) => candidate.number === parsedWeek);
-  const selectedNumber = requestedIsValid
-    ? parsedWeek
-    : me.pool.currentWeek;
+  const selectedNumber = requestedIsValid ? parsedWeek : currentWeek;
   const week =
     weeks.find((candidate) => candidate.number === selectedNumber) ??
-    weeks.find((candidate) => candidate.number === me.pool.currentWeek) ??
+    weeks.find((candidate) => candidate.number === currentWeek) ??
     weeks[0];
 
   if (!week) {
@@ -85,7 +93,7 @@ export default async function SchedulePage({
     label: candidate.label,
     hasGames: candidate.games.length > 0,
   }));
-  const isCurrent = week.number === me.pool.currentWeek;
+  const isCurrent = week.number === currentWeek;
 
   return (
     <div className="space-y-6 min-w-0">
@@ -102,7 +110,7 @@ export default async function SchedulePage({
       <WeekSwitcher
         weeks={weekOptions}
         selectedWeek={week.number}
-        currentWeek={me.pool.currentWeek}
+        currentWeek={currentWeek}
         basePath="/schedule"
         allowFuture
       />
@@ -116,7 +124,7 @@ export default async function SchedulePage({
           </h2>
           {isCurrent ? (
             <span className="chip chip-gold text-[10px]">This week</span>
-          ) : week.number < me.pool.currentWeek ? (
+          ) : week.number < currentWeek ? (
             <span className="chip chip-one-loss text-[10px]">Past</span>
           ) : (
             <span className="chip chip-one-loss text-[10px]">Upcoming</span>

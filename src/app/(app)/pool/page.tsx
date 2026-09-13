@@ -21,6 +21,11 @@ import {
 } from "@/lib/live-scores";
 import { getTeamInjuries } from "@/lib/live-injuries";
 import { formatInjuryChip, formatScoreLine } from "@/lib/game-display";
+import {
+  effectiveCurrentWeek,
+  isSandboxWeekHidden,
+  weeksForParticipants,
+} from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -43,19 +48,24 @@ export default async function PoolPage({
   const rawWeek = params?.week;
   const requestedWeek = Array.isArray(rawWeek) ? rawWeek[0] : rawWeek;
   const parsedWeek = requestedWeek ? Number(requestedWeek) : NaN;
-  const weeks = await prisma.week.findMany({
-    where: { poolId: me.poolId },
-    orderBy: { number: "asc" },
-    include: { games: { select: { id: true } } },
-  });
+  const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
+  const weeks = weeksForParticipants(
+    me.pool.mode,
+    await prisma.week.findMany({
+      where: { poolId: me.poolId },
+      orderBy: { number: "asc" },
+      include: { games: { select: { id: true } } },
+    })
+  );
   const requestedIsValid =
     Number.isInteger(parsedWeek) &&
-    parsedWeek <= me.pool.currentWeek &&
+    parsedWeek <= currentWeek &&
+    !isSandboxWeekHidden(me.pool.mode, parsedWeek) &&
     weeks.some((candidate) => candidate.number === parsedWeek);
-  const selectedNumber = requestedIsValid ? parsedWeek : me.pool.currentWeek;
+  const selectedNumber = requestedIsValid ? parsedWeek : currentWeek;
   const selectedRef =
     weeks.find((candidate) => candidate.number === selectedNumber) ??
-    weeks.find((candidate) => candidate.number === me.pool.currentWeek) ??
+    weeks.find((candidate) => candidate.number === currentWeek) ??
     weeks[0];
 
   if (!selectedRef) {
@@ -83,8 +93,8 @@ export default async function PoolPage({
   const self = meFresh ?? me;
 
   const locked = isWeekLocked(week);
-  const isCurrentWeek = week.number === me.pool.currentWeek;
-  const revealAllPicks = locked || week.number < me.pool.currentWeek;
+  const isCurrentWeek = week.number === currentWeek;
+  const revealAllPicks = locked || week.number < currentWeek;
   const weekOptions = weeks.map((candidate) => ({
     number: candidate.number,
     label: candidate.label,
@@ -172,7 +182,7 @@ export default async function PoolPage({
       <WeekSwitcher
         weeks={weekOptions}
         selectedWeek={week.number}
-        currentWeek={me.pool.currentWeek}
+        currentWeek={currentWeek}
         basePath="/pool"
       />
 

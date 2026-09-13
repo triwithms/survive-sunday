@@ -8,6 +8,10 @@ import {
   normalizePoolMode,
   type PoolMode,
 } from "@/lib/pool-mode";
+import {
+  applyDemoModeSandbox,
+  applyRealModeIsolation,
+} from "@/lib/week-isolation";
 
 export async function GET() {
   const admin = await requireAdmin();
@@ -34,10 +38,13 @@ export async function POST(req: Request) {
 
   const mode: PoolMode = requested;
   const stillPracticeLogin = isDemoEmail(admin.user.email);
+  const isolation =
+    mode === POOL_MODE_LIVE
+      ? await applyRealModeIsolation(prisma, admin.membership.poolId)
+      : await applyDemoModeSandbox(prisma, admin.membership.poolId);
 
-  const pool = await prisma.pool.update({
+  const pool = await prisma.pool.findUniqueOrThrow({
     where: { id: admin.membership.poolId },
-    data: { mode },
   });
 
   await prisma.auditLog.create({
@@ -49,14 +56,21 @@ export async function POST(req: Request) {
       targetId: pool.id,
       details: JSON.stringify({
         mode,
+        currentWeek: isolation.currentWeek,
+        clearedSandboxPicks: isolation.clearedPicks,
         stillPracticeLogin,
         note:
           mode === POOL_MODE_LIVE
-            ? "Real mode — participant screens hide demo picker and demo wording"
-            : "Demo mode — practice picker and demo accounts available",
+            ? "Real mode — Week 1; Week 2 sandbox picks cleared; no participant demo UX"
+            : "Demo mode — Week 2 commissioner sandbox; practice picker available",
       }),
     },
   });
 
-  return NextResponse.json({ ok: true, mode: normalizePoolMode(pool.mode) });
+  return NextResponse.json({
+    ok: true,
+    mode: normalizePoolMode(pool.mode),
+    currentWeek: pool.currentWeek,
+    clearedSandboxPicks: isolation.clearedPicks,
+  });
 }

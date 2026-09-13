@@ -10,6 +10,7 @@ import {
   shouldPollLiveScores,
 } from "@/lib/live-scores";
 import { getInjuryCountsByTeam } from "@/lib/live-injuries";
+import { effectiveCurrentWeek } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -22,7 +23,10 @@ export default async function PickPage() {
 
   const weekRef = await prisma.week.findUniqueOrThrow({
     where: {
-      poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },
+      poolId_number: {
+        poolId: me.poolId,
+        number: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
+      },
     },
   });
   try {

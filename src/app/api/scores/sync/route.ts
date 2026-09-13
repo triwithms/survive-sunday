@@ -3,6 +3,10 @@ import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { syncWeekScoresFromEspn } from "@/lib/live-scores";
+import {
+  effectiveCurrentWeek,
+  isSandboxWeekHidden,
+} from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -21,7 +25,15 @@ export async function POST(req: Request) {
   const raw = body.week;
   const parsed = Number(raw);
   const weekNumber =
-    Number.isInteger(parsed) && parsed > 0 ? parsed : me.pool.currentWeek;
+    Number.isInteger(parsed) && parsed > 0
+      ? parsed
+      : effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
+  if (isSandboxWeekHidden(me.pool.mode, weekNumber)) {
+    return NextResponse.json(
+      { error: "Week 2 is only available in Demo mode" },
+      { status: 403 }
+    );
+  }
 
   const week = await prisma.week.findUnique({
     where: {

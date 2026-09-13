@@ -8,7 +8,7 @@ import { HeaderNav } from "@/components/HeaderNav";
 import { DemoLockToggle } from "@/components/DemoLockToggle";
 import { prisma } from "@/lib/db";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
-import { isDemoMode } from "@/lib/pool-mode";
+import { effectiveCurrentWeek, isDemoMode } from "@/lib/pool-mode";
 import Link from "next/link";
 import { NicknameEditor } from "@/components/NicknameEditor";
 
@@ -31,7 +31,10 @@ export default async function AppLayout({
     where: {
       poolId_number: {
         poolId: membership.poolId,
-        number: membership.pool.currentWeek,
+        number: effectiveCurrentWeek(
+          membership.pool.mode,
+          membership.pool.currentWeek
+        ),
       },
     },
   });
@@ -58,7 +61,10 @@ export default async function AppLayout({
           </Link>
           <div className="flex items-center gap-1.5 sm:gap-2 text-sm min-w-0 flex-1 justify-center overflow-hidden">
             <span className="chip chip-gold shrink-0">
-              W{membership.pool.currentWeek}
+              W{effectiveCurrentWeek(
+                membership.pool.mode,
+                membership.pool.currentWeek
+              )}
             </span>
             {lockIso && (
               <span className="min-w-0 overflow-hidden">
