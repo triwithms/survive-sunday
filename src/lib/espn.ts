@@ -1,4 +1,7 @@
 import "server-only";
+import { ESPN_TEAM_IDS, abbrFromEspnTeamId, espnAbbr, normAbbr } from "@/lib/espn-teams";
+
+export { ESPN_TEAM_IDS, abbrFromEspnTeamId, espnAbbr, normAbbr };
 
 /**
  * ESPN public site JSON (undocumented). Used only for this private friends PWA.
@@ -18,64 +21,6 @@ export const ESPN_BROWSER_HEADERS: HeadersInit = {
   Referer: "https://www.espn.com/nfl/",
   "Accept-Language": "en-CA,en;q=0.9",
 };
-
-/** App abbr (WAS) → ESPN team id. */
-export const ESPN_TEAM_IDS: Record<string, string> = {
-  ARI: "22",
-  ATL: "1",
-  BAL: "33",
-  BUF: "2",
-  CAR: "29",
-  CHI: "3",
-  CIN: "4",
-  CLE: "5",
-  DAL: "6",
-  DEN: "7",
-  DET: "8",
-  GB: "9",
-  HOU: "34",
-  IND: "11",
-  JAX: "30",
-  KC: "12",
-  LV: "13",
-  LAC: "24",
-  LAR: "14",
-  MIA: "15",
-  MIN: "16",
-  NE: "17",
-  NO: "18",
-  NYG: "19",
-  NYJ: "20",
-  PHI: "21",
-  PIT: "23",
-  SF: "25",
-  SEA: "26",
-  TB: "27",
-  TEN: "10",
-  WAS: "28",
-};
-
-const ESPN_ID_TO_ABBR: Record<string, string> = Object.fromEntries(
-  Object.entries(ESPN_TEAM_IDS).map(([abbr, id]) => [id, abbr])
-);
-
-export function normAbbr(abbr: string): string {
-  const u = abbr.trim().toUpperCase();
-  return u === "WSH" ? "WAS" : u;
-}
-
-/** App abbr (WAS) → ESPN site abbreviation (WSH). */
-export function espnAbbr(abbr: string): string {
-  const key = normAbbr(abbr);
-  return key === "WAS" ? "WSH" : key;
-}
-
-export function abbrFromEspnTeamId(
-  id: string | number | null | undefined
-): string | null {
-  if (id == null || id === "") return null;
-  return ESPN_ID_TO_ABBR[String(id)] ?? null;
-}
 
 export async function fetchEspnJson<T>(
   pathWithQuery: string,
