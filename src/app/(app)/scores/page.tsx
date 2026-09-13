@@ -6,8 +6,8 @@ import {
   syncWeekScoresFromEspn,
   shouldPollLiveScores,
 } from "@/lib/live-scores";
-import { formatKickoff } from "@/lib/utils";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
+import { ScoreGameCard } from "@/components/ScoreGameCard";
 import {
   effectiveCurrentWeek,
   weeksForParticipants,
@@ -16,6 +16,12 @@ import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
+import { espnAbbr } from "@/lib/espn-teams";
+
+function teamLogoUrl(abbr: string, stored: string | null | undefined) {
+  if (stored) return stored;
+  return `https://a.espncdn.com/i/teamlogos/nfl/500/${espnAbbr(abbr).toLowerCase()}.png`;
+}
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -87,6 +93,16 @@ export default async function ScoresPage({
     where: { id: selectedRef.id },
     include: { games: { orderBy: { kickoff: "asc" } } },
   });
+  const teamAbbrs = [
+    ...new Set(week.games.flatMap((g) => [g.awayAbbr, g.homeAbbr])),
+  ];
+  const logoRows = teamAbbrs.length
+    ? await prisma.team.findMany({
+        where: { abbr: { in: teamAbbrs } },
+        select: { abbr: true, logoUrl: true },
+      })
+    : [];
+  const logoByAbbr = new Map(logoRows.map((t) => [t.abbr, t.logoUrl]));
   const locked = isWeekLocked(week);
   const revealAllPicks = locked || week.number < currentWeek;
   const members = await prisma.membership.findMany({
@@ -119,7 +135,8 @@ export default async function ScoresPage({
           {week.label} scores
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Live scores from ESPN while games are on. Finals auto-grade picks.
+          Live scores from ESPN while games are on — quarter and clock when
+          the feed has them. Finals auto-grade picks.
           {liveCount > 0 ? ` · ${liveCount} live now` : ""}
         </p>
         {espnSyncError && (
@@ -144,89 +161,24 @@ export default async function ScoresPage({
         </div>
       ) : (
         <ul className="space-y-2">
-          {games.map((g) => {
-            const isLive = g.status === "live";
-            const isFinal = g.status === "final";
-            const awayWins =
-              isFinal &&
-              g.scoreAway != null &&
-              g.scoreHome != null &&
-              g.scoreAway > g.scoreHome;
-            const homeWins =
-              isFinal &&
-              g.scoreAway != null &&
-              g.scoreHome != null &&
-              g.scoreHome > g.scoreAway;
-            return (
-              <li
-                key={g.id}
-                className={`card-glass p-3 ${
-                  isLive ? "border border-field-400/50" : ""
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="font-mono min-w-0">
-                    <span
-                      className={
-                        awayWins || (isLive && (g.scoreAway ?? 0) > (g.scoreHome ?? 0))
-                          ? "text-field-400 font-semibold"
-                          : ""
-                      }
-                    >
-                      {g.awayAbbr}
-                    </span>{" "}
-                    {g.scoreAway != null ? (
-                      <span className={`text-lg ${isLive ? "text-gold-400" : ""}`}>
-                        {g.scoreAway}
-                      </span>
-                    ) : (
-                      <span className="text-[var(--text-muted)]">–</span>
-                    )}
-                    <span className="text-[var(--text-muted)] mx-2">@</span>
-                    {g.scoreHome != null ? (
-                      <span className={`text-lg ${isLive ? "text-gold-400" : ""}`}>
-                        {g.scoreHome}
-                      </span>
-                    ) : (
-                      <span className="text-[var(--text-muted)]">–</span>
-                    )}{" "}
-                    <span
-                      className={
-                        homeWins || (isLive && (g.scoreHome ?? 0) > (g.scoreAway ?? 0))
-                          ? "text-field-400 font-semibold"
-                          : ""
-                      }
-                    >
-                      {g.homeAbbr}
-                    </span>
-                  </div>
-                  <span
-                    className={`chip shrink-0 ${
-                      isFinal
-                        ? "chip-gold"
-                        : isLive
-                          ? "chip-live"
-                          : "chip-one-loss"
-                    }`}
-                  >
-                    {isLive ? "LIVE" : g.status}
-                  </span>
-                </div>
-                <p className="text-xs text-[var(--text-muted)] mt-1">
-                  {isLive && g.note
-                    ? g.note
-                    : `${formatKickoff(g.kickoff)}${
-                        g.network ? ` · ${g.network}` : ""
-                      }`}
-                </p>
-                {!isLive && g.note && (
-                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                    {g.note}
-                  </p>
-                )}
-              </li>
-            );
-          })}
+          {games.map((g) => (
+            <ScoreGameCard
+              key={g.id}
+              game={{
+                id: g.id,
+                awayAbbr: g.awayAbbr,
+                homeAbbr: g.homeAbbr,
+                scoreAway: g.scoreAway,
+                scoreHome: g.scoreHome,
+                status: g.status,
+                note: g.note,
+                kickoff: g.kickoff,
+                network: g.network,
+                awayLogoUrl: teamLogoUrl(g.awayAbbr, logoByAbbr.get(g.awayAbbr)),
+                homeLogoUrl: teamLogoUrl(g.homeAbbr, logoByAbbr.get(g.homeAbbr)),
+              }}
+            />
+          ))}
         </ul>
       )}
 
