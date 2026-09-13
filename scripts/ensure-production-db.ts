@@ -38,26 +38,6 @@ async function main() {
     });
     if (pool) {
       const users = await prisma.user.count();
-      try {
-        const stilo = await prisma.membership.updateMany({
-          where: {
-            poolId: pool.id,
-            nickname: "Long Snapper",
-            realName: "J S",
-          },
-          data: { realName: "John Stilo" },
-        });
-        if (stilo.count > 0) {
-          console.log(
-            `[ensure-db] updated Long Snapper realName J S → John Stilo (${stilo.count})`
-          );
-        }
-      } catch (error) {
-        console.warn(
-          "[ensure-db] Long Snapper realName patch skipped (build continues)",
-          error
-        );
-      }
       console.log(`[ensure-db] demo pool present (${users} users)`);
       return;
     }

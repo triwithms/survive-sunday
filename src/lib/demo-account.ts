@@ -58,7 +58,7 @@ const DEMO_PROFILES: Record<
   },
   "steve@survivesunday.demo": {
     nickname: "Steve",
-    realName: "Steve",
+    realName: "Steve Venerus",
     role: "member",
   },
 };
