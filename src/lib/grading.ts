@@ -1,4 +1,5 @@
 import { prisma } from "./db";
+import { scheduleResultsNotice } from "./notification-events";
 
 export type GradeResult = "win" | "loss" | "push";
 
@@ -137,13 +138,18 @@ export async function undoPickMembershipEffect(
 
 /** Grade all pending picks for games that are final. Idempotent: skips non-pending. */
 export async function gradeWeekPicks(weekId: string) {
+  const weekRow = await prisma.week.findUnique({
+    where: { id: weekId },
+    select: { number: true },
+  });
+  const weekNumber = weekRow?.number ?? 0;
   const picks = await prisma.pick.findMany({
     where: {
       weekId,
       OR: [{ result: null }, { result: "pending" }],
       NOT: { source: "missed" },
     },
-    include: { game: true, membership: true },
+    include: { game: true, membership: { include: { user: true } } },
   });
 
   const graded: string[] = [];
@@ -157,11 +163,25 @@ export async function gradeWeekPicks(weekId: string) {
       data: { result, gradedAt: new Date() },
     });
 
+    const before = pick.membership;
+    let afterStatus = before.status;
     if (result === "loss" || result === "push") {
-      await applyLossToMembership(pick.membershipId);
+      afterStatus = (await applyLossToMembership(pick.membershipId)).status;
     } else if (result === "win") {
-      await applyWinToMembership(pick.membershipId);
+      afterStatus = (await applyWinToMembership(pick.membershipId)).status;
     }
+    scheduleResultsNotice({
+      user: before.user,
+      nickname: before.nickname,
+      weekNumber,
+      weekId,
+      pickId: pick.id,
+      teamAbbr: pick.teamAbbr,
+      result,
+      status: afterStatus,
+      mulliganBurned:
+        before.mulliganRemaining && afterStatus === "one_loss",
+    });
     graded.push(pick.id);
   }
   return graded;
@@ -175,7 +195,10 @@ export async function gradeWeekPicks(weekId: string) {
 export async function applyMissedPicks(weekId: string) {
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: weekId },
-    include: { pool: { include: { memberships: true } }, picks: true },
+    include: {
+      pool: { include: { memberships: { include: { user: true } } } },
+      picks: true,
+    },
   });
 
   // Week-level short-circuit when every eligible member already handled
@@ -203,7 +226,18 @@ export async function applyMissedPicks(weekId: string) {
       continue;
     }
 
-    await applyLossToMembership(m.id);
+    const after = await applyLossToMembership(m.id);
+    scheduleResultsNotice({
+      user: m.user,
+      nickname: m.nickname,
+      weekNumber: week.number,
+      weekId: week.id,
+      pickId: `${m.id}:missed`,
+      teamAbbr: MISSED_TEAM,
+      result: "missed",
+      status: after.status,
+      mulliganBurned: m.mulliganRemaining && after.status === "one_loss",
+    });
 
     await prisma.auditLog.create({
       data: {

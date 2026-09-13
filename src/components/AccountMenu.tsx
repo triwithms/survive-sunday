@@ -103,7 +103,7 @@ export function AccountMenu({
         onClick={() => setMenuOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={menuOpen}
-        aria-label="Account menu — nickname, cell, and Sign out"
+        aria-label="Account menu — nickname, cell, notification preferences, and Sign out"
         data-testid="account-menu"
         data-user-id={userId}
         data-user-role={role}
@@ -165,6 +165,15 @@ export function AccountMenu({
           >
             {phoneE164 ? "Edit cell number" : "Add cell number"}
           </button>
+          <Link
+            href="/account/notifications"
+            prefetch={false}
+            className={rowBtn}
+            onClick={() => setMenuOpen(false)}
+            data-testid="notification-prefs"
+          >
+            Notification preferences
+          </Link>
           <button
             type="button"
             className={rowBtn}

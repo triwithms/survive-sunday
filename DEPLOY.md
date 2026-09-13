@@ -50,7 +50,7 @@ Click-by-click:
 4. In Vercel, add the two names above. Environment: **Production** (add Preview too if you want to test the preview URL first).
 5. Merge this pull request. If you added the keys after a deploy already ran, open Vercel → Deployments → the latest Production row → ⋮ → **Redeploy**.
 
-Without those two keys, Forgot password says we couldn’t send a code.
+Without those two keys, Forgot password says we couldn’t send a code. The same two keys send pool emails (pick saved, results, missing-pick reminder, commissioner notes) to friends who left those types on under **Account → Notification preferences**.
 
 Optional texts (only if a friend saved a cell). Skip for today if email is enough:
 

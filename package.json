@@ -32,6 +32,7 @@
     "verify:auth-rewrite": "tsx scripts/verify-auth-rewrite.ts",
     "verify:live-feeds": "tsx scripts/verify-live-feeds.ts",
     "verify:week1-pick-change": "tsx scripts/verify-week1-pick-change.ts",
+    "verify:notification-prefs": "tsx scripts/verify-notification-prefs.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {

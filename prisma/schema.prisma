@@ -24,6 +24,8 @@ model User {
   poolAccessRoles PoolAccessRole[]
   auditLogs      AuditLog[] @relation("AuditActor")
   otpChallenges  OtpChallenge[]
+  notificationPreference NotificationPreference?
+  notificationSends      NotificationSend[]
 }
 
 model Account {
@@ -208,6 +210,37 @@ model Pick {
   game         Game?       @relation(fields: [gameId], references: [id])
 
   @@unique([membershipId, weekId])
+}
+
+/// Per-user alert types. Password-reset codes are NOT gated by this row.
+model NotificationPreference {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  missingPickReminder  Boolean  @default(true)
+  pickConfirmed        Boolean  @default(true)
+  resultsGraded        Boolean  @default(true)
+  eliminationMulligan  Boolean  @default(true)
+  poolAnnouncements    Boolean  @default(true)
+  scoreUpdates         Boolean  @default(false)
+  injuryNotes          Boolean  @default(false)
+  /// Stored only — PWA web push is not wired yet.
+  pushEnabled          Boolean  @default(false)
+  updatedAt            DateTime @updatedAt
+}
+
+/// Idempotency log so reminders / grade emails do not fire twice.
+model NotificationSend {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  dedupeKey String
+  channel   String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, type, dedupeKey])
+  @@index([userId, createdAt])
 }
 
 model AuditLog {
