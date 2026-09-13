@@ -117,10 +117,12 @@ export function NflStandingsClient({
   teams,
   asOf,
   note,
+  demoMode = false,
 }: {
   teams: StandingRow[];
   asOf?: string;
   note?: string;
+  demoMode?: boolean;
 }) {
   const [tab, setTab] = useState<"division" | "overall" | "afc" | "nfc">(
     "division"
@@ -193,9 +195,11 @@ export function NflStandingsClient({
       </div>
 
       <p className="text-xs text-[var(--text-muted)]">
-        <span className="chip chip-gold mr-2">Demo standings</span>
+        {demoMode && <span className="chip chip-gold mr-2">Demo standings</span>}
         {asOf ? `As of ${asOf}. ` : ""}
-        {note || "Not a live NFL API feed."}
+        {demoMode
+          ? note || "Not a live NFL API feed."
+          : "Research table for picking — not an official NFL feed."}
       </p>
       <p className="text-xs text-[var(--text-muted)]">
         <span className="font-medium text-[var(--text-primary)]">2025 rank</span>

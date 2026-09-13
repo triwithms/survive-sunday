@@ -249,8 +249,8 @@ export function PickClient({
             Week {weekNumber} is locked (season in progress).
           </p>
           <p className="text-[var(--text-muted)]">
-            Picks cannot change. Commissioner can reopen for demo from the
-            Admin page (&quot;Reopen week for picks&quot;).
+            Picks cannot change. The commissioner can reopen the week from
+            the Admin page (&quot;Reopen week for picks&quot;).
           </p>
         </div>
       )}

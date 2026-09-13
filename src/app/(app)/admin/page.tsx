@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AdminPanel } from "@/components/AdminPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
+import { PoolModePanel } from "@/components/PoolModePanel";
+import { isDemoMode, normalizePoolMode } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -22,11 +24,11 @@ export default async function AdminPage() {
             Commissioner only
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-2">
-            This area is for pool commissioners. Switch to the Commissioner demo
+            This area is for pool commissioners. Sign in with the commissioner
             account to manage picks and import week results.
           </p>
         </div>
-        <CommissionerSwitch />
+        {isDemoMode(me.pool.mode) && <CommissionerSwitch />}
       </div>
     );
   }
@@ -56,11 +58,13 @@ export default async function AdminPage() {
           Commissioner
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          Light admin — lock override, import picks, simulate scores, edit
-          roster real names, remove players. Pick and name edits are always
+          Light admin — pool mode, reset, roster, lock override, import picks,
+          simulate scores, remove players. Pick and name edits are always
           audited.
         </p>
       </div>
+
+      <PoolModePanel initialMode={normalizePoolMode(me.pool.mode)} />
 
       <Link
         href="/admin/import"

@@ -8,7 +8,7 @@ import { HeaderNav } from "@/components/HeaderNav";
 import { DemoLockToggle } from "@/components/DemoLockToggle";
 import { prisma } from "@/lib/db";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
-import { INVITE_CODE } from "@/lib/constants";
+import { isDemoMode } from "@/lib/pool-mode";
 import Link from "next/link";
 import { NicknameEditor } from "@/components/NicknameEditor";
 
@@ -42,7 +42,8 @@ export default async function AppLayout({
     !locked && membership.status !== "eliminated" && membership.role !== "admin";
   const showMutedChangePick =
     !locked && membership.role === "admin";
-  const isDemoPool = membership.pool.inviteCode === INVITE_CODE;
+  const showDemoLockToggle =
+    isDemoMode(membership.pool.mode) && membership.role === "admin";
 
   return (
     <div key={session.user.id} className="min-h-dvh flex flex-col pb-24 overflow-x-hidden max-w-full">
@@ -92,7 +93,7 @@ export default async function AppLayout({
           canChangePick={canChangePick}
           showMutedChangePick={showMutedChangePick}
         />
-        {isDemoPool && week && (
+        {showDemoLockToggle && week && (
           <DemoLockToggle locked={locked} weekNumber={week.number} />
         )}
       </header>

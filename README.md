@@ -29,7 +29,20 @@ Or one-shot: `npm run setup && npm run dev`
 npm install && npx prisma db push && npm run seed && npm run build
 ```
 
+## Real mode vs Demo mode (commissioner)
+
+Production should feel like a **private pool**, not a try-it-out site. The commissioner switches this in **Admin → Pool mode**.
+
+| Mode | Friends see |
+|------|-------------|
+| **Real** | Join + Sign in only. No “demo” wording. |
+| **Demo** | Practice account picker and demo copy (for you to try the app). |
+
+**Go live for Week 1:** Admin → **Reset pool** (type `RESET`; leave “switch to Real mode” ticked) → **Import week picks**. Step-by-step: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
+
 ## Demo login
+
+Shown only while the pool is in **Demo mode**. Hidden in Real mode.
 
 | Account | Email | Password |
 |---------|-------|----------|

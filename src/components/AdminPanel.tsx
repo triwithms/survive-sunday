@@ -95,8 +95,8 @@ export function AdminPanel({
           </button>
         </div>
         <p className="text-xs text-[var(--text-muted)]">
-          Reopen (demo): sets lockAt to now+7 days, clears override +
-          missedPicksAppliedAt, removes MISS picks and undoes those losses.
+          Reopen: sets lockAt to now+7 days, clears override +
+          missedPicksAppliedAt, removes missed picks and undoes those losses.
           Real/imported picks stay.
         </p>
       </section>

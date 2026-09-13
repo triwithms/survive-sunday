@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 /**
- * Visible demo/testing control: Before deadline | After deadline.
- * API modes remain before_lock / after_lock. Available to any demo-pool member.
+ * Visible testing control: Before deadline | After deadline.
+ * API modes remain before_lock / after_lock. Commissioner-only in Demo mode.
  */
 export function DemoLockToggle({
   locked,

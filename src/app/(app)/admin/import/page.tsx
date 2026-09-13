@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ImportPicksForm } from "@/components/ImportPicksForm";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
+import { isDemoMode } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -21,11 +22,11 @@ export default async function ImportPicksPage() {
             Commissioner only
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-2">
-            Import is available to the pool commissioner. Switch to the
-            Commissioner demo account to continue.
+            Import is available to the pool commissioner. Sign in with the
+            commissioner account to continue.
           </p>
         </div>
-        <CommissionerSwitch />
+        {isDemoMode(me.pool.mode) && <CommissionerSwitch />}
       </div>
     );
   }
@@ -48,8 +49,10 @@ export default async function ImportPicksPage() {
           and every change is audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Demo Week 1 may already be seeded; set the week number to the week you’re importing,
-          then open Pool or Scores for that week.
+          {isDemoMode(me.pool.mode)
+            ? "Week 1 may already have seeded practice picks. Reset the pool first if you want a clean import, then set the week number."
+            : "If the board still has old picks, use Commissioner → Reset pool first, then import Week 1 here."}{" "}
+          After import, open Pool or Scores for that week.
         </p>
       </div>
 

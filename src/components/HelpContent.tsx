@@ -1,4 +1,4 @@
-export function HelpContent() {
+export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }) {
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
       <aside className="card-glass border border-gold-400/30 p-4 space-y-2" aria-label="Feature availability">
@@ -43,7 +43,7 @@ export function HelpContent() {
         <p className="text-[var(--text-muted)] mb-4">A visual tour of the main screens you&apos;ll use each week.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 space-y-0">
           {[
-            { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: 'Sign in (demo or Google)' },
+            { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: showDemoCopy ? 'Sign in (demo or Google)' : 'Sign in (Google or email)' },
             { src: '/help-preview/02-pool-home.png', alt: 'Pool home / Board entry', caption: 'Pool home / Board entry' },
             { src: '/help-preview/03-pick-this-weeks-games.png', alt: 'Pick — This week’s games', caption: 'Pick — This week’s games' },
             { src: '/help-preview/04-team-research.png', alt: 'Team research', caption: 'Team research' },
@@ -199,7 +199,9 @@ export function HelpContent() {
           <li className="text-[var(--text-primary)]">**See and edit real names** on the Commissioner page (nickname stays the same). Each change is audit-logged.</li>
           <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> resend digests or late-pick reminders.</li>
           <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> enable the WhatsApp group stub and Twilio / Resend configuration.</li>
-          <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> mark demo-mode team data so “demo” labels stay honest.</li>
+          {showDemoCopy && (
+            <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> mark demo-mode team data so “demo” labels stay honest.</li>
+          )}
         </ul>
         <p className="text-[var(--text-muted)] mb-2">**Important:** you cannot silently edit another player’s pick. Any such change must leave an **audit log** entry visible to the pool.</p>
         <p className="text-[var(--text-muted)] mb-2">Remind the group: this is entertainment among friends — no in-app betting.</p>
