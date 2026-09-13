@@ -137,6 +137,91 @@ export function possessionAbbrFromSituation(
   return normAbbr(m[1]);
 }
 
+function quarterOrdinal(n: number): string {
+  if (n === 1) return "1ST";
+  if (n === 2) return "2ND";
+  if (n === 3) return "3RD";
+  if (n === 4) return "4TH";
+  return `${n}TH`;
+}
+
+/** TV-style period from a stored clock ("Q4 9:00" → 4TH, 9:00). */
+export function formatScorebugPeriod(
+  clock: string | null | undefined
+): { period: string; time: string | null } | null {
+  if (!clock) return null;
+  const q = clock.match(/^Q([1-4])(?:\s+(\d{1,2}:\d{2}))?$/i);
+  if (q) {
+    return { period: quarterOrdinal(Number(q[1])), time: q[2] ?? null };
+  }
+  const ot = clock.match(/^OT\d*(?:\s+(\d{1,2}:\d{2}))?$/i);
+  if (ot) return { period: "OT", time: ot[1] ?? null };
+  if (/half/i.test(clock)) return { period: "HALF", time: null };
+  const end = clock.match(/^End of (\d+)(?:st|nd|rd|th)$/i);
+  if (end) return { period: `END ${quarterOrdinal(Number(end[1]))}`, time: null };
+  return { period: clock.toUpperCase(), time: null };
+}
+
+export function formatScorebugPeriodLine(
+  clock: string | null | undefined
+): string | null {
+  const parts = formatScorebugPeriod(clock);
+  if (!parts) return null;
+  return parts.time ? `${parts.period} | ${parts.time}` : parts.period;
+}
+
+export type SituationParts = {
+  possession: string | null;
+  down: string | null;
+  spot: string | null;
+};
+
+/** Split a stored situation line into possession / down / spot. */
+export function parseSituationParts(
+  situation: string | null | undefined
+): SituationParts {
+  if (!situation) return { possession: null, down: null, spot: null };
+  let possession: string | null = null;
+  let down: string | null = null;
+  let spot: string | null = null;
+  for (const part of situation.split(/\s*·\s*/).filter(Boolean)) {
+    const ball = part.match(/^([A-Za-z]{2,3})\s+ball$/i);
+    if (ball) {
+      possession = normAbbr(ball[1]);
+      continue;
+    }
+    if (/\d(?:st|nd|rd|th)\s*&\s*/i.test(part) || /\bgoal\b/i.test(part)) {
+      down = part;
+      continue;
+    }
+    if (/^[A-Za-z]{2,3}\s+\d{1,2}$/.test(part)) {
+      spot = part.replace(/\bWSH\b/gi, "WAS");
+    }
+  }
+  return { possession, down, spot };
+}
+
+export type LiveScorebugView = {
+  down: string | null;
+  periodLine: string | null;
+  spot: string | null;
+  possession: string | null;
+};
+
+/** Scorebug strip from stored ESPN note — no invented down or clock. */
+export function formatLiveScorebug(
+  note: string | null | undefined
+): LiveScorebugView {
+  const { clock, situation } = splitEspnGameNote(note);
+  const sit = parseSituationParts(situation);
+  return {
+    down: sit.down ? sit.down.toUpperCase() : null,
+    periodLine: formatScorebugPeriodLine(clock),
+    spot: sit.spot,
+    possession: sit.possession,
+  };
+}
+
 /** Compact kickoff: "Today 1:00 p.m. ET" or "Mon 8:15 p.m. ET". */
 export function formatKickoffForScores(
   kickoff: Date | string | null | undefined,
