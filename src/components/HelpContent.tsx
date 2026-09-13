@@ -195,6 +195,7 @@ export function HelpContent() {
           <li className="text-[var(--text-primary)]">**Override lock time** when needed (testing or rare schedule changes).</li>
           <li className="text-[var(--text-primary)]">Manual overrides for ties, postponements, and **force-resolve** edge cases.</li>
           <li className="text-[var(--text-primary)]">**Remove players** who shouldn’t be in the pool.</li>
+          <li className="text-[var(--text-primary)]">**Edit real names** on the Commissioner page (nickname stays the same). Each change is audit-logged.</li>
           <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> resend digests or late-pick reminders.</li>
           <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> enable the WhatsApp group stub and Twilio / Resend configuration.</li>
           <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> mark demo-mode team data so “demo” labels stay honest.</li>

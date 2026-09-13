@@ -56,8 +56,8 @@ export default async function AdminPage() {
           Commissioner
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          Light admin — lock override, import picks, simulate scores, remove
-          players. Pick edits are always audited.
+          Light admin — lock override, import picks, simulate scores, edit real
+          names, remove players. Pick and name edits are always audited.
         </p>
       </div>
 
@@ -73,6 +73,7 @@ export default async function AdminPage() {
         members={members.map((m) => ({
           id: m.id,
           nickname: m.nickname,
+          realName: m.realName,
           status: m.status,
           role: m.role,
         }))}

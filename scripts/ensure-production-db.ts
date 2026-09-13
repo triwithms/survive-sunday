@@ -38,6 +38,19 @@ async function main() {
     });
     if (pool) {
       const users = await prisma.user.count();
+      const stilo = await prisma.membership.updateMany({
+        where: {
+          poolId: pool.id,
+          nickname: "Long Snapper",
+          realName: "J S",
+        },
+        data: { realName: "John Stilo" },
+      });
+      if (stilo.count > 0) {
+        console.log(
+          `[ensure-db] updated Long Snapper realName J S → John Stilo (${stilo.count})`
+        );
+      }
       console.log(`[ensure-db] demo pool present (${users} users)`);
       return;
     }
