@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 import { INVITE_CODE } from "./constants";
-import { getPrimaryPool } from "./pool-mode-db";
 import { isDemoEmail } from "./pool-mode";
+import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
 import {
   CLAIM_ERRORS,
   CLAIM_PASSWORD_MIN,
@@ -11,8 +11,16 @@ import {
   type ClaimableSeat,
 } from "./claim-seat";
 
+async function primaryPool() {
+  const pool = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
+  if (pool) {
+    await applyCanonicalRosterNamesThrottled(prisma, pool.id);
+  }
+  return pool;
+}
+
 export async function listClaimableSeats(): Promise<ClaimableSeat[]> {
-  const pool = await getPrimaryPool();
+  const pool = await primaryPool();
   if (!pool) return [];
 
   const members = await prisma.membership.findMany({
@@ -207,7 +215,7 @@ export async function joinOrClaimSeat(
     return { ok: false, status: 400, error: CLAIM_ERRORS.missingFields };
   }
 
-  const pool = await getPrimaryPool();
+  const pool = await primaryPool();
   if (!pool) {
     return { ok: false, status: 404, error: CLAIM_ERRORS.poolMissing };
   }
