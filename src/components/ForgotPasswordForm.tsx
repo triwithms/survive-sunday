@@ -274,8 +274,8 @@ export function ForgotPasswordForm() {
       {view?.devCode && (
         <p className="mt-4 text-xs text-[var(--text-muted)] card-glass p-3">
           Local/dev only — no email/SMS provider configured. Code:{" "}
-          <span className="font-mono text-gold-400 tracking-widest">
-            {view.devCode}
+          <span className="font-mono text-gold-400 text-base tracking-normal">
+            {view.devCode.split("").join(" ")}
           </span>
         </p>
       )}
