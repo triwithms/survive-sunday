@@ -6,6 +6,7 @@ import {
   recomputeWeeksSurvived,
 } from "@/lib/grading";
 import { fetchEspnJson, normAbbr } from "@/lib/espn";
+import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
 
 /** ESPN → app team abbreviation. */
 export function fromEspnAbbr(abbr: string): string {
@@ -157,6 +158,7 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
   final: number;
   scheduled: number;
   graded: string[];
+  standingsUpdated: number;
   source: "espn";
 }> {
   const week = await prisma.week.findUniqueOrThrow({
@@ -241,6 +243,7 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
 
   const graded = await gradeWeekPicks(weekId);
   await recomputeWeeksSurvived(week.poolId);
+  const standings = await syncTeamStandingsFromEspn();
 
   return {
     updated,
@@ -248,6 +251,7 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
     final,
     scheduled,
     graded,
+    standingsUpdated: standings.updated,
     source: "espn",
   };
 }
