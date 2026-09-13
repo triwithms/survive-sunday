@@ -73,8 +73,8 @@ export function PoolModePanel({
       setMode(next);
       setMsg(
         next === "live"
-          ? "Real mode is on. The pool is Week 1. Week 2 practice picks are cleared. Friends pick their name from the live roster, then set their own email and password."
-          : "Demo mode is on. Week 2 is the commissioner sandbox. The practice picker is visible on home and sign-in."
+          ? "Real mode is on. The pool is Week 1. Week 2 stays on the schedule. Friends pick their name from the live roster, then set their own email and password."
+          : "Demo mode is on. The practice picker is visible on home and sign-in."
       );
       router.refresh();
     } catch {
@@ -137,8 +137,8 @@ export function PoolModePanel({
           <h2 className="font-semibold text-lg mt-1">Real mode vs Demo mode</h2>
           <p className="text-sm text-[var(--text-muted)] mt-1">
             Tap a button to switch. Real mode is Week 1 (this NFL week) and
-            hides the practice picker from friends. Week 2 exists only in Demo
-            mode, for you.
+            hides the practice picker from friends. Week 2 stays on the
+            schedule — friends can view it and pick when that week unlocks.
           </p>
         </div>
         <p className="text-sm">
@@ -178,11 +178,12 @@ export function PoolModePanel({
         <ul className="text-xs text-[var(--text-muted)] list-disc pl-5 space-y-1">
           <li>
             <strong className="text-[var(--text-primary)]">Real:</strong> Week 1
-            board and picks. Home shows Who are you? (live roster), Join, and Sign in.
+            board and picks. Week 2 is a real upcoming week. Home shows Who are
+            you? (live roster), Join, and Sign in.
           </li>
           <li>
-            <strong className="text-[var(--text-primary)]">Demo:</strong> Week 2
-            sandbox for you, plus the practice picker on this Admin flow.
+            <strong className="text-[var(--text-primary)]">Demo:</strong> practice
+            picker on home and sign-in. Same NFL weeks, including Week 2.
           </li>
         </ul>
       </section>

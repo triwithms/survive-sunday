@@ -7,7 +7,7 @@ export type WeekNavOption = {
 export const WEEK_NAV_PATHS = {
   "/pick": { allowFuture: true },
   "/pool": { allowFuture: false },
-  "/scores": { allowFuture: false },
+  "/scores": { allowFuture: true },
   "/schedule": { allowFuture: true },
 } as const;
 

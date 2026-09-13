@@ -88,8 +88,8 @@ export default async function AdminPage() {
           and name edits are always audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Mode switch is the first card below. Real mode is Week 1. Week 2 is
-          Demo only.
+          Mode switch is the first card below. Real mode is Week 1. Week 2
+          stays on the schedule for everyone.
         </p>
       </div>
 

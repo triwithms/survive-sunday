@@ -1,13 +1,13 @@
 {
-  "as_of": "2026-09-12",
+  "as_of": "2026-09-13",
   "season": "2026",
   "week": 2,
   "week_status": "upcoming",
-  "notes": "Demo Week 2 slate for Survive Sunday \u2014 first kickoff Thu Sep 17 so picks stay open. Matchups are demo-friendly pairings (not claimed as official 2026 Week 2).",
+  "notes": "Official 2026 NFL Week 2 slate for Survive Sunday. First kickoff Thu Sep 17 8:15 p.m. ET (DET @ BUF). Not demo pairings.",
   "schedule": [
     {
-      "away": "Dallas Cowboys",
-      "home": "New York Giants",
+      "away": "Detroit Lions",
+      "home": "Buffalo Bills",
       "kickoff_et": "2026-09-17T20:15:00-04:00",
       "kickoff_display_et": "Thu Sep 17, 8:15 p.m. ET",
       "network": "Prime Video",
@@ -16,8 +16,18 @@
       "venue_note": null
     },
     {
-      "away": "Kansas City Chiefs",
-      "home": "Philadelphia Eagles",
+      "away": "Carolina Panthers",
+      "home": "Atlanta Falcons",
+      "kickoff_et": "2026-09-20T13:00:00-04:00",
+      "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
+      "network": "FOX",
+      "status": "upcoming",
+      "score": null,
+      "venue_note": null
+    },
+    {
+      "away": "Cincinnati Bengals",
+      "home": "Houston Texans",
       "kickoff_et": "2026-09-20T13:00:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
       "network": "CBS",
@@ -26,18 +36,8 @@
       "venue_note": null
     },
     {
-      "away": "Buffalo Bills",
-      "home": "Miami Dolphins",
-      "kickoff_et": "2026-09-20T13:00:00-04:00",
-      "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
-      "network": "CBS",
-      "status": "upcoming",
-      "score": null,
-      "venue_note": null
-    },
-    {
-      "away": "Baltimore Ravens",
-      "home": "Cleveland Browns",
+      "away": "Cleveland Browns",
+      "home": "Tampa Bay Buccaneers",
       "kickoff_et": "2026-09-20T13:00:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
       "network": "CBS",
@@ -47,10 +47,10 @@
     },
     {
       "away": "Green Bay Packers",
-      "home": "Detroit Lions",
+      "home": "New York Jets",
       "kickoff_et": "2026-09-20T13:00:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
-      "network": "Fox",
+      "network": "FOX",
       "status": "upcoming",
       "score": null,
       "venue_note": null
@@ -60,34 +60,14 @@
       "home": "Chicago Bears",
       "kickoff_et": "2026-09-20T13:00:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
-      "network": "Fox",
+      "network": "FOX",
       "status": "upcoming",
       "score": null,
       "venue_note": null
     },
     {
-      "away": "Atlanta Falcons",
-      "home": "Tampa Bay Buccaneers",
-      "kickoff_et": "2026-09-20T13:00:00-04:00",
-      "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
-      "network": "Fox",
-      "status": "upcoming",
-      "score": null,
-      "venue_note": null
-    },
-    {
-      "away": "Carolina Panthers",
-      "home": "New Orleans Saints",
-      "kickoff_et": "2026-09-20T13:00:00-04:00",
-      "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
-      "network": "Fox",
-      "status": "upcoming",
-      "score": null,
-      "venue_note": null
-    },
-    {
-      "away": "Houston Texans",
-      "home": "Indianapolis Colts",
+      "away": "New Orleans Saints",
+      "home": "Baltimore Ravens",
       "kickoff_et": "2026-09-20T13:00:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
       "network": "CBS",
@@ -96,17 +76,17 @@
       "venue_note": null
     },
     {
-      "away": "Jacksonville Jaguars",
+      "away": "Philadelphia Eagles",
       "home": "Tennessee Titans",
       "kickoff_et": "2026-09-20T13:00:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
-      "network": "CBS",
+      "network": "FOX",
       "status": "upcoming",
       "score": null,
       "venue_note": null
     },
     {
-      "away": "New York Jets",
+      "away": "Pittsburgh Steelers",
       "home": "New England Patriots",
       "kickoff_et": "2026-09-20T13:00:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 1:00 p.m. ET",
@@ -116,18 +96,8 @@
       "venue_note": null
     },
     {
-      "away": "Las Vegas Raiders",
+      "away": "Jacksonville Jaguars",
       "home": "Denver Broncos",
-      "kickoff_et": "2026-09-20T16:05:00-04:00",
-      "kickoff_display_et": "Sun Sep 20, 4:05 p.m. ET",
-      "network": "Fox",
-      "status": "upcoming",
-      "score": null,
-      "venue_note": null
-    },
-    {
-      "away": "Los Angeles Chargers",
-      "home": "Arizona Cardinals",
       "kickoff_et": "2026-09-20T16:05:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 4:05 p.m. ET",
       "network": "CBS",
@@ -136,18 +106,48 @@
       "venue_note": null
     },
     {
-      "away": "Seattle Seahawks",
-      "home": "Pittsburgh Steelers",
-      "kickoff_et": "2026-09-20T16:25:00-04:00",
-      "kickoff_display_et": "Sun Sep 20, 4:25 p.m. ET",
-      "network": "Fox",
+      "away": "Las Vegas Raiders",
+      "home": "Los Angeles Chargers",
+      "kickoff_et": "2026-09-20T16:05:00-04:00",
+      "kickoff_display_et": "Sun Sep 20, 4:05 p.m. ET",
+      "network": "CBS",
       "status": "upcoming",
       "score": null,
       "venue_note": null
     },
     {
-      "away": "Los Angeles Rams",
+      "away": "Miami Dolphins",
       "home": "San Francisco 49ers",
+      "kickoff_et": "2026-09-20T16:25:00-04:00",
+      "kickoff_display_et": "Sun Sep 20, 4:25 p.m. ET",
+      "network": "FOX",
+      "status": "upcoming",
+      "score": null,
+      "venue_note": null
+    },
+    {
+      "away": "Seattle Seahawks",
+      "home": "Arizona Cardinals",
+      "kickoff_et": "2026-09-20T16:25:00-04:00",
+      "kickoff_display_et": "Sun Sep 20, 4:25 p.m. ET",
+      "network": "FOX",
+      "status": "upcoming",
+      "score": null,
+      "venue_note": null
+    },
+    {
+      "away": "Washington Commanders",
+      "home": "Dallas Cowboys",
+      "kickoff_et": "2026-09-20T16:25:00-04:00",
+      "kickoff_display_et": "Sun Sep 20, 4:25 p.m. ET",
+      "network": "FOX",
+      "status": "upcoming",
+      "score": null,
+      "venue_note": null
+    },
+    {
+      "away": "Indianapolis Colts",
+      "home": "Kansas City Chiefs",
       "kickoff_et": "2026-09-20T20:20:00-04:00",
       "kickoff_display_et": "Sun Sep 20, 8:20 p.m. ET",
       "network": "NBC",
@@ -156,11 +156,11 @@
       "venue_note": null
     },
     {
-      "away": "Washington Commanders",
-      "home": "Cincinnati Bengals",
+      "away": "New York Giants",
+      "home": "Los Angeles Rams",
       "kickoff_et": "2026-09-21T20:15:00-04:00",
       "kickoff_display_et": "Mon Sep 21, 8:15 p.m. ET",
-      "network": "ESPN",
+      "network": "ESPN/ABC",
       "status": "upcoming",
       "score": null,
       "venue_note": null

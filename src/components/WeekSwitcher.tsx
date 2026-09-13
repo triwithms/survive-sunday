@@ -28,7 +28,7 @@ export function WeekSwitcher({
   allowFuture?: boolean;
 }) {
   const router = useRouter();
-  // Schedule (allowFuture): every week, including TBA. Pool/Scores: past+current with games.
+  // allowFuture (Schedule / Pick / Scores): every week, including TBA. Pool: past+current with games.
   const selectable = selectableWeeks(weeks, currentWeek, allowFuture);
   const selected = weeks.find((week) => week.number === selectedWeek);
   const options =

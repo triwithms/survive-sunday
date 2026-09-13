@@ -4,9 +4,11 @@ import {
   POOL_MODE_DEMO,
   POOL_MODE_LIVE,
   REAL_CURRENT_WEEK,
+  isDemoEmail,
   isLiveMode,
 } from "./pool-mode";
 import { parseUsedTeams } from "./grading";
+import { ensureWeek2Slate } from "./ensure-week-slate";
 
 export type WeekIsolationResult = {
   changed: boolean;
@@ -52,53 +54,74 @@ async function undoSandboxPickEffect(
   }
 }
 
-/** Delete Week 2 sandbox picks and park the live pool on Week 1. */
+/** Clear Week 2 picks that belong to practice (@survivesunday.demo) seats only. */
+async function clearDemoEmailWeek2Picks(
+  db: PrismaClient,
+  poolId: string
+): Promise<number> {
+  const week = await db.week.findUnique({
+    where: { poolId_number: { poolId, number: DEMO_SANDBOX_WEEK } },
+    include: {
+      picks: {
+        include: {
+          membership: { include: { user: { select: { email: true } } } },
+        },
+      },
+    },
+  });
+  if (!week) return 0;
+
+  const demoPicks = week.picks.filter((pick) =>
+    isDemoEmail(pick.membership.user.email)
+  );
+  if (demoPicks.length === 0) return 0;
+
+  const sandboxTeamsByMember = new Map<string, string[]>();
+  for (const pick of demoPicks) {
+    await undoSandboxPickEffect(db, pick.membershipId, pick.result);
+    if (pick.teamAbbr && pick.teamAbbr !== "MISS") {
+      const list = sandboxTeamsByMember.get(pick.membershipId) ?? [];
+      list.push(pick.teamAbbr);
+      sandboxTeamsByMember.set(pick.membershipId, list);
+    }
+  }
+  await db.pick.deleteMany({
+    where: { id: { in: demoPicks.map((pick) => pick.id) } },
+  });
+
+  for (const [membershipId, teams] of sandboxTeamsByMember) {
+    const member = await db.membership.findUnique({
+      where: { id: membershipId },
+      select: { usedTeamsJson: true },
+    });
+    if (!member) continue;
+    const used = parseUsedTeams(member.usedTeamsJson).filter(
+      (team) => !teams.includes(team)
+    );
+    await db.membership.update({
+      where: { id: membershipId },
+      data: { usedTeamsJson: JSON.stringify(used) },
+    });
+  }
+
+  return demoPicks.length;
+}
+
+/**
+ * Park the live pool on Week 1. Restore the Week 2 NFL slate.
+ * Clears leftover demo-seat Week 2 picks only — never deletes games
+ * or real players' Week 2 picks.
+ */
 export async function applyRealModeIsolation(
   db: PrismaClient,
   poolId: string
 ): Promise<WeekIsolationResult> {
-  const week = await db.week.findUnique({
-    where: { poolId_number: { poolId, number: DEMO_SANDBOX_WEEK } },
-    include: { picks: true },
-  });
-
-  let clearedPicks = 0;
-  if (week) {
-    const sandboxTeamsByMember = new Map<string, string[]>();
-    for (const pick of week.picks) {
-      await undoSandboxPickEffect(db, pick.membershipId, pick.result);
-      if (pick.teamAbbr && pick.teamAbbr !== "MISS") {
-        const list = sandboxTeamsByMember.get(pick.membershipId) ?? [];
-        list.push(pick.teamAbbr);
-        sandboxTeamsByMember.set(pick.membershipId, list);
-      }
-    }
-    const deleted = await db.pick.deleteMany({ where: { weekId: week.id } });
-    clearedPicks = deleted.count;
-
-    for (const [membershipId, teams] of sandboxTeamsByMember) {
-      const member = await db.membership.findUnique({
-        where: { id: membershipId },
-        select: { usedTeamsJson: true },
-      });
-      if (!member) continue;
-      const used = parseUsedTeams(member.usedTeamsJson).filter(
-        (team) => !teams.includes(team)
-      );
-      await db.membership.update({
-        where: { id: membershipId },
-        data: { usedTeamsJson: JSON.stringify(used) },
-      });
-    }
-
-    await db.week.update({
-      where: { id: week.id },
-      data: {
-        lockOverrideAt: null,
-        missedPicksAppliedAt: null,
-      },
-    });
+  try {
+    await ensureWeek2Slate(db, poolId);
+  } catch (error) {
+    console.warn("Week 2 slate restore skipped", error);
   }
+  const clearedPicks = await clearDemoEmailWeek2Picks(db, poolId);
 
   await db.pool.update({
     where: { id: poolId },
@@ -112,11 +135,16 @@ export async function applyRealModeIsolation(
   };
 }
 
-/** Demo mode: commissioner sandbox sits on Week 2. Does not re-seed picks. */
+/** Demo mode: commissioner practice UX sits on Week 2. Does not re-seed picks. */
 export async function applyDemoModeSandbox(
   db: PrismaClient,
   poolId: string
 ): Promise<WeekIsolationResult> {
+  try {
+    await ensureWeek2Slate(db, poolId);
+  } catch (error) {
+    console.warn("Week 2 slate restore skipped", error);
+  }
   await db.pool.update({
     where: { id: poolId },
     data: { mode: POOL_MODE_DEMO, currentWeek: DEMO_SANDBOX_WEEK },
@@ -129,8 +157,9 @@ export async function applyDemoModeSandbox(
 }
 
 /**
- * If the pool is live, force Week 1 and clear leftover Week 2 picks.
- * No-op when already isolated.
+ * If the pool is live, keep current week on Week 1.
+ * Does not wipe Week 2 picks or games — slate restore happens on deploy
+ * and when the commissioner taps Real mode.
  */
 export async function ensureLiveWeekIsolation(
   db: PrismaClient,
@@ -144,18 +173,22 @@ export async function ensureLiveWeekIsolation(
     };
   }
 
-  const sandbox = await db.week.findUnique({
-    where: { poolId_number: { poolId: pool.id, number: DEMO_SANDBOX_WEEK } },
-    select: { id: true, _count: { select: { picks: true } } },
-  });
   const needsSnap = pool.currentWeek !== REAL_CURRENT_WEEK;
-  const needsClear = Boolean(sandbox && sandbox._count.picks > 0);
-  if (!needsSnap && !needsClear) {
+  if (!needsSnap) {
     return {
       changed: false,
       clearedPicks: 0,
       currentWeek: REAL_CURRENT_WEEK,
     };
   }
-  return applyRealModeIsolation(db, pool.id);
+
+  await db.pool.update({
+    where: { id: pool.id },
+    data: { currentWeek: REAL_CURRENT_WEEK },
+  });
+  return {
+    changed: true,
+    clearedPicks: 0,
+    currentWeek: REAL_CURRENT_WEEK,
+  };
 }
