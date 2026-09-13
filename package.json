@@ -16,6 +16,7 @@
     "verify:session": "node scripts/verify-session-identity.mjs",
     "verify:auth-https": "node scripts/verify-auth-https-cookies.mjs",
     "verify:demo-enter": "node scripts/verify-demo-enter.mjs",
+    "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {
