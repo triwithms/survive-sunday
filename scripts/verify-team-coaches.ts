@@ -5,6 +5,8 @@
 import fs from "fs";
 import path from "path";
 import {
+  coachUrlSlug,
+  espnCoachProfileUrl,
   formatCoachExperience,
   parseEspnCoach,
   parseEspnCoachRefList,
@@ -33,7 +35,8 @@ assert(parsed!.abbreviation === "KC", `abbr ${parsed!.abbreviation}`);
 assert(parsed!.name === "Andy Reid", `name ${parsed!.name}`);
 assert(parsed!.espnCoachId === "17553", "coach id");
 assert(
-  parsed!.espnCoachUrl === "https://www.espn.com/nfl/coach/_/id/17553",
+  parsed!.espnCoachUrl ===
+    "https://www.espn.com/nfl/coaches/_/id/17553/andy-reid",
   "espn url"
 );
 assert(
@@ -60,6 +63,12 @@ assert(
 );
 assert(parseEspnCoach({ firstName: "Nobody" }) === null, "missing team");
 assert(normAbbr("WSH") === "WAS", "WSH → WAS");
+assert(coachUrlSlug("Kevin O'Connell") === "kevin-oconnell", "slug apostrophe");
+assert(
+  espnCoachProfileUrl("2146711", "Kevin O'Connell") ===
+    "https://www.espn.com/nfl/coaches/_/id/2146711/kevin-oconnell",
+  "slug url"
+);
 
 const seedPath = path.resolve(process.cwd(), "data/team_coaches.json");
 assert(fs.existsSync(seedPath), `missing ${seedPath}`);
@@ -78,7 +87,9 @@ assert(abbrs.has("WAS") && !abbrs.has("WSH"), "WAS not WSH");
 for (const row of rows) {
   assert((row.name || "").trim().length > 1, `empty name ${row.abbreviation}`);
   assert(
-    /^https:\/\/www\.espn\.com\/nfl\/coach\/_\/id\//.test(row.espn_coach_url || ""),
+    /^https:\/\/www\.espn\.com\/nfl\/coaches\/_\/id\//.test(
+      row.espn_coach_url || ""
+    ),
     `bad espn url ${row.abbreviation}`
   );
 }

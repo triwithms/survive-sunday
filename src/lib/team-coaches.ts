@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { ESPN_TEAM_IDS, fetchEspnUrlJson, normAbbr } from "@/lib/espn";
 import {
+  espnCoachProfileUrl,
   formatCoachExperience,
   parseEspnCoach,
   parseEspnCoachRefList,
@@ -79,7 +80,7 @@ function loadSeed(): { asOf: string | null; byAbbr: Map<string, ParsedCoach> } {
           typeof row.experience === "number" && Number.isFinite(row.experience)
             ? row.experience
             : null,
-        espnCoachUrl: row.espn_coach_url || null,
+        espnCoachUrl: espnCoachProfileUrl(espnCoachId, name),
       });
     }
     break;

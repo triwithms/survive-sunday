@@ -32,9 +32,25 @@ export function coachDisplayName(row: EspnCoachDetail): string | null {
   return name || null;
 }
 
-export function espnCoachProfileUrl(id: string | number | null | undefined): string | null {
+export function coachUrlSlug(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Public ESPN coaches directory (plural path — `/nfl/coach/` 404s). */
+export function espnCoachProfileUrl(
+  id: string | number | null | undefined,
+  name?: string | null
+): string | null {
   if (id == null || id === "") return null;
-  return `https://www.espn.com/nfl/coach/_/id/${id}`;
+  const slug = name ? coachUrlSlug(name) : "";
+  return slug
+    ? `https://www.espn.com/nfl/coaches/_/id/${id}/${slug}`
+    : `https://www.espn.com/nfl/coaches/_/id/${id}`;
 }
 
 export function wikipediaCoachSearchUrl(name: string): string {
@@ -75,7 +91,7 @@ export function parseEspnCoach(
     name,
     espnCoachId,
     experience,
-    espnCoachUrl: espnCoachProfileUrl(espnCoachId),
+    espnCoachUrl: espnCoachProfileUrl(espnCoachId, name),
   };
 }
 
