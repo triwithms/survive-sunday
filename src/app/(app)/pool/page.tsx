@@ -3,6 +3,7 @@ import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { effectiveLockAt, isWeekLocked, ensureWeekLockedEffects, MISSED_TEAM } from "@/lib/grading";
+import { canEditExistingPick, gameForPick } from "@/lib/pick-change";
 import { StatusChip } from "@/components/StatusChip";
 import { formatKickoff } from "@/lib/utils";
 import {
@@ -115,6 +116,16 @@ export default async function PoolPage({
     myPickRaw && myPickRaw.source !== "missed" && myPickRaw.teamAbbr !== MISSED_TEAM
       ? myPickRaw
       : undefined;
+  const canChangePick =
+    isCurrentWeek &&
+    self.status !== "eliminated" &&
+    self.role !== "admin" &&
+    canEditExistingPick({
+      weekNumber: week.number,
+      weekLocked: locked,
+      existingPick: myPickRaw ?? null,
+      existingGame: gameForPick(myPickRaw, week.games) ?? myPick?.game ?? null,
+    });
 
   const myTeam = myPick
     ? await prisma.team.findUnique({ where: { abbr: myPick.teamAbbr } })
@@ -252,7 +263,7 @@ export default async function PoolPage({
                 </p>
               )}
             </div>
-            {!locked && isCurrentWeek && self.status !== "eliminated" && (
+            {canChangePick && (
               <Link
                 href="/pick"
                 prefetch={false}

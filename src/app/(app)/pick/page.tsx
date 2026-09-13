@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { isWeekLocked, ensureWeekLockedEffects, parseUsedTeams, MISSED_TEAM } from "@/lib/grading";
+import { canEditExistingPick, gameForPick } from "@/lib/pick-change";
 import { redirect } from "next/navigation";
 import { PickClient } from "@/components/PickClient";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
@@ -86,6 +87,15 @@ export default async function PickPage({
     myPick && myPick.source !== "missed" && myPick.teamAbbr !== MISSED_TEAM
       ? myPick.teamAbbr
       : null;
+  const canChange =
+    !eliminated &&
+    week.number === currentWeek &&
+    canEditExistingPick({
+      weekNumber: week.number,
+      weekLocked: locked,
+      existingPick: myPick,
+      existingGame: gameForPick(myPick, week.games),
+    });
 
   const priorAbbrs = (
     await prisma.pick.findMany({
@@ -159,6 +169,7 @@ export default async function PickPage({
         weekNumber={week.number}
         currentWeek={currentWeek}
         locked={locked}
+        canChange={canChange}
         eliminated={eliminated}
         currentPick={currentAbbr}
         games={games}

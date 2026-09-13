@@ -220,7 +220,7 @@ The **Forgot password?** screen is on `main` (merged PR #7). It still needs the 
 
 1. Bottom nav → **Pick**.
 2. Tap a team that is playing this week and not already used.
-3. Confirm. You can change it until **lock**.
+3. Confirm. **Week 1 only:** you can change that pick until **your team’s kickoff**, as long as the new game has not started either. After Week 1, you can change only until the week **lock** (first kickoff).
 
 On `main`, Pick shows the current week (Week 1 in Real mode). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
 
@@ -231,6 +231,8 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 - Lock = first kickoff of the week (unless the commissioner overrides it). Header countdown is labelled as the pick deadline.
 - Before lock: only **your** pick is visible.
 - After lock: everyone’s picks show; missed picks are applied once; finals are graded.
+- **Week 1 only:** after that first kickoff, a player who already picked may still switch to another **not-started** game if their current pick’s game has also **not started**. Example: LAC still scheduled → can move to another Sunday/Monday game that has not kicked off. Once LAC is live/final (or kickoff time has passed), that LAC pick cannot change. A missed first pick at lock stays a miss.
+- **After Week 1:** this extra change window does **not** apply. Weeks 2+ use the normal week lock (picks freeze at first kickoff).
 
 ### Scores & injuries (live on `main`)
 
@@ -345,6 +347,7 @@ Re-checked against GitHub. **Do not describe an open PR as live.** After you mer
 | Real vs Demo mode, Week 1 isolation, reset, real commissioner login | [#10](https://github.com/triwithms/survive-sunday/pull/10) (squash-merged) | Admin first card. Real = Week 1, no practice picker. Week 2 = Demo-only. [`docs/REAL-MODE.md`](./REAL-MODE.md) is on `main`. |
 | Forgot password + ~90 day stay-logged-in | [#7](https://github.com/triwithms/survive-sunday/pull/7) (squash-merged, `2df4645`) | Sign in → **Forgot password?** → 6-digit code → new password. **Merged / shipping.** Codes send only after Resend (optional Twilio) env vars are on Vercel + Redeploy. |
 | Pick header previous / next week | [#14](https://github.com/triwithms/survive-sunday/pull/14) | Chevrons around the gold `W#` badge; `?week=` like Home / Scores. Past / future weeks read-only. |
+| Week 1-only pick change after first kickoff | this PR | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. Weeks 2+ stay on the normal week lock. |
 
 ### Open — not on `main` yet
 
