@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
-import { sortParticipants } from "@/lib/tiebreak";
+import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { effectiveLockAt, isWeekLocked, ensureWeekLockedEffects, MISSED_TEAM } from "@/lib/grading";
 import { StatusChip } from "@/components/StatusChip";
 import { formatKickoff } from "@/lib/utils";
@@ -103,7 +103,12 @@ export default async function PoolPage({
     },
   });
 
-  const participants = members.filter((m) => m.role !== "admin");
+  const participants = members
+    .filter((m) => m.role !== "admin")
+    .map((m) => ({
+      ...m,
+      ...boardPickFields(m.picks[0], week.games),
+    }));
   const sorted = sortParticipants(participants);
   const myPickRaw = members.find((m) => m.id === self.id)?.picks[0];
   const myPick =

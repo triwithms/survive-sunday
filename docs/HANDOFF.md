@@ -241,7 +241,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 ### Standings / in vs out
 
-- **Home** (`/pool`) and **Board** (`/standings`): undefeated → one loss → eliminated, then most weeks survived, then fewest losses, then nickname A–Z.
+- **Home** (`/pool`) and **Board** (`/standings`): undefeated → one loss → eliminated, then most weeks survived, then fewest losses, then same pick, then same game (earlier kickoff first), then nickname A–Z.
 - You can open Home, Scores, League, Board, Help, and team pages **without** making a pick. If lock hits and a player still has no pick, the app records a **missed pick** (loss / mulligan), except the commissioner.
 
 ### Scores, League, team pages

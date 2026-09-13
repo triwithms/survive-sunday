@@ -91,7 +91,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - Lock at first kickoff; countdown; hide others’ picks until lock
 - One pick/week; no team reuse; bye teams disabled
 - Mulligan auto-burn → `one_loss`; second loss → `eliminated`
-- Participants list sorted undefeated → one_loss → eliminated, then weeks survived (most first), then fewest losses, then nickname A–Z
+- Participants list sorted undefeated → one_loss → eliminated, then weeks survived (most first), then fewest losses, then same pick, then same game (earlier kickoff first), then nickname A–Z
 - Own pick always visible; after lock show matchup + choice; spreads on pick UI
 - Live ESPN scores (poll ~45s while games are on) + auto-grade finals; admin simulate button
 - Near-live ESPN injury report on team pages and pick-adjacent chips (Out / Doubtful / Questionable)
