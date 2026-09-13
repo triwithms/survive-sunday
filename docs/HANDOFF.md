@@ -352,7 +352,7 @@ Re-checked against GitHub. **Do not describe an open PR as live.** After you mer
 |------|--------|--------------------------------------------|
 | Commissioner: turn off mulligan + transfer | [PR #8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player). Branch `cursor/commissioner-mulligan-transfer-a878`. May need a rebase onto latest `main`. |
 | NFL player details | [PR #11](https://github.com/triwithms/survive-sunday/pull/11) (open, **not draft**) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth. That PR’s own injury notes were **sample / demo** — `main` already has ESPN injuries on team pages, so a rebase should not invent a second feed. Branch `cursor/nfl-player-team-details-a32a`. |
-| Who are you? live-roster claim + Player/Admin roles | [PR #19](https://github.com/triwithms/survive-sunday/pull/19) | Friends pick `Gams (Robert Gama)` from the **live Admin roster**, set their own email + password + `SUNDAY26`, and keep that seat’s Week 1 picks. Same login can be Player + Administrator; switch views; promote another member. **Not** the Demo-mode `demo1234` picker. |
+| Who are you? live-roster claim + Player/Admin roles | [PR #19](https://github.com/triwithms/survive-sunday/pull/19) | Friends pick `Gams (Robert Gama)` from the **live Admin roster**, set their own email + password + `SUNDAY26`, and keep that seat’s Week 1 picks. Same login can be Player + Administrator; switch views; promote another member. Roles table is extensible (Watcher reserved, not built). **Not** the Demo-mode `demo1234` picker. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
@@ -488,6 +488,7 @@ Then only these paths unless a listed open PR is the task:
 - src/lib/claim-seat.ts
 - src/lib/claim-seat-db.ts
 - src/lib/roles.ts
+- src/lib/roles-db.ts
 - src/app/api/join/route.ts
 - src/app/api/join/seats/route.ts
 - src/components/JoinForm.tsx

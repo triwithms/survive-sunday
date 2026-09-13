@@ -1,7 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/session";
-import { canDemoteAdmin, isAdministrator, isPlayerSeat } from "@/lib/roles";
+import {
+  canDemoteAdmin,
+  isPlayerSeat,
+  POOL_ROLES,
+} from "@/lib/roles";
+import {
+  grantPoolRole,
+  listPoolRoleGrants,
+  revokePoolRole,
+} from "@/lib/roles-db";
 
 export async function POST(req: Request) {
   const admin = await requireAdmin();
@@ -33,14 +42,20 @@ export async function POST(req: Request) {
     where: { poolId: admin.membership.poolId },
     select: { role: true, isAdmin: true, userId: true },
   });
+  const grants = await listPoolRoleGrants(prisma, admin.membership.poolId);
+  const alreadyAdmin = grants.some(
+    (g) =>
+      g.userId === target.userId && g.role === POOL_ROLES.administrator
+  );
 
   if (action === "promote") {
-    if (isAdministrator(target)) {
+    if (alreadyAdmin) {
       return NextResponse.json({ ok: true, already: true });
     }
-    await prisma.membership.update({
-      where: { id: target.id },
-      data: { isAdmin: true },
+    await grantPoolRole(prisma, {
+      poolId: admin.membership.poolId,
+      userId: target.userId,
+      role: POOL_ROLES.administrator,
     });
     await prisma.auditLog.create({
       data: {
@@ -51,6 +66,7 @@ export async function POST(req: Request) {
         targetId: target.id,
         details: JSON.stringify({
           nickname: target.nickname,
+          role: POOL_ROLES.administrator,
           note: "Administrator role granted; player seat unchanged",
         }),
       },
@@ -58,19 +74,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, action: "promote", nickname: target.nickname });
   }
 
-  if (!isAdministrator(target)) {
+  if (!alreadyAdmin) {
     return NextResponse.json({ ok: true, already: true });
   }
-  if (!canDemoteAdmin(poolMembers, target.userId)) {
+  const commissionerSeat = poolMembers.some(
+    (m) => m.userId === target.userId && m.role === "admin"
+  );
+  if (commissionerSeat) {
+    return NextResponse.json(
+      {
+        error:
+          "This login is the commissioner. They keep Administrator.",
+      },
+      { status: 400 }
+    );
+  }
+  if (!canDemoteAdmin(poolMembers, target.userId, grants)) {
     return NextResponse.json(
       { error: "The pool needs at least one administrator." },
       { status: 400 }
     );
   }
 
-  await prisma.membership.update({
-    where: { id: target.id },
-    data: { isAdmin: false },
+  await revokePoolRole(prisma, {
+    poolId: admin.membership.poolId,
+    userId: target.userId,
+    role: POOL_ROLES.administrator,
   });
   await prisma.auditLog.create({
     data: {
@@ -81,6 +110,7 @@ export async function POST(req: Request) {
       targetId: target.id,
       details: JSON.stringify({
         nickname: target.nickname,
+        role: POOL_ROLES.administrator,
         note: "Administrator role removed; they stay as a player",
       }),
     },

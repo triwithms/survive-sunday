@@ -80,6 +80,7 @@ async function main() {
     await prisma.$executeRawUnsafe(
       `ALTER TABLE "Membership" DROP COLUMN IF EXISTS "isAdmin"`
     );
+    await prisma.$executeRawUnsafe(`DROP TABLE IF EXISTS "PoolAccessRole" CASCADE`);
 
     const blocked = run("npx", ["prisma", "db", "push", "--skip-generate"], env);
     if (blocked.status === 0) {
@@ -110,6 +111,9 @@ async function main() {
     }
     if (!(await columnExists(prisma, "Membership", "isAdmin"))) {
       fail("Membership.isAdmin from the roles model was not added");
+    }
+    if (!(await tableExists(prisma, "PoolAccessRole"))) {
+      fail("PoolAccessRole table was not added");
     }
 
     const row = await prisma.otpChallenge.create({

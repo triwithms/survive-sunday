@@ -2,7 +2,8 @@ import { auth } from "./auth";
 import { prisma } from "./db";
 import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
 import { ensureLiveWeekIsolation } from "./week-isolation";
-import { isAdministrator, isPlayerSeat } from "./roles";
+import { hasRole, isAdministrator, isPlayerSeat, POOL_ROLES } from "./roles";
+import { backfillPoolAccessRoles, listUserPoolRoles } from "./roles-db";
 
 const membershipInclude = {
   pool: true,
@@ -56,13 +57,27 @@ export async function getUserPoolContext(userId: string) {
   }
   const membership = preferPlayerMembership(memberships);
   const adminMembership = adminMembershipOf(memberships);
-  const isPlayer = Boolean(membership && isPlayerSeat(membership));
-  const isAdmin = memberships.some((m) => isAdministrator(m));
+  const poolId = memberships[0]?.poolId;
+  let roles: string[] = [];
+  if (poolId) {
+    roles = await listUserPoolRoles(prisma, { poolId, userId });
+    if (roles.length === 0) {
+      await backfillPoolAccessRoles(prisma, poolId);
+      roles = await listUserPoolRoles(prisma, { poolId, userId });
+    }
+  }
+  const isPlayer =
+    hasRole(roles, POOL_ROLES.player) ||
+    Boolean(membership && isPlayerSeat(membership));
+  const isAdmin =
+    hasRole(roles, POOL_ROLES.administrator) ||
+    memberships.some((m) => isAdministrator(m));
   return {
     membership,
     adminMembership,
     isAdmin,
     isPlayer,
+    roles,
     memberships,
   };
 }

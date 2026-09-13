@@ -11,9 +11,11 @@ import { CommissionerAccountPanel } from "@/components/CommissionerAccountPanel"
 import { SignOutButton } from "@/components/SignOutButton";
 import {
   canDemoteAdmin,
-  isAdministrator,
+  hasRole,
   isPlayerSeat,
+  POOL_ROLES,
 } from "@/lib/roles";
+import { listPoolRoleGrants } from "@/lib/roles-db";
 import {
   effectiveCurrentWeek,
   isDemoEmail,
@@ -51,6 +53,12 @@ export default async function AdminPage() {
     where: { poolId: me.poolId },
     orderBy: { nickname: "asc" },
   });
+  const grants = await listPoolRoleGrants(prisma, me.poolId);
+  const adminUserIds = new Set(
+    grants
+      .filter((g) => hasRole([g.role], POOL_ROLES.administrator))
+      .map((g) => g.userId)
+  );
 
   const week = await prisma.week.findUniqueOrThrow({
     where: {
@@ -108,23 +116,29 @@ export default async function AdminPage() {
           nickname: m.nickname,
           realName: m.realName,
           role: m.role,
-          isAdmin: m.isAdmin,
+          isAdmin: adminUserIds.has(m.userId),
           isYou: m.userId === session.user.id,
         }))}
         canDemoteMembershipIds={members
-          .filter(
-            (m) =>
+          .filter((m) => {
+            const isCommissionerLogin = members.some(
+              (row) => row.userId === m.userId && row.role === "admin"
+            );
+            return (
               isPlayerSeat(m) &&
-              isAdministrator(m) &&
+              adminUserIds.has(m.userId) &&
+              !isCommissionerLogin &&
               canDemoteAdmin(
                 members.map((row) => ({
                   role: row.role,
-                  isAdmin: row.isAdmin,
+                  isAdmin: adminUserIds.has(row.userId),
                   userId: row.userId,
                 })),
-                m.userId
+                m.userId,
+                grants
               )
-          )
+            );
+          })
           .map((m) => m.id)}
       />
 

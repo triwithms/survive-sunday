@@ -207,7 +207,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">Manual overrides for ties, postponements, and **force-resolve** edge cases.</li>
           <li className="text-[var(--text-primary)]">**Remove players** who shouldn’t be in the pool.</li>
           <li className="text-[var(--text-primary)]">**Roster:** open **Admin → Roster** to see every nickname and real name, and fix either if it’s wrong. Each change is audit-logged.</li>
-          <li className="text-[var(--text-primary)]">**Roles:** one login can be a **Player** and an **Administrator**. If you have both, use **Playing as …** / **Admin tools** to switch. Players without Admin never see Admin tools. You can **Make administrator** for someone already in the pool (they stay on the board). The pool always keeps at least one administrator.</li>
+          <li className="text-[var(--text-primary)]">**Roles:** one login can be a **Player** and an **Administrator**. If you have both, use **Playing as …** / **Admin tools** to switch. Players without Admin never see Admin tools. You can **Make administrator** for someone already in the pool (they stay on the board). The pool always keeps at least one administrator. A later **Watcher** role (follow the board, no picks) is reserved and not in the app yet.</li>
           <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> resend digests or late-pick reminders.</li>
           <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> enable the WhatsApp group stub and Twilio / Resend configuration.</li>
           {showDemoCopy && (

@@ -21,6 +21,7 @@ model User {
   accounts       Account[]
   sessions       Session[]
   memberships    Membership[]
+  poolAccessRoles PoolAccessRole[]
   auditLogs      AuditLog[] @relation("AuditActor")
   otpChallenges  OtpChallenge[]
 }
@@ -88,9 +89,10 @@ model Pool {
   /// demo = practise picker / demo copy. live = real private pool (no participant "demo" UX).
   mode        String       @default("demo") // demo | live
   createdAt   DateTime     @default(now())
-  memberships Membership[]
-  weeks       Week[]
-  auditLogs   AuditLog[]
+  memberships     Membership[]
+  poolAccessRoles PoolAccessRole[]
+  weeks           Week[]
+  auditLogs       AuditLog[]
 }
 
 model Membership {
@@ -100,8 +102,9 @@ model Membership {
   nickname          String
   realName          String?
   role              String           @default("member") // admin | member
-  /// Administrator tools, without leaving the player board. role=admin is
-  /// still the spectator commissioner seat (not on the board).
+  /// Denormalized mirror of PoolAccessRole administrator on this seat.
+  /// Source of truth is PoolAccessRole. role=admin is still the spectator
+  /// commissioner seat (not on the board).
   isAdmin           Boolean          @default(false)
   status            String           @default("undefeated") // undefeated | one_loss | eliminated
   mulliganRemaining Boolean          @default(true)
@@ -117,6 +120,24 @@ model Membership {
   /// (e.g. Gams) in the same pool. Lookups use this index.
   @@index([poolId, userId])
   @@unique([poolId, nickname])
+}
+
+/// NetSuite-style access roles. One login may hold several in the same pool.
+/// Shipped now: player, administrator.
+/// Reserved (do not grant in UI yet): watcher — follow board + chat later,
+/// no picks / no buy-in.
+model PoolAccessRole {
+  id        String   @id @default(cuid())
+  poolId    String
+  userId    String
+  role      String // player | administrator | watcher
+  createdAt DateTime @default(now())
+  pool      Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([poolId, userId, role])
+  @@index([userId])
+  @@index([poolId, role])
 }
 
 model Team {
