@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import { TeamLogo } from "@/components/TeamLogo";
+import { ScoreGameDetailSheet } from "@/components/ScoreGameDetailSheet";
 import {
   formatLiveScorebug,
   formatScoresStatus,
@@ -40,10 +44,11 @@ function ScoreTeamRow({
     <Link
       href={`/team/${abbr}`}
       prefetch={false}
-      className={`flex items-center gap-2 min-h-11 min-w-0 rounded-md px-1.5 -mx-0.5 hover:bg-gold-400/5 active:bg-gold-400/10 ${
+      className={`relative z-10 flex items-center gap-2 min-h-11 min-w-0 rounded-md px-1.5 -mx-0.5 hover:bg-gold-400/5 active:bg-gold-400/10 ${
         hasBall ? "border-l-[3px] border-gold-400 bg-gold-400/5" : "border-l-[3px] border-transparent"
       }`}
       aria-label={`Team details for ${abbr}${hasBall ? ", has the ball" : ""}`}
+      onClick={(e) => e.stopPropagation()}
     >
       <TeamLogo abbr={abbr} logoUrl={logoUrl} size={28} />
       <span
@@ -107,6 +112,7 @@ function LiveScorebugStrip({
 
 /** One Scores row: logos + scores; live games use a TV-style status strip. */
 export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
+  const [open, setOpen] = useState(false);
   const isLive = isLiveGame(game.status);
   const isFinal = isFinalGame(game.status);
   const status = formatScoresStatus(game);
@@ -137,8 +143,20 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
   return (
     <li
       className={`card-glass p-3 ${isLive ? "border border-field-400/50" : ""}`}
-      aria-label={aria}
     >
+      <div
+        role="button"
+        tabIndex={0}
+        className="cursor-pointer"
+        aria-label={`${aria}. Open game details`}
+        onClick={() => setOpen(true)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setOpen(true);
+          }
+        }}
+      >
       <div className="flex items-center gap-2 sm:gap-3">
         <div className="min-w-0 flex-1 space-y-0.5">
           <ScoreTeamRow
@@ -186,6 +204,10 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
           </div>
         )}
       </div>
+      </div>
+      {open ? (
+        <ScoreGameDetailSheet game={game} onClose={() => setOpen(false)} />
+      ) : null}
     </li>
   );
 }
