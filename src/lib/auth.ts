@@ -155,7 +155,9 @@ function authConfig(req?: NextRequest): NextAuthConfig {
       },
     },
     trustHost: true,
-    useSecureCookies: secure,
+    // Keep cookie names unprefixed; set Secure via options when the request is HTTPS.
+    // useSecureCookies:true would expect __Secure- names and breaks CSRF on Vercel.
+    useSecureCookies: false,
     cookies: cookieOptions(secure),
     secret: process.env.AUTH_SECRET,
   };
