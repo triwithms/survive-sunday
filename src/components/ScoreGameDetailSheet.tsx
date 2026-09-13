@@ -119,6 +119,11 @@ export function ScoreGameDetailSheet({
         <div className="flex items-center gap-2 min-w-0">
           <TeamLogo abbr={game.awayAbbr} logoUrl={game.awayLogoUrl} size={28} />
           <span className="font-mono font-semibold">{game.awayAbbr}</span>
+          {bug?.possession === game.awayAbbr ? (
+            <span className="shrink-0 text-[13px] leading-none" title="Has the ball" aria-hidden>
+              🏈
+            </span>
+          ) : null}
           <span className="font-mono text-xl tabular-nums">
             {scoreAway ?? "–"}
           </span>
@@ -128,6 +133,11 @@ export function ScoreGameDetailSheet({
             {scoreHome ?? "–"}
           </span>
           <span className="font-mono font-semibold">{game.homeAbbr}</span>
+          {bug?.possession === game.homeAbbr ? (
+            <span className="shrink-0 text-[13px] leading-none" title="Has the ball" aria-hidden>
+              🏈
+            </span>
+          ) : null}
           <TeamLogo abbr={game.homeAbbr} logoUrl={game.homeLogoUrl} size={28} />
         </div>
       </div>
