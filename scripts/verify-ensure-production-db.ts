@@ -76,6 +76,7 @@ async function main() {
       ON CONFLICT ("id") DO NOTHING
     `);
     await prisma.$executeRawUnsafe(`DROP TABLE IF EXISTS "OtpChallenge" CASCADE`);
+    await prisma.$executeRawUnsafe(`ALTER TABLE "Pool" DROP COLUMN IF EXISTS "mode"`);
 
     const blocked = run("npx", ["prisma", "db", "push", "--skip-generate"], env);
     if (blocked.status === 0) {
@@ -100,6 +101,9 @@ async function main() {
     }
     if (!(await columnExists(prisma, "Membership", "isParticipant"))) {
       fail("other-PR Membership column was dropped");
+    }
+    if (!(await columnExists(prisma, "Pool", "mode"))) {
+      fail("Pool.mode from Real mode was not added");
     }
 
     const row = await prisma.otpChallenge.create({

@@ -83,6 +83,12 @@ async function dropAbandonedTables(prisma: PrismaClient) {
   }
 }
 
+async function ensurePoolModeColumn(prisma: PrismaClient) {
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Pool" ADD COLUMN IF NOT EXISTS "mode" TEXT NOT NULL DEFAULT 'demo'
+  `);
+}
+
 async function ensureOtpChallengeTable(prisma: PrismaClient) {
   await prisma.$executeRawUnsafe(`
     CREATE TABLE IF NOT EXISTS "OtpChallenge" (
@@ -164,7 +170,12 @@ async function main() {
 
   const env = { ...process.env, DATABASE_URL: url };
 
-  await withPrisma(url, dropAbandonedTables);
+  await withPrisma(url, async (prisma) => {
+    await dropAbandonedTables(prisma);
+    // Real-mode PR #10 may not have applied if db push refused to drop
+    // leftover OtpChallenge rows. Add the column without touching data.
+    await ensurePoolModeColumn(prisma);
+  });
 
   const pushed = pushSchema(env);
   if (!pushed.ok) {
@@ -178,6 +189,7 @@ async function main() {
       );
     }
     await withPrisma(url, async (prisma) => {
+      await ensurePoolModeColumn(prisma);
       await ensureOtpChallengeTable(prisma);
       await assertRequiredSchema(prisma);
     });
