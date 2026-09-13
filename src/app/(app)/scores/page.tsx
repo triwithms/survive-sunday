@@ -135,12 +135,13 @@ export default async function ScoresPage({
           {week.label} scores
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Live scores from ESPN — down and distance, quarter | clock, and
-          a 🏈 beside who has the ball when the feed has them. Tap a game
-          for more.
-          Finals auto-grade picks.
-          {liveCount > 0 ? ` · ${liveCount} live now` : ""}
+          Live scores from ESPN. Tap a game for more. Finals auto-grade picks.
         </p>
+        {liveCount > 0 ? (
+          <p className="text-sm text-[var(--text-muted)] mt-1">
+            {liveCount} live now
+          </p>
+        ) : null}
         {espnSyncError && (
           <p className="text-xs text-crimson-400 mt-1">{espnSyncError}</p>
         )}
