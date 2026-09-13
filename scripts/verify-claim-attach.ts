@@ -157,18 +157,31 @@ async function main() {
         assert.equal(attached.userId, admin.id);
       }
 
-      const leftover = await prisma.user.findUnique({
-        where: { id: practiceUser.id },
+      // Fresh admin-only login: session match skips password (cannot reuse
+      // `admin` here — that user already holds a player seat after attach).
+      const admin2Email = `verify-attach-admin2-${stamp}@example.com`;
+      const admin2 = await prisma.user.create({
+        data: {
+          email: admin2Email,
+          name: "Verify Admin 2",
+          passwordHash: await bcrypt.hash(password, 10),
+        },
       });
-      const practice2 = leftover
-        ? leftover
-        : await prisma.user.create({
-            data: {
-              email: `reset-${practiceEmail}`,
-              name: nick,
-              passwordHash: await bcrypt.hash("demo1234", 10),
-            },
-          });
+      await prisma.membership.create({
+        data: {
+          poolId: pool.id,
+          userId: admin2.id,
+          nickname: `Commish2${stamp}`,
+          role: "admin",
+        },
+      });
+      const practice2 = await prisma.user.create({
+        data: {
+          email: `reset-${practiceEmail}`,
+          name: `${nick}B`,
+          passwordHash: await bcrypt.hash("demo1234", 10),
+        },
+      });
       const seat2 = await prisma.membership.create({
         data: {
           poolId: pool.id,
@@ -179,27 +192,28 @@ async function main() {
       });
       const skipped = await joinOrClaimSeat({
         inviteCode: INVITE_CODE,
-        email: adminEmail,
+        email: admin2Email,
         password: "",
         membershipId: seat2.id,
-        sessionUserId: admin.id,
-        sessionEmail: adminEmail,
+        sessionUserId: admin2.id,
+        sessionEmail: admin2Email,
       });
-      assert.equal(skipped.ok, true);
+      assert.equal(skipped.ok, true, skipped.ok ? "skip ok" : skipped.error);
       if (skipped.ok) {
         const attached2 = await prisma.membership.findUniqueOrThrow({
           where: { id: seat2.id },
         });
-        assert.equal(attached2.userId, admin.id);
+        assert.equal(attached2.userId, admin2.id);
       }
 
+      const leftoverIds = [admin.id, admin2.id, practiceUser.id, practice2.id];
       await prisma.membership.deleteMany({
-        where: { userId: admin.id, poolId: pool.id },
+        where: { userId: { in: leftoverIds }, poolId: pool.id },
       });
-      await prisma.poolAccessRole.deleteMany({ where: { userId: admin.id } });
-      await prisma.user.delete({ where: { id: admin.id } }).catch(() => undefined);
-      await prisma.user.delete({ where: { id: practice2.id } }).catch(() => undefined);
-      await prisma.user.delete({ where: { id: practiceUser.id } }).catch(() => undefined);
+      await prisma.poolAccessRole.deleteMany({
+        where: { userId: { in: leftoverIds } },
+      });
+      await prisma.user.deleteMany({ where: { id: { in: leftoverIds } } });
       console.log("verify-claim-attach integration: ok");
     } finally {
       await prisma.$disconnect();
