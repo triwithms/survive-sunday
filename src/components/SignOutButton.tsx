@@ -14,7 +14,7 @@ export function SignOutButton({
   children?: React.ReactNode;
 }) {
   return (
-    <form action="/api/logout" method="post" className="inline">
+    <form action="/api/logout" method="post" className="block w-full">
       <input type="hidden" name="callbackUrl" value={next} />
       <button type="submit" className={className} data-testid="sign-out">
         {children}
