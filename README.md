@@ -1,7 +1,11 @@
 # Survive Sunday — Wave 1
 
 Private NFL survivor / elimination pool PWA for the **2026/27** season.  
-Locale: **en-CA**. Stack: Next.js App Router, Prisma + **SQLite**, Auth.js (credentials + optional Google).
+Locale: **en-CA**. Stack: Next.js App Router, Prisma + **Neon Postgres** (production), Auth.js (credentials + optional Google).
+
+## Owner / keep-up
+
+Not a coder? Start with **[docs/HANDOFF.md](docs/HANDOFF.md)** — what the app is, where it lives (GitHub + Vercel + Neon), how to deploy, common login failures, and copy-paste prompts for a **free** AI chat (no paid bot needed).
 
 ## Quick start
 

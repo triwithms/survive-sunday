@@ -4,8 +4,7 @@ import Google from "next-auth/providers/google";
 import type { NextAuthConfig } from "next-auth";
 import type { NextRequest } from "next/server";
 import type { Provider } from "next-auth/providers";
-import bcrypt from "bcryptjs";
-import { prisma } from "./db";
+import { userFromCredentials } from "./credentials-user";
 import {
   isIgnoredAuthHost,
   requestPublicOrigin,
@@ -24,16 +23,7 @@ const providers: Provider[] = [
       const email = credentials?.email as string | undefined;
       const password = credentials?.password as string | undefined;
       if (!email || !password) return null;
-      const user = await prisma.user.findUnique({ where: { email } });
-      if (!user?.passwordHash) return null;
-      const ok = await bcrypt.compare(password, user.passwordHash);
-      if (!ok) return null;
-      return {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        image: user.image,
-      };
+      return userFromCredentials(email, password);
     },
   }),
 ];
