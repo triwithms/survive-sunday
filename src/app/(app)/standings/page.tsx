@@ -7,7 +7,11 @@ import {
   isWeekLocked,
   MISSED_TEAM,
 } from "@/lib/grading";
-import { sortParticipants, resolveSeasonWinners } from "@/lib/tiebreak";
+import {
+  sortParticipants,
+  resolveSeasonWinners,
+  boardPickFields,
+} from "@/lib/tiebreak";
 import { StatusChip } from "@/components/StatusChip";
 import { TeamLogo } from "@/components/TeamLogo";
 import { formatKickoff } from "@/lib/utils";
@@ -29,7 +33,7 @@ export default async function StandingsPage() {
       poolId: me.poolId,
       number: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
     },
-    include: { picks: true },
+    include: { picks: { include: { game: true } }, games: true },
   });
 
   try {
@@ -43,14 +47,22 @@ export default async function StandingsPage() {
   if (week) {
     week = await prisma.week.findUnique({
       where: { id: week.id },
-      include: { picks: true },
+      include: { picks: { include: { game: true } }, games: true },
     });
   }
 
   const members = await prisma.membership.findMany({
     where: { poolId: me.poolId },
   });
-  const participants = members.filter((m) => m.role !== "admin");
+  const pickByMember = new Map(
+    (week?.picks ?? []).map((p) => [p.membershipId, p])
+  );
+  const participants = members
+    .filter((m) => m.role !== "admin")
+    .map((m) => ({
+      ...m,
+      ...boardPickFields(pickByMember.get(m.id), week?.games ?? []),
+    }));
   const sorted = sortParticipants(participants);
   const winners = resolveSeasonWinners(participants);
 
@@ -64,9 +76,6 @@ export default async function StandingsPage() {
     !locked && (me.role === "admin" || me.status === "eliminated");
   const revealAllPicks = locked;
 
-  const pickByMember = new Map(
-    (week?.picks ?? []).map((p) => [p.membershipId, p])
-  );
   const teamAbbrs = [
     ...new Set(
       (week?.picks ?? [])
@@ -97,7 +106,8 @@ export default async function StandingsPage() {
           </p>
           <p className="text-sm text-[var(--text-muted)]">
             Sorted undefeated → one loss → eliminated, then most weeks
-            survived, then fewest losses, then nickname A–Z.
+            survived, then fewest losses, then same pick, then same game
+            (earlier kickoff first), then nickname A–Z.
             {!revealAllPicks
               ? " Others' picks stay hidden until the deadline."
               : ""}
