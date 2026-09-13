@@ -163,8 +163,8 @@ assert.equal(needsClaimablePracticeEmail("jaja@survivesunday.demo"), false);
 assert.equal(isSeatClaimed("jaja@survivesunday.demo"), false);
 assert.equal(
   isSeatClaimed("jaja@pending.survivesunday.local"),
-  true,
-  "pending.local falsely looks claimed — never use it for JaJa"
+  false,
+  "pending.local is an unclaimed practice placeholder, same as @survivesunday.demo"
 );
 
 assert.equal(resolvePickBackupMode(null, null), "off");

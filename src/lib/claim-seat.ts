@@ -52,7 +52,8 @@ export type ClaimDecision =
   | { ok: false; status: number; error: string };
 
 /**
- * Practice @survivesunday.demo seats are still claimable.
+ * Practice seats (`@survivesunday.demo` and leftover
+ * `@pending.survivesunday.local` placeholders) are still claimable.
  * Any other email means someone already attached a real login.
  */
 export function isSeatClaimed(email: string | null | undefined): boolean {

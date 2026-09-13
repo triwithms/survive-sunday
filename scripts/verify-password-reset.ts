@@ -28,7 +28,9 @@ function assert(cond: unknown, msg: string): asserts cond {
 async function main() {
   assert(isDemoEmail("gams@survivesunday.demo"), "gams is demo");
   assert(isDemoEmail("ADMIN@SurviveSunday.demo"), "demo case");
+  assert(isDemoEmail("go-giants@pending.survivesunday.local"), "pending placeholder");
   assert(!isDemoEmail("friend@example.com"), "real email");
+  assert(!isDemoEmail("robertgama@gmail.com"), "gams claimed email");
   assert(normalizeEmail(" Pat@Example.com ") === "pat@example.com", "normalize email");
   console.log("PASS  demo + email helpers");
 

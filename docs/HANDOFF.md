@@ -168,7 +168,7 @@ Normal path — no extra buttons:
 
 **First-time / empty database:** `npm run build` on Vercel also runs a schema sync and seeds the BM Boys demo pool if invite code `SUNDAY26` is missing. Do **not** re-run seed on purpose unless you want demo data refreshed.
 
-On each production build the helper also patches leftover short names in the live database if they are still stored as the old values: Long Snapper `J S` → **John Stilo**, Steve `Steve` → **Steve Venerus**. Changing seed files alone does not fix production. You can also edit any name on **Admin → Roster**. If **JaJa** is missing, the same helper creates her Join-claimable seat (`jaja@survivesunday.demo`), imports Week 1 **DAL**, and sets pick backup from **Gams**. If she already has a leftover imported/mirrored **KC**, it is corrected to **DAL** (no 💩). It does **not** reset the pool or other Week 1 picks. If the pool is already in **Real mode**, the same build parks it on **Week 1** and **restores the Week 2 NFL slate**. It only clears leftover **practice-seat** (`@survivesunday.demo`) Week 2 picks — it does **not** delete Week 2 games or hide the slate from friends.
+On each production build the helper also patches leftover short names in the live database if they are still stored as the old values: Long Snapper `J S` → **John Stilo**, Steve `Steve` → **Steve Venerus**. Changing seed files alone does not fix production. You can also edit any name on **Admin → Roster**. The same build converts leftover `@pending.survivesunday.local` placeholder logins (Go Giants / Pauli) back to claimable `@survivesunday.demo` practice emails and does **not** unclaim Gams (`robertgama@gmail.com`). If **JaJa** is missing, the same helper creates her Join-claimable seat (`jaja@survivesunday.demo`), imports Week 1 **DAL**, and sets pick backup from **Gams**. If she already has a leftover imported/mirrored **KC**, it is corrected to **DAL** (no 💩). It does **not** reset the pool or other Week 1 picks. If the pool is already in **Real mode**, the same build parks it on **Week 1** and **restores the Week 2 NFL slate**. It only clears leftover **practice-seat** (`@survivesunday.demo`) Week 2 picks — it does **not** delete Week 2 games or hide the slate from friends.
 
 ---
 
@@ -185,14 +185,14 @@ Nicknames stay as friends know them. Real names show in brackets on the board an
 | Deep and Delicious | Kent Richmond | Unclaimed |
 | Gams | Robert Gama | Claimed |
 | Gdogss | Tony Gyuro | Unclaimed |
-| **Go Giants** | **Carson Gama** | Claimed |
+| **Go Giants** | **Carson Gama** | Unclaimed |
 | JimmyC | Jim Coulson | Unclaimed |
 | Long Snapper | John Stilo | Unclaimed |
-| **Pauli** | **Paul Gama** | Claimed |
+| **Pauli** | **Paul Gama** | Unclaimed |
 | **JaJa** | **Jacquie Gama** | Unclaimed (Join-claimable) |
 | Steve | Steve Venerus | Unclaimed |
 
-**Go Giants**, **Pauli**, and **JaJa** were added on the live roster (not only in seed files). Pauli’s nickname is **Pauli**, not Paul. JaJa uses `jaja@survivesunday.demo` so Join does **not** say already claimed. You can edit any row on **Admin → Roster**. Production still patches leftover short names on deploy (Long Snapper `J S` → John Stilo, Steve → Steve Venerus, Gdogss → Tony Gyuro) and **creates JaJa + her DAL pick + Gams backup if she is missing**.
+**Go Giants**, **Pauli**, and **JaJa** were added on the live roster (not only in seed files). Pauli’s nickname is **Pauli**, not Paul. Leftover `@pending.survivesunday.local` placeholders are treated as unclaimed practice seats (same as `@survivesunday.demo`) so they can Join; Gams stays claimed. JaJa uses `jaja@survivesunday.demo` so Join does **not** say already claimed. You can edit any row on **Admin → Roster**. Production still patches leftover short names on deploy (Long Snapper `J S` → John Stilo, Steve → Steve Venerus, Gdogss → Tony Gyuro) and **creates JaJa + her DAL pick + Gams backup if she is missing**.
 
 ---
 
@@ -241,7 +241,7 @@ Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is 
 ### Real login / join
 
 - **Sign in** (`/login`): email + password, or Google if keys are set.
-- **Join** (`/join`): pick yourself from the **live roster** (nickname + real name), invite code **`SUNDAY26`**, then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. If the seat already has a real email, the page says it is claimed — Sign in instead. Practice `@survivesunday.demo` seats are claimable. **One user, more than one role** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)): there is **no special admin account**. The same email can be **Player + Administrator**. Use **Playing as …** / **Admin tools** to switch. Commissioner email can claim a player seat (Gams). People not on the list can still join as a new player.
+- **Join** (`/join`): pick yourself from the **live roster** (nickname + real name), invite code **`SUNDAY26`**, then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. If the seat already has a real email, the page says it is claimed — Sign in instead. Practice `@survivesunday.demo` seats (and leftover `@pending.survivesunday.local` placeholders) are claimable. **One user, more than one role** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)): there is **no special admin account**. The same email can be **Player + Administrator**. Use **Playing as …** / **Admin tools** to switch. Commissioner email can claim a player seat (Gams). People not on the list can still join as a new player.
 - **Forgot password?** on the sign-in page: we email (or text) a 6-digit code → new password → signed back in. This is **not** a code at every login. **Codes do not send until Resend keys are on Vercel** (section 4). That is still the group-invite blocker.
 - **Sign out:** header **Account** (top right) → **Sign out** (merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)). Also on Admin and Help.
 - **Notification preferences:** header **Account** → **Notification preferences**. Each friend chooses which emails they want. Missing-pick texts use the same Missing pick reminder switch. Password-reset codes always send when requested.

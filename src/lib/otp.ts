@@ -13,11 +13,7 @@ export const OTP = {
 export type OtpChannel = "email" | "sms";
 export const OTP_PURPOSE_PASSWORD_RESET = "password_reset";
 
-const DEMO_SUFFIX = "@survivesunday.demo";
-
-export function isDemoEmail(email?: string | null): boolean {
-  return (email ?? "").trim().toLowerCase().endsWith(DEMO_SUFFIX);
-}
+export { isDemoEmail } from "./pool-mode";
 
 export function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();

@@ -21,8 +21,12 @@ assert.equal(formatSeatLabel("Colin", "  "), "Colin");
 assert.equal(isSeatClaimed("gams@survivesunday.demo"), false);
 assert.equal(isSeatClaimed("Gams@SurviveSunday.DEMO"), false);
 assert.equal(isSeatClaimed("jaja@survivesunday.demo"), false);
-assert.equal(isSeatClaimed("jaja@pending.survivesunday.local"), true);
+assert.equal(isSeatClaimed("jaja@pending.survivesunday.local"), false);
+assert.equal(isSeatClaimed("go-giants@pending.survivesunday.local"), false);
+assert.equal(isSeatClaimed("the-boss@pending.survivesunday.local"), false);
+assert.equal(isSeatClaimed("Go-Giants@Pending.SurviveSunday.LOCAL"), false);
 assert.equal(isSeatClaimed("robert@example.com"), true);
+assert.equal(isSeatClaimed("robertgama@gmail.com"), true);
 assert.equal(isSeatClaimed(null), false);
 assert.equal(isSeatClaimed(""), false);
 
@@ -46,16 +50,34 @@ const seats = seatsFromMemberships([
     nickname: "Gams",
     realName: "Robert Gama",
     role: "member",
-    user: { email: "gams@survivesunday.demo" },
+    user: { email: "robertgama@gmail.com" },
+  },
+  {
+    id: "giants-1",
+    nickname: "Go Giants",
+    realName: "Carson Gama",
+    role: "member",
+    user: { email: "go-giants@pending.survivesunday.local" },
+  },
+  {
+    id: "pauli-1",
+    nickname: "Pauli",
+    realName: "Paul Gama",
+    role: "member",
+    user: { email: "the-boss@pending.survivesunday.local" },
   },
 ]);
 
-assert.equal(seats.length, 2);
+assert.equal(seats.length, 4);
 assert.equal(seats[0].nickname, "Gams");
 assert.equal(seats[0].label, "Gams (Robert Gama)");
-assert.equal(seats[0].claimed, false);
-assert.equal(seats[1].nickname, "Steve");
-assert.equal(seats[1].claimed, true);
+assert.equal(seats[0].claimed, true);
+assert.equal(seats[1].nickname, "Go Giants");
+assert.equal(seats[1].claimed, false);
+assert.equal(seats[2].nickname, "Pauli");
+assert.equal(seats[2].claimed, false);
+assert.equal(seats[3].nickname, "Steve");
+assert.equal(seats[3].claimed, true);
 assert.ok(!seats.some((s) => s.nickname === "Commissioner"));
 
 const practice = decideClaim({
@@ -64,6 +86,36 @@ const practice = decideClaim({
   emailOwner: null,
 });
 assert.deepEqual(practice, { ok: true, action: "convert-practice", userId: "u-gams" });
+
+const pendingPlaceholder = decideClaim({
+  seat: {
+    role: "member",
+    userId: "u-giants",
+    email: "go-giants@pending.survivesunday.local",
+  },
+  newEmail: "carson@example.com",
+  emailOwner: null,
+});
+assert.deepEqual(pendingPlaceholder, {
+  ok: true,
+  action: "convert-practice",
+  userId: "u-giants",
+});
+
+const gamsClaimed = decideClaim({
+  seat: {
+    role: "member",
+    userId: "u-gams-real",
+    email: "robertgama@gmail.com",
+  },
+  newEmail: "other@example.com",
+  emailOwner: null,
+});
+assert.equal(gamsClaimed.ok, false);
+if (!gamsClaimed.ok) {
+  assert.equal(gamsClaimed.status, 409);
+  assert.equal(gamsClaimed.error, CLAIM_ERRORS.alreadyClaimed);
+}
 
 const already = decideClaim({
   seat: { role: "member", userId: "u-steve", email: "steve@example.com" },

@@ -25,6 +25,7 @@
     "verify:week-isolation": "tsx scripts/verify-week-isolation.ts",
     "verify:board-sort": "tsx scripts/verify-board-sort.ts",
     "verify:claim-seat": "tsx scripts/verify-claim-seat.ts",
+    "verify:pending-practice-email": "tsx scripts/verify-pending-practice-email.ts",
     "verify:claim-attach": "tsx scripts/verify-claim-attach.ts",
     "verify:roles": "tsx scripts/verify-roles.ts",
     "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
