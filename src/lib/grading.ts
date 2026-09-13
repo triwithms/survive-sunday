@@ -370,7 +370,7 @@ export async function simulateRemainingGames(
  */
 export async function recomputeWeeksSurvived(poolId: string) {
   const members = await prisma.membership.findMany({
-    where: { poolId, isParticipant: true },
+    where: { poolId, isParticipant: true, role: { not: "admin" } },
     include: { picks: true },
   });
   const results: { membershipId: string; weeksSurvived: number }[] = [];

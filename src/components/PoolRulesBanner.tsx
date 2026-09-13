@@ -14,16 +14,16 @@ export function PoolRulesBanner({
     <div
       className={
         compact
-          ? "border-b border-gold-400/30 bg-gold-400/10"
-          : "card-glass border border-gold-400/30 p-3"
+          ? "border-b border-gold-400/40 bg-gold-400/15"
+          : "card-glass border border-gold-400/40 p-3 mb-4"
       }
       role="status"
     >
       <p
         className={
           compact
-            ? "mx-auto max-w-pool px-3 py-2 text-center text-xs sm:text-sm text-gold-400"
-            : "text-sm text-gold-400"
+            ? "mx-auto max-w-pool px-3 py-2.5 text-center text-sm font-semibold text-gold-400"
+            : "text-sm font-semibold text-gold-400"
         }
       >
         {label}
