@@ -20,6 +20,7 @@ import { applyCanonicalRosterNames } from "../src/lib/roster-name-patch";
 import { ensureLiveWeekIsolation } from "../src/lib/week-isolation";
 import { isLiveMode } from "../src/lib/pool-mode";
 import { backfillPoolAccessRoles } from "../src/lib/roles-db";
+import { ensureDualMembershipIndex } from "../src/lib/membership-schema";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
 
@@ -82,17 +83,6 @@ async function dropAbandonedTables(prisma: PrismaClient) {
     await prisma.$executeRawUnsafe(`DROP TABLE IF EXISTS "${table}" CASCADE`);
     console.log(`[ensure-db] dropped leftover ${table} if present`);
   }
-}
-
-/** One login may hold commissioner + player seats in the same pool. */
-async function ensureDualMembershipIndex(prisma: PrismaClient) {
-  await prisma.$executeRawUnsafe(`
-    ALTER TABLE "Membership" DROP CONSTRAINT IF EXISTS "Membership_poolId_userId_key"
-  `);
-  await prisma.$executeRawUnsafe(`
-    CREATE INDEX IF NOT EXISTS "Membership_poolId_userId_idx"
-    ON "Membership" ("poolId", "userId")
-  `);
 }
 
 /** Player seats can also hold Administrator tools (promote) without leaving the board. */
@@ -275,6 +265,8 @@ async function main() {
     });
   } else {
     await withPrisma(url, async (prisma) => {
+      // db push from `main` (still @@unique) can put the leftover back.
+      await ensureDualMembershipIndex(prisma);
       await ensurePoolAccessRoleTable(prisma);
       await assertRequiredSchema(prisma);
     });

@@ -487,6 +487,8 @@ Then only these paths unless a listed open PR is the task:
 - src/app/join/page.tsx
 - src/lib/claim-seat.ts
 - src/lib/claim-seat-db.ts
+- src/lib/membership-schema.ts
+- src/instrumentation.ts
 - src/lib/auth-credentials.ts
 - src/lib/roles.ts
 - src/lib/roles-db.ts

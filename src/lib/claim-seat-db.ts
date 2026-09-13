@@ -16,6 +16,11 @@ import {
   passwordsMatch,
   shouldSkipClaimPassword,
 } from "./auth-credentials";
+import {
+  ensureDualMembershipIndex,
+  isMembershipUserUniqueError,
+  isUserEmailUniqueError,
+} from "./membership-schema";
 import { POOL_ROLES } from "./roles";
 import { grantPoolRole } from "./roles-db";
 
@@ -173,10 +178,12 @@ async function claimPracticeSeat(args: {
         };
       }
     }
+    // Neon may still have main's @@unique([poolId, userId]). Drop before write.
+    await ensureDualMembershipIndex(prisma);
   }
 
-  try {
-    const claimed = await prisma.$transaction(async (tx) => {
+  const writeClaim = () =>
+    prisma.$transaction(async (tx) => {
       const seat = await tx.membership.findFirst({
         where: { id: args.membershipId, poolId: args.poolId },
         include: { user: { select: { id: true, email: true, name: true } } },
@@ -293,10 +300,47 @@ async function claimPracticeSeat(args: {
       };
     });
 
-    return claimed;
+  try {
+    return await writeClaim();
   } catch (err) {
+    if (isMembershipUserUniqueError(err)) {
+      console.error(
+        "[claim] leftover Membership_poolId_userId unique — dropping and retrying",
+        err
+      );
+      await ensureDualMembershipIndex(prisma);
+      try {
+        return await writeClaim();
+      } catch (retryErr) {
+        if (isMembershipUserUniqueError(retryErr)) {
+          console.error(
+            "[claim] Membership_poolId_userId unique still present after drop",
+            retryErr
+          );
+          return {
+            ok: false,
+            status: 503,
+            error: CLAIM_ERRORS.seatAttachBlocked,
+          };
+        }
+        if (isUserEmailUniqueError(retryErr)) {
+          return { ok: false, status: 409, error: CLAIM_ERRORS.emailTaken };
+        }
+        throw retryErr;
+      }
+    }
+    if (isUserEmailUniqueError(err)) {
+      return { ok: false, status: 409, error: CLAIM_ERRORS.emailTaken };
+    }
     const msg = err instanceof Error ? err.message : "";
     if (msg.includes("Unique constraint") || msg.includes("UNIQUE")) {
+      if (isMembershipUserUniqueError(err)) {
+        return {
+          ok: false,
+          status: 503,
+          error: CLAIM_ERRORS.seatAttachBlocked,
+        };
+      }
       return { ok: false, status: 409, error: CLAIM_ERRORS.emailTaken };
     }
     throw err;
@@ -415,6 +459,7 @@ export async function joinOrClaimSeat(
   }
 
   if (membershipId) {
+    await ensureDualMembershipIndex(prisma);
     return claimPracticeSeat({
       poolId: pool.id,
       membershipId,

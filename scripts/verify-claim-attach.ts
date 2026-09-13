@@ -14,6 +14,12 @@ import {
 } from "../src/lib/auth-credentials";
 import { CLAIM_ERRORS, decideClaim } from "../src/lib/claim-seat";
 import { userFromCredentials } from "../src/lib/credentials-user";
+import {
+  ensureDualMembershipIndex,
+  isMembershipUserUniqueError,
+  isUserEmailUniqueError,
+  membershipUserUniqueExists,
+} from "../src/lib/membership-schema";
 
 assert.equal(normalizeAuthEmail("  RobertGama@Gmail.com "), "robertgama@gmail.com");
 assert.equal(normalizeAuthPassword("  AttachPass9!  "), "AttachPass9!");
@@ -64,6 +70,39 @@ assert.deepEqual(commishEmail, {
   action: "attach-to-existing",
   userId: "u-commish",
 });
+
+assert.equal(
+  isMembershipUserUniqueError(
+    new Error(
+      "Unique constraint failed on the constraint: `Membership_poolId_userId_key`"
+    )
+  ),
+  true
+);
+assert.equal(
+  isMembershipUserUniqueError({
+    code: "P2002",
+    message: "Unique constraint failed on the fields: (`poolId`,`userId`)",
+    meta: { modelName: "Membership", target: ["poolId", "userId"] },
+  }),
+  true
+);
+assert.equal(
+  isMembershipUserUniqueError(
+    new Error("Unique constraint failed on the constraint: `User_email_key`")
+  ),
+  false
+);
+assert.equal(
+  isUserEmailUniqueError(
+    new Error("Unique constraint failed on the constraint: `User_email_key`")
+  ),
+  true
+);
+assert.notEqual(
+  CLAIM_ERRORS.seatAttachBlocked,
+  CLAIM_ERRORS.emailTaken
+);
 
 async function main() {
   const password = "CorrectAttach9!";
@@ -117,6 +156,12 @@ async function main() {
         where: { inviteCode: INVITE_CODE },
       });
       assert.ok(pool, "SUNDAY26 pool required");
+      await ensureDualMembershipIndex(prisma);
+      assert.equal(
+        await membershipUserUniqueExists(prisma),
+        false,
+        "Membership_poolId_userId_key must be dropped before attach"
+      );
       const admin = await prisma.user.create({
         data: {
           email: adminEmail,
@@ -177,6 +222,21 @@ async function main() {
           where: { id: seat.id },
         });
         assert.equal(attached.userId, admin.id);
+        const dual = await prisma.membership.findMany({
+          where: { poolId: pool.id, userId: admin.id },
+          select: { id: true, role: true, isAdmin: true },
+        });
+        assert.equal(dual.length, 2, "commissioner + player seats on one user");
+        assert.ok(dual.some((row) => row.role === "admin"));
+        assert.ok(dual.some((row) => row.role === "member"));
+        const grants = await prisma.poolAccessRole.findMany({
+          where: { poolId: pool.id, userId: admin.id },
+          select: { role: true },
+        });
+        const grantRoles = grants.map((g) => g.role).sort();
+        assert.ok(grantRoles.includes("player"));
+        assert.ok(grantRoles.includes("administrator"));
+        assert.equal(await membershipUserUniqueExists(prisma), false);
       }
 
       const adminSpaceEmail = `verify-attach-space-${stamp}@example.com`;

@@ -13,6 +13,8 @@ export const CLAIM_ERRORS = {
   alreadyClaimed:
     "This seat is already claimed. Sign in instead, or ask the commissioner if that’s you.",
   emailTaken: "That email already has an account. Sign in instead, or pick a different email.",
+  seatAttachBlocked:
+    "Could not attach that seat to your login. Refresh this page and tap Join again.",
   emailOnOtherSeat:
     "That email is already on another player seat. Sign in instead, or pick a different email.",
   emailPasswordMismatch:
