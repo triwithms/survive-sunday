@@ -19,6 +19,7 @@ import {
 import { getTeamInjuries, type LiveInjury } from "@/lib/live-injuries";
 import { formatWinPct } from "@/lib/standings-format";
 import { InjuryChip } from "@/components/InjuryChip";
+import { isDemoMode } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -318,7 +319,9 @@ export default async function TeamResearchPage({
           </div>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
             PF {team.pointsFor} · PA {team.pointsAgainst} ·{" "}
-            <span className="text-gold-400">Demo standings</span>
+            <span className="text-gold-400">
+              {isDemoMode(me.pool.mode) ? "Demo standings" : "League standings"}
+            </span>
           </p>
         </div>
       </header>
@@ -365,7 +368,11 @@ export default async function TeamResearchPage({
             {roster?.fromFullFile
               ? `Full roster from ${roster.source || "team_rosters.json"}${
                   roster.asOf ? ` · as of ${roster.asOf}` : ""
-                }. Demo research only — not official NFL depth charts for wagering.`
+                }. ${
+                  isDemoMode(me.pool.mode)
+                    ? "Demo research only — not official NFL depth charts for wagering."
+                    : "Research only — not official NFL depth charts for wagering."
+                }`
               : "Seeded key players from team profiles — not a full depth chart."}
           </p>
           {roster?.sourceNote && (

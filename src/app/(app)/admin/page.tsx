@@ -5,6 +5,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AdminPanel } from "@/components/AdminPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
+import { PoolModePanel } from "@/components/PoolModePanel";
+import { CommissionerAccountPanel } from "@/components/CommissionerAccountPanel";
+import {
+  effectiveCurrentWeek,
+  isDemoEmail,
+  isDemoMode,
+  normalizePoolMode,
+} from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -22,11 +30,11 @@ export default async function AdminPage() {
             Commissioner only
           </h1>
           <p className="text-sm text-[var(--text-muted)] mt-2">
-            This area is for pool commissioners. Switch to the Commissioner demo
+            This area is for pool commissioners. Sign in with the commissioner
             account to manage picks and import week results.
           </p>
         </div>
-        <CommissionerSwitch />
+        {isDemoMode(me.pool.mode) && <CommissionerSwitch />}
       </div>
     );
   }
@@ -38,7 +46,10 @@ export default async function AdminPage() {
 
   const week = await prisma.week.findUniqueOrThrow({
     where: {
-      poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },
+      poolId_number: {
+        poolId: me.poolId,
+        number: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
+      },
     },
     include: { games: true },
   });
@@ -56,15 +67,36 @@ export default async function AdminPage() {
           Commissioner
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          Light admin — lock override, import picks, simulate scores, edit
-          roster real names, remove players. Pick and name edits are always
-          audited.
+          Light admin — your login, pool mode, reset, roster, lock override,
+          import picks, simulate scores, remove players. Pick and name edits
+          are always audited.
+        </p>
+        <p className="text-sm text-[var(--text-muted)] mt-2">
+          Mode switch is the first card below. Real mode is Week 1. Week 2 is
+          Demo only.
         </p>
       </div>
 
+      <PoolModePanel
+        initialMode={normalizePoolMode(me.pool.mode)}
+        isPracticeLogin={isDemoEmail(session.user.email ?? me.user.email)}
+      />
+
+      <CommissionerAccountPanel
+        currentEmail={session.user.email ?? me.user.email ?? null}
+        isPracticeLogin={isDemoEmail(session.user.email ?? me.user.email)}
+      />
+
+      <Link
+        href="/admin/roster"
+        className="btn-primary inline-flex items-center justify-center w-full"
+      >
+        Roster — nicknames and real names
+      </Link>
+
       <Link
         href="/admin/import"
-        className="btn-primary inline-flex items-center justify-center w-full"
+        className="btn-secondary inline-flex items-center justify-center w-full"
       >
         Import week picks (CSV / paste)
       </Link>

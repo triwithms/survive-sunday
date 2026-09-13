@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getMembershipForUser } from "@/lib/session";
+import { effectiveCurrentWeek, isSandboxWeekHidden } from "@/lib/pool-mode";
 import {
   effectiveLockAt,
   isWeekLocked,
@@ -31,6 +32,12 @@ export async function POST(req: Request) {
   }
 
   const { weekNumber, teamAbbr } = await req.json();
+  if (isSandboxWeekHidden(membership.pool.mode, Number(weekNumber))) {
+    return NextResponse.json(
+      { error: "Week 2 is only available in Demo mode" },
+      { status: 403 }
+    );
+  }
   const week = await prisma.week.findUnique({
     where: {
       poolId_number: { poolId: membership.poolId, number: weekNumber },
@@ -139,8 +146,15 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const weekNumber = Number(
-    url.searchParams.get("week") || membership.pool.currentWeek
+    url.searchParams.get("week") ||
+      effectiveCurrentWeek(membership.pool.mode, membership.pool.currentWeek)
   );
+  if (isSandboxWeekHidden(membership.pool.mode, weekNumber)) {
+    return NextResponse.json(
+      { error: "Week 2 is only available in Demo mode" },
+      { status: 403 }
+    );
+  }
 
   const week = await prisma.week.findUnique({
     where: {

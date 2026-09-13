@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { NflStandingsClient } from "@/components/NflStandingsClient";
+import { isDemoMode } from "@/lib/pool-mode";
 import fs from "fs";
 import path from "path";
 
@@ -55,6 +56,7 @@ export default async function NflStandingsPage() {
       </div>
 
       <NflStandingsClient
+        demoMode={isDemoMode(me.pool.mode)}
         asOf={meta.asOf}
         note={meta.note}
         teams={teams.map((t) => ({

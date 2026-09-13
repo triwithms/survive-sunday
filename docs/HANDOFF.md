@@ -6,7 +6,7 @@ This is the **keep-up guide** for the pool app. It is written for a non-coder. P
 
 **Never paste secrets** (passwords, `AUTH_SECRET`, `DATABASE_URL`, API keys) into a chat, a screenshot, or a commit.
 
-**Snapshot (13 September 2026):** this branch (PR #7) adds **Forgot password** (email or text code — not a code at every login) and a ~90 day stay-signed-in cookie. `main` already has login/session fixes, ESPN scores/injuries, and confirmed BM Boys real names. Other features still exist only as **open PRs**.
+**Snapshot (13 September 2026):** `main` has Real mode (Week 1) vs Demo (Week 2), ESPN scores/injuries, and roster names. This branch (PR #7) adds **Forgot password** (email or text code — not a code at every login) and a ~90 day stay-signed-in cookie.
 
 ---
 
@@ -147,21 +147,24 @@ Nicknames stay as friends know them. Real names show in brackets on the board.
 | Long Snapper | John Stilo |
 | Steve | Steve Venerus |
 
-These names are in the seed files and the demo picker on `main`. If the live board still says “J S” or just “Steve”, wait for the latest Production deploy, or fix that row on **Admin → Roster real names** (audit-logged; nickname does not change).
+These names are in the seed files. Production is also patched on deploy (Long Snapper `J S` → John Stilo, Steve → Steve Venerus). You can edit any row on **Admin → Roster**.
 
 ---
 
-## 7. How friends use it (what is live today)
+## 7. How friends use it
 
-### Demo enter (practice picker — still on the live home page)
+The pool has two commissioner-controlled modes. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
-1. Open the live site.
+- **Real mode (use this for the season):** home and sign-in show **Join** and **Sign in** only. Friends never see the word “demo”.
+- **Demo mode (commissioner / testing):** practice account picker is visible. Demo copy is allowed.
+
+### Demo enter (Demo mode only)
+
+1. Open the live site while the pool is in **Demo mode**.
 2. Pick a BM Boys nickname → **Enter as selected**.
 3. You land on **Home** (`/pool`) as that person.
 
-Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is a small link, not the main button.
-
-The live site is still in this **practice / demo** state. Hiding the picker and the word “demo” is **not on `main` yet** (open PR #10).
+Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is a small link, not the main button. In **Real mode** this picker is hidden and `/api/demo-enter` is blocked.
 
 ### Real login / join
 
@@ -200,7 +203,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 - **Scores** pulls the ESPN scoreboard, shows live / scheduled / final, and auto-grades games that are final. If ESPN is briefly down, the last saved scores stay on screen.
 - **League** and **Schedule** are research screens (standings / full slate).
-- **Team pages** (`/team/KC` and so on): roster (offence / defence / special teams), college, news links, record. Injury notes on these pages come from a **sample / demo** file — they are **not** live 2026 injury news.
+- **Team pages** (`/team/KC` and so on): roster, college, news links, record, and ESPN’s public injury report (not official NFL).
 - Tapping an individual NFL **player** for a detail page is **not on `main` yet** (open PR #11).
 
 ### Phone / Home Screen (PWA)
@@ -213,20 +216,28 @@ Stay-logged-in is about **90 days** on this phone/browser (opening the app keeps
 
 ---
 
-## 8. Commissioner admin (what is live today)
+## 8. Commissioner admin
 
-Sign in as commissioner (`admin@survivesunday.demo` / `demo1234` on demo) → gold **Admin** in the top-right of the header.
+**Admin** is the gold link in the top-right of the header. The **first card** is **Real mode vs Demo mode** — two big buttons. Tap **Real mode** for Week 1 (this NFL week). Week 2 is Demo-only.
+
+First real commissioner login: Admin → **Your commissioner login** → your real email + password → save → sign out → **Sign in** with that email. Do not keep using `admin@survivesunday.demo` after that. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
+
+While Demo mode is on you can still **Enter as commissioner** (`admin@survivesunday.demo` / `demo1234`) to reach Admin and set the real login.
 
 | Tool | What it does |
 |------|----------------|
+| **Real mode vs Demo mode** | First card on Admin. Tap **Real mode** or **Demo mode**. Real = Week 1, no practice picker. Demo = Week 2 sandbox for the commissioner. |
+| **Your commissioner login** | Replace the practice commissioner email with a real email + password. Then sign out and sign in with that email. |
+| **Reset pool** | Optional. Real mode is already Week 1. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. |
+| **Roster** | See each nickname + real name. Edit either when wrong. Audit-logged. |
 | **Import week picks** | Paste or upload `nickname,team` (or `email,team`). This is how you set or **correct a player’s pick after the fact**. Changes are written to the **audit log**. There is no single-player “edit pick” button yet. |
-| **Roster real names** | See each nickname + real name. Edit the real name (nickname stays). Audit-logged. |
 | Lock controls | Reopen week, unlock (testing), lock now + missed picks, clear override. |
-| Simulate scores | Fake remaining finals (demo / testing). |
+| Simulate scores | Fake remaining finals (testing). |
 | Force grade | Grade + apply missed picks now. |
 | Remove player | Drops a member from the pool. |
+| Demo lock toggle | Header **Before / After deadline** — commissioner only, and only in Demo mode. |
 
-**Not on Admin yet (open PRs):** Real vs Demo mode switch, Reset pool, save a real commissioner email, turn off the mulligan / one-and-done, hand the pool to someone else.
+**Not on Admin yet (other PRs):** turn off the mulligan / one-and-done, hand the pool to someone else.
 
 ---
 
@@ -242,7 +253,7 @@ Labelled so a free chat does **not** wander into extras. **MUST** means keep it 
 | Commissioner can change a participant pick after the fact | **Built** via **Admin → Import week picks** (audit-logged). No single-player “edit pick” button yet. |
 | Friends can use the app without picking every week | **Built.** They can browse without picking. A missed week still counts as a loss after lock. Changing that rule is a product decision — say so explicitly. |
 | Transfer ownership (hand Admin to another friend) | **Not shipped.** Open [PR #8](https://github.com/triwithms/survive-sunday/pull/8). Do not invent a transfer screen on `main`. |
-| No “demo” labels / practice picker in real season mode | **Not shipped.** Open [PR #10](https://github.com/triwithms/survive-sunday/pull/10). Live home page still shows the practice picker. |
+| No “demo” labels / practice picker in real season mode | **Built** (PR #10). Admin → **Real mode**. Real = Week 1. Week 2 is Demo-only. |
 | Simple password reset (code by email or SMS) | **Built in this PR.** Sign in → Forgot password → 6-digit code. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Optional Twilio for texts. Not a code at every login. |
 | Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** Install works. Cookie is ~**90 days** (open the app to keep it fresh). |
 
@@ -268,7 +279,6 @@ These are real GitHub PRs or in-flight work as of this snapshot. **Do not descri
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
-| Demo vs Real mode + pool reset | [PR #10](https://github.com/triwithms/survive-sunday/pull/10) | Admin first card: **Real mode** / **Demo mode**. Real mode hides the practice picker and the word “demo”. Optional **Reset pool** (type `RESET`). Save a **real commissioner login**. Playbook will live at `docs/REAL-MODE.md` **after** that PR merges (that file is not on `main` today). |
 | Commissioner: turn off mulligan + transfer | [PR #8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player). |
 | NFL player details | [PR #11](https://github.com/triwithms/survive-sunday/pull/11) (draft) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth, and a **sample / demo** injury note when one exists. Not a page for pool members (Gams, Steve, etc.). |
 | Live scores / injuries upgrade | In progress — **no PR on GitHub yet** as of this snapshot | `main` already has ESPN live scores and **sample** injury notes. A further upgrade is being worked on separately. Do not invent a live injury feed until a PR exists and is merged. |
@@ -365,10 +375,13 @@ Then only these paths unless a listed open PR is the task:
 - src/app/api/password/forgot/route.ts
 - src/app/api/password/reset/route.ts
 - src/app/api/demo-enter/route.ts
+- src/lib/pool-mode.ts
+- src/lib/pool-mode-db.ts
 - src/app/login/page.tsx
 - src/app/login/forgot/page.tsx
 - src/components/ForgotPasswordForm.tsx
 - src/app/join/page.tsx
+- docs/REAL-MODE.md
 - .env.example
 - DEPLOY.md
 
@@ -404,11 +417,17 @@ My problem: [describe pick / lock / board issue]
 #### c) Commissioner tools
 
 ```
-You are helping maintain Survive Sunday. Read docs/HANDOFF.md first, then only:
+You are helping maintain Survive Sunday. Read docs/HANDOFF.md and docs/REAL-MODE.md first, then only:
 - src/app/(app)/admin/page.tsx
 - src/app/(app)/admin/import/page.tsx
 - src/components/AdminPanel.tsx
+- src/components/PoolModePanel.tsx
+- src/components/RosterEditor.tsx
+- src/components/CommissionerAccountPanel.tsx
+- src/app/(app)/admin/roster/page.tsx
 - src/components/ImportPicksForm.tsx
+- src/lib/pool-mode.ts
+- src/lib/reset-pool.ts
 - src/app/api/admin/
 
 MUST on main: commissioner can change a participant pick after the fact
@@ -416,7 +435,8 @@ MUST on main: commissioner can change a participant pick after the fact
 
 Not on main — continue the existing PR, do not start a second copy:
 - Turn off mulligan / one-and-done + transfer commissioner → open PR #8
-- Real vs Demo mode, reset pool, real commissioner login → open PR #10
+
+Real vs Demo mode, reset pool, and real commissioner login are **already on main** (PR #10). Do not rebuild them.
 
 Small PR only. Do not expand into Wave 2 SMS/digests.
 My problem: [describe admin / import / lock-override / mulligan / transfer / mode issue]
@@ -454,8 +474,7 @@ Read docs/HANDOFF.md and:
 - the “Install the app” section in src/components/HelpContent.tsx
 
 Give iPhone Safari and Android Chrome steps for Add to Home Screen.
-Login cookie is ~90 days after PR #7. If the Home Screen icon opens logged-out, sign in once inside the installed app.
-If the Home Screen icon opens a logged-out screen, sign in once inside the installed app.
+Login cookie is ~90 days. If the Home Screen icon opens logged-out, sign in once inside the installed app.
 Do not add a code after every login (closed PR #5).
 Do not change code unless I ask. No extras.
 My problem: [e.g. iPhone friends cannot find Add to Home Screen]
@@ -493,7 +512,7 @@ My problem: [describe scores / injuries / team or player page issue]
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |
 | **Audit log** | A written record of commissioner changes (imports, removals, real-name edits). |
-| **Demo / practice picker** | Home-page list of BM Boys nicknames. Still on the live site until Real mode (PR #10) is merged. |
+| **Demo / practice picker** | Home-page list of BM Boys nicknames. Visible only in **Demo mode**. Hidden in **Real mode**. |
 | **OTP** | One-time code (the 6-digit Forgot-password code). Not a code at every login. |
 | **One-and-done** | Planned commissioner rule (PR #8): no free mulligan from a chosen week. One loss = out. **Not live.** |
 | **Transfer commissioner** | Planned Admin tool (PR #8): give Admin to another existing member. **Not live.** |

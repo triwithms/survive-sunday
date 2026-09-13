@@ -20,6 +20,9 @@
     "verify:password-reset": "tsx scripts/verify-password-reset.ts",
     "verify:password-reset-flow": "node scripts/verify-password-reset-flow.mjs",
     "verify:ensure-db": "tsx scripts/verify-ensure-production-db.ts",
+    "verify:pool-mode": "tsx scripts/verify-pool-mode.ts",
+    "verify:roster-names": "tsx scripts/verify-roster-name-patch.ts",
+    "verify:week-isolation": "tsx scripts/verify-week-isolation.ts",
     "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
     "verify:live-feeds": "tsx scripts/verify-live-feeds.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"

@@ -1,5 +1,7 @@
 import { auth } from "./auth";
 import { prisma } from "./db";
+import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
+import { ensureLiveWeekIsolation } from "./week-isolation";
 
 export async function requireUser() {
   const session = await auth();
@@ -8,7 +10,7 @@ export async function requireUser() {
 }
 
 export async function getMembershipForUser(userId: string) {
-  return prisma.membership.findFirst({
+  const membership = await prisma.membership.findFirst({
     where: { userId },
     include: {
       pool: true,
@@ -17,6 +19,22 @@ export async function getMembershipForUser(userId: string) {
     },
     orderBy: { createdAt: "asc" },
   });
+  if (membership) {
+    await applyCanonicalRosterNamesThrottled(prisma, membership.poolId);
+    const isolation = await ensureLiveWeekIsolation(prisma, membership.pool);
+    if (isolation.changed) {
+      return prisma.membership.findFirst({
+        where: { userId },
+        include: {
+          pool: true,
+          user: true,
+          picks: { include: { game: true } },
+        },
+        orderBy: { createdAt: "asc" },
+      });
+    }
+  }
+  return membership;
 }
 
 export async function requireAdmin() {

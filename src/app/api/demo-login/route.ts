@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
 import { ensureDemoAccount } from "@/lib/demo-account";
 import { signInDemoCredentials } from "@/lib/demo-session";
+import { isLiveMode } from "@/lib/pool-mode";
+import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
 
 export async function POST(req: Request) {
+  if (isLiveMode(await getPrimaryPoolMode())) {
+    return NextResponse.json(
+      { error: "Use sign in or join the pool" },
+      { status: 403 }
+    );
+  }
   const body = await req.json().catch(() => ({}));
   const email =
     (body.email as string) || "gams@survivesunday.demo";

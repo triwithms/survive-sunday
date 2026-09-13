@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 import { INVITE_CODE } from "./constants";
+import { isLiveMode } from "./pool-mode";
 
 const DEMO_PROFILES: Record<
   string,
@@ -84,6 +85,9 @@ export async function ensureDemoAccount(email: string, password: string): Promis
   const normalized = email.trim().toLowerCase();
   if (!normalized.endsWith("@survivesunday.demo")) return;
 
+  const poolEarly = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
+  if (poolEarly && isLiveMode(poolEarly.mode)) return;
+
   const existing = await prisma.user.findUnique({ where: { email: normalized } });
   if (existing?.passwordHash) return;
 
@@ -103,7 +107,7 @@ export async function ensureDemoAccount(email: string, password: string): Promis
         },
       });
 
-  const pool = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
+  const pool = poolEarly ?? (await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } }));
   if (!pool) return;
 
   const already = await prisma.membership.findUnique({
