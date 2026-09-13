@@ -54,6 +54,7 @@ export default async function ScoresPage({
     requested: parseWeekParam(params?.week),
     weekNumbers: weeks.map((week) => week.number),
     currentWeek,
+    allowFuture: true,
   });
   const selectedRef =
     weeks.find((week) => week.number === selectedNumber) ??
@@ -131,6 +132,7 @@ export default async function ScoresPage({
         selectedWeek={week.number}
         currentWeek={currentWeek}
         basePath="/scores"
+        allowFuture
       />
 
       <LiveScoresRefresh weekNumber={week.number} poll={poll} />

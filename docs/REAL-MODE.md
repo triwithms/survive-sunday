@@ -15,8 +15,8 @@ Invite code for friends: **`SUNDAY26`**.
 
 After you merge this change and Vercel finishes deploying, that switch is live.
 
-- **Real mode** = **Week 1** (this NFL week). Week 2 practice picks are cleared and friends cannot open Week 2.
-- **Demo mode** = Week 2 sandbox for you (commissioner) only.
+- **Real mode** = **Week 1** (this NFL week). Practice picker is hidden. Week 2 is a real upcoming NFL week — friends can view the schedule and pick when it unlocks.
+- **Demo mode** = practice picker for you (commissioner). Same weeks, including Week 2.
 
 ---
 
@@ -126,7 +126,7 @@ Example file: `/examples/week1-picks-import.csv`
 
 ## Suggested order for the real season
 
-1. Tap **Admin → Real mode** — friends land on **Week 1**, Week 2 practice picks are cleared, and the practice picker is hidden.
+1. Tap **Admin → Real mode** — friends land on **Week 1**, the practice picker is hidden, and Week 2 stays on the schedule.
 2. Save your **real commissioner login**, sign out, sign in with it.
 3. Fix names on **Roster** if needed (John Stilo / Steve Venerus should already be patched).
 4. When you want a clean Week 1 board, **Reset pool**.
@@ -138,7 +138,7 @@ Example file: `/examples/week1-picks-import.csv`
 
 ## If something looks wrong
 
-- Home still shows a player picker or Week 2 → open **Admin** and tap **Real mode**.
+- Home still shows a player picker → open **Admin** and tap **Real mode**. Week 2 on Schedule is expected.
 - Mode buttons do nothing → refresh, then tap again. You must be signed in as commissioner.
 - You cannot open Admin → sign in with your real commissioner email (or the practice commissioner via **Sign in** if you have not saved a real email yet).
 - Practice email/password fails after you saved a real login → that is intended. Use your real email.

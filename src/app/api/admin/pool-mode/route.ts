@@ -61,8 +61,8 @@ export async function POST(req: Request) {
         stillPracticeLogin,
         note:
           mode === POOL_MODE_LIVE
-            ? "Real mode — Week 1; Week 2 sandbox picks cleared; no participant demo UX"
-            : "Demo mode — Week 2 commissioner sandbox; practice picker available",
+            ? "Real mode — Week 1 current; Week 2 slate kept; no participant demo UX"
+            : "Demo mode — practice picker available; Week 2 slate kept",
       }),
     },
   });

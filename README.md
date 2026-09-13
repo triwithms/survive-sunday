@@ -40,7 +40,7 @@ The switch is on **Admin** (gold link, top-right) → **first card: Real mode vs
 
 **First real commissioner login:** Admin → **Your commissioner login** → your email + password → sign out → Sign in with that email.
 
-**Go live for Week 1:** tap **Real mode** (pool becomes Week 1; Week 2 sandbox is Demo-only) → save real login → later **Reset pool** if you want a clean board → **Roster** if names need fixing → **Import week picks**. Step-by-step: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
+**Go live for Week 1:** tap **Real mode** (pool becomes Week 1; Week 2 stays on the schedule) → save real login → later **Reset pool** if you want a clean board → **Roster** if names need fixing → **Import week picks**. Step-by-step: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
 
 Live roster names (Long Snapper → John Stilo, Steve → Steve Venerus) are patched on the production database at deploy — seed-only is not enough.
 

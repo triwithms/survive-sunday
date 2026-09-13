@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/session";
-import { isSandboxWeekHidden } from "@/lib/pool-mode";
 import {
   gradeWeekPicks,
   gradePickFromScore,
@@ -45,12 +44,6 @@ export async function POST(req: Request) {
 
   const body = await req.json();
   const weekNumber = Number(body.weekNumber ?? 1);
-  if (isSandboxWeekHidden(admin.membership.pool.mode, weekNumber)) {
-    return NextResponse.json(
-      { error: "Week 2 is only available in Demo mode" },
-      { status: 400 }
-    );
-  }
   const overrideReuse = Boolean(body.overrideReuse);
   const dryRun = Boolean(body.dryRun);
   let rows: ImportRow[] = body.rows || [];

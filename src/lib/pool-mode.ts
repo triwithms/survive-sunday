@@ -4,9 +4,9 @@ export type PoolMode = typeof POOL_MODE_DEMO | typeof POOL_MODE_LIVE;
 
 export const DEMO_EMAIL_SUFFIX = "@survivesunday.demo";
 
-/** Real NFL week right now. Live mode always uses this. */
+/** Real NFL week right now. Live mode always uses this as the current pick week. */
 export const REAL_CURRENT_WEEK = 1;
-/** Demo slate / commissioner sandbox only — not for participants in Real mode. */
+/** Demo mode default current week. Week 2 is a real NFL week in both modes. */
 export const DEMO_SANDBOX_WEEK = 2;
 
 export function normalizePoolMode(mode: string | null | undefined): PoolMode {
@@ -35,18 +35,23 @@ export function effectiveCurrentWeek(
     : DEMO_SANDBOX_WEEK;
 }
 
-/** Week 2 demo slate is unreachable for participants while Real mode is on. */
+/**
+ * Week 2 is a real NFL week. Demo isolation is picks/practice UX only —
+ * never hide the Week 2 slate from players in Real/live mode.
+ */
 export function isSandboxWeekHidden(
   mode: string | null | undefined,
   weekNumber: number
 ): boolean {
-  return isLiveMode(mode) && weekNumber === DEMO_SANDBOX_WEEK;
+  void mode;
+  void weekNumber;
+  return false;
 }
 
 export function weeksForParticipants<T extends { number: number }>(
   mode: string | null | undefined,
   weeks: T[]
 ): T[] {
-  if (!isLiveMode(mode)) return weeks;
-  return weeks.filter((week) => week.number !== DEMO_SANDBOX_WEEK);
+  void mode;
+  return weeks;
 }

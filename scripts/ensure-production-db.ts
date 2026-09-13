@@ -18,6 +18,7 @@ import { PrismaClient } from "@prisma/client";
 import { prismaDatasourceUrl } from "../src/lib/prisma-url";
 import { applyCanonicalRosterNames } from "../src/lib/roster-name-patch";
 import { ensureLiveWeekIsolation } from "../src/lib/week-isolation";
+import { ensureWeek2Slate } from "../src/lib/ensure-week-slate";
 import { isLiveMode } from "../src/lib/pool-mode";
 import { backfillPoolAccessRoles } from "../src/lib/roles-db";
 import { ensureDualMembershipIndex } from "../src/lib/membership-schema";
@@ -296,19 +297,23 @@ async function main() {
         );
       }
       try {
+        const slate = await ensureWeek2Slate(prisma, pool.id);
+        console.log(
+          `[ensure-db] Week 2 slate ${slate.changed ? "restored" : "ok"} — ${slate.gameCount} games, lock ${slate.lockAt}`
+        );
         if (isLiveMode(pool.mode)) {
           const isolation = await ensureLiveWeekIsolation(prisma, pool);
           if (isolation.changed) {
             console.log(
-              `[ensure-db] live pool snapped to Week ${isolation.currentWeek}, cleared ${isolation.clearedPicks} Week 2 picks`
+              `[ensure-db] live pool on Week ${isolation.currentWeek} (Week 2 slate kept)`
             );
           } else {
-            console.log("[ensure-db] live pool already on Week 1");
+            console.log("[ensure-db] live pool already on Week 1; Week 2 visible");
           }
         }
       } catch (error) {
         console.warn(
-          "[ensure-db] live week isolation skipped (build continues)",
+          "[ensure-db] Week 2 slate / live week isolation skipped (build continues)",
           error
         );
       }
