@@ -71,7 +71,7 @@ Open: [vercel.com](https://vercel.com) → team **nfl-pool** → project **survi
 | `AUTH_SECRET` | Long random string (Vercel can generate one, or a trusted person runs `openssl rand -base64 32`) | Sign-in 500s. Demo login lands on `?error=NoSession`. |
 | `AUTH_TRUST_HOST` | `true` | Auth.js may ignore the real site address. |
 | `DATABASE_URL` | Set automatically by the **Neon** Vercel integration. Do not type it into the repo. | Login / join / picks fail. Often shows as `CallbackRouteError`. |
-| `AUTH_URL` | Prefer **leaving this unset** on Vercel. If you set it, it **must** be `https://survive-sunday.vercel.app` | A leftover `https://example.com` (Vercel’s placeholder) breaks login even when `AUTH_TRUST_HOST` is true. Same for `localhost`. |
+| `AUTH_URL` | Prefer **leaving this unset** on Vercel. If you set it, it **must** be `https://survive-sunday.vercel.app` | The app ignores leftover `https://example.com` (and localhost) so Host + `AUTH_TRUST_HOST` win. Still delete a placeholder so Auth.js is not pinned at build time. |
 | `NEXT_PUBLIC_APP_URL` | `https://survive-sunday.vercel.app` | Public links / app URL can be wrong. |
 
 ### Optional (not required for demo)
@@ -194,7 +194,7 @@ Friends land on `/?error=NoSession`. `/api/auth/session` or `/api/auth/csrf` may
 
 1. Confirm `AUTH_SECRET` is set on **Production**.
 2. Confirm `AUTH_TRUST_HOST=true`.
-3. Check `AUTH_URL`. If it is `https://example.com` (or localhost), **delete it** or set it to `https://survive-sunday.vercel.app`.
+3. Check `AUTH_URL`. If it is `https://example.com` (or localhost), **delete it** or set it to `https://survive-sunday.vercel.app`. The app also ignores those leftover values at runtime.
 4. Redeploy.
 
 **B. `CallbackRouteError` (or “Configuration” on the login page)**
@@ -303,7 +303,7 @@ You are helping maintain Survive Sunday. Read docs/HANDOFF.md first, then only:
 Production: Vercel team nfl-pool / project survive-sunday, Neon DATABASE_URL,
 site https://survive-sunday.vercel.app.
 Never commit secrets. Watch for AUTH_SECRET missing, AUTH_TRUST_HOST,
-and AUTH_URL set to example.com or localhost.
+and AUTH_URL set to example.com or localhost (app ignores those at runtime; still delete them).
 Small PR only if code must change; otherwise give click-by-click Vercel steps.
 My problem: [paste Type error / deploy log snippet / login error — no secrets]
 ```
