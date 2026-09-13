@@ -78,6 +78,11 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
           />
         </label>
         {err && <p className="text-crimson-400 text-sm">{err}</p>}
+        <p className="text-sm">
+          <Link href="/login/forgot" className="text-gold-400">
+            Forgot password?
+          </Link>
+        </p>
         <button type="submit" className="btn-primary w-full" disabled={busy}>
           {busy ? "Signing in…" : "Sign in"}
         </button>

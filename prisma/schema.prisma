@@ -22,6 +22,7 @@ model User {
   sessions       Session[]
   memberships    Membership[]
   auditLogs      AuditLog[] @relation("AuditActor")
+  otpChallenges  OtpChallenge[]
 }
 
 model Account {
@@ -56,6 +57,26 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+/// Hashed one-time codes (password reset). Plaintext is never stored.
+model OtpChallenge {
+  id          String    @id @default(cuid())
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email       String
+  purpose     String    // password_reset
+  codeHash    String
+  channel     String    // email | sms
+  destination String
+  expiresAt   DateTime
+  attempts    Int       @default(0)
+  consumedAt  DateTime?
+  lastSentAt  DateTime
+  createdAt   DateTime  @default(now())
+
+  @@index([email, purpose, createdAt])
+  @@index([userId, purpose, createdAt])
 }
 
 model Pool {

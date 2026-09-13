@@ -27,6 +27,41 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 
 `DATABASE_URL` should already be set by the Neon integration — do not paste secrets into the repo.
 
+## 3b. Forgot password today — two keys (email)
+
+Friends stay signed in. We do **not** ask for a code at every sign-in.
+
+If they forget the password: Sign in → **Forgot password?** → 6-digit code by email → new password → back in the pool.
+
+Demo seats (`@survivesunday.demo`) always use **demo1234**. No reset.
+
+**Minimum for friends today** (Vercel → nfl-pool → survive-sunday → Settings → Environment Variables → Production):
+
+| Variable | What to paste |
+|---|---|
+| `RESEND_API_KEY` | API key from [resend.com](https://resend.com) (free). |
+| `RESEND_FROM_EMAIL` | A From address Resend has **verified**, e.g. `Survive Sunday <noreply@yourdomain.com>`. |
+
+Click-by-click:
+
+1. Sign up at [resend.com](https://resend.com) (free).
+2. **Domains → Add domain** for a domain you own. Add the DNS records Resend shows. Wait until it says **Verified**.
+3. **API Keys → Create**. Copy the key once.
+4. In Vercel, add the two names above. Environment: **Production** (add Preview too if you want to test the preview URL first).
+5. Merge this pull request. If you added the keys after a deploy already ran, open Vercel → Deployments → the latest Production row → ⋮ → **Redeploy**.
+
+Without those two keys, Forgot password says we couldn’t send a code.
+
+Optional texts (only if a friend saved a cell). Skip for today if email is enough:
+
+| Variable | What to paste |
+|---|---|
+| `TWILIO_ACCOUNT_SID` | From [twilio.com](https://www.twilio.com) (trial is fine) |
+| `TWILIO_AUTH_TOKEN` | Twilio auth token |
+| `TWILIO_FROM_NUMBER` | Your Twilio number, e.g. `+14165551234` |
+
+Local `next dev` without keys: the code is printed in the terminal and shown on the page.
+
 ## 4. Build / first schema + seed
 
 On first deploy (or via Vercel CLI / a one-off shell with prod `DATABASE_URL`):

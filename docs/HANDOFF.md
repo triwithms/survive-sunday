@@ -6,7 +6,7 @@ This is the **keep-up guide** for the pool app. It is written for a non-coder. P
 
 **Never paste secrets** (passwords, `AUTH_SECRET`, `DATABASE_URL`, API keys) into a chat, a screenshot, or a commit.
 
-**Snapshot (13 September 2026):** latest `main` includes login/session fixes, the AUTH_URL placeholder guard, and confirmed BM Boys real names (Long Snapper → John Stilo, Steve → Steve Venerus). Several useful features exist only as **open PRs** — they are not shipped until you merge them.
+**Snapshot (13 September 2026):** `main` has Real mode (Week 1) vs Demo (Week 2), ESPN scores/injuries, and roster names. This branch (PR #7) adds **Forgot password** (email or text code — not a code at every login) and a ~90 day stay-signed-in cookie.
 
 ---
 
@@ -88,11 +88,24 @@ Open: [vercel.com](https://vercel.com) → team **nfl-pool** → project **survi
 
 Live scores and injuries use **ESPN public JSON** — no Vercel key. See [DEPLOY.md](../DEPLOY.md).
 
-### Not on the live app today
+### Required for Forgot password (two keys)
 
-There are **no** email or SMS send keys on `main` (no Resend / Twilio lines in `.env.example`). Friends can **save a cell number** for later missing-pick texts; texts are **not sent yet**.
+Set these **before or right after** merging PR #7. Friends will not receive a reset email until both are on **Production**.
 
-Resend / Twilio keys are only needed **after** the password-reset PR is merged (see open work). Do not add them until that code is live.
+| Name | What to put | If missing |
+|------|-------------|------------|
+| `RESEND_API_KEY` | API key from [resend.com](https://resend.com) (free) | Forgot password says we couldn’t send a code. |
+| `RESEND_FROM_EMAIL` | A From address Resend has **verified**, e.g. `Survive Sunday <noreply@yourdomain.com>` | Emails fail. `onboarding@resend.dev` only delivers to *your* Resend login email, not friends. |
+
+Click-by-click: [DEPLOY.md](../DEPLOY.md) section **3b**.
+
+### Optional (texts)
+
+| Name | What it does |
+|------|----------------|
+| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM_NUMBER` | Text the code if the friend saved a cell. Skip if email is enough today. |
+
+Friends can still **save a cell number** in the header. Missing-pick reminder texts are **not sent yet**.
 
 A full list with local-dev notes is in [`.env.example`](../.env.example) and [`DEPLOY.md`](../DEPLOY.md).
 
@@ -153,14 +166,13 @@ The pool has two commissioner-controlled modes. Full playbook: [`docs/REAL-MODE.
 
 Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is a small link, not the main button. In **Real mode** this picker is hidden and `/api/demo-enter` is blocked.
 
-The live site is still in this **practice / demo** state. Hiding the picker and the word “demo” is **not on `main` yet** (open PR #10).
-
 ### Real login / join
 
 - **Sign in** (`/login`): email + password, or Google if keys are set.
 - **Join** (`/join`): invite code **`SUNDAY26`**, nickname, email, password (min 6 characters).
+- **Forgot password?** on the sign-in page: we email (or text) a 6-digit code → new password → signed back in. Demo seats stay on **demo1234**. This is **not** a code at every login.
 
-There is **no “Forgot password?”** screen on `main` yet (open PR #7). Until that merges, a forgotten password needs a human workaround.
+Needs the two Resend keys in section 4, or the page will say we couldn’t send a code.
 
 ### Picks
 
@@ -200,7 +212,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 - **Android:** Chrome menu → Install app / Add to Home screen.
 - **Computer:** any modern browser. Bookmark if you like.
 
-On `main`, stay-logged-in is the normal Auth.js cookie (about **30 days**). Clearing site data or signing out logs them out. A longer ~**90 day** cookie (open the app to keep it fresh) is in open PR #7 — **not live yet**.
+Stay-logged-in is about **90 days** on this phone/browser (opening the app keeps it fresh). Clearing site data or signing out logs them out. Sign in once inside the Home Screen app if the icon opens logged-out.
 
 ---
 
@@ -241,9 +253,9 @@ Labelled so a free chat does **not** wander into extras. **MUST** means keep it 
 | Commissioner can change a participant pick after the fact | **Built** via **Admin → Import week picks** (audit-logged). No single-player “edit pick” button yet. |
 | Friends can use the app without picking every week | **Built.** They can browse without picking. A missed week still counts as a loss after lock. Changing that rule is a product decision — say so explicitly. |
 | Transfer ownership (hand Admin to another friend) | **Not shipped.** Open [PR #8](https://github.com/triwithms/survive-sunday/pull/8). Do not invent a transfer screen on `main`. |
-| No “demo” labels / practice picker in real season mode | **This PR.** Admin → **Real mode**. Real = Week 1. Week 2 is Demo-only. |
-| Simple password reset (code by email or SMS) | **Not shipped.** Open [PR #7](https://github.com/triwithms/survive-sunday/pull/7) (draft). Needs Resend (and optional Twilio) keys **after** merge. Until then, forgotten passwords need a human workaround. |
-| Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Partly built.** Install works. Cookie on `main` is ~30 days. Longer stay-logged-in (~90 days) is in PR #7. |
+| No “demo” labels / practice picker in real season mode | **Built** (PR #10). Admin → **Real mode**. Real = Week 1. Week 2 is Demo-only. |
+| Simple password reset (code by email or SMS) | **Built in this PR.** Sign in → Forgot password → 6-digit code. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Optional Twilio for texts. Not a code at every login. |
+| Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** Install works. Cookie is ~**90 days** (open the app to keep it fresh). |
 
 ### Do not build (already decided)
 
@@ -267,8 +279,6 @@ These are real GitHub PRs or in-flight work as of this snapshot. **Do not descri
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
-| Password reset OTP + longer stay-logged-in | [PR #7](https://github.com/triwithms/survive-sunday/pull/7) (draft) | Sign in → **Forgot password?** → 6-digit code (text if a cell is saved, otherwise email) → new password. Session cookie ~90 days. Needs Resend / optional Twilio. **Do not merge until those keys are on Vercel**, or accept that only demo seats can sign in without a reset. |
-| Demo vs Real mode + pool reset | [PR #10](https://github.com/triwithms/survive-sunday/pull/10) | Admin first card: **Real mode** / **Demo mode**. Real mode hides the practice picker and the word “demo”. Optional **Reset pool** (type `RESET`). Save a **real commissioner login**. Playbook will live at `docs/REAL-MODE.md` **after** that PR merges (that file is not on `main` today). |
 | Commissioner: turn off mulligan + transfer | [PR #8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player). |
 | NFL player details | [PR #11](https://github.com/triwithms/survive-sunday/pull/11) (draft) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth, and a **sample / demo** injury note when one exists. Not a page for pool members (Gams, Steve, etc.). |
 | Live scores / injuries upgrade | In progress — **no PR on GitHub yet** as of this snapshot | `main` already has ESPN live scores and **sample** injury notes. A further upgrade is being worked on separately. Do not invent a live injury feed until a PR exists and is merged. |
@@ -358,11 +368,18 @@ Then only these paths unless a listed open PR is the task:
 - src/lib/credentials-user.ts
 - src/lib/demo-session.ts
 - src/lib/request-host.ts
+- src/lib/otp.ts
+- src/lib/otp-delivery.ts
+- src/lib/password-reset.ts
 - src/app/api/auth/[...nextauth]/route.ts
+- src/app/api/password/forgot/route.ts
+- src/app/api/password/reset/route.ts
 - src/app/api/demo-enter/route.ts
 - src/lib/pool-mode.ts
 - src/lib/pool-mode-db.ts
 - src/app/login/page.tsx
+- src/app/login/forgot/page.tsx
+- src/components/ForgotPasswordForm.tsx
 - src/app/join/page.tsx
 - docs/REAL-MODE.md
 - .env.example
@@ -374,8 +391,8 @@ Make a small PR. Do not add Wave 2 extras or the live-odds bonus unless I ask.
 Honest status:
 - Login/session cookie + AUTH_SECRET / AUTH_TRUST_HOST / AUTH_URL pitfalls are already fixed on main.
 - Do not rebuild every-login 2FA (closed PR #5).
-- Password reset (email/SMS one-time code) is a MUST. It is not on main. Open draft PR #7 already has it — continue that branch, do not start a second copy.
-- Stay-logged-in on the phone is a MUST. Main is ~30 days. PR #7 lengthens it to ~90 days.
+- Password reset (email/SMS one-time code) is a MUST and lives on this branch / after PR #7 merges. Continue that code; do not start a second copy.
+- Stay-logged-in on the phone is ~90 days after PR #7.
 
 My problem: [describe login / session / forgot-password issue]
 ```
@@ -418,7 +435,8 @@ MUST on main: commissioner can change a participant pick after the fact
 
 Not on main — continue the existing PR, do not start a second copy:
 - Turn off mulligan / one-and-done + transfer commissioner → open PR #8
-- Real vs Demo mode, reset pool, real commissioner login → open PR #10
+
+Real vs Demo mode, reset pool, and real commissioner login are **already on main** (PR #10). Do not rebuild them.
 
 Small PR only. Do not expand into Wave 2 SMS/digests.
 My problem: [describe admin / import / lock-override / mulligan / transfer / mode issue]
@@ -456,8 +474,7 @@ Read docs/HANDOFF.md and:
 - the “Install the app” section in src/components/HelpContent.tsx
 
 Give iPhone Safari and Android Chrome steps for Add to Home Screen.
-On main, login is the normal Auth.js cookie (~30 days). A ~90 day cookie is in open PR #7 — do not claim it is live unless that PR is merged.
-If the Home Screen icon opens a logged-out screen, sign in once inside the installed app.
+Login cookie is ~90 days. If the Home Screen icon opens logged-out, sign in once inside the installed app.
 Do not add a code after every login (closed PR #5).
 Do not change code unless I ask. No extras.
 My problem: [e.g. iPhone friends cannot find Add to Home Screen]
@@ -495,7 +512,7 @@ My problem: [describe scores / injuries / team or player page issue]
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |
 | **Audit log** | A written record of commissioner changes (imports, removals, real-name edits). |
-| **Demo / practice picker** | Home-page list of BM Boys nicknames. Still on the live site until Real mode (PR #10) is merged. |
+| **Demo / practice picker** | Home-page list of BM Boys nicknames. Visible only in **Demo mode**. Hidden in **Real mode**. |
 | **OTP** | One-time code (the 6-digit Forgot-password code). Not a code at every login. |
 | **One-and-done** | Planned commissioner rule (PR #8): no free mulligan from a chosen week. One loss = out. **Not live.** |
 | **Transfer commissioner** | Planned Admin tool (PR #8): give Admin to another existing member. **Not live.** |
