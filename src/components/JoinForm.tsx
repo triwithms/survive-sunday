@@ -139,7 +139,7 @@ export function JoinForm({
           ? "Invite-only. Choose a nickname your friends will recognise."
           : oneTapClaim
             ? `Signed in as ${signedIn?.email}. Pick your name — no password re-entry. Your Week 1 picks stay.`
-            : "Pick yourself from the live roster, then use your own email and the password you already sign in with. Your Week 1 picks stay with that name. Already the commissioner? Same email and password, or Sign in first then claim."}
+            : "Pick yourself from the live roster, then use your own email and the password you already sign in with. Your Week 1 picks stay with that name. Already have this login (Administrator)? Same email adds the Player role — or Sign in first then claim."}
       </p>
       <form onSubmit={onSubmit} className="space-y-4 card-glass p-5">
         <label className="block text-sm">
@@ -217,7 +217,7 @@ export function JoinForm({
             />
             {!newPlayer && (
               <span className="block mt-1 text-xs text-[var(--text-muted)]">
-                Same as Sign in (your commissioner login) — not a new password.
+                Same as Sign in — not a new password.
               </span>
             )}
           </label>

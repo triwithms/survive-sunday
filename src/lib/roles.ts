@@ -1,3 +1,8 @@
+/**
+ * One User (one email/login). Roles are grants, not account types.
+ * Shipped: Player, Administrator. Reserved: Watcher.
+ * A user may hold several roles and switch views (Playing as … | Admin tools).
+ */
 export type RoleView = "player" | "admin";
 
 export const ROLE_VIEW_COOKIE = "ss-role-view";

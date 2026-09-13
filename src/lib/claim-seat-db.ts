@@ -241,7 +241,7 @@ async function claimPracticeSeat(args: {
               nickname: seat!.nickname,
               from: seat!.user.email,
               to: args.email,
-              note: "Player seat attached to existing commissioner login",
+              note: "Player role attached to existing user (also Administrator)",
             }),
           },
         });

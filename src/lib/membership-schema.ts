@@ -1,9 +1,10 @@
 /**
- * One login may hold the commissioner spectator seat and a player seat
- * in the same pool. `main` still has @@unique([poolId, userId]); preview
- * and production share Neon, so another deploy can put that unique back.
- * Drop it on every boot and before every attach — do not wait for a
- * one-off build helper.
+ * Users are not typed as “admin vs player.” One User can hold several
+ * PoolAccessRole grants (Player + Administrator now; Watcher reserved)
+ * and, for board vs spectator, more than one Membership in the same pool.
+ * `main` still has @@unique([poolId, userId]); preview + production share
+ * Neon, so another deploy can put that unique back. Drop it on every boot
+ * and before every attach.
  */
 
 type SchemaClient = {

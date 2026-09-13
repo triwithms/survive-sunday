@@ -18,10 +18,10 @@ export const CLAIM_ERRORS = {
   emailOnOtherSeat:
     "That email is already on another player seat. Sign in instead, or pick a different email.",
   emailPasswordMismatch:
-    "That email already has an account. Use the password you already sign in with (your commissioner login), not a new one. Or Sign in first, then come back to Join and claim with one tap.",
+    "That email already has an account. Use the password you already sign in with, not a new one. Or Sign in first, then come back to Join and claim with one tap.",
   alreadyInPool: "Already in this pool",
   alreadyCommissioner:
-    "This email is already the commissioner login. Pick your player name from the list (for example Gams) and use that same password.",
+    "This email already has an account. Pick your player name from the list (for example Gams) and use the password you already sign in with.",
   nicknameTaken: "Nickname already taken in this pool",
 } as const;
 
@@ -111,7 +111,7 @@ export function decideClaim(args: {
     if (args.emailOwner.hasPlayerSeat) {
       return { ok: false, status: 409, error: CLAIM_ERRORS.emailOnOtherSeat };
     }
-    // Commissioner (or any login with no player seat) can attach this seat.
+    // Same user, no Player role yet — attach this seat and grant Player.
     return {
       ok: true,
       action: "attach-to-existing",
