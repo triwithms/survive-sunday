@@ -62,6 +62,10 @@ export default async function AdminPage() {
           simulate scores, remove players. Pick and name edits are always
           audited.
         </p>
+        <p className="text-sm text-[var(--text-muted)] mt-2">
+          Going live: switch to <strong className="text-[var(--text-primary)]">Real mode</strong>,
+          reset if the board still has practice picks, then import Week 1.
+        </p>
       </div>
 
       <PoolModePanel initialMode={normalizePoolMode(me.pool.mode)} />
