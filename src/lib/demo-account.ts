@@ -110,8 +110,8 @@ export async function ensureDemoAccount(email: string, password: string): Promis
   const pool = poolEarly ?? (await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } }));
   if (!pool) return;
 
-  const already = await prisma.membership.findUnique({
-    where: { poolId_userId: { poolId: pool.id, userId: user.id } },
+  const already = await prisma.membership.findFirst({
+    where: { poolId: pool.id, userId: user.id },
   });
   if (already) return;
 

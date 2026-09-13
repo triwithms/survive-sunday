@@ -195,7 +195,7 @@ Steve,DET
 
 The pool has two commissioner-controlled modes. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). **This is shipped on `main`** (merged PR #10). Do not describe Real mode as “open PR #10” or “not shipped.”
 
-- **Real mode (use this for the season):** home and sign-in show **Join** and **Sign in** only. Friends never see the word “demo”. The pool sits on **Week 1**. Week 2 is hidden from participants.
+- **Real mode (use this for the season):** home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see the word “demo” or the `demo1234` practice picker. The pool sits on **Week 1**. Week 2 is hidden from participants.
 - **Demo mode (commissioner / testing):** practice account picker is visible. Demo copy is allowed. Week **2** is the commissioner sandbox only.
 
 A new empty database still **seeds in Demo mode**. After deploy, open **Admin** and tap **Real mode** if the home page still shows the practice picker.
@@ -211,7 +211,7 @@ Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is 
 ### Real login / join
 
 - **Sign in** (`/login`): email + password, or Google if keys are set.
-- **Join** (`/join`): invite code **`SUNDAY26`**, nickname, email, password (min 6 characters).
+- **Join** (`/join`): pick yourself from the **live roster** (nickname + real name), invite code **`SUNDAY26`**, then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. If the seat already has a real email, the page says it is claimed — Sign in instead. Practice `@survivesunday.demo` seats are claimable. **Commissioner email can also claim a player seat** (Gams) — same login holds **Player** and **Administrator**. Use **Playing as Gams** / **Admin tools** to switch. People not on the list can still join as a new player.
 - **Forgot password?** on the sign-in page: we email (or text) a 6-digit code → new password → signed back in. Demo seats stay on **demo1234**. This is **not** a code at every login.
 
 The **Forgot password?** screen is on `main` (merged PR #7). It still needs the two Resend keys in section 4, or the page will say we couldn’t send a code. Optional Twilio for texts. Do not claim codes are sending until those keys are set and Production is Redeployed.
@@ -222,7 +222,7 @@ The **Forgot password?** screen is on `main` (merged PR #7). It still needs the 
 2. Tap a team that is playing this week and not already used.
 3. Confirm. You can change it until **lock**.
 
-On `main`, Pick shows the **current** week only (Week 1 in Real mode). Previous/next week arrows on the Pick header are **not on `main`** (open draft [PR #14](https://github.com/triwithms/survive-sunday/pull/14)).
+On `main`, Pick shows the current week (Week 1 in Real mode). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
 
 Team logos and names on the pick slate open a **team research** page (roster, news, record). Spreads on the pick screen are **static seeded values** (example: “Favourite: KC -3.5”), not a live odds meter.
 
@@ -277,7 +277,7 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 
 | Tool | What it does |
 |------|----------------|
-| **Real mode vs Demo mode** | First card on Admin. Tap **Real mode** or **Demo mode**. Real = Week 1, no practice picker. Demo = Week 2 sandbox for the commissioner. **Shipped.** |
+| **Real mode vs Demo mode** | First card on Admin. Tap **Real mode** or **Demo mode**. Real = Week 1, no `demo1234` practice picker. Friends pick their name from the live roster, then set their own email. Demo = Week 2 sandbox for the commissioner. **Shipped.** |
 | **Your commissioner login** | Replace the practice commissioner email with a real email + password. Then sign out and sign in with that email. **Shipped.** |
 | **Reset pool** | Optional. Real mode is already Week 1. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Shipped.** |
 | **Roster** | See each nickname + real name. Edit either when wrong. Audit-logged. |
@@ -287,8 +287,9 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 | Force grade | Grade + apply missed picks now. |
 | Remove player | Drops a member from the pool. |
 | Demo lock toggle | Header **Before / After deadline** — commissioner only, and only in Demo mode. |
+| **Administrators** | Grant Admin tools to an existing pool player (confirm). They stay on the board. Remove Admin is allowed only if another administrator remains. **On [PR #19](https://github.com/triwithms/survive-sunday/pull/19) — not on `main` until you merge it.** |
 
-**Not on Admin yet (other open PRs):** turn off the mulligan / one-and-done, hand the pool to someone else ([PR #8](https://github.com/triwithms/survive-sunday/pull/8)).
+**Not on Admin yet (other open PRs):** turn off the mulligan / one-and-done, **hand the whole pool** to someone else (they become the commissioner seat — [PR #8](https://github.com/triwithms/survive-sunday/pull/8)). That is different from **Make administrator** on PR #19 (they keep playing).
 
 ---
 
@@ -304,7 +305,8 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 | Commissioner can change a participant pick after the fact | **Built** via **Admin → Import week picks** (audit-logged). No single-player “edit pick” button yet. |
 | Friends can use the app without picking every week | **Built.** They can browse without picking. A missed week still counts as a loss after lock. Changing that rule is a product decision — say so explicitly. |
 | Transfer ownership (hand Admin to another friend) | **Not shipped.** Open [PR #8](https://github.com/triwithms/survive-sunday/pull/8). Do not invent a transfer screen on `main`. |
-| No “demo” labels / practice picker in real season mode | **Shipped** (merged [PR #10](https://github.com/triwithms/survive-sunday/pull/10)). Admin → **Real mode**. Real = Week 1. Week 2 is Demo-only. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
+| No “demo” labels / `demo1234` practice picker in real season mode | **Shipped** (merged [PR #10](https://github.com/triwithms/survive-sunday/pull/10)). Admin → **Real mode**. Real = Week 1. Week 2 is Demo-only. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
+| Friends pick themselves from the live roster and claim that seat | **Not shipped.** Open [PR #19](https://github.com/triwithms/survive-sunday/pull/19). Join + logged-out Home show nickname + real name from the Admin roster. Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch with **Playing as …** / **Admin tools**. Admin can promote another existing member. |
 | Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in → **Forgot password?** → 6-digit code is on `main`. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Optional Twilio for texts. Not a code at every login. |
 | Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** Install works. Cookie on `main` is ~**90 days** (open the app to keep it fresh). |
 
@@ -342,6 +344,7 @@ Re-checked against GitHub. **Do not describe an open PR as live.** After you mer
 | Live ESPN scores + injury report | [#12](https://github.com/triwithms/survive-sunday/pull/12) | Scores poll ESPN; team pages + chips use ESPN injuries. No paid key. |
 | Real vs Demo mode, Week 1 isolation, reset, real commissioner login | [#10](https://github.com/triwithms/survive-sunday/pull/10) (squash-merged) | Admin first card. Real = Week 1, no practice picker. Week 2 = Demo-only. [`docs/REAL-MODE.md`](./REAL-MODE.md) is on `main`. |
 | Forgot password + ~90 day stay-logged-in | [#7](https://github.com/triwithms/survive-sunday/pull/7) (squash-merged, `2df4645`) | Sign in → **Forgot password?** → 6-digit code → new password. **Merged / shipping.** Codes send only after Resend (optional Twilio) env vars are on Vercel + Redeploy. |
+| Pick header previous / next week | [#14](https://github.com/triwithms/survive-sunday/pull/14) | Chevrons around the gold `W#` badge; `?week=` like Home / Scores. Past / future weeks read-only. |
 
 ### Open — not on `main` yet
 
@@ -349,7 +352,7 @@ Re-checked against GitHub. **Do not describe an open PR as live.** After you mer
 |------|--------|--------------------------------------------|
 | Commissioner: turn off mulligan + transfer | [PR #8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player). Branch `cursor/commissioner-mulligan-transfer-a878`. May need a rebase onto latest `main`. |
 | NFL player details | [PR #11](https://github.com/triwithms/survive-sunday/pull/11) (open, **not draft**) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth. That PR’s own injury notes were **sample / demo** — `main` already has ESPN injuries on team pages, so a rebase should not invent a second feed. Branch `cursor/nfl-player-team-details-a32a`. |
-| Pick header previous / next week | [PR #14](https://github.com/triwithms/survive-sunday/pull/14) (**draft**) | Chevrons around the gold `W#` badge; `?week=` like Home / Scores. Past / future weeks read-only. Opened against pre-#10 `main` and reported **conflicts** — continue that branch (`cursor/pick-week-nav-6845`), do not start a second nav PR. |
+| Who are you? live-roster claim + Player/Admin roles | [PR #19](https://github.com/triwithms/survive-sunday/pull/19) | Friends pick `Gams (Robert Gama)` from the **live Admin roster**, set their own email + password + `SUNDAY26`, and keep that seat’s Week 1 picks. **One user, multiple roles** (not a separate admin account). Same email can be Player + Administrator; switch views; promote another member. Existing login uses the **same Sign in password**, or **Sign in first** then claim with one tap. Roles table is extensible (Watcher reserved, not built). **Not** the Demo-mode `demo1234` picker. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
@@ -482,6 +485,18 @@ Then only these paths unless a listed open PR is the task:
 - src/app/login/forgot/page.tsx
 - src/components/ForgotPasswordForm.tsx
 - src/app/join/page.tsx
+- src/lib/claim-seat.ts
+- src/lib/claim-seat-db.ts
+- src/lib/membership-schema.ts
+- src/instrumentation.ts
+- src/lib/auth-credentials.ts
+- src/lib/roles.ts
+- src/lib/roles-db.ts
+- src/app/api/join/route.ts
+- src/app/api/join/seats/route.ts
+- src/components/JoinForm.tsx
+- src/components/WhoAreYouSelect.tsx
+- src/components/WhoAreYouCard.tsx
 - docs/REAL-MODE.md
 - .env.example
 - DEPLOY.md
@@ -641,7 +656,8 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Vercel** | The company that hosts the website. |
 | **Audit log** | A written record of commissioner changes (imports, removals, real-name edits). |
 | **Real mode** | Season mode on `main` (merged PR #10). Hides the practice picker. Week 1 only for friends. |
-| **Demo / practice picker** | Home-page list of BM Boys nicknames. Visible only while **Demo mode** is on. |
+| **Demo / practice picker** | Home-page list of BM Boys nicknames with built-in `demo1234`. Visible only while **Demo mode** is on. |
+| **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname, sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. Open [PR #19](https://github.com/triwithms/survive-sunday/pull/19) — **not on `main` until you merge it.** |
 | **OTP** | One-time code (the 6-digit Forgot-password screen on `main`, merged PR #7). Not a code at every login. Codes send only after Resend keys are on Vercel. |
 | **One-and-done** | Planned commissioner rule (PR #8): no free mulligan from a chosen week. One loss = out. **Not live.** |
 | **Transfer commissioner** | Planned Admin tool (PR #8): give Admin to another existing member. **Not live.** |

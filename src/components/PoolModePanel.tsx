@@ -73,7 +73,7 @@ export function PoolModePanel({
       setMode(next);
       setMsg(
         next === "live"
-          ? "Real mode is on. The pool is Week 1. Week 2 practice picks are cleared. Friends see Join and Sign in only."
+          ? "Real mode is on. The pool is Week 1. Week 2 practice picks are cleared. Friends pick their name from the live roster, then set their own email and password."
           : "Demo mode is on. Week 2 is the commissioner sandbox. The practice picker is visible on home and sign-in."
       );
       router.refresh();
@@ -178,7 +178,7 @@ export function PoolModePanel({
         <ul className="text-xs text-[var(--text-muted)] list-disc pl-5 space-y-1">
           <li>
             <strong className="text-[var(--text-primary)]">Real:</strong> Week 1
-            board and picks. Home shows Join and Sign in only.
+            board and picks. Home shows Who are you? (live roster), Join, and Sign in.
           </li>
           <li>
             <strong className="text-[var(--text-primary)]">Demo:</strong> Week 2

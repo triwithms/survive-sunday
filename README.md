@@ -35,7 +35,7 @@ The switch is on **Admin** (gold link, top-right) → **first card: Real mode vs
 
 | Mode | Friends see |
 |------|-------------|
-| **Real** | Join + Sign in only. No “demo” wording. No practice picker or passwords. |
+| **Real** | Who are you? from the live roster, then Join (own email + password) or Sign in. No “demo” wording. No practice `demo1234` picker. |
 | **Demo** | Practice account picker and demo copy (for you to try the app). |
 
 **First real commissioner login:** Admin → **Your commissioner login** → your email + password → sign out → Sign in with that email.
@@ -58,7 +58,8 @@ Shown only while the pool is in **Demo mode**. Hidden in Real mode.
 | **Commissioner** | `admin@survivesunday.demo` | `demo1234` |
 
 - Invite code: **`SUNDAY26`**
-- Landing → **Enter as selected** (account picker). Commissioner and invite-code join are secondary.
+- Landing (Demo mode) → **Enter as selected** (account picker). Commissioner and invite-code join are secondary.
+- Landing (Real mode) → **Who are you?** from the Admin roster (nickname + real name). Friends then set their own email and password to claim that seat. Already-claimed seats point them to Sign in. This is **not** the `demo1234` picker.
 
 ## Google auth (optional)
 
@@ -83,7 +84,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 
 ## Wave 1 features
 
-- Invite code join + credentials/demo login + Google-ready Auth.js
+- Invite code join + live-roster **Who are you?** claim (own email/password on an existing seat) + credentials/demo login + Google-ready Auth.js
 - Forgot-password one-time code (email / SMS); sessions stay signed in (~90 days)
 - Nickname + optional real name; pool membership; admin/member roles
 - Week 1 schedule from `data/week1-slate.json` (real 2026 slate + final scores where present)

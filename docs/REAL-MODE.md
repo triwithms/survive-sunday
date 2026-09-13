@@ -42,20 +42,34 @@ If you turn on Real mode before you save a real email, you can still sign in onc
 
 | Mode | What friends see |
 |------|------------------|
-| **Real mode** | **Join the pool** and **Sign in** only. No account picker. No practice passwords. The word “demo” is hidden. |
+| **Real mode** | **Who are you?** from the live roster, then **Join** (own email + password) or **Sign in**. No practice passwords. The word “demo” is hidden. |
 | **Demo mode** | Practice account picker on the home and sign-in pages. |
 
 Practice emails (`…@survivesunday.demo`) cannot join or sign in as players in Real mode. `demo1234` is not shown.
+
+### Who are you? (claim your existing seat)
+
+The list is the **live Admin roster** (current nicknames + real names), not a hard-coded file. Commissioner / non-player seats are left off.
+
+1. Home or **Join the pool** → pick e.g. `Gams (Robert Gama)`.
+2. Enter invite code **`SUNDAY26`**, **your own email**, and a password you choose.
+3. That login attaches to the existing membership. Week 1 picks stay with that person — you do not get a second “Gams”.
+4. If that seat already has a real (non-practice) email: **already claimed — Sign in instead** (or ask the commissioner).
+5. Practice `@survivesunday.demo` seats **are** claimable by the real person.
+6. **One user, more than one role.** There is no separate “admin account.” If you already sign in with `robertgama@gmail.com` (Administrator), pick **Gams** on Join and use that same email and the password you already sign in with. That adds the **Player** role to the same user. Or **Sign in first**, then Join — you’ll see **You’re signed in — claim with one tap**. Then switch **Playing as Gams** | **Admin tools**. Do not invent a second email. If Join says the email already has an account, tap **I already have this login — Sign in to claim**.
+7. When you have both roles, a gold switch appears: **Playing as Gams** | **Admin tools**. Player view hides Admin. Admin view shows Admin. Friends who are only players never see Admin tools.
+8. On **Admin**, you can **Make administrator** for someone already in the pool (confirm first). They stay on the board. You can remove Admin later if at least one administrator remains. Roles live on a user↔roles list so a later **Watcher** (follow the board, no picks) can be added without starting over. Watcher is **not** in the app yet.
+9. Nicknames still change on **Admin → Roster** or **Change nickname**. The list always shows the current names.
 
 ---
 
 ## After you wipe practice seats (reset)
 
-Home page = **Join** + **Sign in** only.
+Home page = **Who are you?** (live roster) + **Join** + **Sign in**.
 
 - `admin@survivesunday.demo` / `demo1234` will **not** work if you already saved a real commissioner login (reset removes the practice commissioner).
 - Sign in with the real email you saved.
-- Friends join with invite code **`SUNDAY26`** and their own email.
+- Friends pick themselves from the live roster, then join with invite code **`SUNDAY26`** and their own email + password. That attaches to the existing nickname seat (Week 1 picks stay). If the seat already has a real email, they Sign in instead.
 
 ---
 
@@ -117,7 +131,8 @@ Example file: `/examples/week1-picks-import.csv`
 3. Fix names on **Roster** if needed (John Stilo / Steve Venerus should already be patched).
 4. When you want a clean Week 1 board, **Reset pool**.
 5. **Import week 1 picks**.
-6. Send friends to **Join the pool** with invite code **`SUNDAY26`**.
+6. Send friends to **Join the pool** with invite code **`SUNDAY26`**. They pick their name from the live roster (nickname + real name), then set their own email and password. Already-claimed seats say so in plain English.
+7. If you also play (Gams), claim that seat with your commissioner email, then use **Playing as Gams** / **Admin tools** to switch. To give a friend Admin tools, open Admin → **Administrators** → **Make administrator**.
 
 ---
 
@@ -127,4 +142,4 @@ Example file: `/examples/week1-picks-import.csv`
 - Mode buttons do nothing → refresh, then tap again. You must be signed in as commissioner.
 - You cannot open Admin → sign in with your real commissioner email (or the practice commissioner via **Sign in** if you have not saved a real email yet).
 - Practice email/password fails after you saved a real login → that is intended. Use your real email.
-- A friend cannot join → they need invite code `SUNDAY26` and a unique nickname.
+- A friend cannot join → they need invite code `SUNDAY26`. They should pick their existing name from the list (not invent a second “Gams”). If that seat is already claimed, they Sign in instead (or ask you).

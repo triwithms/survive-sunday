@@ -19,6 +19,8 @@ import { prismaDatasourceUrl } from "../src/lib/prisma-url";
 import { applyCanonicalRosterNames } from "../src/lib/roster-name-patch";
 import { ensureLiveWeekIsolation } from "../src/lib/week-isolation";
 import { isLiveMode } from "../src/lib/pool-mode";
+import { backfillPoolAccessRoles } from "../src/lib/roles-db";
+import { ensureDualMembershipIndex } from "../src/lib/membership-schema";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
 
@@ -83,6 +85,67 @@ async function dropAbandonedTables(prisma: PrismaClient) {
   }
 }
 
+/** Player seats can also hold Administrator tools (promote) without leaving the board. */
+async function ensureMembershipIsAdminColumn(prisma: PrismaClient) {
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "isAdmin" BOOLEAN NOT NULL DEFAULT false
+  `);
+}
+
+/** Extensible user↔roles table. Shipped: player, administrator. Reserved: watcher. */
+async function ensurePoolAccessRoleTable(prisma: PrismaClient) {
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "PoolAccessRole" (
+      "id" TEXT NOT NULL,
+      "poolId" TEXT NOT NULL,
+      "userId" TEXT NOT NULL,
+      "role" TEXT NOT NULL,
+      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "PoolAccessRole_pkey" PRIMARY KEY ("id")
+    )
+  `);
+  await prisma.$executeRawUnsafe(`
+    CREATE UNIQUE INDEX IF NOT EXISTS "PoolAccessRole_poolId_userId_role_key"
+    ON "PoolAccessRole" ("poolId", "userId", "role")
+  `);
+  await prisma.$executeRawUnsafe(`
+    CREATE INDEX IF NOT EXISTS "PoolAccessRole_userId_idx"
+    ON "PoolAccessRole" ("userId")
+  `);
+  await prisma.$executeRawUnsafe(`
+    CREATE INDEX IF NOT EXISTS "PoolAccessRole_poolId_role_idx"
+    ON "PoolAccessRole" ("poolId", "role")
+  `);
+  const poolFk = await prisma.$queryRaw<Array<{ conname: string }>>`
+    SELECT conname FROM pg_constraint WHERE conname = 'PoolAccessRole_poolId_fkey'
+  `;
+  if (poolFk.length === 0) {
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "PoolAccessRole"
+        ADD CONSTRAINT "PoolAccessRole_poolId_fkey"
+        FOREIGN KEY ("poolId") REFERENCES "Pool"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+    `);
+  }
+  const userFk = await prisma.$queryRaw<Array<{ conname: string }>>`
+    SELECT conname FROM pg_constraint WHERE conname = 'PoolAccessRole_userId_fkey'
+  `;
+  if (userFk.length === 0) {
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "PoolAccessRole"
+        ADD CONSTRAINT "PoolAccessRole_userId_fkey"
+        FOREIGN KEY ("userId") REFERENCES "User"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+    `);
+  }
+  try {
+    const n = await backfillPoolAccessRoles(prisma);
+    console.log(`[ensure-db] PoolAccessRole ready (backfill ${n} grant rows)`);
+  } catch (error) {
+    console.warn("[ensure-db] PoolAccessRole backfill skipped", error);
+  }
+}
+
 async function ensurePoolModeColumn(prisma: PrismaClient) {
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "Pool" ADD COLUMN IF NOT EXISTS "mode" TEXT NOT NULL DEFAULT 'demo'
@@ -133,6 +196,7 @@ async function assertRequiredSchema(prisma: PrismaClient) {
   await prisma.user.findFirst({ select: { id: true } });
   await prisma.pool.findFirst({ select: { id: true } });
   await prisma.otpChallenge.findFirst({ select: { id: true } });
+  await prisma.poolAccessRole.findFirst({ select: { id: true } });
 }
 
 function pushSchema(env: NodeJS.ProcessEnv) {
@@ -175,6 +239,9 @@ async function main() {
     // Real-mode PR #10 may not have applied if db push refused to drop
     // leftover OtpChallenge rows. Add the column without touching data.
     await ensurePoolModeColumn(prisma);
+    await ensureDualMembershipIndex(prisma);
+    await ensureMembershipIsAdminColumn(prisma);
+    await ensurePoolAccessRoleTable(prisma);
   });
 
   const pushed = pushSchema(env);
@@ -190,11 +257,19 @@ async function main() {
     }
     await withPrisma(url, async (prisma) => {
       await ensurePoolModeColumn(prisma);
+      await ensureDualMembershipIndex(prisma);
+      await ensureMembershipIsAdminColumn(prisma);
+      await ensurePoolAccessRoleTable(prisma);
       await ensureOtpChallengeTable(prisma);
       await assertRequiredSchema(prisma);
     });
   } else {
-    await withPrisma(url, assertRequiredSchema);
+    await withPrisma(url, async (prisma) => {
+      // db push from `main` (still @@unique) can put the leftover back.
+      await ensureDualMembershipIndex(prisma);
+      await ensurePoolAccessRoleTable(prisma);
+      await assertRequiredSchema(prisma);
+    });
   }
 
   const needsSeed = await withPrisma(url, async (prisma) => {

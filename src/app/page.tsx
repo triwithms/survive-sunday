@@ -1,14 +1,25 @@
 import Link from "next/link";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
+import { WhoAreYouCard } from "@/components/WhoAreYouCard";
 import { isDemoMode } from "@/lib/pool-mode";
 import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
+import { listClaimableSeats } from "@/lib/claim-seat-db";
+import type { ClaimableSeat } from "@/lib/claim-seat";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function LandingPage() {
   const demoMode = isDemoMode(await getPrimaryPoolMode());
+  let seats: ClaimableSeat[] = [];
+  if (!demoMode) {
+    try {
+      seats = await listClaimableSeats();
+    } catch (error) {
+      console.error("[home] roster list failed", error);
+    }
+  }
 
   return (
     <main className="min-h-dvh flex flex-col">
@@ -30,6 +41,7 @@ export default async function LandingPage() {
           </div>
         ) : (
           <div className="mb-10 grid grid-cols-1 gap-3">
+            <WhoAreYouCard seats={seats} />
             <Link href="/join" className="btn-primary inline-flex items-center justify-center w-full">
               Join the pool
             </Link>

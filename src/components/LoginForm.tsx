@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
-import { friendlyLoginError, loginEmailQueryValue } from "@/lib/login-error";
+import { friendlyLoginError, loginEmailQueryValue, safeLoginCallbackPath } from "@/lib/login-error";
 
 export function LoginForm({ demoMode }: { demoMode: boolean }) {
   const [busy, setBusy] = useState(false);
@@ -13,6 +13,7 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
   const showDemo = demoMode && params.get("demo") === "1";
   const emailPrefill = loginEmailQueryValue(params.get("email"));
   const err = friendlyLoginError(params.get("error"));
+  const callbackUrl = safeLoginCallbackPath(params.get("callbackUrl"));
 
   return (
     <main className="min-h-dvh mx-auto max-w-sheet px-4 py-10">
@@ -43,7 +44,7 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
         className="space-y-4 card-glass p-5"
         onSubmit={() => setBusy(true)}
       >
-        <input type="hidden" name="callbackUrl" value="/pool" />
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <label className="block text-sm">
           <span className="text-[var(--text-muted)]">Email</span>
           <input
@@ -76,7 +77,7 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
         <button
           type="button"
           className="btn-secondary w-full"
-          onClick={() => signIn("google", { callbackUrl: "/pool" })}
+          onClick={() => signIn("google", { callbackUrl })}
         >
           Continue with Google
         </button>

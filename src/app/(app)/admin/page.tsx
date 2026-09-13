@@ -1,13 +1,21 @@
 import { auth } from "@/lib/auth";
-import { getMembershipForUser } from "@/lib/session";
+import { getUserPoolContext } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AdminPanel } from "@/components/AdminPanel";
+import { AdminRolesPanel } from "@/components/AdminRolesPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 import { PoolModePanel } from "@/components/PoolModePanel";
 import { CommissionerAccountPanel } from "@/components/CommissionerAccountPanel";
 import { SignOutButton } from "@/components/SignOutButton";
+import {
+  canDemoteAdmin,
+  hasRole,
+  isPlayerSeat,
+  POOL_ROLES,
+} from "@/lib/roles";
+import { listPoolRoleGrants } from "@/lib/roles-db";
 import {
   effectiveCurrentWeek,
   isDemoEmail,
@@ -21,9 +29,10 @@ export const revalidate = 0;
 export default async function AdminPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
-  const me = await getMembershipForUser(session.user.id);
+  const ctx = await getUserPoolContext(session.user.id);
+  const me = ctx.membership;
   if (!me) redirect("/join");
-  if (me.role !== "admin") {
+  if (!ctx.isAdmin) {
     return (
       <div className="card-glass p-5 space-y-4">
         <div>
@@ -44,6 +53,12 @@ export default async function AdminPage() {
     where: { poolId: me.poolId },
     orderBy: { nickname: "asc" },
   });
+  const grants = await listPoolRoleGrants(prisma, me.poolId);
+  const adminUserIds = new Set(
+    grants
+      .filter((g) => hasRole([g.role], POOL_ROLES.administrator))
+      .map((g) => g.userId)
+  );
 
   const week = await prisma.week.findUniqueOrThrow({
     where: {
@@ -68,9 +83,9 @@ export default async function AdminPage() {
           Commissioner
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          Light admin — your login, pool mode, reset, roster, lock override,
-          import picks, simulate scores, remove players. Pick and name edits
-          are always audited.
+          Light admin — your login, pool mode, reset, roster, administrators,
+          lock override, import picks, simulate scores, remove players. Pick
+          and name edits are always audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
           Mode switch is the first card below. Real mode is Week 1. Week 2 is
@@ -93,6 +108,38 @@ export default async function AdminPage() {
       <CommissionerAccountPanel
         currentEmail={session.user.email ?? me.user.email ?? null}
         isPracticeLogin={isDemoEmail(session.user.email ?? me.user.email)}
+      />
+
+      <AdminRolesPanel
+        members={members.map((m) => ({
+          id: m.id,
+          nickname: m.nickname,
+          realName: m.realName,
+          role: m.role,
+          isAdmin: adminUserIds.has(m.userId),
+          isYou: m.userId === session.user.id,
+        }))}
+        canDemoteMembershipIds={members
+          .filter((m) => {
+            const isCommissionerLogin = members.some(
+              (row) => row.userId === m.userId && row.role === "admin"
+            );
+            return (
+              isPlayerSeat(m) &&
+              adminUserIds.has(m.userId) &&
+              !isCommissionerLogin &&
+              canDemoteAdmin(
+                members.map((row) => ({
+                  role: row.role,
+                  isAdmin: adminUserIds.has(row.userId),
+                  userId: row.userId,
+                })),
+                m.userId,
+                grants
+              )
+            );
+          })
+          .map((m) => m.id)}
       />
 
       <Link

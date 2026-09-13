@@ -1,79 +1,35 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/db";
-import { INVITE_CODE } from "@/lib/constants";
-import { isDemoEmail, isLiveMode } from "@/lib/pool-mode";
+import { auth } from "@/lib/auth";
+import { joinOrClaimSeat } from "@/lib/claim-seat-db";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const {
-    inviteCode,
-    email: rawEmail,
-    password,
-    nickname,
-    realName,
-  } = body as {
-    inviteCode: string;
-    email: string;
-    password: string;
-    nickname: string;
-    realName?: string;
-  };
-
-  const email = typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : "";
-
-  if (!inviteCode || !email || !password || !nickname) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-  }
-  if (inviteCode.toUpperCase() !== INVITE_CODE) {
-    return NextResponse.json({ error: "Invalid invite code" }, { status: 400 });
+  let body: Record<string, unknown> = {};
+  try {
+    body = (await req.json()) as Record<string, unknown>;
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const pool = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
-  if (!pool) {
-    return NextResponse.json({ error: "Pool not found — run seed" }, { status: 404 });
-  }
-  if (isDemoEmail(email) && isLiveMode(pool.mode)) {
-    return NextResponse.json(
-      { error: "Use your own email to join" },
-      { status: 400 }
-    );
-  }
-
-  const existingNick = await prisma.membership.findUnique({
-    where: { poolId_nickname: { poolId: pool.id, nickname } },
-  });
-  if (existingNick) {
-    return NextResponse.json({ error: "Nickname already taken in this pool" }, { status: 409 });
-  }
-
-  let user = await prisma.user.findUnique({ where: { email } });
-  if (user) {
-    const existing = await prisma.membership.findUnique({
-      where: { poolId_userId: { poolId: pool.id, userId: user.id } },
-    });
-    if (existing) {
-      return NextResponse.json({ error: "Already in this pool" }, { status: 409 });
-    }
-  } else {
-    user = await prisma.user.create({
-      data: {
-        email,
-        name: realName || nickname,
-        passwordHash: await bcrypt.hash(password, 10),
-      },
-    });
-  }
-
-  const membership = await prisma.membership.create({
-    data: {
-      poolId: pool.id,
-      userId: user.id,
-      nickname,
-      realName: realName || null,
-      role: "member",
-    },
+  const session = await auth();
+  const result = await joinOrClaimSeat({
+    inviteCode: typeof body.inviteCode === "string" ? body.inviteCode : "",
+    email: typeof body.email === "string" ? body.email : "",
+    password: typeof body.password === "string" ? body.password : "",
+    membershipId: typeof body.membershipId === "string" ? body.membershipId : "",
+    nickname: typeof body.nickname === "string" ? body.nickname : "",
+    realName: typeof body.realName === "string" ? body.realName : "",
+    sessionUserId: session?.user?.id,
+    sessionEmail: session?.user?.email ?? undefined,
   });
 
-  return NextResponse.json({ ok: true, membershipId: membership.id, email });
+  if (!result.ok) {
+    return NextResponse.json({ error: result.error }, { status: result.status });
+  }
+
+  return NextResponse.json({
+    ok: true,
+    membershipId: result.membershipId,
+    email: result.email,
+    claimed: result.claimed,
+  });
 }

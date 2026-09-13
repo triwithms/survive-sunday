@@ -260,9 +260,18 @@ export default async function PoolPage({
         ) : self.status === "eliminated" ? (
           <p className="text-[var(--text-muted)]">You&apos;re eliminated — still welcome to hang out.</p>
         ) : self.role === "admin" ? (
-          <p className="text-[var(--text-muted)]">
-            Commissioner view — you&apos;re not required to pick.
-          </p>
+          <div className="space-y-2">
+            <p className="text-[var(--text-muted)]">
+              Commissioner view — you&apos;re not required to pick.
+            </p>
+            <p className="text-sm text-[var(--text-muted)]">
+              Also a player?{" "}
+              <Link href="/join" className="text-gold-400 underline-offset-2 hover:underline">
+                Claim your name on Join
+              </Link>{" "}
+              with this same email so your picks stay with that seat.
+            </p>
+          </div>
         ) : locked ? (
           <p className="text-crimson-400">
             Missed pick — automatic loss at lock.

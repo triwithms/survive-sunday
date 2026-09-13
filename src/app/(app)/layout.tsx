@@ -1,6 +1,8 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { getMembershipForUser } from "@/lib/session";
+import { getUserPoolContext } from "@/lib/session";
+import { ROLE_VIEW_COOKIE, resolveRoleView } from "@/lib/roles";
 import { Suspense } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
@@ -19,6 +21,7 @@ import {
 } from "@/lib/pool-mode";
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
+import { RoleSwitcher } from "@/components/RoleSwitcher";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -32,8 +35,18 @@ export default async function AppLayout({
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const membership = await getMembershipForUser(session.user.id);
+  const ctx = await getUserPoolContext(session.user.id);
+  const membership = ctx.membership;
   if (!membership) redirect("/join");
+  const isAdmin = ctx.isAdmin;
+  const isPlayer = ctx.isPlayer;
+  const cookieStore = await cookies();
+  const roleView = resolveRoleView({
+    isPlayer,
+    isAdmin,
+    requested: cookieStore.get(ROLE_VIEW_COOKIE)?.value,
+  });
+  const showAdminChrome = isAdmin && roleView === "admin";
 
   const currentWeek = effectiveCurrentWeek(
     membership.pool.mode,
@@ -59,11 +72,10 @@ export default async function AppLayout({
     lockAt: effectiveLockAt(row).toISOString(),
   }));
   const canChangePick =
-    !locked && membership.status !== "eliminated" && membership.role !== "admin";
-  const showMutedChangePick =
-    !locked && membership.role === "admin";
+    !locked && membership.status !== "eliminated" && isPlayer;
+  const showMutedChangePick = !locked && isAdmin && !isPlayer;
   const showDemoLockToggle =
-    isDemoMode(membership.pool.mode) && membership.role === "admin";
+    isDemoMode(membership.pool.mode) && showAdminChrome;
 
   return (
     <div key={session.user.id} className="min-h-dvh flex flex-col pb-24 overflow-x-hidden max-w-full">
@@ -88,6 +100,7 @@ export default async function AppLayout({
             statusLabel={membership.status.replace("_", " ")}
             userId={session.user.id}
             role={membership.role}
+            showAdmin={showAdminChrome}
             phoneE164={membership.user.phoneE164}
             phoneSoftPrompt={
               membership.user.phoneE164 == null &&
@@ -102,12 +115,20 @@ export default async function AppLayout({
         {showDemoLockToggle && week && (
           <DemoLockToggle locked={locked} weekNumber={week.number} />
         )}
+        {isPlayer && isAdmin && (
+          <div className="mx-auto max-w-pool w-full px-3 sm:px-4 pb-3">
+            <RoleSwitcher
+              playerName={membership.nickname}
+              activeView={roleView}
+            />
+          </div>
+        )}
       </header>
       <div className="flex-1 mx-auto w-full max-w-pool px-3 sm:px-4 py-5 min-w-0 overflow-x-hidden">
         {children}
       </div>
       <FooterDisclaimer />
-      <BottomNav isAdmin={membership.role === "admin"} />
+      <BottomNav isAdmin={showAdminChrome} />
     </div>
   );
 }

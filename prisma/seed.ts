@@ -9,6 +9,7 @@ import {
   pairKey,
   type NormalizedWeek,
 } from "../src/lib/season-schedule";
+import { backfillPoolAccessRoles } from "../src/lib/roles-db";
 
 const prisma = new PrismaClient();
 
@@ -550,6 +551,8 @@ async function main() {
       }),
     },
   });
+
+  await backfillPoolAccessRoles(prisma, pool.id);
 
   console.log("✅ Seed complete — pool at Week 2 (BM Boys)");
   console.log(`   Week 2 lockAt: ${lockAt2.toISOString()}`);
