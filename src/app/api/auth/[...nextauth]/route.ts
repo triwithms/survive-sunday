@@ -6,8 +6,8 @@ import {
 } from "@/lib/request-host";
 
 async function handle(method: "GET" | "POST", req: NextRequest) {
-  const forwarded = requestWithPublicOrigin(req) as NextRequest;
-  const res = await handlers[method](forwarded);
+  const forwarded = requestWithPublicOrigin(req);
+  const res = await handlers[method](forwarded as NextRequest);
   return rewriteAuthResponse(req, res);
 }
 
