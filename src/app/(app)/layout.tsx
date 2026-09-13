@@ -23,6 +23,7 @@ export default async function AppLayout({
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
+  if (session.twoFactorPending) redirect("/login/verify");
 
   const membership = await getMembershipForUser(session.user.id);
   if (!membership) redirect("/join");

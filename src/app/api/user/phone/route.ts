@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { normalizeToE164 } from "@/lib/phone";
+import { isSessionReady } from "@/lib/session";
 
 export async function PATCH(req: Request) {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!isSessionReady(session)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -22,6 +22,7 @@ model User {
   sessions       Session[]
   memberships    Membership[]
   auditLogs      AuditLog[] @relation("AuditActor")
+  twoFactorChallenges TwoFactorChallenge[]
 }
 
 model Account {
@@ -56,6 +57,28 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+/// Hashed one-time sign-in codes. Plaintext codes are never stored.
+model TwoFactorChallenge {
+  id               String    @id @default(cuid())
+  userId           String?
+  user             User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email            String
+  codeHash         String
+  channel          String    // email | sms
+  destination      String    // email address or E.164 phone used for this send
+  expiresAt        DateTime
+  attempts         Int       @default(0)
+  consumedAt       DateTime?
+  grantHash        String?   @unique
+  grantExpiresAt   DateTime?
+  sessionAppliedAt DateTime?
+  lastSentAt       DateTime
+  createdAt        DateTime  @default(now())
+
+  @@index([userId, createdAt])
+  @@index([email, createdAt])
 }
 
 model Pool {

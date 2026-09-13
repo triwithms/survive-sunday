@@ -46,7 +46,7 @@ export default function JoinPage() {
         router.push("/login");
         return;
       }
-      afterAuthNavigate("/pool");
+      afterAuthNavigate(login.twoFactorPending ? "/login/verify" : "/pool");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "network";
       setErr(`Join failed: ${msg}`);

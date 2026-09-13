@@ -2,7 +2,7 @@ export function HelpContent() {
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
       <aside className="card-glass border border-gold-400/30 p-4 space-y-2" aria-label="Feature availability">
-        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, joining, sign-in, and cell-number collection for missing-pick SMS.</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, joining, sign-in with a one-time email or text code, and cell-number collection for missing-pick SMS.</p>
         <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, notification centre, WhatsApp, weekly digests, and close-game alerts.</p>
       </aside>
       <section id="onboarding-first-run">
@@ -12,7 +12,7 @@ export function HelpContent() {
           <li className="text-[var(--text-primary)]">**Pick one team each week** to win. You can’t reuse a team you’ve already picked, and bye-week teams are off the board.</li>
           <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). Submit before then; after lock, everyone’s picks go public.</li>
           <li className="text-[var(--text-primary)]">**You get one mulligan.** Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you.</li>
-          <li className="text-[var(--text-primary)]">**Invite link**, then **Google** or email/password to sign in. Returning BM Boys already have a nickname — use **Change nickname** in the header to edit it. New joiners create a nickname on join (unique within the pool).</li>
+          <li className="text-[var(--text-primary)]">**Invite link**, then **Google** or email/password to sign in. After that we send a **6-digit code** to your email, or a text if you’ve added a cell number. Demo seats (`@survivesunday.demo`) skip that extra step so walkthroughs stay quick. Returning BM Boys already have a nickname — use **Change nickname** in the header to edit it. New joiners create a nickname on join (unique within the pool).</li>
           <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for missing-pick SMS (you can skip and change it later in the header). Wave 2 social features are marked below as coming soon.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">---</p>

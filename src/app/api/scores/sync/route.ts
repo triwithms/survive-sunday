@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { getMembershipForUser } from "@/lib/session";
+import { getMembershipForUser, isSessionReady } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { syncWeekScoresFromEspn } from "@/lib/live-scores";
 
@@ -9,7 +9,7 @@ export const revalidate = 0;
 
 export async function POST(req: Request) {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!isSessionReady(session)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const me = await getMembershipForUser(session.user.id);

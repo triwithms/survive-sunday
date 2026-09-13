@@ -27,6 +27,28 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 
 `DATABASE_URL` should already be set by the Neon integration — do not paste secrets into the repo.
 
+## 3b. Two-factor codes (email + SMS)
+
+After email/password or Google sign-in, friends get a **6-digit code** (10-minute expiry). Demo seats ending in `@survivesunday.demo` skip this so the landing-page picker still works for walkthroughs.
+
+Set these in Vercel when you want real delivery. Both providers have a free/trial tier that is enough for a private pool.
+
+| Variable | Value |
+|---|---|
+| `RESEND_API_KEY` | From [resend.com](https://resend.com) (free tier). Required to email codes in production. |
+| `RESEND_FROM_EMAIL` | A From address Resend has verified, e.g. `Survive Sunday <noreply@yourdomain.com>`. |
+| `TWILIO_ACCOUNT_SID` | From [twilio.com](https://www.twilio.com) (trial is fine). |
+| `TWILIO_AUTH_TOKEN` | Twilio auth token |
+| `TWILIO_FROM_NUMBER` | Your Twilio number in E.164, e.g. `+14165551234` |
+| `TWO_FACTOR_ENABLED` | Optional. Default is on. Set `false` only if you need to turn the extra step off. |
+
+Without Resend/Twilio keys:
+
+- **Production:** the verify page explains that email/SMS is not set up yet. Don’t leave it this way for real sign-in.
+- **Local `next dev`:** the code is printed in the terminal and shown on the verify page so you can test without paying for a provider.
+
+If a friend has a cell number saved (header → Cell), we text first and offer “Send to email instead.” Otherwise we email.
+
 ## 4. Build / first schema + seed
 
 On first deploy (or via Vercel CLI / a one-off shell with prod `DATABASE_URL`):

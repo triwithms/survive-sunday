@@ -12,5 +12,8 @@ export default async function SignedInPage() {
   if (!session?.user?.id) {
     redirect("/?error=NoSession");
   }
+  if (session.twoFactorPending) {
+    redirect("/login/verify");
+  }
   return <SignedInHandoff />;
 }

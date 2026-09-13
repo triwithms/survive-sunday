@@ -6,6 +6,11 @@ import type { NextRequest } from "next/server";
 import type { Provider } from "next-auth/providers";
 import { userFromCredentials } from "./credentials-user";
 import { isLoopbackHost, requestPublicOrigin } from "./request-host";
+import { requiresTwoFactor } from "./two-factor";
+import {
+  hasRecentTwoFactorCompletion,
+  userFromTwoFactorGrant,
+} from "./two-factor-service";
 
 const providers: Provider[] = [
   Credentials({
@@ -20,6 +25,18 @@ const providers: Provider[] = [
       const password = credentials?.password as string | undefined;
       if (!email || !password) return null;
       return userFromCredentials(email, password);
+    },
+  }),
+  Credentials({
+    id: "two-factor",
+    name: "One-time code",
+    credentials: {
+      grant: { label: "Grant", type: "text" },
+    },
+    async authorize(credentials) {
+      const grant = credentials?.grant as string | undefined;
+      if (!grant) return null;
+      return userFromTwoFactorGrant(grant);
     },
   }),
 ];
@@ -69,6 +86,18 @@ function authConfig(req?: NextRequest): NextAuthConfig {
           token.sub = user.id;
           token.email = user.email;
           token.name = user.name;
+          const email = typeof user.email === "string" ? user.email : undefined;
+          let pending = requiresTwoFactor(email);
+          if (pending) {
+            const flagged =
+              "twoFactorComplete" in user && user.twoFactorComplete === true;
+            // Auth.js may strip custom authorize fields; the grant row is backup.
+            pending = !(
+              flagged ||
+              (await hasRecentTwoFactorCompletion(user.id, email))
+            );
+          }
+          token.twoFactorPending = pending;
         }
         return token;
       },
@@ -78,6 +107,7 @@ function authConfig(req?: NextRequest): NextAuthConfig {
           if (typeof token.email === "string") session.user.email = token.email;
           if (typeof token.name === "string") session.user.name = token.name;
         }
+        session.twoFactorPending = Boolean(token.twoFactorPending);
         return session;
       },
       async redirect({ url, baseUrl }) {

@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { getMembershipForUser } from "@/lib/session";
+import { getMembershipForUser, isSessionReady } from "@/lib/session";
 
 const MAX_NICKNAME = 24;
 
 export async function PATCH(req: Request) {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!isSessionReady(session)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -1,9 +1,26 @@
+import type { Session } from "next-auth";
 import { auth } from "./auth";
 import { prisma } from "./db";
 
+export function isTwoFactorPending(session: Session | null | undefined): boolean {
+  return Boolean(session?.twoFactorPending);
+}
+
+export function isSessionReady(
+  session: Session | null | undefined
+): session is Session & { user: { id: string } } {
+  return Boolean(session?.user?.id && !session.twoFactorPending);
+}
+
 export async function requireUser() {
   const session = await auth();
-  if (!session?.user?.id) return null;
+  if (!isSessionReady(session)) return null;
+  return session.user;
+}
+
+export async function requirePendingTwoFactor() {
+  const session = await auth();
+  if (!session?.user?.id || !session.twoFactorPending) return null;
   return session.user;
 }
 

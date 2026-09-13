@@ -3,6 +3,7 @@
 export type CredentialsResult = {
   ok: boolean;
   error?: string;
+  twoFactorPending?: boolean;
 };
 
 async function readJson(res: Response): Promise<Record<string, unknown> | null> {
@@ -103,7 +104,10 @@ export async function signInCredentials(
     if (!user?.id) {
       return { ok: false, error: "NoSession" };
     }
-    return { ok: true };
+    return {
+      ok: true,
+      twoFactorPending: session?.twoFactorPending === true,
+    };
   } catch (e) {
     const msg = e instanceof Error && e.message ? e.message : "network";
     return { ok: false, error: msg };

@@ -32,7 +32,7 @@ function LoginForm() {
         return;
       }
       router.refresh();
-      afterAuthNavigate("/pool");
+      afterAuthNavigate(res.twoFactorPending ? "/login/verify" : "/pool");
     } catch {
       setErr("Sign-in failed (network/CSRF). Refresh and try again on this same host.");
     } finally {
@@ -83,7 +83,7 @@ function LoginForm() {
         <button
           type="button"
           className="btn-secondary w-full"
-          onClick={() => signIn("google", { callbackUrl: "/pool" })}
+          onClick={() => signIn("google", { callbackUrl: "/login/verify" })}
         >
           Continue with Google
         </button>

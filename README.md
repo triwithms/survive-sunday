@@ -48,9 +48,21 @@ AUTH_GOOGLE_SECRET=...
 
 Demo credentials work without Google keys.
 
+## Two-factor sign-in (email or text)
+
+After a real email/password or Google sign-in, Survive Sunday asks for a **6-digit code** sent to email, or SMS if the player has a cell number on file.
+
+- Codes expire in 10 minutes, are stored hashed, and lock out after a few wrong tries.
+- **Demo accounts (`*@survivesunday.demo`) skip 2FA** so the landing-page picker and commissioner switch stay one-step for walkthroughs.
+- Production delivery uses **Resend** (email) and **Twilio** (SMS). See `DEPLOY.md` and `.env.example`.
+- Locally, if those keys are missing, the code is printed in the server log and shown on the verify page.
+
+Turn the extra step off with `TWO_FACTOR_ENABLED=false` (emergency / local only).
+
 ## Wave 1 features
 
 - Invite code join + credentials/demo login + Google-ready Auth.js
+- Two-factor sign-in code by email (Resend) or SMS (Twilio); demo `@survivesunday.demo` seats skip it
 - Nickname + optional real name; pool membership; admin/member roles
 - Week 1 schedule from `data/week1-slate.json` (real 2026 slate + final scores where present)
 - Lock at first kickoff; countdown; hide others’ picks until lock
