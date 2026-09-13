@@ -24,6 +24,7 @@ model User {
   poolAccessRoles PoolAccessRole[]
   auditLogs      AuditLog[] @relation("AuditActor")
   otpChallenges  OtpChallenge[]
+  notificationPreferences NotificationPreference[]
 }
 
 model Account {
@@ -115,11 +116,33 @@ model Membership {
   pool              Pool             @relation(fields: [poolId], references: [id], onDelete: Cascade)
   user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   picks             Pick[]
+  notificationPreference NotificationPreference?
 
   /// A user may hold the commissioner spectator seat and a player seat
   /// (e.g. Gams) in the same pool. Lookups use this index.
   @@index([poolId, userId])
   @@unique([poolId, nickname])
+}
+
+/// Per-membership email/SMS toggles. Defaults apply when no row exists.
+/// Password-reset codes are transactional and never read this table.
+model NotificationPreference {
+  id                  String     @id @default(cuid())
+  userId              String
+  membershipId        String     @unique
+  missingPickReminder Boolean    @default(true)
+  pickConfirmed       Boolean    @default(true)
+  resultsGraded       Boolean    @default(true)
+  mulliganEliminated  Boolean    @default(true)
+  poolAnnouncements   Boolean    @default(true)
+  liveScores          Boolean    @default(false)
+  injuryNotes         Boolean    @default(false)
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  user                User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  membership          Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 /// NetSuite-style access roles. One login may hold several in the same pool.

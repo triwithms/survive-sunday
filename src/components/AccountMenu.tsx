@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ModalDialog } from "@/components/ModalDialog";
+import { NotificationPrefsPanel } from "@/components/NotificationPrefsPanel";
 import { PhoneEditor } from "@/components/PhoneEditor";
 import { SignOutButton } from "@/components/SignOutButton";
 
@@ -39,6 +40,7 @@ export function AccountMenu({
   const [menuOpen, setMenuOpen] = useState(false);
   const [nickOpen, setNickOpen] = useState(false);
   const [phoneOpen, setPhoneOpen] = useState(false);
+  const [prefsOpen, setPrefsOpen] = useState(false);
   const [value, setValue] = useState(nickname);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -103,7 +105,7 @@ export function AccountMenu({
         onClick={() => setMenuOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={menuOpen}
-        aria-label="Account menu — nickname, cell, and Sign out"
+        aria-label="Account menu — nickname, notifications, cell, and Sign out"
         data-testid="account-menu"
         data-user-id={userId}
         data-user-role={role}
@@ -153,6 +155,17 @@ export function AccountMenu({
             data-testid="change-nickname"
           >
             Change nickname
+          </button>
+          <button
+            type="button"
+            className={rowBtn}
+            onClick={() => {
+              setMenuOpen(false);
+              setPrefsOpen(true);
+            }}
+            data-testid="notification-prefs"
+          >
+            Notification preferences
           </button>
           <button
             type="button"
@@ -240,6 +253,7 @@ export function AccountMenu({
         open={phoneOpen}
         onOpenChange={setPhoneOpen}
       />
+      <NotificationPrefsPanel open={prefsOpen} onOpenChange={setPrefsOpen} />
     </>
   );
 }

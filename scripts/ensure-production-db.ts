@@ -147,6 +147,58 @@ async function ensurePoolAccessRoleTable(prisma: PrismaClient) {
   }
 }
 
+/** Per-membership email/SMS toggles. Defaults apply when the row is missing. */
+async function ensureNotificationPreferenceTable(prisma: PrismaClient) {
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "NotificationPreference" (
+      "id" TEXT NOT NULL,
+      "userId" TEXT NOT NULL,
+      "membershipId" TEXT NOT NULL,
+      "missingPickReminder" BOOLEAN NOT NULL DEFAULT true,
+      "pickConfirmed" BOOLEAN NOT NULL DEFAULT true,
+      "resultsGraded" BOOLEAN NOT NULL DEFAULT true,
+      "mulliganEliminated" BOOLEAN NOT NULL DEFAULT true,
+      "poolAnnouncements" BOOLEAN NOT NULL DEFAULT true,
+      "liveScores" BOOLEAN NOT NULL DEFAULT false,
+      "injuryNotes" BOOLEAN NOT NULL DEFAULT false,
+      "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "NotificationPreference_pkey" PRIMARY KEY ("id")
+    )
+  `);
+  await prisma.$executeRawUnsafe(`
+    CREATE UNIQUE INDEX IF NOT EXISTS "NotificationPreference_membershipId_key"
+    ON "NotificationPreference" ("membershipId")
+  `);
+  await prisma.$executeRawUnsafe(`
+    CREATE INDEX IF NOT EXISTS "NotificationPreference_userId_idx"
+    ON "NotificationPreference" ("userId")
+  `);
+  const membershipFk = await prisma.$queryRaw<Array<{ conname: string }>>`
+    SELECT conname FROM pg_constraint WHERE conname = 'NotificationPreference_membershipId_fkey'
+  `;
+  if (membershipFk.length === 0) {
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "NotificationPreference"
+        ADD CONSTRAINT "NotificationPreference_membershipId_fkey"
+        FOREIGN KEY ("membershipId") REFERENCES "Membership"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+    `);
+  }
+  const userFk = await prisma.$queryRaw<Array<{ conname: string }>>`
+    SELECT conname FROM pg_constraint WHERE conname = 'NotificationPreference_userId_fkey'
+  `;
+  if (userFk.length === 0) {
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "NotificationPreference"
+        ADD CONSTRAINT "NotificationPreference_userId_fkey"
+        FOREIGN KEY ("userId") REFERENCES "User"("id")
+        ON DELETE CASCADE ON UPDATE CASCADE
+    `);
+  }
+  console.log("[ensure-db] NotificationPreference table ready");
+}
+
 async function ensurePoolModeColumn(prisma: PrismaClient) {
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "Pool" ADD COLUMN IF NOT EXISTS "mode" TEXT NOT NULL DEFAULT 'demo'
@@ -198,6 +250,7 @@ async function assertRequiredSchema(prisma: PrismaClient) {
   await prisma.pool.findFirst({ select: { id: true } });
   await prisma.otpChallenge.findFirst({ select: { id: true } });
   await prisma.poolAccessRole.findFirst({ select: { id: true } });
+  await prisma.notificationPreference.findFirst({ select: { id: true } });
 }
 
 function pushSchema(env: NodeJS.ProcessEnv) {
@@ -243,6 +296,7 @@ async function main() {
     await ensureDualMembershipIndex(prisma);
     await ensureMembershipIsAdminColumn(prisma);
     await ensurePoolAccessRoleTable(prisma);
+    await ensureNotificationPreferenceTable(prisma);
   });
 
   const pushed = pushSchema(env);
@@ -261,6 +315,7 @@ async function main() {
       await ensureDualMembershipIndex(prisma);
       await ensureMembershipIsAdminColumn(prisma);
       await ensurePoolAccessRoleTable(prisma);
+      await ensureNotificationPreferenceTable(prisma);
       await ensureOtpChallengeTable(prisma);
       await assertRequiredSchema(prisma);
     });
@@ -269,6 +324,7 @@ async function main() {
       // db push from `main` (still @@unique) can put the leftover back.
       await ensureDualMembershipIndex(prisma);
       await ensurePoolAccessRoleTable(prisma);
+      await ensureNotificationPreferenceTable(prisma);
       await assertRequiredSchema(prisma);
     });
   }

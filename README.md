@@ -161,7 +161,7 @@ AUTH_TRUST_HOST=false
 - H2H boxing gloves animation
 - Weekly + season banter / mute
 - SMS (Twilio), digests (Resend), WhatsApp stub
-- Notification preference centre (close-game alerts off by default)
+- In-app notification centre inbox (Account **toggles** are shipped; close-game alerts stay off by default)
 - Team detail pages already show ESPN injury report (not demo stubs)
 - Full visual polish / motion pass
 

@@ -115,6 +115,9 @@ async function main() {
     if (!(await tableExists(prisma, "PoolAccessRole"))) {
       fail("PoolAccessRole table was not added");
     }
+    if (!(await tableExists(prisma, "NotificationPreference"))) {
+      fail("NotificationPreference table was not added");
+    }
 
     const row = await prisma.otpChallenge.create({
       data: {

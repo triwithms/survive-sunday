@@ -2,8 +2,8 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
       <aside className="card-glass border border-gold-400/30 p-4 space-y-2" aria-label="Feature availability">
-        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, joining, sign-in that stays on your phone, forgot-password codes (email or text), and cell-number collection for missing-pick SMS.</p>
-        <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, notification centre, WhatsApp, weekly digests, and close-game alerts.</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, joining, sign-in that stays on your phone, forgot-password codes (email or text), cell-number collection, and <strong>Account → Notification preferences</strong>.</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, an in-app notification centre inbox, WhatsApp, weekly digests, and close-game alerts.</p>
       </aside>
       <section id="onboarding-first-run">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">Onboarding first-run</h2>
@@ -13,7 +13,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). After lock, everyone’s picks go public. **Week 1 only:** you can still change an existing pick until that team’s kickoff if the new game has not started. After Week 1 that extra window goes away.</li>
           <li className="text-[var(--text-primary)]">**You get one mulligan.** Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you.</li>
           <li className="text-[var(--text-primary)]">**Invite link**, then pick **yourself from the live roster** (nickname + real name). Set your own email and password — this attaches to your existing seat so your Week 1 picks stay with you. If that name is already claimed, **Sign in** instead (or ask the commissioner). You stay signed in on that phone or computer. Forgot the password? Use **Forgot password** on the sign-in page — we email or text a code. Returning BM Boys: tap **Account** in the header, then **Change nickname**. New joiners who are not on the list can join as a new player (unique nickname).</li>
-          <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for missing-pick SMS (you can skip and change it later in the header). Wave 2 social features are marked below as coming soon.</li>
+          <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for SMS, then open <strong>Account → Notification preferences</strong> to choose which emails/texts you get. Wave 2 social features are marked below as coming soon.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -137,8 +137,18 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       </section>
       <section id="8-notifications">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">8. Notifications</h2>
-        <p className="text-[var(--text-muted)] mb-2"><strong>Cell for missing-pick SMS:</strong> after sign-in you may be asked for a Canadian or US cell number so we can text you if you haven’t picked before lock. You can <strong>Skip for now</strong>; add or change it anytime from the header near your nickname (<strong>Add cell</strong> / <strong>Cell</strong>). Numbers are stored in E.164 and used for SMS only (WhatsApp is later).</p>
-        <p className="text-[var(--text-muted)] mb-2"><strong>Coming soon in Wave 2:</strong> the notification preference centre, weekly picks digests, WhatsApp messaging, and close-game alerts.</p>
+        <p className="text-[var(--text-muted)] mb-2"><strong>Account → Notification preferences:</strong> phone-friendly on/off toggles for this pool. They save on your seat (per user / membership). Email and SMS for pool events honour these toggles. <strong>Forgot password</strong> codes always send — they are not a preference.</p>
+        <pre className="card-glass p-3 text-xs overflow-x-auto whitespace-pre-wrap mb-2">| Type | Default |
+|------|---------|
+| Missing pick reminder | On |
+| Pick confirmed / changed | On |
+| Results graded | On |
+| Mulligan / eliminated | On |
+| Pool announcements | On |
+| Live scores | Off |
+| Injury notes | Off |</pre>
+        <p className="text-[var(--text-muted)] mb-2"><strong>Cell for SMS:</strong> after sign-in you may be asked for a Canadian or US cell number. You can <strong>Skip for now</strong>; add or change it anytime from <strong>Account → Add cell number</strong>. Numbers are stored in E.164 and used for SMS only (WhatsApp is later).</p>
+        <p className="text-[var(--text-muted)] mb-2"><strong>Coming later:</strong> an in-app notification inbox, weekly picks digests, WhatsApp messaging, and close-game alerts.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="9-live-scores-digests">
@@ -181,7 +191,8 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; tap **Account** in the header, then **Change nickname**. New members create a nickname when they join.</li>
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
-          <li className="text-[var(--text-primary)]">**Cell number** is optional but recommended for missing-pick SMS and for password-reset texts. You can skip the soft prompt and add or edit it later from the header near your nickname.</li>
+          <li className="text-[var(--text-primary)]">**Cell number** is optional but recommended for SMS (missing-pick reminders and password-reset texts). You can skip the soft prompt and add or edit it later from **Account**.</li>
+          <li className="text-[var(--text-primary)]">**Notification preferences:** **Account → Notification preferences**. Live scores and injury notes start **off**. Forgot-password codes always send.</li>
           <li className="text-[var(--text-primary)]">
             **Forgot password:** on the sign-in page, tap Forgot password. We send a 6-digit code to your email, or a text if a cell is saved.
             {showDemoCopy
@@ -199,7 +210,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 |---------|------------|
 | Pick button disabled | Team already used, team on bye, or week already locked. |
 | Can’t see mates’ picks | Week hasn’t locked yet — hang tight until first kickoff. |
-| Missed SMS | Add or update your cell in the header (near nickname). Confirm the number is correct. |
+| Missed SMS | Add or update your cell under **Account**. Confirm the number is correct and that the toggle is on under Notification preferences. |
 | Forgot password | Sign in → Forgot password. Use the email on your account.${showDemoCopy ? " Demo seats use demo1234." : ""} |
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
 | Want to switch account | Header → Account → Sign out (also on Admin and Help). Then Sign in. |
@@ -265,6 +276,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **Board** | Pool board: status ladder (undefeated → one loss → eliminated, then weeks survived, same pick, same game, nickname A–Z); after lock, Home also groups picks by kickoff-ordered games then away/home clusters. |
 | **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock). |
+| **Notification preferences** | **Account** sheet toggles for email/SMS (per seat). Live scores and injury notes start off. Forgot-password codes always send. |
 | **Digest** | **Coming later:** post-lock summary of everyone’s picks. |
 | **H2H** | **Coming later:** head-to-head spotlight when two participants pick opposite sides. |
 | **en-CA** | Canadian English locale for copy, dates, and A–Z sorting. |

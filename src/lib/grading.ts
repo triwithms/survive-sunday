@@ -1,4 +1,9 @@
 import { prisma } from "./db";
+import {
+  mulliganEliminatedCopy,
+  notifyMembershipSafe,
+  resultsGradedCopy,
+} from "./notify";
 
 export type GradeResult = "win" | "loss" | "push";
 
@@ -69,23 +74,32 @@ export async function applyLossToMembership(membershipId: string) {
   });
   if (m.status === "eliminated") return m;
 
-  if (m.mulliganRemaining) {
-    return prisma.membership.update({
-      where: { id: membershipId },
-      data: {
-        mulliganRemaining: false,
-        status: "one_loss",
-        losses: m.losses + 1,
-      },
-    });
-  }
-  return prisma.membership.update({
-    where: { id: membershipId },
-    data: {
-      status: "eliminated",
-      losses: m.losses + 1,
-    },
+  const updated = m.mulliganRemaining
+    ? await prisma.membership.update({
+        where: { id: membershipId },
+        data: {
+          mulliganRemaining: false,
+          status: "one_loss",
+          losses: m.losses + 1,
+        },
+      })
+    : await prisma.membership.update({
+        where: { id: membershipId },
+        data: {
+          status: "eliminated",
+          losses: m.losses + 1,
+        },
+      });
+
+  notifyMembershipSafe({
+    membershipId,
+    type: "mulligan_eliminated",
+    ...mulliganEliminatedCopy({
+      nickname: updated.nickname,
+      status: updated.status,
+    }),
   });
+  return updated;
 }
 
 export async function applyWinToMembership(membershipId: string) {
@@ -143,7 +157,7 @@ export async function gradeWeekPicks(weekId: string) {
       OR: [{ result: null }, { result: "pending" }],
       NOT: { source: "missed" },
     },
-    include: { game: true, membership: true },
+    include: { game: true, membership: true, week: { select: { number: true } } },
   });
 
   const graded: string[] = [];
@@ -162,6 +176,16 @@ export async function gradeWeekPicks(weekId: string) {
     } else if (result === "win") {
       await applyWinToMembership(pick.membershipId);
     }
+    notifyMembershipSafe({
+      membershipId: pick.membershipId,
+      type: "results_graded",
+      ...resultsGradedCopy({
+        nickname: pick.membership.nickname,
+        weekNumber: pick.week.number,
+        teamAbbr: pick.teamAbbr,
+        result,
+      }),
+    });
     graded.push(pick.id);
   }
   return graded;
@@ -204,6 +228,16 @@ export async function applyMissedPicks(weekId: string) {
     }
 
     await applyLossToMembership(m.id);
+    notifyMembershipSafe({
+      membershipId: m.id,
+      type: "results_graded",
+      ...resultsGradedCopy({
+        nickname: m.nickname,
+        weekNumber: week.number,
+        teamAbbr: "no pick",
+        result: "loss",
+      }),
+    });
 
     await prisma.auditLog.create({
       data: {

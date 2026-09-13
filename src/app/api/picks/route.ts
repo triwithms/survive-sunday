@@ -16,6 +16,7 @@ import {
   gameForPick,
   pickChangeErrorMessage,
 } from "@/lib/pick-change";
+import { notifyMembershipSafe, pickConfirmedCopy } from "@/lib/notify";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -155,6 +156,18 @@ export async function POST(req: Request) {
   });
 
   await rebuildUsedTeams(membership.id, { freedTeam });
+
+  const changed = Boolean(existing && existing.teamAbbr !== teamAbbr);
+  notifyMembershipSafe({
+    membershipId: membership.id,
+    type: "pick_confirmed",
+    ...pickConfirmedCopy({
+      nickname: membership.nickname,
+      weekNumber,
+      teamAbbr,
+      changed,
+    }),
+  });
 
   return NextResponse.json({ ok: true, pick, locked: false });
 }

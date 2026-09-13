@@ -1,124 +1,58 @@
 import type { OtpChannel } from "./otp";
+import {
+  canStubDelivery,
+  emailProviderReady,
+  sendEmail,
+  sendSms,
+  smsProviderReady,
+} from "./message-delivery";
 
 export type DeliverResult =
   | { ok: true; stubbed: boolean }
   | { ok: false; error: string };
 
-export function emailProviderReady(): boolean {
-  return Boolean(process.env.RESEND_API_KEY?.trim());
-}
-
-export function smsProviderReady(): boolean {
-  return Boolean(
-    process.env.TWILIO_ACCOUNT_SID?.trim() &&
-      process.env.TWILIO_AUTH_TOKEN?.trim() &&
-      process.env.TWILIO_FROM_NUMBER?.trim()
-  );
-}
-
-export function canStubDelivery(): boolean {
-  return process.env.NODE_ENV !== "production";
-}
+export { emailProviderReady, smsProviderReady, canStubDelivery };
 
 export function canRevealDevCode(): boolean {
   return process.env.NODE_ENV !== "production";
 }
 
-function fromEmail(): string {
-  return (
-    process.env.RESEND_FROM_EMAIL?.trim() ||
-    "Survive Sunday <beth.t@example.com>"
-  );
-}
-
+/**
+ * Password-reset codes. Transactional — never gated by Account
+ * notification preferences.
+ */
 export async function deliverOtp(
   channel: OtpChannel,
   destination: string,
   code: string
 ): Promise<DeliverResult> {
   if (channel === "sms") {
-    if (smsProviderReady()) return sendTwilioSms(destination, code);
-    if (canStubDelivery()) {
-      console.info(`[otp] SMS stub → ${destination}: ${code}`);
-      return { ok: true, stubbed: true };
-    }
-    return {
-      ok: false,
-      error: "Text messages aren’t set up yet. Ask for an email code instead.",
-    };
-  }
-
-  if (emailProviderReady()) return sendResendEmail(destination, code);
-  if (canStubDelivery()) {
-    console.info(`[otp] email stub → ${destination}: ${code}`);
-    return { ok: true, stubbed: true };
-  }
-  return {
-    ok: false,
-    error:
-      "We couldn’t email a code. The commissioner still needs to add the Resend key (see DEPLOY.md).",
-  };
-}
-
-async function sendResendEmail(to: string, code: string): Promise<DeliverResult> {
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: fromEmail(),
-        to: [to],
-        subject: "Your Survive Sunday password-reset code",
-        text: emailText(code),
-        html: emailHtml(code),
-      }),
+    const result = await sendSms({
+      to: destination,
+      body: `${code} is your Survive Sunday password-reset code. It expires in 10 minutes.`,
     });
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      console.error("[otp] Resend failed", res.status, body.slice(0, 400));
-      return { ok: false, error: "We couldn’t send the email. Try again in a moment." };
+    if (!result.ok) {
+      return {
+        ok: false,
+        error:
+          result.error === "Text messages aren’t set up yet."
+            ? "Text messages aren’t set up yet. Ask for an email code instead."
+            : "We couldn’t send the text. Try email instead.",
+      };
     }
-    return { ok: true, stubbed: false };
-  } catch (error) {
-    console.error("[otp] Resend error", error);
-    return { ok: false, error: "We couldn’t send the email. Try again in a moment." };
+    return { ok: true, stubbed: result.stubbed };
   }
-}
 
-async function sendTwilioSms(to: string, code: string): Promise<DeliverResult> {
-  const sid = process.env.TWILIO_ACCOUNT_SID!.trim();
-  const token = process.env.TWILIO_AUTH_TOKEN!.trim();
-  const from = process.env.TWILIO_FROM_NUMBER!.trim();
-  const auth = Buffer.from(`${sid}:${token}`).toString("base64");
-  try {
-    const res = await fetch(
-      `https://api.twilio.com/2010-04-01/Accounts/${encodeURIComponent(sid)}/Messages.json`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${auth}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          From: from,
-          To: to,
-          Body: `${code} is your Survive Sunday password-reset code. It expires in 10 minutes.`,
-        }),
-      }
-    );
-    if (!res.ok) {
-      const body = await res.text().catch(() => "");
-      console.error("[otp] Twilio failed", res.status, body.slice(0, 400));
-      return { ok: false, error: "We couldn’t send the text. Try email instead." };
-    }
-    return { ok: true, stubbed: false };
-  } catch (error) {
-    console.error("[otp] Twilio error", error);
-    return { ok: false, error: "We couldn’t send the text. Try email instead." };
+  const result = await sendEmail({
+    to: destination,
+    subject: "Your Survive Sunday password-reset code",
+    text: emailText(code),
+    html: emailHtml(code),
+  });
+  if (!result.ok) {
+    return { ok: false, error: result.error };
   }
+  return { ok: true, stubbed: result.stubbed };
 }
 
 function emailText(code: string): string {
