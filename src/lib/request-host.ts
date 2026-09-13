@@ -115,16 +115,15 @@ export function requestWithPublicOrigin(req: Request): Request {
     const current = new URL(req.url);
     const next = new URL(`${current.pathname}${current.search}${current.hash}`, origin);
     if (next.origin === current.origin) return req;
-    const init: RequestInit & { duplex?: "half" } = {
+    // NextRequest's init rejects RequestInit.signal: null. Build a narrow
+    // init object so `next build` type-checks and Auth.js still gets nextUrl.
+    const init = {
       method: req.method,
       headers: req.headers,
-      redirect: "manual",
+      ...(req.method !== "GET" && req.method !== "HEAD"
+        ? { body: req.body, duplex: "half" as const }
+        : {}),
     };
-    if (req.method !== "GET" && req.method !== "HEAD") {
-      init.body = req.body;
-      init.duplex = "half";
-    }
-    // Keep NextRequest so Auth.js reqWithEnvURL can read nextUrl.
     return new NextRequest(next, init);
   } catch {
     return req;
