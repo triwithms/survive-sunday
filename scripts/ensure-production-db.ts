@@ -38,6 +38,40 @@ async function main() {
     });
     if (pool) {
       const users = await prisma.user.count();
+      try {
+        const patches = [
+          {
+            nickname: "Long Snapper",
+            from: "J S",
+            to: "John Stilo",
+          },
+          {
+            nickname: "Steve",
+            from: "Steve",
+            to: "Steve Venerus",
+          },
+        ];
+        for (const patch of patches) {
+          const result = await prisma.membership.updateMany({
+            where: {
+              poolId: pool.id,
+              nickname: patch.nickname,
+              realName: patch.from,
+            },
+            data: { realName: patch.to },
+          });
+          if (result.count > 0) {
+            console.log(
+              `[ensure-db] updated ${patch.nickname} realName ${patch.from} → ${patch.to} (${result.count})`
+            );
+          }
+        }
+      } catch (error) {
+        console.warn(
+          "[ensure-db] roster realName patch skipped (build continues)",
+          error
+        );
+      }
       console.log(`[ensure-db] demo pool present (${users} users)`);
       return;
     }
