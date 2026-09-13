@@ -315,12 +315,16 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 ### BONUS (do not start unless you ask)
 
 - **Live odds-based favourite strength meter** on the pick screen until kickoff. Today the pick screen shows a **static** spread from seeded data, not a live meter.
+- **Weekly video previews** — lowest priority; see Later / Wave 2. Do not start unless the owner asks.
 
 Live **scores** and **injury report** (ESPN public JSON) are already wired on `main` — not a bonus.
 
 ### Later / Wave 2 (do not confuse with MUST)
 
-H2H gloves animation, banter, SMS/email digests, WhatsApp, notification centre, extra visual polish. Listed in the README. If digests ever happen, include Canadian TV (TSN / CTV / RDS / DAZN) in the copy — that is not an app feature today.
+Lowest priority. Do **not** start unless the owner asks. None of this is on `main`.
+
+- H2H gloves animation, banter, SMS/email digests, WhatsApp, notification centre, extra visual polish. Listed in the README. If digests ever happen, include Canadian TV (TSN / CTV / RDS / DAZN) in the copy — that is not an app feature today.
+- **Weekly video previews (lowest priority):** a Help and/or Home section (or a simple link) with **curated** video links for that week — about **1–2 short** (5–10 min), **1–2 medium** (10–20 min), and **1–2 long** (20 min up to ~2.5 hr). Sources: **NFL YouTube channel**, **ESPN**, and/or **TSN**. Links only / embed-friendly preview. **Not** required for core picks / board / in-vs-out. Do not invent a live video feed or scrape YouTube. Do not implement this unless the owner asks. A free or basic Grok chat may later *draft a short list of official links* if asked — that is still not a feature on `main`.
 
 ---
 
@@ -425,7 +429,7 @@ Those are leftover seed / example rows, not the official Week 1 list. Tap **Admi
 - Multi-file refactors that touch Auth.js + Prisma + Neon together (needs a proper coding agent, or a human who can run the app)
 - Merging **conflicting** PRs or resolving git conflicts across several branches
 - Clicking Vercel / GitHub **for** the owner
-- Inventing live data feeds, Canadian channel listings, or features as if they were already on `main`
+- Inventing live data feeds, weekly video libraries, Canadian channel listings, or features as if they were already on `main`
 
 **Rules for every chat**
 
@@ -483,7 +487,7 @@ Then only these paths unless a listed open PR is the task:
 - DEPLOY.md
 
 Owner is not a coder. Explain steps in plain English (en-CA), click-by-click.
-Make one small PR. Do not add Wave 2 extras or the live-odds bonus unless I ask.
+Make one small PR. Do not add Wave 2 extras, the live-odds bonus, or weekly video previews unless I ask.
 
 Honest status:
 - Login/session cookie + AUTH_SECRET / AUTH_TRUST_HOST / AUTH_URL pitfalls are already fixed on main.
@@ -514,7 +518,7 @@ Real mode is already on main (merged PR #10): Week 1 is the real default; Week 2
 Official REAL Week 1 picks are in docs/HANDOFF.md section 6b — not the demo CSV.
 Friends may open the app without picking every week; a missed week still counts as a loss after lock unless I ask to change that rule.
 Pick header prev/next week is open draft PR #14 (branch cursor/pick-week-nav-6845) — continue that branch, do not start a second copy, do not claim it is live.
-No favourite-strength-meter bonus unless I ask.
+No favourite-strength-meter bonus or weekly video previews unless I ask.
 My problem: [describe pick / lock / board issue]
 ```
 
@@ -544,7 +548,7 @@ MUST on main (already shipped):
 Not on main — continue the existing PR, do not start a second copy:
 - Turn off mulligan / one-and-done + transfer commissioner → open PR #8 (branch cursor/commissioner-mulligan-transfer-a878)
 
-Small PR only. Do not expand into Wave 2 SMS/digests.
+Small PR only. Do not expand into Wave 2 SMS/digests or weekly video previews.
 My problem: [describe admin / import / lock-override / mulligan / transfer / mode issue]
 ```
 
