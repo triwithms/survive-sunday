@@ -282,7 +282,7 @@ export function PickClient({
           </p>
           <p className="text-[var(--text-muted)]">
             {weekNumber > currentWeek
-              ? `This is next week’s slate. Make this week’s pick on Week ${currentWeek}.`
+              ? `This is a future week’s slate. Make this week’s pick on Week ${currentWeek}.`
               : "This week’s pick is locked in. Use the arrows in the header to get back to the current week."}
           </p>
         </div>
