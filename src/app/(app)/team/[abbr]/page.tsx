@@ -20,6 +20,7 @@ import {
   type TeamNewsItem,
 } from "@/lib/team-research";
 import { getTeamInjuries, type LiveInjury } from "@/lib/live-injuries";
+import { getTeamCoach } from "@/lib/team-coaches";
 import { formatWinPct } from "@/lib/standings-format";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { InjuryChip } from "@/components/InjuryChip";
@@ -245,9 +246,10 @@ export default async function TeamResearchPage({
 
   const profile = getTeamProfile(abbr);
   const roster = getTeamRoster(abbr);
-  const [news, injuries] = await Promise.all([
+  const [news, injuries, coach] = await Promise.all([
     getTeamNews(abbr),
     getTeamInjuries(abbr),
+    getTeamCoach(abbr),
   ]);
   const players = withLiveInjuries(listNflPlayers(abbr), injuries.injuries);
   const keyPlayers = withLiveInjuries(listKeyPlayers(abbr), injuries.injuries);
@@ -370,17 +372,99 @@ export default async function TeamResearchPage({
         </section>
       )}
 
-      {keyPlayers.length > 0 && (
-        <section className="space-y-3">
-          <div>
-            <h2 className="text-xl font-semibold text-gold-400">Key players</h2>
-            <p className="text-sm text-[var(--text-muted)] mt-0.5">
-              Tap a name for college, depth role, and any ESPN injury note.
+      <section className="card-glass p-4 space-y-2">
+        <h2 className="text-xl font-semibold text-gold-400">Coach</h2>
+        {coach.name ? (
+          <>
+            <p className="text-lg font-medium break-words">{coach.name}</p>
+            {coach.experienceLabel && (
+              <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+                {coach.experienceLabel}
+              </p>
+            )}
+            <ul className="flex flex-wrap gap-x-4 gap-y-2 text-base pt-1">
+              {coach.espnCoachUrl && (
+                <li>
+                  <a
+                    href={coach.espnCoachUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gold-400 underline underline-offset-2"
+                  >
+                    ESPN profile
+                  </a>
+                </li>
+              )}
+              {coach.wikipediaUrl && (
+                <li>
+                  <a
+                    href={coach.wikipediaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gold-400 underline underline-offset-2"
+                  >
+                    Wikipedia
+                  </a>
+                </li>
+              )}
+              <li>
+                <a
+                  href={coach.espnTeamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--text-muted)] underline underline-offset-2 hover:text-gold-400"
+                >
+                  ESPN team page
+                </a>
+              </li>
+              <li>
+                <a
+                  href={coach.nflTeamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[var(--text-muted)] underline underline-offset-2 hover:text-gold-400"
+                >
+                  NFL.com team page
+                </a>
+              </li>
+            </ul>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed pt-1">
+              Head coach from ESPN&apos;s public coaches list
+              {coach.asOf ? ` (seeded ${coach.asOf})` : ""}. Opens in a new tab.
+              Not a bio — tap a link for more.
             </p>
+          </>
+        ) : (
+          <div className="space-y-2 text-base text-[var(--text-muted)]">
+            <p>
+              Coach name isn&apos;t listed right now. Look them up on the team
+              pages:
+            </p>
+            <ul className="flex flex-wrap gap-3 text-base">
+              <li>
+                <a
+                  href={coach.espnTeamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold-400 underline underline-offset-2"
+                >
+                  ESPN · {team.abbr}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={coach.nflTeamUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold-400 underline underline-offset-2"
+                >
+                  NFL.com · {team.abbr}
+                </a>
+              </li>
+            </ul>
           </div>
-          <KeyPlayerCards teamAbbr={team.abbr} players={keyPlayers} />
-        </section>
-      )}
+        )}
+      </section>
 
       {profile && (
         <section className="card-glass p-4 space-y-2">
@@ -404,6 +488,18 @@ export default async function TeamResearchPage({
               {profile.lean_basis}
             </p>
           )}
+        </section>
+      )}
+
+      {keyPlayers.length > 0 && (
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-xl font-semibold text-gold-400">Key players</h2>
+            <p className="text-sm text-[var(--text-muted)] mt-0.5">
+              Tap a name for college, depth role, and any ESPN injury note.
+            </p>
+          </div>
+          <KeyPlayerCards teamAbbr={team.abbr} players={keyPlayers} />
         </section>
       )}
 

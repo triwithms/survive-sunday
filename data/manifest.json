@@ -12,6 +12,7 @@
     "sample_injury_news.json": "SAMPLE SHAPES ONLY \u2014 not live injury/news",
     "data_sources.json": "live scores / odds / recap video APIs + free tiers + must_stub",
     "team_rosters.json": "32 teams: full ESPN offence/defence/special_teams rosters (jersey/college/role; WSH\u2192WAS; includes PS/IR when present)",
+    "team_coaches.json": "32 teams: 2026 head coach name + ESPN coach id/url (core API; WAS not WSH)",
     "season-2026-schedule.json": "2026 NFL regular season weeks 1\u201318 full slate (ESPN scoreboard; WSH\u2192WAS; 272 games)"
   },
   "also_present_other_agents": [

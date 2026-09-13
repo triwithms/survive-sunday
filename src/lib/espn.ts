@@ -47,3 +47,21 @@ export async function fetchEspnJson<T>(
   }
   throw lastError ?? new Error("ESPN fetch failed");
 }
+
+/** Follow a core-API $ref (http → https). Same browser headers as site JSON. */
+export async function fetchEspnUrlJson<T>(
+  url: string,
+  opts?: { timeoutMs?: number }
+): Promise<T> {
+  const timeoutMs = opts?.timeoutMs ?? 8000;
+  const httpsUrl = url.trim().replace(/^http:\/\//i, "https://");
+  const res = await fetch(httpsUrl, {
+    headers: ESPN_BROWSER_HEADERS,
+    cache: "no-store",
+    signal: AbortSignal.timeout(timeoutMs),
+  });
+  if (!res.ok) {
+    throw new Error(`ESPN ${res.status} ${httpsUrl}`);
+  }
+  return (await res.json()) as T;
+}

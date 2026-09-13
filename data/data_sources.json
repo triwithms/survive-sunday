@@ -122,7 +122,8 @@
   "recommended_stack": "Wired in-app (Hobby, no key): ESPN site.web.api scoreboard + injuries JSON (fallback site.api). Odds still seeded. Recaps: YouTube IFrame later. Graduate to SportsDataIO or API-Sports paid when you need SLA. Avoid OddsJam until revenue justifies sales-gated odds.",
   "wired_in_app": {
     "live_scores": "src/lib/live-scores.ts → ESPN scoreboard; poll ~45s in live window; auto-grade finals",
-    "injuries": "src/lib/live-injuries.ts → ESPN injuries JSON; drop Active/cleared; cache ~12 min; never uses sample_injury_news.json in UI"
+    "injuries": "src/lib/live-injuries.ts → ESPN injuries JSON; drop Active/cleared; cache ~12 min; never uses sample_injury_news.json in UI",
+    "head_coaches": "src/lib/team-coaches.ts → ESPN core coaches JSON (live, cache ~60 min) with data/team_coaches.json seed fallback; team page Coach section"
   },
   "must_stub": [
     "odds.*.moneyline / spread / total / bookmaker / last_update (until odds API key + paid NFL access if free tier excludes NFL)",
