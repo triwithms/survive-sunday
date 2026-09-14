@@ -240,7 +240,7 @@ export default async function ScoresPage({
                                 pick.teamAbbr,
                                 logoByAbbr.get(pick.teamAbbr)
                               )}
-                              size={22}
+                              size={28}
                             />
                             {pick.teamAbbr}
                           </Link>{" "}

@@ -117,7 +117,7 @@ export function ScoreGameDetailSheet({
 
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <TeamLogo abbr={game.awayAbbr} logoUrl={game.awayLogoUrl} size={28} />
+          <TeamLogo abbr={game.awayAbbr} logoUrl={game.awayLogoUrl} size={34} />
           <span className="font-mono font-semibold">{game.awayAbbr}</span>
           {bug?.possession === game.awayAbbr ? (
             <span className="shrink-0 text-[13px] leading-none" title="Has the ball" aria-hidden>
@@ -138,7 +138,7 @@ export function ScoreGameDetailSheet({
               🏈
             </span>
           ) : null}
-          <TeamLogo abbr={game.homeAbbr} logoUrl={game.homeLogoUrl} size={28} />
+          <TeamLogo abbr={game.homeAbbr} logoUrl={game.homeLogoUrl} size={34} />
         </div>
       </div>
 
