@@ -35,6 +35,7 @@ import {
 } from "@/lib/pool-mode";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { HomeVideosTeaser } from "@/components/WeeklyVideosPanel";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -395,6 +396,8 @@ export default async function PoolPage({
           <p className="text-[var(--text-muted)]">No pick recorded for this week.</p>
         )}
       </section>
+
+      <HomeVideosTeaser week={week.number} />
 
       {revealAllPicks ? (
         <section>

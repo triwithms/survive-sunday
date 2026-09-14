@@ -10,6 +10,7 @@ import {
   isLiveGame,
 } from "@/lib/game-display";
 import type { GameDetailDto } from "@/lib/espn-game-detail-parse";
+import { GameHighlights } from "@/components/GameHighlights";
 
 type SheetGame = {
   id: string;
@@ -269,6 +270,8 @@ export function ScoreGameDetailSheet({
           </section>
         </>
       )}
+
+      <GameHighlights gameId={game.id} status={status} />
 
       {!live && header.kind === "scheduled" ? (
         <p className="text-[10px] text-[var(--text-muted)]">

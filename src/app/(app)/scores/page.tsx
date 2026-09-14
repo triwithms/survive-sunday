@@ -164,7 +164,8 @@ export default async function ScoresPage({
               className="text-sm text-[var(--text-muted)] mt-1"
               data-share-chrome=""
             >
-              Tap Details on a game — live or Final — for more.
+              Tap Details on a game — live or Final — for more, including
+              YouTube highlights when NFL has posted them.
             </p>
             {liveCount > 0 ? (
               <p className="text-sm text-[var(--text-muted)] mt-1">

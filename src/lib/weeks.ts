@@ -9,6 +9,7 @@ export const WEEK_NAV_PATHS = {
   "/pool": { allowFuture: false },
   "/scores": { allowFuture: true },
   "/schedule": { allowFuture: true },
+  "/videos": { allowFuture: true },
 } as const;
 
 export type WeekNavPath = keyof typeof WEEK_NAV_PATHS;
