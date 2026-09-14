@@ -424,7 +424,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
-| Bigger team logos (second bump) | this PR | Clear step up from [#43](https://github.com/triwithms/survive-sunday/pull/43): Scores/Pick/Board/League ESPN marks ~33–38% larger. Not live until merged. |
+| Bigger team logos (second bump) | [#49](https://github.com/triwithms/survive-sunday/pull/49) | Clear step up from [#43](https://github.com/triwithms/survive-sunday/pull/43): Scores/Pick/Board/League ESPN marks ~33–38% larger. Not live until merged. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
