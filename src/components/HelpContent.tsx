@@ -43,7 +43,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <p className="text-[var(--text-muted)] mb-4">A visual tour of the main screens you&apos;ll use each week.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 space-y-0">
           {[
-            { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: showDemoCopy ? 'Sign in (demo or Google)' : 'Sign in (Google or email)' },
+            { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: showDemoCopy ? 'Sign in (demo, Google, or email me a code)' : 'Sign in (password, Google, or email me a code)' },
             { src: '/help-preview/02-pool-home.png', alt: 'Pool home / Board entry', caption: 'Pool home / Board entry' },
             { src: '/help-preview/03-pick-this-weeks-games.png', alt: 'Pick — This week’s games', caption: 'Pick — This week’s games' },
             { src: '/help-preview/04-team-research.png', alt: 'Team research', caption: 'Team research' },
