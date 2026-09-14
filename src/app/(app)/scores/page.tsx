@@ -140,8 +140,8 @@ export default async function ScoresPage({
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           Live scores from ESPN. Team logos sit beside the abbreviations.
-          Tap Details on a game for more. Logos open team pages. Finals
-          auto-grade picks.
+          Tap Details on a game — live or Final — for more. Logos open
+          team pages. Finals auto-grade picks.
         </p>
         {liveCount > 0 ? (
           <p className="text-sm text-[var(--text-muted)] mt-1">

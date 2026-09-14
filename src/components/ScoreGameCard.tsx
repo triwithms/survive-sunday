@@ -79,6 +79,15 @@ function ScoreTeamRow({
   );
 }
 
+/** Dark status well — live scorebug, Final chip, or kickoff. Details sits under it. */
+function StatusWell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-w-[6.5rem] text-center rounded-md bg-[var(--stadium-700)] px-2 py-1.5">
+      {children}
+    </div>
+  );
+}
+
 function LiveScorebugStrip({
   down,
   periodLine,
@@ -89,7 +98,7 @@ function LiveScorebugStrip({
   spot: string | null;
 }) {
   return (
-    <div className="min-w-[6.5rem] text-center rounded-md bg-[var(--stadium-700)] px-2 py-1.5">
+    <StatusWell>
       {down ? (
         <p className="font-display text-[13px] sm:text-sm font-semibold uppercase tracking-wide leading-tight text-gold-400">
           {down}
@@ -109,7 +118,7 @@ function LiveScorebugStrip({
           {spot}
         </p>
       ) : null}
-    </div>
+    </StatusWell>
   );
 }
 
@@ -212,16 +221,16 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
               spot={bug.spot}
             />
           ) : status.kind === "final" ? (
-            <div className="text-right">
+            <StatusWell>
               <span className="chip chip-gold">{status.primary}</span>
               {status.secondary ? (
                 <p className="mt-1 text-[10px] text-[var(--text-muted)]">
                   {status.secondary}
                 </p>
               ) : null}
-            </div>
+            </StatusWell>
           ) : (
-            <div className="text-right">
+            <StatusWell>
               <p className="whitespace-nowrap text-sm font-medium leading-snug text-[var(--text-primary)]">
                 {status.primary}
               </p>
@@ -230,7 +239,7 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
                   {status.secondary}
                 </p>
               ) : null}
-            </div>
+            </StatusWell>
           )}
           <GameDetailsHint />
         </div>
