@@ -19,6 +19,7 @@ import { redirect } from "next/navigation";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { TeamLogo } from "@/components/TeamLogo";
+import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -104,12 +105,18 @@ export default async function ScoresPage({
   const revealAllPicks = locked || week.number < currentWeek;
   const members = await prisma.membership.findMany({
     where: { poolId: me.poolId },
-    orderBy: { nickname: "asc" },
     include: {
       picks: { where: { weekId: week.id } },
     },
   });
-  const participants = members.filter((member) => member.role !== "admin");
+  const participants = sortParticipants(
+    members
+      .filter((member) => member.role !== "admin")
+      .map((member) => ({
+        ...member,
+        ...boardPickFields(member.picks[0], week.games),
+      }))
+  );
 
   const weekOptions = weeks.map((candidate) => ({
     number: candidate.number,
