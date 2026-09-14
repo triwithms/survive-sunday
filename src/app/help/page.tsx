@@ -60,8 +60,8 @@ export default async function HelpPage() {
               Signed in as {membership.nickname}
             </p>
             <p className="text-xs text-[var(--text-muted)]">
-              Sign out and notification settings: header →{" "}
-              <strong>Account</strong> → <strong>Notification preferences</strong>.
+              Sign out and notification settings:{" "}
+              <strong>Account (header) → Notification preferences</strong>.
               Also see Help section 8.
             </p>
             <Link

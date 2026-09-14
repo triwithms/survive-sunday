@@ -30,13 +30,19 @@ const PREF_COLUMNS: Array<{ name: string; sql: string }> = [
   { name: "updatedAt", sql: `TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP` },
 ];
 
+export const PREFS_LOAD_ERROR =
+  "Couldn’t load saved preferences from the database. Showing defaults. Tap Save after a refresh — if this stays, Account → Notification preferences still needs the production table.";
+
+export const PREFS_SAVE_ERROR =
+  "Couldn’t save preferences. Try again in a minute. If it keeps failing, the notification table is still missing on production.";
+
 export function isMissingNotificationSchema(error: unknown): boolean {
   if (error && typeof error === "object" && "code" in error) {
     const code = (error as { code?: string }).code;
-    if (code === "P2021" || code === "P2022") return true;
+    if (code === "P2021" || code === "P2022" || code === "P1010") return true;
   }
   const msg = error instanceof Error ? error.message : String(error ?? "");
-  return /NotificationPreference|NotificationSend|does not exist in the current database|column .* does not exist/i.test(
+  return /NotificationPreference|NotificationSend|does not exist in the current database|column .* does not exist|row.level security|RLS|permission denied|42501/i.test(
     msg
   );
 }
@@ -82,6 +88,9 @@ export async function ensureNotificationTables(prisma: SchemaClient) {
     );
   }
   await prisma.$executeRawUnsafe(`
+    ALTER TABLE "NotificationPreference" DISABLE ROW LEVEL SECURITY
+  `).catch(() => undefined);
+  await prisma.$executeRawUnsafe(`
     CREATE UNIQUE INDEX IF NOT EXISTS "NotificationPreference_userId_key"
     ON "NotificationPreference" ("userId")
   `);
@@ -125,6 +134,9 @@ export async function ensureNotificationTables(prisma: SchemaClient) {
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "NotificationSend" ADD COLUMN IF NOT EXISTS "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
   `);
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "NotificationSend" DISABLE ROW LEVEL SECURITY
+  `).catch(() => undefined);
   await prisma.$executeRawUnsafe(`
     CREATE UNIQUE INDEX IF NOT EXISTS "NotificationSend_userId_type_dedupeKey_key"
     ON "NotificationSend" ("userId", "type", "dedupeKey")

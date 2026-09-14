@@ -57,15 +57,17 @@ function ToggleRow({
 
 export function NotificationPrefsForm({
   initial,
+  initialError,
 }: {
   initial?: NotificationPrefs;
+  initialError?: string | null;
 }) {
   const [prefs, setPrefs] = useState<NotificationPrefs>(
     initial ?? DEFAULT_NOTIFICATION_PREFS
   );
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(Boolean(initial));
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError ?? "");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -190,7 +192,11 @@ export function NotificationPrefsForm({
       </section>
 
       {error && (
-        <p className="text-crimson-400 text-sm" role="alert">
+        <p
+          className="text-crimson-400 text-sm"
+          role="alert"
+          data-testid="prefs-load-error"
+        >
           {error}
         </p>
       )}
