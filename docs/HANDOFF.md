@@ -389,7 +389,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | League W-L from ESPN (no demo leak) | live-standings merge (`538be1f`) | Real-mode League syncs ESPN W-L. Demo `week2-standings` seed is not shown to Real-mode friends. |
 | Week 1 pick-change until kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock.** |
 | Notification preferences | [#29](https://github.com/triwithms/survive-sunday/pull/29) | Account → Notification preferences. Types: missing pick, pick saved/changed, results, you’re out / mulligan, pool notes (default on); live scores, injury notes (default off). Email via Resend. Missing-pick SMS follows the same switch. |
-| JaJa seat + pick backup | this PR | **JaJa (Jacquie Gama)** is on Join as claimable (`jaja@survivesunday.demo`), Week 1 **KC** with Gams. **Account → Pick backup** / Admin → Roster: copy another member’s pick if you still have none within 30 minutes of lock (Week 1: that game’s kickoff). Server cron every 15 minutes. |
+| JaJa seat + pick backup | [#37](https://github.com/triwithms/survive-sunday/pull/37) | **JaJa (Jacquie Gama)** is on Join as claimable (`jaja@survivesunday.demo`), Week 1 **KC** with Gams. **Account → Pick backup** / Admin → Roster: copy another member’s pick if you still have none within 30 minutes of lock (Week 1: that game’s kickoff). Server cron every 15 minutes. |
 
 ### Open — not on `main` yet
 
