@@ -5,7 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { formatKickoff } from "@/lib/utils";
-import { isGameStarted, week1PickChangeApplies } from "@/lib/pick-change";
+import { isGameStarted } from "@/lib/pick-change";
+import {
+  pickScreenCopy,
+  type PlayerPickWeek,
+} from "@/lib/next-week-picks";
 import {
   formatCurrentStanding,
   formatPriorYearRank,
@@ -14,6 +18,7 @@ import {
 } from "@/lib/matchup-meta";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { InjuryChip } from "@/components/InjuryChip";
+import { NextWeekOpenTip } from "@/components/NextWeekOpenTip";
 import { formatScoreLine, type InjuryCountBits } from "@/lib/game-display";
 
 type Side = {
@@ -44,7 +49,7 @@ type Matchup = {
 
 export function PickClient({
   weekNumber,
-  currentWeek,
+  decision,
   locked,
   canChange,
   eliminated,
@@ -53,7 +58,7 @@ export function PickClient({
   games,
 }: {
   weekNumber: number;
-  currentWeek: number;
+  decision: PlayerPickWeek;
   locked: boolean;
   canChange: boolean;
   eliminated: boolean;
@@ -69,11 +74,18 @@ export function PickClient({
   const [msg, setMsg] = useState("");
   const [redirectIn, setRedirectIn] = useState<number | null>(null);
   const router = useRouter();
-  const isCurrentWeek = weekNumber === currentWeek;
-  const browsingOtherWeek = !isCurrentWeek;
-  const week1Rule = week1PickChangeApplies(weekNumber) && isCurrentWeek;
-  const lockStartedGames = week1Rule && locked && canChange;
-  const readOnly = !canChange || eliminated || browsingOtherWeek || spectator;
+  const copy = pickScreenCopy({
+    weekNumber,
+    decision,
+    locked,
+    canChange,
+    eliminated,
+    spectator,
+    hasCurrentPick: Boolean(currentPick),
+  });
+  const lockStartedGames =
+    copy.showWeek1ChangeCard && locked && canChange;
+  const readOnly = !canChange || eliminated || spectator;
 
   useEffect(() => {
     setSelected(currentPick ?? null);
@@ -165,23 +177,7 @@ export function PickClient({
           <h1 className="font-display text-2xl text-gold-400 tracking-wide">
             Week {weekNumber} pick
           </h1>
-          <p className="text-sm text-[var(--text-muted)]">
-            {eliminated
-              ? "You're eliminated — matchups are read-only."
-              : browsingOtherWeek
-                ? weekNumber > currentWeek
-                  ? `Browsing Week ${weekNumber} — picks open on Week ${currentWeek}.`
-                  : `Week ${weekNumber} is over — this pick is read-only.`
-                : week1Rule
-                  ? canChange
-                    ? "Week 1 only: you can change your pick until that team’s kickoff. After Week 1 this goes away."
-                    : locked
-                      ? "Your Week 1 pick is locked — that team’s game has started (or you missed lock)."
-                      : "Use Pick on a side to choose that team. One team. No reuse."
-                  : locked
-                    ? "Week locked — picks are read-only."
-                    : "Use Pick on a side to choose that team. One team. No reuse."}
-          </p>
+          <p className="text-sm text-[var(--text-muted)]">{copy.kicker}</p>
         </div>
       </div>
 
@@ -241,7 +237,7 @@ export function PickClient({
               </Link>
               {!readOnly && (
                 <span className="text-xs text-[var(--text-muted)]">
-                  {week1Rule
+                  {copy.showWeek1ChangeCard
                     ? "Pick another not-started game below to change"
                     : "Pick another side below to change"}
                 </span>
@@ -252,7 +248,10 @@ export function PickClient({
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <p className="text-sm text-[var(--text-muted)]">
               {readOnly
-                ? "No pick recorded for this week."
+                ? decision.nextWeekOpen &&
+                  weekNumber === decision.poolCurrentWeek
+                  ? `No Week ${weekNumber} pick — ${copy.banner?.title ?? `Week ${decision.nextWeek} is open.`}`
+                  : "No pick recorded for this week."
                 : "No pick yet — choose a side from this week's games below."}
             </p>
           </div>
@@ -284,52 +283,42 @@ export function PickClient({
         </div>
       )}
 
-      {week1Rule && !eliminated && (
+      {copy.showWeek1ChangeCard && !eliminated && (
         <div
           role="status"
           className="card-glass border border-gold-400/40 p-3 text-sm space-y-1"
         >
           <p className="font-semibold text-gold-400">Week 1 pick changes</p>
           <p className="text-[var(--text-muted)]">
-            {canChange
-              ? "You can switch to any other team whose game has not started yet. Once your pick’s kickoff starts, that pick locks. After Week 1, picks lock at the first game of the week."
-              : locked
-                ? "Week 1’s first kickoff has passed. If your pick’s game has started, or you never picked, you cannot change it. After Week 1 this extra change window goes away."
-                : "Pick a team to win. You can change that pick until the team’s kickoff. After Week 1 this extra change window goes away."}
+            You can switch to any other team whose game has not started yet.
+            Once your pick’s kickoff starts, that pick locks and next week
+            opens for you.
           </p>
         </div>
       )}
 
-      {locked && !eliminated && !canChange && !week1Rule && (
-        <div
-          role="status"
-          className="card-glass border border-gold-400/40 p-3 text-sm space-y-1"
-        >
-          <p className="font-semibold text-gold-400">
-            Week {weekNumber} is locked (season in progress).
-          </p>
-          <p className="text-[var(--text-muted)]">
-            Picks cannot change. The commissioner can reopen the week from
-            the Admin page (&quot;Reopen week for picks&quot;).
-          </p>
-        </div>
+      {copy.showDismissibleTip && (
+        <NextWeekOpenTip weekNumber={decision.nextWeek} />
       )}
 
-      {browsingOtherWeek && !locked && !eliminated && (
+      {copy.banner && !eliminated && (
         <div
           role="status"
           className="card-glass border border-gold-400/40 p-3 text-sm space-y-1"
         >
-          <p className="font-semibold text-gold-400">
-            {weekNumber > currentWeek
-              ? `Week ${weekNumber} isn’t open for picks yet`
-              : `Viewing Week ${weekNumber}`}
-          </p>
-          <p className="text-[var(--text-muted)]">
-            {weekNumber > currentWeek
-              ? `This is a future week’s slate. Make this week’s pick on Week ${currentWeek}.`
-              : "This week’s pick is locked in. Use the arrows in the header to get back to the current week."}
-          </p>
+          <p className="font-semibold text-gold-400">{copy.banner.title}</p>
+          <p className="text-[var(--text-muted)]">{copy.banner.body}</p>
+          {copy.banner.href && copy.banner.hrefLabel && (
+            <p>
+              <Link
+                href={copy.banner.href}
+                prefetch={false}
+                className="btn-primary inline-flex text-sm mt-1"
+              >
+                {copy.banner.hrefLabel}
+              </Link>
+            </p>
+          )}
         </div>
       )}
 

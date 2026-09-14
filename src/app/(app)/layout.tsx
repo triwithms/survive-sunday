@@ -15,6 +15,7 @@ import {
 import { prisma } from "@/lib/db";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
+import { resolvePlayerPickWeekFromLoaded } from "@/lib/next-week-picks";
 import {
   effectiveCurrentWeek,
   isDemoMode,
@@ -103,6 +104,29 @@ export default async function AppLayout({
         existingGame: gameForPick(myPick, week.games),
       })
     : false;
+  const decision = resolvePlayerPickWeekFromLoaded({
+    poolCurrentWeek: currentWeek,
+    weeks: weeks.map((row) => ({
+      number: row.number,
+      locked: isWeekLocked(row),
+      games: row.games,
+    })),
+    currentPick: myPick,
+    playingFromWeek: membership.playingFromWeek,
+  });
+  const nextWeekRow = weeks.find((row) => row.number === decision.nextWeek);
+  const nextOpen =
+    decision.nextWeekOpen && nextWeekRow
+      ? {
+          weekNumber: decision.nextWeek,
+          lockAt: effectiveLockAt(nextWeekRow).toISOString(),
+        }
+      : null;
+  const showMakePick =
+    !canChangePick &&
+    (decision.nextWeekOpen || decision.reason === "slate_not_ready") &&
+    isPlayer &&
+    membership.status !== "eliminated";
   const showMutedChangePick = !locked && isAdmin && !isPlayer;
   const showDemoLockToggle =
     isDemoMode(membership.pool.mode) && showAdminChrome;
@@ -123,10 +147,19 @@ export default async function AppLayout({
           </Link>
           <Suspense
             fallback={
-              <HeaderWeekBadge weekNumber={currentWeek} lockAt={lockIso} />
+              <HeaderWeekBadge
+                weekNumber={currentWeek}
+                lockAt={lockIso}
+                nextOpen={nextOpen}
+              />
             }
           >
-            <HeaderWeekNav weeks={weekNav} currentWeek={currentWeek} />
+            <HeaderWeekNav
+              weeks={weekNav}
+              currentWeek={currentWeek}
+              pickActionWeek={decision.actionWeek}
+              nextOpen={nextOpen}
+            />
           </Suspense>
           <AccountMenu
             nickname={membership.nickname}
@@ -144,6 +177,7 @@ export default async function AppLayout({
         <HeaderNav
           canChangePick={canChangePick}
           showMutedChangePick={showMutedChangePick}
+          showMakePick={showMakePick}
         />
         {showDemoLockToggle && week && (
           <DemoLockToggle locked={locked} weekNumber={week.number} />

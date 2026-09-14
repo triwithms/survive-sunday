@@ -4,6 +4,12 @@ import { prisma } from "@/lib/db";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { effectiveLockAt, isWeekLocked, ensureWeekLockedEffects, MISSED_TEAM } from "@/lib/grading";
 import { canEditExistingPick, gameForPick } from "@/lib/pick-change";
+import {
+  homeEmptyPickCopy,
+  nextWeekOpenHeadline,
+  pickHrefForWeek,
+  resolvePlayerPickWeekFromLoaded,
+} from "@/lib/next-week-picks";
 import { StatusChip } from "@/components/StatusChip";
 import { AutoPickStamps } from "@/components/AutoPickStamps";
 import { formatKickoff } from "@/lib/utils";
@@ -54,7 +60,17 @@ export default async function PoolPage({
     await prisma.week.findMany({
       where: { poolId: me.poolId },
       orderBy: { number: "asc" },
-      include: { games: { select: { id: true } } },
+      include: {
+        games: {
+          select: {
+            id: true,
+            status: true,
+            kickoff: true,
+            awayAbbr: true,
+            homeAbbr: true,
+          },
+        },
+      },
     })
   );
   const selectedNumber = resolveSelectedWeekNumber({
@@ -128,6 +144,48 @@ export default async function PoolPage({
       existingPick: myPickRaw ?? null,
       existingGame: gameForPick(myPickRaw, week.games) ?? myPick?.game ?? null,
     });
+  const currentWeekRef = weeks.find((row) => row.number === currentWeek);
+  const currentPickForDecision = isCurrentWeek
+    ? myPickRaw ?? null
+    : currentWeekRef
+      ? await prisma.pick.findUnique({
+          where: {
+            membershipId_weekId: {
+              membershipId: self.id,
+              weekId: currentWeekRef.id,
+            },
+          },
+        })
+      : null;
+  const decision = resolvePlayerPickWeekFromLoaded({
+    poolCurrentWeek: currentWeek,
+    weeks: weeks.map((row) => ({
+      number: row.number,
+      locked: isWeekLocked(row),
+      games: row.games,
+    })),
+    currentPick: currentPickForDecision,
+    playingFromWeek: self.playingFromWeek,
+  });
+  const emptyPick = homeEmptyPickCopy(decision);
+  const nextWeekRef = weeks.find((row) => row.number === decision.nextWeek);
+  const nextWeekPick =
+    nextWeekRef &&
+    (decision.nextWeekOpen || decision.reason === "slate_not_ready")
+      ? await prisma.pick.findUnique({
+          where: {
+            membershipId_weekId: {
+              membershipId: self.id,
+              weekId: nextWeekRef.id,
+            },
+          },
+        })
+      : null;
+  const hasNextPick = Boolean(
+    nextWeekPick &&
+      nextWeekPick.source !== "missed" &&
+      nextWeekPick.teamAbbr !== MISSED_TEAM
+  );
 
   const myTeam = myPick
     ? await prisma.team.findUnique({ where: { abbr: myPick.teamAbbr } })
@@ -264,13 +322,29 @@ export default async function PoolPage({
             </div>
             {canChangePick && (
               <Link
-                href="/pick"
+                href={pickHrefForWeek(week.number)}
                 prefetch={false}
                 className="btn-primary text-center text-sm shrink-0 sm:ml-auto"
               >
                 Change pick
               </Link>
             )}
+            {!canChangePick &&
+              isCurrentWeek &&
+              (decision.nextWeekOpen || decision.reason === "slate_not_ready") && (
+                <Link
+                  href={pickHrefForWeek(decision.nextWeek)}
+                  prefetch={false}
+                  className="btn-primary text-center text-sm shrink-0 sm:ml-auto"
+                >
+                  {hasNextPick
+                    ? `Change Week ${decision.nextWeek} pick`
+                    : nextWeekOpenHeadline(
+                        decision.nextWeek,
+                        decision.slateReady
+                      )}
+                </Link>
+              )}
           </div>
         ) : self.status === "eliminated" ? (
           <p className="text-[var(--text-muted)]">You&apos;re eliminated — still welcome to hang out.</p>
@@ -287,10 +361,27 @@ export default async function PoolPage({
               with this same email so your picks stay with that seat.
             </p>
           </div>
-        ) : locked ? (
-          <p className="text-crimson-400">
-            Missed pick — automatic loss at lock.
-          </p>
+        ) : locked || !isCurrentWeek ? (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <p
+              className={
+                emptyPick.missed
+                  ? "text-crimson-400"
+                  : "text-[var(--text-muted)]"
+              }
+            >
+              {emptyPick.message}
+            </p>
+            {emptyPick.href && emptyPick.ctaLabel && (
+              <Link
+                href={emptyPick.href}
+                prefetch={false}
+                className="btn-primary text-sm shrink-0"
+              >
+                {emptyPick.ctaLabel}
+              </Link>
+            )}
+          </div>
         ) : isCurrentWeek ? (
           <div className="flex items-center justify-between gap-3">
             <p className="text-[var(--text-muted)]">

@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 import { INVITE_CODE } from "./constants";
-import { isDemoEmail } from "./pool-mode";
+import { effectiveCurrentWeek, isDemoEmail } from "./pool-mode";
 import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
 import {
   CLAIM_ERRORS,
@@ -23,6 +23,8 @@ import {
 } from "./membership-schema";
 import { POOL_ROLES } from "./roles";
 import { grantPoolRole } from "./roles-db";
+import { isWeekLocked } from "./grading";
+import { nextPlayingWeek } from "./pool-rules";
 
 async function primaryPool() {
   const pool = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
@@ -349,6 +351,8 @@ async function claimPracticeSeat(args: {
 
 async function joinAsNewPlayer(args: {
   poolId: string;
+  mode: string;
+  storedCurrentWeek: number;
   email: string;
   password: string;
   nickname: string;
@@ -396,6 +400,16 @@ async function joinAsNewPlayer(args: {
     });
   }
 
+  const currentWeek = effectiveCurrentWeek(args.mode, args.storedCurrentWeek);
+  const currentWeekRow = await prisma.week.findUnique({
+    where: { poolId_number: { poolId: args.poolId, number: currentWeek } },
+    select: { lockAt: true, lockOverrideAt: true },
+  });
+  const weekLocked = currentWeekRow ? isWeekLocked(currentWeekRow) : false;
+  const playingFromWeek = weekLocked
+    ? nextPlayingWeek({ currentWeek, weekLocked })
+    : null;
+
   const membership = await prisma.membership.create({
     data: {
       poolId: args.poolId,
@@ -403,6 +417,7 @@ async function joinAsNewPlayer(args: {
       nickname: args.nickname,
       realName: args.realName || null,
       role: "member",
+      playingFromWeek,
     },
   });
   await grantPoolRole(prisma, {
@@ -472,6 +487,8 @@ export async function joinOrClaimSeat(
 
   return joinAsNewPlayer({
     poolId: pool.id,
+    mode: pool.mode,
+    storedCurrentWeek: pool.currentWeek,
     email,
     password,
     nickname,

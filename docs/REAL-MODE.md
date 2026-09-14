@@ -15,7 +15,7 @@ Invite code for friends: **`SUNDAY26`**.
 
 That switch is **live on `main`**.
 
-- **Real mode** = **Week 1** (this NFL week). Practice picker is hidden. Week 2 is a real upcoming NFL week — friends can view the schedule and pick when it unlocks. Demo isolation does **not** hide Week 2.
+- **Real mode** = **Week 1** (this NFL week) for the group board. Practice picker is hidden. Week 2 is a real upcoming NFL week — friends can view the schedule. **A player’s Week 2 picks open as soon as their own Week 1 game has started** (or if they never had a Week 1 pick path). Do not wait for Monday Night Football. Demo isolation does **not** hide Week 2.
 - **Demo mode** = practice picker for you (commissioner). Same weeks, including Week 2.
 
 ---

@@ -21,6 +21,11 @@ export type HeaderWeek = WeekNavOption & {
   lockAt: string;
 };
 
+export type NextOpenDeadline = {
+  weekNumber: number;
+  lockAt: string;
+};
+
 function shareablePath(path: string): boolean {
   return (
     path === "/standings" ||
@@ -63,9 +68,11 @@ function WeekBadge({
 export function HeaderWeekBadge({
   weekNumber,
   lockAt,
+  nextOpen,
 }: {
   weekNumber: number;
   lockAt: string | null;
+  nextOpen?: NextOpenDeadline | null;
 }) {
   const pathname = usePathname();
   return (
@@ -76,7 +83,7 @@ export function HeaderWeekBadge({
       />
       {lockAt && (
         <span className="min-w-0 overflow-hidden">
-          <Countdown lockAt={lockAt} />
+          <Countdown lockAt={lockAt} nextOpen={nextOpen} />
         </span>
       )}
     </div>
@@ -92,9 +99,14 @@ const chevronClass = [
 export function HeaderWeekNav({
   weeks,
   currentWeek,
+  pickActionWeek,
+  nextOpen,
 }: {
   weeks: HeaderWeek[];
   currentWeek: number;
+  /** Default week on /pick when the URL has no ?week=. */
+  pickActionWeek?: number;
+  nextOpen?: NextOpenDeadline | null;
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -103,20 +115,30 @@ export function HeaderWeekNav({
 
   const weekNumbers = weeks.map((week) => week.number);
   const requested = route ? parseWeekParam(searchParams.get("week")) : null;
+  const defaultWeek =
+    route?.basePath === "/pick" && pickActionWeek
+      ? pickActionWeek
+      : currentWeek;
   const selectedWeek = resolveSelectedWeekNumber({
     requested,
     weekNumbers,
-    currentWeek,
+    currentWeek: defaultWeek,
     allowFuture: route?.allowFuture ?? false,
   });
   const selected =
     weeks.find((week) => week.number === selectedWeek) ??
-    weeks.find((week) => week.number === currentWeek) ??
+    weeks.find((week) => week.number === defaultWeek) ??
     weeks[0];
   const lockAt = selected?.lockAt ?? null;
 
   if (!route || weeks.length <= 1) {
-    return <HeaderWeekBadge weekNumber={selectedWeek} lockAt={lockAt} />;
+    return (
+      <HeaderWeekBadge
+        weekNumber={selectedWeek}
+        lockAt={lockAt}
+        nextOpen={nextOpen}
+      />
+    );
   }
 
   const { previous, next } = adjacentWeeks({
@@ -172,7 +194,7 @@ export function HeaderWeekNav({
       </nav>
       {lockAt && (
         <span className="min-w-0 overflow-hidden">
-          <Countdown lockAt={lockAt} />
+          <Countdown lockAt={lockAt} nextOpen={nextOpen} />
         </span>
       )}
     </div>

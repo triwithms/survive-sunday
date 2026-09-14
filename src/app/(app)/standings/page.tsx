@@ -22,6 +22,10 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
+import {
+  pickHrefForWeek,
+  resolvePlayerPickWeek,
+} from "@/lib/next-week-picks";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { isPoolParticipant, isSingleEliminationWeek } from "@/lib/pool-rules";
 
@@ -92,6 +96,40 @@ export default async function StandingsPage() {
         existingGame: gameForPick(myBoardPick, week.games),
       })
     : false;
+  const nextWeek = await prisma.week.findUnique({
+    where: {
+      poolId_number: {
+        poolId: me.poolId,
+        number:
+          effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek) + 1,
+      },
+    },
+    include: {
+      games: {
+        select: {
+          id: true,
+          status: true,
+          kickoff: true,
+          awayAbbr: true,
+          homeAbbr: true,
+        },
+      },
+    },
+  });
+  const decision = resolvePlayerPickWeek({
+    poolCurrentWeek: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
+    currentWeekLocked: locked,
+    existingCurrentPick: myBoardPick ?? null,
+    existingCurrentGame: gameForPick(myBoardPick, week?.games ?? []),
+    playingFromWeek: me.playingFromWeek,
+    nextWeekHasGames: (nextWeek?.games.length ?? 0) > 0,
+    nextWeekLocked: nextWeek ? isWeekLocked(nextWeek) : false,
+  });
+  const showMakePick =
+    !canChangePick &&
+    playing &&
+    me.status !== "eliminated" &&
+    (decision.nextWeekOpen || decision.reason === "slate_not_ready");
   const showMutedChange =
     !locked && ((me.role === "admin" && !playing) || me.status === "eliminated");
   const revealAllPicks = locked;
@@ -159,11 +197,19 @@ export default async function StandingsPage() {
         <div className="flex flex-wrap gap-2 shrink-0" data-share-chrome="">
           {canChangePick ? (
             <Link
-              href="/pick"
+              href={pickHrefForWeek(week?.number ?? 1)}
               prefetch={false}
               className="btn-primary text-center text-sm shrink-0"
             >
               Change pick
+            </Link>
+          ) : showMakePick ? (
+            <Link
+              href={pickHrefForWeek(decision.nextWeek)}
+              prefetch={false}
+              className="btn-primary text-center text-sm shrink-0"
+            >
+              Week {decision.nextWeek} is open — make your pick
             </Link>
           ) : showMutedChange ? (
             <Link
