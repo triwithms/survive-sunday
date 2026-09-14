@@ -34,6 +34,8 @@ export type RawYoutubeHit = {
   channelId: string | null;
   thumbnailUrl: string | null;
   publishedAt: string | null;
+  /** Innertube relative line, e.g. "3 days ago". */
+  publishedLabel: string | null;
   durationSeconds: number | null;
   durationLabel: string | null;
   isShort: boolean;
@@ -44,8 +46,16 @@ const SHORT_MAX_S = 10 * 60;
 const MEDIUM_MAX_S = 20 * 60;
 const LONG_MAX_S = 150 * 60;
 
-const OLD_SEASON = /\b(201\d|202[0-5])\b/;
-const THIS_SEASON = /\b2026\b/;
+/** 2026/27 regular season (this pool). Not preseason archives. */
+export const THIS_NFL_SEASON_LABEL = "2026/27";
+const THIS_SEASON = /\b2026(?:\s*[/\u2013-]\s*2?7)?\b/;
+const OTHER_SEASON = /\b(201\d|202[0-5]|202[7-9]|20[3-9]\d)\b/;
+const ARCHIVE_TITLE =
+  /\b(throwback|nfl vault|from the archives?|this day in|classic highlights?|flashback)\b/i;
+
+/** Regular season window: 1 Sep 2026 → 1 Mar 2027 (UTC). */
+export const THIS_SEASON_START_MS = Date.UTC(2026, 8, 1);
+export const THIS_SEASON_END_MS = Date.UTC(2027, 2, 1);
 
 export function youtubeWatchUrl(id: string): string {
   return `https://www.youtube.com/watch?v=${encodeURIComponent(id)}`;
@@ -133,9 +143,68 @@ export function titleHasWeek(title: string, week: number): boolean {
   return re.test(title);
 }
 
+export function titleHasThisSeason(title: string): boolean {
+  return THIS_SEASON.test(title);
+}
+
 export function titleLooksOldSeason(title: string): boolean {
-  if (THIS_SEASON.test(title)) return false;
-  return OLD_SEASON.test(title);
+  if (titleHasThisSeason(title)) return false;
+  return OTHER_SEASON.test(title);
+}
+
+export function parseRelativePublishedMs(
+  label: string | null | undefined,
+  nowMs = Date.now()
+): number | null {
+  if (!label) return null;
+  const t = label.trim().toLowerCase();
+  if (!t) return null;
+  if (/\btoday\b/.test(t) || /\bminutes? ago\b/.test(t) || /\bseconds? ago\b/.test(t)) {
+    return nowMs;
+  }
+  if (/\byesterday\b/.test(t)) return nowMs - 24 * 60 * 60 * 1000;
+  const m = t.match(
+    /(\d+)\s+(second|minute|hour|day|week|month|year)s?\s+ago/
+  );
+  if (!m) {
+    if (/\bhours? ago\b/.test(t)) return nowMs - 60 * 60 * 1000;
+    if (/\bdays? ago\b/.test(t)) return nowMs - 24 * 60 * 60 * 1000;
+    return null;
+  }
+  const n = Number(m[1]);
+  if (!Number.isFinite(n) || n < 0) return null;
+  const unit = m[2];
+  const ms: Record<string, number> = {
+    second: 1000,
+    minute: 60 * 1000,
+    hour: 60 * 60 * 1000,
+    day: 24 * 60 * 60 * 1000,
+    week: 7 * 24 * 60 * 60 * 1000,
+    month: 30 * 24 * 60 * 60 * 1000,
+    year: 365 * 24 * 60 * 60 * 1000,
+  };
+  return nowMs - n * (ms[unit] ?? 0);
+}
+
+export function timestampInThisSeason(ms: number | null | undefined): boolean {
+  if (ms == null || !Number.isFinite(ms)) return false;
+  return ms >= THIS_SEASON_START_MS && ms < THIS_SEASON_END_MS;
+}
+
+/**
+ * Keep 2026/27 clips only. Old years in the title, archive wording, or no
+ * season evidence (no 2026 + no publish date in this regular season) are out.
+ */
+export function clipIsThisNflSeason(
+  hit: Pick<RawYoutubeHit, "title" | "publishedAt" | "publishedLabel">,
+  nowMs = Date.now()
+): boolean {
+  const title = hit.title || "";
+  if (ARCHIVE_TITLE.test(title)) return false;
+  if (titleLooksOldSeason(title)) return false;
+  if (titleHasThisSeason(title)) return true;
+  if (timestampInThisSeason(Date.parse(hit.publishedAt || ""))) return true;
+  return timestampInThisSeason(parseRelativePublishedMs(hit.publishedLabel, nowMs));
 }
 
 function escapeRegExp(s: string): string {
@@ -211,6 +280,7 @@ export function parseYoutubeAtomFeed(xml: string): RawYoutubeHit[] {
       channelId: tagText(entry, "yt:channelId"),
       thumbnailUrl: thumb,
       publishedAt: tagText(entry, "published"),
+      publishedLabel: null,
       durationSeconds: null,
       durationLabel: null,
       isShort,
@@ -285,6 +355,7 @@ function walkInnertube(node: unknown, out: RawYoutubeHit[]): void {
         channelId: browseIdFromRuns(owner),
         thumbnailUrl: thumbUrl,
         publishedAt: null,
+        publishedLabel: innertubeText(renderer.publishedTimeText) || null,
         durationSeconds,
         durationLabel: lengthLabel || formatDurationLabel(durationSeconds),
         isShort,
@@ -352,7 +423,7 @@ function usableHit(
 ): VideoBucket | null {
   if (!hit.videoId || !hit.title) return null;
   if (hit.isShort) return null;
-  if (titleLooksOldSeason(hit.title)) return null;
+  if (!clipIsThisNflSeason(hit)) return null;
   if (!isAllowlistedChannel(hit.channelId, extraTeams)) return null;
   if (/\b(madden|simulation|sim\b|full game replay|live stream)\b/i.test(hit.title)) {
     return null;
