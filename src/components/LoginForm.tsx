@@ -5,10 +5,13 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
+import { SignInCodeForm } from "@/components/SignInCodeForm";
 import { friendlyLoginError, loginEmailQueryValue, safeLoginCallbackPath } from "@/lib/login-error";
+import { markAddToHomePending } from "@/lib/pwa-install";
 
 export function LoginForm({ demoMode }: { demoMode: boolean }) {
   const [busy, setBusy] = useState(false);
+  const [codePath, setCodePath] = useState(false);
   const params = useSearchParams();
   const showDemo = demoMode && params.get("demo") === "1";
   const emailPrefill = loginEmailQueryValue(params.get("email"));
@@ -20,7 +23,12 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
       <Link href="/" className="text-sm text-gold-400">
         ← Survive Sunday
       </Link>
-      <h1 className="font-display text-3xl text-gold-400 mt-6 mb-6">Sign in</h1>
+      <h1 className="font-display text-3xl text-gold-400 mt-6 mb-2">Sign in</h1>
+      <p className="text-[var(--text-muted)] text-sm mb-6">
+        Join once with your email and password. On this phone you should stay
+        signed in. Use Forgot password only with that same email. Don’t use
+        Forgot password before you Join.
+      </p>
 
       {showDemo && (
         <div className="mb-8">
@@ -38,11 +46,26 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
         </p>
       )}
 
+      {codePath ? (
+        <div className="card-glass p-5 space-y-4">
+          <SignInCodeForm emailPrefill={emailPrefill} callbackUrl={callbackUrl} />
+          <button
+            type="button"
+            className="w-full text-sm text-gold-400 underline underline-offset-2 min-h-11"
+            onClick={() => setCodePath(false)}
+          >
+            ← Back to email and password
+          </button>
+        </div>
+      ) : (
       <form
         action="/api/login"
         method="post"
         className="space-y-4 card-glass p-5"
-        onSubmit={() => setBusy(true)}
+        onSubmit={() => {
+          markAddToHomePending();
+          setBusy(true);
+        }}
       >
         <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <label className="block text-sm">
@@ -77,16 +100,27 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
         <button
           type="button"
           className="btn-secondary w-full"
-          onClick={() => signIn("google", { callbackUrl })}
+          onClick={() => setCodePath(true)}
+        >
+          Email me a sign-in code
+        </button>
+        <button
+          type="button"
+          className="btn-secondary w-full"
+          onClick={() => {
+            markAddToHomePending();
+            void signIn("google", { callbackUrl });
+          }}
         >
           Continue with Google
         </button>
         <p className="text-xs text-[var(--text-muted)]">
           {demoMode
             ? "Google works when AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET are set. Demo accounts work without Google."
-            : "Use the email and password you created. Practice logins no longer work."}
+            : "Use the email and password you created when you Joined. A sign-in code is optional — we do not ask for a code every time."}
         </p>
       </form>
+      )}
 
       {demoMode && !showDemo && (
         <div className="mt-8">

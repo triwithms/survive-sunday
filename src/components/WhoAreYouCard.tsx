@@ -18,9 +18,10 @@ export function WhoAreYouCard({ seats }: { seats: ClaimableSeat[] }) {
       <div>
         <p className="text-sm font-semibold text-gold-400">Who are you?</p>
         <p className="text-xs text-[var(--text-muted)] mt-1">
-          Pick your name from the live roster. Then use your own email and the
-          password you already sign in with — or Sign in first and claim with
-          one tap.
+          Pick your name from the live roster. Join once with your own email
+          and password — on this phone you should stay signed in. Or Sign in
+          first and claim with one tap. Don’t use Forgot password before you
+          Join.
         </p>
       </div>
       <WhoAreYouSelect

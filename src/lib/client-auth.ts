@@ -1,5 +1,7 @@
 "use client";
 
+import { markAddToHomePending } from "@/lib/pwa-install";
+
 export type CredentialsResult = {
   ok: boolean;
   error?: string;
@@ -117,6 +119,7 @@ export async function signInCredentials(
  */
 export function afterAuthNavigate(path: string) {
   if (typeof window === "undefined") return;
+  markAddToHomePending();
   if (path.startsWith("/")) {
     window.location.assign(path);
     return;
@@ -138,18 +141,25 @@ export function afterAuthNavigate(path: string) {
 export function submitCredentialsLogin(
   email: string,
   password: string,
-  callbackUrl = "/pool"
+  callbackUrl = "/pool",
+  extras?: { otp?: string }
 ) {
   if (typeof document === "undefined") return;
+  markAddToHomePending();
   const form = document.createElement("form");
   form.method = "POST";
   form.action = "/api/login";
   form.style.display = "none";
+  const otp = extras?.otp?.trim() ?? "";
   const fields: Array<[string, string]> = [
     ["email", email],
-    ["password", password],
     ["callbackUrl", callbackUrl],
   ];
+  if (otp && !password.trim()) {
+    fields.push(["otp", otp]);
+  } else {
+    fields.push(["password", password]);
+  }
   for (const [name, value] of fields) {
     const input = document.createElement("input");
     input.name = name;

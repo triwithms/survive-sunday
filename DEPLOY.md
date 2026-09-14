@@ -33,6 +33,8 @@ Friends stay signed in. We do **not** ask for a code at every sign-in.
 
 If they forget the password: Sign in → **Forgot password?** → 6-digit code by email → new password → back in the pool.
 
+If they already Joined and would rather not type the password: Sign in → **Email me a sign-in code** (same keys). Optional **Text me a code** only if a cell is saved. This is not a code at every login.
+
 Demo seats (`@survivesunday.demo`) always use **demo1234**. No reset.
 
 **Minimum for friends today** (Vercel → nfl-pool → survive-sunday → Settings → Environment Variables → Production):
@@ -50,7 +52,7 @@ Click-by-click:
 4. In Vercel, add the two names above. Environment: **Production** (add Preview too if you want to test the preview URL first).
 5. Merge this pull request. If you added the keys after a deploy already ran, open Vercel → Deployments → the latest Production row → ⋮ → **Redeploy**.
 
-Without those two keys, Forgot password says we couldn’t send a code. The same two keys send pool emails (pick saved, results, missing-pick reminder, commissioner notes) to friends who left those types on under **Account → Notification preferences**.
+Without those two keys, Forgot password and sign-in codes say we couldn’t send a code. The same two keys send pool emails (pick saved, results, missing-pick reminder, commissioner notes) to friends who left those types on under **Account → Notification preferences**.
 
 Optional texts (only if a friend saved a cell). Skip for today if email is enough:
 

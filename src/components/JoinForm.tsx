@@ -12,6 +12,10 @@ import type { ClaimableSeat } from "@/lib/claim-seat";
 import { CLAIM_ERRORS } from "@/lib/claim-seat";
 import { normalizeAuthPassword } from "@/lib/auth-credentials";
 import { WhoAreYouSelect } from "@/components/WhoAreYouSelect";
+import {
+  arrivedViaPersonalInvite,
+  resolveSeatFromInvite,
+} from "@/lib/invite-link";
 
 export function JoinForm({
   seats,
@@ -21,10 +25,11 @@ export function JoinForm({
   signedIn?: { email: string; userId: string } | null;
 }) {
   const params = useSearchParams();
-  const preselect = params.get("seat") ?? "";
-  const initialSeat = seats.some((s) => s.membershipId === preselect)
-    ? preselect
-    : "";
+  const seatParam = params.get("seat") ?? "";
+  const whoParam = params.get("who") ?? "";
+  const invited = resolveSeatFromInvite(seats, { seat: seatParam, who: whoParam });
+  const viaPersonal = arrivedViaPersonalInvite({ seat: seatParam, who: whoParam });
+  const initialSeat = invited && !invited.claimed ? invited.membershipId : "";
 
   const [inviteCode, setInviteCode] = useState(INVITE_CODE);
   const [email, setEmail] = useState(signedIn?.email ?? "");
@@ -33,6 +38,7 @@ export function JoinForm({
   const [realName, setRealName] = useState("");
   const [membershipId, setMembershipId] = useState(initialSeat);
   const [newPlayer, setNewPlayer] = useState(seats.length === 0);
+  const [dismissClaimedInvite, setDismissClaimedInvite] = useState(false);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -116,6 +122,43 @@ export function JoinForm({
     }
   }
 
+  if (viaPersonal && invited?.claimed && !dismissClaimedInvite && !newPlayer) {
+    return (
+      <main className="min-h-dvh mx-auto max-w-sheet px-4 py-10">
+        <Link href="/" className="text-sm text-gold-400">
+          ← Survive Sunday
+        </Link>
+        <h1 className="font-display text-3xl text-gold-400 mt-6 mb-2">
+          This seat is already claimed
+        </h1>
+        <div className="card-glass p-5 space-y-4" data-testid="join-seat-claimed">
+          <p className="text-sm text-[var(--text-primary)]">
+            <strong>{invited.label}</strong> already joined the pool. This
+            personal link cannot be used again.
+          </p>
+          <p className="text-sm text-[var(--text-muted)]">
+            If that’s you, Sign in with the same email you used when you Joined.
+            Do not use Forgot password unless you have already Joined with that
+            email.
+          </p>
+          <Link
+            href="/login"
+            className="btn-primary inline-flex items-center justify-center w-full"
+          >
+            Sign in
+          </Link>
+          <button
+            type="button"
+            className="btn-secondary w-full"
+            onClick={() => setDismissClaimedInvite(true)}
+          >
+            Not me — pick a different name
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-dvh mx-auto max-w-sheet px-4 py-10">
       <Link href="/" className="text-sm text-gold-400">
@@ -130,12 +173,23 @@ export function JoinForm({
           You’re signed in — claim with one tap
         </p>
       )}
+      {viaPersonal && invited && !invited.claimed && !newPlayer && (
+        <p className="chip chip-gold mb-3 inline-flex" role="status" data-testid="join-personal-invite">
+          Personal invite for {invited.label}
+        </p>
+      )}
+      {viaPersonal && !invited && !newPlayer && (
+        <p className="text-sm text-crimson-400 mb-3" role="status">
+          We could not match that personal link to a seat. Pick your name from
+          the list, or ask the commissioner for a fresh link.
+        </p>
+      )}
       <p className="text-[var(--text-muted)] text-sm mb-6">
         {newPlayer
-          ? "Invite-only. Choose a nickname your friends will recognise."
+          ? "Invite-only. Choose a nickname your friends will recognise. Join once with your email and password. On this phone you should stay signed in."
           : oneTapClaim
             ? `Signed in as ${signedIn?.email}. Pick your name — no password re-entry. Your Week 1 picks stay.`
-            : "Pick yourself from the live roster, then use your own email and the password you already sign in with. Your Week 1 picks stay with that name. Already have this login (Administrator)? Same email adds the Player role — or Sign in first then claim."}
+            : "Join once with your email and a password. On this phone you should stay signed in. Pick yourself from the live roster — your Week 1 picks stay with that name. Don’t use Forgot password before you Join. Already have this login? Same email adds the Player role — or Sign in first then claim."}
       </p>
       <form onSubmit={onSubmit} className="space-y-4 card-glass p-5">
         <label className="block text-sm">
@@ -147,6 +201,12 @@ export function JoinForm({
             className="mt-1 font-mono tracking-widest"
             autoComplete="off"
           />
+          {viaPersonal && (
+            <span className="block mt-1 text-xs text-[var(--text-muted)]">
+              Filled in from your personal link. Leave it unless the
+              commissioner gave you a different code.
+            </span>
+          )}
         </label>
 
         {!newPlayer && seats.length > 0 && (

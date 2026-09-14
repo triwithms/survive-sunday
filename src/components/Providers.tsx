@@ -2,6 +2,7 @@
 
 import { SessionProvider } from "next-auth/react";
 import type { ReactNode } from "react";
+import { AddToHomeScreenPrompt } from "@/components/AddToHomeScreenPrompt";
 
 export function Providers({ children }: { children: ReactNode }) {
   // Do not remount children when useSession() hydrates (undefined → user id).
@@ -10,6 +11,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <SessionProvider refetchOnWindowFocus refetchInterval={60}>
       {children}
+      <AddToHomeScreenPrompt />
     </SessionProvider>
   );
 }

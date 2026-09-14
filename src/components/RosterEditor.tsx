@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MirrorPicksForm, type MirrorOption } from "@/components/MirrorPicksForm";
+import { InviteLinkCopy } from "@/components/InviteLinkCopy";
+import { isSeatClaimed } from "@/lib/claim-seat";
 import { resolvePickBackupMode, type PickBackupMode } from "@/lib/pick-mirror";
 
 export type RosterMember = {
@@ -148,6 +150,13 @@ function RosterCard({
       </div>
       {member.email && (
         <p className="text-xs text-[var(--text-muted)] break-all">{member.email}</p>
+      )}
+      {member.role !== "admin" && (
+        <InviteLinkCopy
+          membershipId={member.id}
+          nickname={member.nickname}
+          claimed={isSeatClaimed(member.email)}
+        />
       )}
       <label className="block text-sm">
         <span className="text-[var(--text-muted)]">Nickname (what the board shows)</span>

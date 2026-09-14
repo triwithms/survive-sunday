@@ -20,6 +20,10 @@ function main() {
     "CredentialsSignin must mention password"
   );
   assert(
+    friendlyLoginError("OtpSignin")?.toLowerCase().includes("code"),
+    "OtpSignin must mention the sign-in code"
+  );
+  assert(
     friendlyLoginError("NoSession")?.toLowerCase().includes("phone") ||
       (friendlyLoginError("NoSession")?.toLowerCase().includes("signed") ??
         false),

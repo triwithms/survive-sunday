@@ -2,7 +2,9 @@
 
 const MESSAGES: Record<string, string> = {
   CredentialsSignin:
-    "That email or password is not right. Try again, or tap Forgot password.",
+    "That email or password is not right. Try again, or tap Forgot password. Prefer a code? Use Email me a sign-in code — only after you have Joined.",
+  OtpSignin:
+    "That sign-in code is wrong or expired. Request a new one, or sign in with your password.",
   MissingFields: "Enter both your email and password.",
   NoSession:
     "Sign-in did not stay signed in on this phone. Refresh this page and try again on this same link.",
