@@ -5,6 +5,7 @@ import { ensureCanonicalLiveSeatsThrottled } from "./live-roster";
 import { ensureLiveWeekIsolation } from "./week-isolation";
 import { hasRole, isAdministrator, isPlayerSeat, POOL_ROLES } from "./roles";
 import { backfillPoolAccessRoles, listUserPoolRoles } from "./roles-db";
+import { ensurePickMirrorColumn } from "./pick-mirror-schema";
 
 const membershipInclude = {
   pool: true,
@@ -35,12 +36,33 @@ export async function requireUser() {
   return session.user;
 }
 
+function isMissingMembershipColumn(error: unknown): boolean {
+  if (error && typeof error === "object" && "code" in error) {
+    const code = (error as { code?: string }).code;
+    if (code === "P2022") return true;
+  }
+  const msg = error instanceof Error ? error.message : String(error ?? "");
+  return /autoPickStamps|pickBackup|mirrorFromMembershipId|does not exist in the current database/i.test(
+    msg
+  );
+}
+
 async function loadMemberships(userId: string) {
-  return prisma.membership.findMany({
-    where: { userId },
-    include: membershipInclude,
-    orderBy: { createdAt: "asc" },
-  });
+  try {
+    return await prisma.membership.findMany({
+      where: { userId },
+      include: membershipInclude,
+      orderBy: { createdAt: "asc" },
+    });
+  } catch (error) {
+    if (!isMissingMembershipColumn(error)) throw error;
+    await ensurePickMirrorColumn(prisma);
+    return prisma.membership.findMany({
+      where: { userId },
+      include: membershipInclude,
+      orderBy: { createdAt: "asc" },
+    });
+  }
 }
 
 /**
