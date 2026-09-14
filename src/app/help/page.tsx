@@ -61,8 +61,8 @@ export default async function HelpPage() {
             </p>
             <p className="text-xs text-[var(--text-muted)]">
               Sign out and notification settings:{" "}
-              <strong>Account (header) → Notification preferences</strong>.
-              Also see Help section 8.
+              <strong>Account → Notification preferences</strong>. Also see
+              Help section 8.
             </p>
             <Link
               href="/account/notifications"
