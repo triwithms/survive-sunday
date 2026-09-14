@@ -96,11 +96,12 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - Own pick always visible; after lock show matchup + choice; spreads on pick UI
 - Live ESPN scores (poll ~45s while games are on) + auto-grade finals; admin simulate button
 - Near-live ESPN injury report on team pages and pick-adjacent chips (Out / Doubtful / Questionable)
+- Head coach on each team research page (ESPN name + ESPN / Wikipedia / team links)
 - Light admin: lock override, remove player, force grade, **audit log**, **mulligan / one-and-done from a week**, **transfer commissioner**
 - **Import Week picks** (CSV / paste) for groups mid-season — counts for grading/mulligan/reuse
 - Season-end tiebreak helpers (clean record / no ranked auto-pick 💩 → fewest losses → weeks survived → nickname A–Z)
 - `/help` from HELP-COPY (+ importing prior picks); footer disclaimer
-- Team research: tap a club from Pick / Schedule / League / Scores, then tap an NFL player for college, depth role, and any ESPN injury note
+- Team research: tap a club from Pick / Schedule / League / Scores; team info (record, this week, coach, style) is at the top, then key players and roster. Tap an NFL player for college, depth role, and any ESPN injury note
 - Dark stadium UI (gold/green); installable PWA shell
 - Seed via `npm run seed`
 

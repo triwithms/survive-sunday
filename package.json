@@ -45,6 +45,7 @@
     "verify:pick-mirror": "tsx scripts/verify-pick-mirror.ts",
     "verify:auto-pick-stamps": "tsx scripts/verify-auto-pick-stamps.ts",
     "verify:share-export": "tsx scripts/verify-share-export.ts",
+    "verify:team-coaches": "tsx scripts/verify-team-coaches.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {
