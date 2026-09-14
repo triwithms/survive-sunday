@@ -4,6 +4,7 @@
  *   npx tsx scripts/verify-roles.ts
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   canDemoteAdmin,
   hasRole,
@@ -124,6 +125,25 @@ assert.deepEqual(
     .map((row) => `${row.userId}:${row.role}`)
     .sort(),
   ["john:player", "robert:administrator", "robert:player"]
+);
+
+const layout = readFileSync("src/app/(app)/layout.tsx", "utf8");
+assert.doesNotMatch(
+  layout,
+  /RoleSwitcher/,
+  "Playing as / Admin tools must not sit on League or other main screens"
+);
+const accountMenu = readFileSync("src/components/AccountMenu.tsx", "utf8");
+assert.match(
+  accountMenu,
+  /RoleSwitcher/,
+  "Role switch belongs in Account"
+);
+const helpPage = readFileSync("src/app/help/page.tsx", "utf8");
+assert.doesNotMatch(
+  helpPage,
+  /RoleSwitcher/,
+  "Help must not show the main-page role switcher"
 );
 
 console.log("verify-roles: ok");

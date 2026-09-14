@@ -21,7 +21,6 @@ export function GameHighlights({
 }) {
   const [data, setData] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(true);
-  const [playingId, setPlayingId] = useState<string | null>(null);
   const live = status === "live";
   const final = status === "final";
   const phase = data?.phase ?? (live || final ? "highlight" : "preview");
@@ -74,12 +73,7 @@ export function GameHighlights({
         <ul className="space-y-3">
           {videos.map((video) => (
             <li key={video.id}>
-              <YouTubeEmbed
-                video={video}
-                playingId={playingId}
-                onPlay={setPlayingId}
-                compact
-              />
+              <YouTubeEmbed video={video} compact />
             </li>
           ))}
         </ul>

@@ -4,6 +4,7 @@
  *   npx tsx scripts/verify-youtube-videos.ts
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   bucketFromDuration,
   clipAllowsWebsiteEmbed,
@@ -232,7 +233,8 @@ assert.equal(
 );
 assert.equal(
   shouldMountYoutubeIframe({ embeddable: true, channelId: YT_ESPN }),
-  true
+  false,
+  "never mount an in-app iframe, even for ESPN"
 );
 assert.equal(
   shouldMountYoutubeIframe({ embeddable: false, channelId: YT_ESPN }),
@@ -429,7 +431,11 @@ assert.equal(
 assert.ok(game[0].watchUrl.includes("watch?v=9R8P93W2iKE"));
 assert.equal(game[1].id, "ESPNHL");
 assert.equal(game[1].embeddable, true);
-assert.equal(shouldMountYoutubeIframe(game[1]), true);
+assert.equal(
+  shouldMountYoutubeIframe(game[1]),
+  false,
+  "thumbnail + Watch on YouTube only — no iframe"
+);
 assert.ok(youtubeEmbedUrl("abc").includes("controls=1"));
 assert.ok(youtubeEmbedUrl("abc").includes("fs=1"));
 
@@ -598,6 +604,31 @@ const emptyGame = pickGameHighlights([] as RawYoutubeHit[], {
   homeAbbr: "LAC",
 });
 assert.deepEqual(emptyGame, []);
+
+function mustInclude(path: string, needles: string[]) {
+  const src = readFileSync(path, "utf8");
+  for (const needle of needles) {
+    assert.ok(src.includes(needle), `${path} must include ${needle}`);
+  }
+}
+
+function mustNotMatch(path: string, pattern: RegExp, message: string) {
+  const src = readFileSync(path, "utf8");
+  assert.doesNotMatch(src, pattern, message);
+}
+
+mustNotMatch(
+  "src/components/YouTubeEmbed.tsx",
+  /<iframe\b/i,
+  "YouTubeEmbed must never mount an iframe"
+);
+mustInclude("src/components/YouTubeEmbed.tsx", [
+  "Watch on YouTube",
+  "watchUrl",
+]);
+mustInclude("src/lib/youtube-channels.ts", [
+  "return false;",
+]);
 
 console.log("verify-youtube-videos: ok");
 

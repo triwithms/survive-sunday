@@ -1,7 +1,9 @@
 /**
  * One User (one email/login). Roles are grants, not account types.
  * Shipped: Player, Administrator. Reserved: Watcher.
- * A user may hold several roles and switch views (Playing as … | Admin tools).
+ * A user may hold several roles and switch views from Account
+ * (Playing as … | Admin tools). That switch is not on League or other
+ * main screens.
  */
 export type RoleView = "player" | "admin";
 

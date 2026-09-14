@@ -136,7 +136,12 @@ export function HomeVideosTeaser({ week }: { week: number }) {
         <ul className="grid grid-cols-3 gap-2">
           {thumbs.map((v) => (
             <li key={v.id}>
-              <Link href={href} prefetch={false} className="block min-w-0">
+              <a
+                href={v.watchUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block min-w-0"
+              >
                 <span className="relative block aspect-video overflow-hidden rounded-md border border-stadium-border bg-stadium-900">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -148,7 +153,7 @@ export function HomeVideosTeaser({ week }: { week: number }) {
                 <span className="mt-1 block text-[10px] leading-snug text-[var(--text-primary)] line-clamp-2">
                   {v.title}
                 </span>
-              </Link>
+              </a>
             </li>
           ))}
         </ul>

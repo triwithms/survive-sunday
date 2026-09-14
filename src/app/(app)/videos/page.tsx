@@ -73,10 +73,10 @@ export default async function VideosPage({
           — <strong>2026/27 season only</strong>, not old archives.{" "}
           <strong>Previews</strong> show until that game’s kickoff; after the
           game, we switch to <strong>highlights</strong> (not leftover
-          previews). NFL official clips open on YouTube (they block in-app
-          playback). ESPN, TSN, and some team clips can play here when YouTube
-          allows it. After watching, switch back to Survive Sunday — we don’t
-          jump you back automatically.
+          previews). Each clip is a thumbnail and title — tap{" "}
+          <strong>Watch on YouTube</strong> to open it in the YouTube app or
+          your browser (NFL blocks in-app playback). After watching, switch
+          back to Survive Sunday — we don’t jump you back automatically.
         </p>
       </div>
       <WeekSwitcher
