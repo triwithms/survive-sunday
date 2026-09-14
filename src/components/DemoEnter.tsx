@@ -10,6 +10,7 @@ const COMMISSIONER = {
 /** BM Boys 26/27 — default seat is Gams (Robert). */
 const DEMOS = [
   { email: "gams@survivesunday.demo", label: "Gams — Robert Gama (you)" },
+  { email: "jaja@survivesunday.demo", label: "JaJa — Jacquie Gama" },
   { email: "black-cobra@survivesunday.demo", label: "Black Cobra — Justin John" },
   { email: "cannoli-stuffer@survivesunday.demo", label: "Cannoli Stuffer — Michael Frigo" },
   { email: "colin@survivesunday.demo", label: "Colin — Colin Malone" },

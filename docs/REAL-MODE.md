@@ -106,7 +106,7 @@ This cannot be undone. If you only wanted to hide the practice picker, tap **Rea
 
 Long Snapper → **John Stilo**, Steve → **Steve Venerus**, Gdogss → **Tony Gyuro**.
 
-Live roster also includes **Go Giants** (Carson Gama) and **Pauli** (Paul Gama). Pauli’s nickname is **Pauli**.
+Live roster also includes **Go Giants** (Carson Gama), **Pauli** (Paul Gama), and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Join seat is claimable (`jaja@survivesunday.demo`) and her Week 1 pick is **KC** (same as Gams). She is set to copy Gams’ pick if she still has none within 30 minutes of kickoff / lock.
 
 This is applied to the **live database** on deploy (and again when the site loads). Changing seed files alone is not enough.
 
@@ -116,7 +116,7 @@ To fix any other name: **Admin → Roster — nicknames and real names**.
 
 ## Week 1 picks (already imported)
 
-Official Week 1 picks for all **12 BM Boys** (including Go Giants and Pauli) are **already on the live board**. You do not need to import again tonight.
+Official Week 1 picks (including Go Giants, Pauli, and JaJa → KC) are **already on the live board**. You do not need to import again tonight.
 
 If one name looks wrong later:
 
@@ -136,7 +136,7 @@ Most of this is **already done** (evening 13 Sep 2026): Real mode is on, Week 1 
 
 1. Confirm **Admin → Real mode** — friends land on **Week 1**, the practice picker is hidden, and Week 2 stays on the schedule.
 2. You already have a **real commissioner login**. Sign in with that email. Same email can hold **Player + Administrator** — use **Playing as Gams** / **Admin tools**.
-3. Fix names on **Roster** only if needed (John Stilo / Steve Venerus / Pauli / Go Giants should already be right).
+3. Fix names on **Roster** only if needed (John Stilo / Steve Venerus / Pauli / Go Giants / JaJa should already be right). JaJa’s pick backup (copy from Gams) is on that same Roster card, or **Account → Pick backup**.
 4. **Do not Reset pool** unless you intend to wipe the imported Week 1 board.
 5. Add **Resend** keys on Vercel (`RESEND_API_KEY` + `RESEND_FROM_EMAIL`) and Redeploy — then test **Forgot password** once. That is the invite blocker.
 6. Then send friends to **Join the pool** with invite code **`SUNDAY26`**. They pick their name from the live roster (nickname + real name), then set their own email and password. Already-claimed seats (Gams, Go Giants, Pauli) say Sign in instead.

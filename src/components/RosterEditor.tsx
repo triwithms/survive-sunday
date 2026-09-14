@@ -10,9 +10,22 @@ export type RosterMember = {
   status: string;
   role: string;
   email: string | null;
+  mirrorFromMembershipId: string | null;
 };
 
-export function RosterEditor({ members }: { members: RosterMember[] }) {
+export type RosterMirrorOption = {
+  id: string;
+  nickname: string;
+  label: string;
+};
+
+export function RosterEditor({
+  members,
+  mirrorOptions,
+}: {
+  members: RosterMember[];
+  mirrorOptions: RosterMirrorOption[];
+}) {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -34,6 +47,7 @@ export function RosterEditor({ members }: { members: RosterMember[] }) {
           <RosterCard
             key={m.id}
             member={m}
+            mirrorOptions={mirrorOptions.filter((o) => o.id !== m.id)}
             disabled={busyId !== null && busyId !== m.id}
             busy={busyId === m.id}
             onBusy={(busy) => setBusyId(busy ? m.id : null)}
@@ -48,6 +62,7 @@ export function RosterEditor({ members }: { members: RosterMember[] }) {
 
 function RosterCard({
   member,
+  mirrorOptions,
   disabled,
   busy,
   onBusy,
@@ -55,6 +70,7 @@ function RosterCard({
   onErr,
 }: {
   member: RosterMember;
+  mirrorOptions: RosterMirrorOption[];
   disabled: boolean;
   busy: boolean;
   onBusy: (busy: boolean) => void;
@@ -64,15 +80,20 @@ function RosterCard({
   const router = useRouter();
   const [nickname, setNickname] = useState(member.nickname);
   const [realName, setRealName] = useState(member.realName ?? "");
+  const [mirrorFrom, setMirrorFrom] = useState(
+    member.mirrorFromMembershipId ?? ""
+  );
 
   useEffect(() => {
     setNickname(member.nickname);
     setRealName(member.realName ?? "");
-  }, [member.nickname, member.realName]);
+    setMirrorFrom(member.mirrorFromMembershipId ?? "");
+  }, [member.nickname, member.realName, member.mirrorFromMembershipId]);
 
   const dirty =
     nickname.trim() !== member.nickname ||
     realName.trim() !== (member.realName ?? "");
+  const mirrorDirty = mirrorFrom !== (member.mirrorFromMembershipId ?? "");
 
   async function save() {
     onBusy(true);
@@ -97,6 +118,37 @@ function RosterCard({
         `Saved ${data.membership?.nickname}${
           data.membership?.realName ? ` (${data.membership.realName})` : ""
         }`
+      );
+      router.refresh();
+    } catch {
+      onErr("Network error — try again");
+    } finally {
+      onBusy(false);
+    }
+  }
+
+  async function saveMirror() {
+    onBusy(true);
+    onMsg("");
+    onErr("");
+    try {
+      const res = await fetch("/api/admin/mirror", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          membershipId: member.id,
+          sourceMembershipId: mirrorFrom || null,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        onErr(data.error || "Could not save pick backup");
+        return;
+      }
+      onMsg(
+        data.mirrorFromNickname
+          ? `${member.nickname} will copy from ${data.mirrorFromNickname} if they still have no pick within 30 minutes of kickoff`
+          : `${member.nickname} pick backup is off`
       );
       router.refresh();
     } catch {
@@ -153,6 +205,27 @@ function RosterCard({
           placeholder="e.g. Robert Gama"
         />
       </label>
+      {member.role !== "admin" && (
+        <label className="block text-sm">
+          <span className="text-[var(--text-muted)]">
+            If no pick within 30 min of kickoff, copy from
+          </span>
+          <select
+            value={mirrorFrom}
+            onChange={(e) => setMirrorFrom(e.target.value)}
+            disabled={disabled || busy}
+            className="mt-1"
+            data-testid={`roster-mirror-${member.nickname}`}
+          >
+            <option value="">Off</option>
+            {mirrorOptions.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <button
         type="button"
         className="btn-primary w-full"
@@ -161,6 +234,16 @@ function RosterCard({
       >
         {busy ? "Saving…" : "Save this person"}
       </button>
+      {member.role !== "admin" && (
+        <button
+          type="button"
+          className="btn-secondary w-full"
+          disabled={disabled || busy || !mirrorDirty}
+          onClick={() => void saveMirror()}
+        >
+          {busy ? "Saving…" : "Save pick backup"}
+        </button>
+      )}
     </li>
   );
 }

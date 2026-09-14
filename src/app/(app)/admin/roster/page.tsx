@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 import { RosterEditor } from "@/components/RosterEditor";
+import { formatSeatLabel } from "@/lib/claim-seat";
 import { isDemoMode } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
@@ -49,7 +50,9 @@ export default async function RosterPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           Nickname is what the board shows. Real name is the person behind it.
-          Fix either if it’s wrong. Saves are audit-logged.
+          Fix either if it’s wrong. You can also set{" "}
+          <strong>If no pick within 30 min of kickoff, copy from</strong> (JaJa
+          copies Gams by default). Saves are audit-logged.
         </p>
       </div>
 
@@ -61,7 +64,15 @@ export default async function RosterPage() {
           status: m.status,
           role: m.role,
           email: m.user.email,
+          mirrorFromMembershipId: m.mirrorFromMembershipId,
         }))}
+        mirrorOptions={members
+          .filter((m) => m.role !== "admin")
+          .map((m) => ({
+            id: m.id,
+            nickname: m.nickname,
+            label: formatSeatLabel(m.nickname, m.realName),
+          }))}
       />
     </div>
   );

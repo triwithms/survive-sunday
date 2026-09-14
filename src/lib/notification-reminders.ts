@@ -2,13 +2,15 @@ import { prisma } from "./db";
 import { effectiveLockAt, isWeekLocked } from "./grading";
 import { missingPickCopy, notifyUser } from "./notify";
 import { isMissingPickReminderWindow } from "./notification-types";
+import { applyMirrorPicksForActiveWeeks } from "./pick-mirror-db";
 import { isPlayerSeat } from "./roles";
 
 export async function sendMissingPickReminders(opts?: {
   poolId?: string;
   now?: Date;
-}): Promise<{ reminded: number; skipped: number }> {
+}): Promise<{ reminded: number; skipped: number; mirrored: number }> {
   const now = opts?.now ?? new Date();
+  const mirrored = await applyMirrorPicksForActiveWeeks(now);
   const weeks = await prisma.week.findMany({
     where: {
       status: { in: ["open"] },
@@ -61,5 +63,5 @@ export async function sendMissingPickReminders(opts?: {
       else skipped += 1;
     }
   }
-  return { reminded, skipped };
+  return { reminded, skipped, mirrored: mirrored.copied };
 }

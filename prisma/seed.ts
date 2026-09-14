@@ -133,6 +133,7 @@ const SLATE_PICKS: Record<string, string | null> = {
   JimmyC: "NYJ", // NYJ @ TEN
   "Long Snapper": "ATL", // ATL @ PIT
   Steve: "KC", // DEN @ KC
+  JaJa: "KC", // DEN @ KC — same as live Gams
 };
 
 /** Slug nickname → valid demo email local-part (e.g. Deep and Delicious → deep-and-delicious). */
@@ -553,6 +554,16 @@ async function main() {
   });
 
   await backfillPoolAccessRoles(prisma, pool.id);
+
+  const { ensureCanonicalLiveSeats } = await import("../src/lib/live-roster");
+  const liveSeats = await ensureCanonicalLiveSeats(prisma, pool.id);
+  for (const row of liveSeats) {
+    if (row.createdMembership || row.mirrorSet || row.importedWeek1) {
+      console.log(
+        `  Live seat ${row.nickname}: created=${row.createdMembership} week1=${row.importedWeek1} mirror=${row.mirrorSet}`
+      );
+    }
+  }
 
   console.log("✅ Seed complete — pool at Week 2 (BM Boys)");
   console.log(`   Week 2 lockAt: ${lockAt2.toISOString()}`);

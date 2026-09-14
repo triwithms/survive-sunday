@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { syncWeekScoresFromEspn } from "@/lib/live-scores";
+import { applyMirrorPicksForWeek } from "@/lib/pick-mirror-db";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
@@ -35,8 +36,14 @@ export async function POST(req: Request) {
   }
 
   try {
+    const mirrored = await applyMirrorPicksForWeek(week.id);
     const result = await syncWeekScoresFromEspn(week.id);
-    return NextResponse.json({ ok: true, weekNumber, ...result });
+    return NextResponse.json({
+      ok: true,
+      weekNumber,
+      mirrored: mirrored.copied.length,
+      ...result,
+    });
   } catch (e) {
     console.error("scores sync failed", e);
     return NextResponse.json(
