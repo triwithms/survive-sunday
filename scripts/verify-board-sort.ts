@@ -6,7 +6,28 @@
  *   npx tsx scripts/verify-board-sort.ts
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { boardPickFields, sortParticipants } from "../src/lib/tiebreak";
+
+function assertUsesSharedSort(path: string, extra: string[]) {
+  const src = readFileSync(path, "utf8");
+  assert.match(src, /sortParticipants/, `${path} must reuse sortParticipants`);
+  for (const needle of extra) {
+    assert.ok(src.includes(needle), `${path} must include ${needle}`);
+  }
+}
+
+assertUsesSharedSort("src/app/(app)/standings/page.tsx", []);
+assertUsesSharedSort("src/app/(app)/pool/page.tsx", [
+  "sorted.filter",
+]);
+assert.doesNotMatch(
+  readFileSync("src/app/(app)/pool/page.tsx", "utf8"),
+  /byNickname/,
+  "Home/Pool must not keep a nickname-only pick-list sort"
+);
+assertUsesSharedSort("src/app/(app)/scores/page.tsx", ["boardPickFields"]);
+assertUsesSharedSort("src/app/api/picks/route.ts", ["boardPickFields"]);
 
 type Row = {
   nickname: string;
