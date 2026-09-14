@@ -422,7 +422,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Larger team logos (first bump) | [#43](https://github.com/triwithms/survive-sunday/pull/43) | ESPN marks beside abbreviations on Scores, Pick, Board, and League. Modest ~20–30% bump. |
 | Larger team logos (second bump) | [#49](https://github.com/triwithms/survive-sunday/pull/49) | Clear step up on a phone: compact 32→44, row 36→48, slate 50→66, featured 64→84, hero 72→96. |
 | Weekly videos + game highlights | [#51](https://github.com/triwithms/survive-sunday/pull/51) | Header **Videos** (and Home title cards). Scores → **Details** embeds that game’s highlights. Standard YouTube player + **Open in YouTube**. |
-| Videos: this season only | this PR | Weekly previews and game highlights are **2026/27 only**. Titles with older years, throwback / vault wording, or no this-season publish date are skipped. |
+| Videos: this season only | [#52](https://github.com/triwithms/survive-sunday/pull/52) | Weekly previews and game highlights are **2026/27 only**. Titles with older years, throwback / vault wording, or no this-season publish date are skipped. |
 
 ### Open — not on `main` yet
 
