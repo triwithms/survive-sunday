@@ -291,7 +291,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 - **Scores** pulls the ESPN scoreboard, shows live / scheduled / final, and auto-grades games that are final.
 - **Share as a picture** (merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45)): no Share button. Board or Scores → **press and hold the title** or **triple-tap the week label**. Full long screenshot is always a choice. Shorter options plus split pages when the page is very long. Nav, bottom tabs, **Details ›**, and “tap for details” stay off the image. Help → **Share Board & Scores as a picture**. Does **not** change picks, Join, Sign in, or lock. Scores cards themselves still show **Details ›** on the live page ([#46](https://github.com/triwithms/survive-sunday/pull/46)).
 - **League** and **Schedule** are research screens (standings / full slate). In Real mode, League **W-L syncs from ESPN** (not the demo `week2-standings.json` seed, and no player-facing “demo” League copy). Kickoff times in the app are the **US slate** (ET + US networks such as CBS / Fox / NBC).
-- **Team pages** (`/team/KC` and so on): key NFL players, full roster, college, news links, record, and ESPN’s public injury report (not official NFL). Tap a **player name** for number, position, college, starter vs depth, and any matching ESPN injury note.
+- **Team pages** (`/team/KC` and so on): record, this week’s game, **head coach** (ESPN name + ESPN / Wikipedia / team links), style, then key NFL players, full roster, news, and ESPN’s public injury report (not official NFL). Tap a **player name** for number, position, college, starter vs depth, and any matching ESPN injury note.
 - These are **NFL roster players**, not pool members (nicknames on Home / Board).
 
 ### Canadian TV (when you share a schedule — not in the app)
@@ -341,7 +341,7 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 | **Pool notes & nudge** | Send a short email note to friends who left **Pool notes** on. **Nudge missing picks** emails/texts friends who still have no pick (and left that reminder on). Uses Resend / optional Twilio. |
 | **Share Board / Scores** | Not on Admin. Press and hold the Board or Scores title, or triple-tap the week label. No Share button. Full long picture always, or a shorter / split option. **Shipped** ([PR #45](https://github.com/triwithms/survive-sunday/pull/45)). |
 
-**Not on Admin yet (other open PRs):** player-detail pages ship with this merge. Head-coach on team pages is still [PR #20](https://github.com/triwithms/survive-sunday/pull/20).
+**Not on Admin yet (other open PRs):** none at the moment. Player-detail pages and head coach on team pages ship with this merge.
 
 ---
 
@@ -414,12 +414,13 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Share Board / Scores as pictures | [#45](https://github.com/triwithms/survive-sunday/pull/45) | Quiet gesture: **press and hold the title** or **triple-tap the week**. No Share button. Always includes the **full long picture**. Chrome (nav, tabs, Details ›) stays off the image. Help + this file. Does not touch picks / Join / Sign in / lock. |
 | Commissioner: turn off mulligan + transfer | [#8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player and lose Admin). Dual roles / Make administrator stay. |
 | NFL player details | [#11](https://github.com/triwithms/survive-sunday/pull/11) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth, and any matching ESPN injury note (same feed as the team injury card — not a sample file). |
+| Head coach + team page order | [#20](https://github.com/triwithms/survive-sunday/pull/20) | **Coach** card (ESPN name + ESPN / Wikipedia / team links). Team info (record, this week, coach, style) sits at the top; **Key players** is further down. Tap a player still opens details. |
 
 ### Open — not on `main` yet
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
-| Head coach on team pages | [PR #20](https://github.com/triwithms/survive-sunday/pull/20) | Team research page **Coach** card (ESPN name + ESPN / Wikipedia / team links). Does not touch picks or auth. Branch `cursor/team-page-head-coach-9d0f`. |
+| — | — | No open feature PRs at the moment. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
@@ -504,7 +505,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 **Rules for every chat**
 
 1. Prefer **one small PR per chat**.
-2. **Continue** an existing open PR branch. Never reopen password reset (merged PR #7), Real mode (merged PR #10), Who are you? / roles (merged PR #19), Safari/Sign out (merged PR #18), Week 2 slate restore (merged PR #22), board sort (merged PRs #21 / #24), pick-week nav (merged PR #14), Week 1 pick-change-until-kickoff (merged PR #25), mulligan/transfer (merged PR #8), or player-detail pages (merged PR #11). Never open a second copy of head-coach (open PR #20).
+2. **Continue** an existing open PR branch. Never reopen password reset (merged PR #7), Real mode (merged PR #10), Who are you? / roles (merged PR #19), Safari/Sign out (merged PR #18), Week 2 slate restore (merged PR #22), board sort (merged PRs #21 / #24), pick-week nav (merged PR #14), Week 1 pick-change-until-kickoff (merged PR #25), mulligan/transfer (merged PR #8), player-detail pages (merged PR #11), or head-coach / team-page order (merged PR #20).
 3. **Never invent features as “live.”** If it is not on `main` (section 10), say it is not shipped.
 4. Owner is **not a coder** — every answer needs click-by-click GitHub / Vercel / Admin steps, not “run this locally.”
 5. Do not use or recommend **paid Grok Bot**, Cursor desktop agents, or other expensive coding bots unless the owner explicitly asks after a basic chat hits a wall.
@@ -685,14 +686,12 @@ My problem: [e.g. iPhone friends cannot find Add to Home Screen]
 You are helping maintain Survive Sunday. Read docs/HANDOFF.md first.
 You are free / basic Grok chat — not Grok Bot. Trust main for what is live:
 - Scores already sync from ESPN and auto-grade finals (src/lib/live-scores.ts, src/app/(app)/scores/).
-- Team pages already show key players, roster, news, and record (src/app/(app)/team/[abbr]/page.tsx, src/lib/team-research.ts).
+- Team pages already show record, this week, head coach, style, then key players, roster, news (src/app/(app)/team/[abbr]/page.tsx, src/lib/team-research.ts, src/lib/team-coaches.ts).
 - Tap an NFL player for a detail page (src/app/(app)/team/[abbr]/player/[slug]/page.tsx).
 - Injury report on main is ESPN public JSON (src/lib/live-injuries.ts), not sample_injury_news.json.
 - Live scores / injuries upgrade already shipped as merged PR #12. Do not invent another feed.
 - Real-mode League W-L syncs from ESPN (not demo week2-standings). Do not show player-facing demo League copy.
-
-Not on main:
-- Head coach card on team pages → open PR #20 (branch cursor/team-page-head-coach-9d0f). Continue that branch.
+- Head coach card already shipped as merged PR #20. Do not open a second copy.
 
 Canadian TSN / CTV / RDS / DAZN listings are not in the app. Do not invent a live Canadian TV feed.
 Small PR only. Do not rewrite picks / board / in-out.
@@ -707,7 +706,7 @@ Read docs/HANDOFF.md section 10. Trust GitHub main.
 Continue the existing open PR I name. Rebase that branch onto latest origin/main.
 Do not open a second PR for the same feature. Do not merge. Do not invent extras.
 Owner is not a coder: after you push, give click-by-click GitHub steps to review the updated PR.
-Password reset PR #7, Real mode PR #10, pick-week nav PR #14, Safari/Sign out PR #18, Who are you? PR #19, board sort PRs #21/#24, Week 2 restore PR #22, Week 1 pick-change PR #25, mulligan/transfer PR #8, and player-detail pages PR #11 are already merged — do not reopen them. Still open: PR #20 head coach.
+Password reset PR #7, Real mode PR #10, pick-week nav PR #14, Safari/Sign out PR #18, Who are you? PR #19, board sort PRs #21/#24, Week 2 restore PR #22, Week 1 pick-change PR #25, mulligan/transfer PR #8, player-detail pages PR #11, and head-coach / team-page order PR #20 are already merged — do not reopen them.
 My problem: [PR number and what GitHub shows — conflicts / failed checks]
 ```
 
