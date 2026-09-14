@@ -398,7 +398,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | JaJa seat + pick backup | [#37](https://github.com/triwithms/survive-sunday/pull/37) | **JaJa (Jacquie Gama)** is on Join as claimable, Week 1 **DAL**. Pick backup: off / copy-from-member (30 min, no 💩; JaJa → Gams later) / auto best remaining **2025 rank** team (~2 min, stamps 💩). Official winner must have no 💩. Help stays general (no JaJa / Gams copy example) — [#41](https://github.com/triwithms/survive-sunday/pull/41). |
 | Unclaim leftover pending.local seats | [#27](https://github.com/triwithms/survive-sunday/pull/27) | **Go Giants** and **Pauli** are Join-claimable again if they still had leftover pending emails. |
 | Cell-number first-run prompt | [#42](https://github.com/triwithms/survive-sunday/pull/42) | Soft ask to add a cell for SMS reminders; skippable. |
-| Personal Join links + Home Screen prompt + optional sign-in code | this PR | Commissioner copies per-person `/join?seat=` (and `?who=`) links. Claimed seats → Sign in. Phone browser prompt after Join / first Sign in. Sign in → **Email me a sign-in code**. Help + this file updated. |
+| Personal Join links + Home Screen prompt + optional sign-in code | [#44](https://github.com/triwithms/survive-sunday/pull/44) | Commissioner copies per-person `/join?seat=` (and `?who=`) links. Claimed seats → Sign in. Phone browser prompt after Join / first Sign in. Sign in → **Email me a sign-in code**. Help + this file updated. |
 
 ### Open — not on `main` yet
 
