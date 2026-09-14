@@ -2,18 +2,22 @@ import "server-only";
 import {
   channelBlocksWebsiteEmbeds,
   leagueRssChannelIds,
+  teamRssChannelIds,
 } from "@/lib/youtube-channels";
 import { teamMeta } from "@/lib/nfl-team-meta";
 import {
   extractInnertubeVideos,
+  gameVideoPhase,
   groupWeeklyVideos,
   parseYoutubeAtomFeed,
   pickGameHighlights,
   withEmbeddableFlag,
   youtubeSearchUrl,
+  type GameVideoPhase,
   type RawYoutubeHit,
   type VideoClip,
   type VideoGroups,
+  type WeekGameRef,
 } from "@/lib/youtube-parse";
 
 const YT_HEADERS: HeadersInit = {
@@ -208,7 +212,10 @@ export type WeeklyVideosResult = {
   nflChannelUrl: string;
 };
 
-export async function loadWeeklyVideos(week: number): Promise<WeeklyVideosResult> {
+export async function loadWeeklyVideos(
+  week: number,
+  games: WeekGameRef[] = []
+): Promise<WeeklyVideosResult> {
   const empty: VideoGroups = { short: [], medium: [], long: [] };
   if (!Number.isInteger(week) || week < 1 || week > 18) {
     return {
@@ -220,8 +227,24 @@ export async function loadWeeklyVideos(week: number): Promise<WeeklyVideosResult
     };
   }
   try {
+    const teamIds = teamRssChannelIds(
+      games.flatMap((g) => [g.awayAbbr, g.homeAbbr])
+    );
+    const remaining = games.filter((g) => gameVideoPhase(g) === "preview");
+    const previewSearches = remaining.slice(0, 8).flatMap((g) => {
+      const away = teamMeta(g.awayAbbr);
+      const home = teamMeta(g.homeAbbr);
+      if (!away || !home) {
+        return [`${g.awayAbbr} vs ${g.homeAbbr} Week ${week} Preview 2026`];
+      }
+      return [
+        `${away.nickname} vs ${home.nickname} Week ${week} Preview 2026`,
+        `${away.name} vs ${home.name} Preview 2026`,
+      ];
+    });
     const { hits, anyOk } = await settledHits([
       ...leagueRssChannelIds().map((id) => fetchRssChannel(id)),
+      ...teamIds.map((id) => fetchRssChannel(id)),
       searchInnertube(`NFL Week ${week} Preview 2026`),
       searchInnertube(`NFL Week ${week} Preview`),
       searchInnertube(`NFL Week ${week} Game Previews`),
@@ -229,11 +252,12 @@ export async function loadWeeklyVideos(week: number): Promise<WeeklyVideosResult
       searchInnertube(`NFL 2026 Season Week ${week} Highlights`),
       searchInnertube(`NFL Week ${week} Game Highlights 2026`),
       searchInnertube(`Good Morning Football Week ${week}`),
+      ...previewSearches.map((q) => searchInnertube(q)),
     ]);
     return {
       ok: true,
       week,
-      groups: await withProbedGroups(groupWeeklyVideos(hits, week)),
+      groups: await withProbedGroups(groupWeeklyVideos(hits, week, games)),
       unavailable: !anyOk,
       nflChannelUrl: "https://www.youtube.com/@NFL",
     };
@@ -254,37 +278,56 @@ export type GameVideosResult = {
   videos: VideoClip[];
   unavailable: boolean;
   searchUrl: string;
+  phase: GameVideoPhase;
 };
 
 export async function loadGameVideos(opts: {
   week: number;
   awayAbbr: string;
   homeAbbr: string;
+  status?: string;
+  kickoff?: Date | string | null;
 }): Promise<GameVideosResult> {
   const away = teamMeta(opts.awayAbbr);
   const home = teamMeta(opts.homeAbbr);
-  const searchQ = away && home
-    ? `${away.name} vs ${home.name} Week ${opts.week} Highlights 2026`
-    : `${opts.awayAbbr} vs ${opts.homeAbbr} Week ${opts.week} Highlights NFL`;
+  const phase = gameVideoPhase({
+    status: opts.status || "scheduled",
+    kickoff: opts.kickoff,
+  });
+  const searchQ =
+    away && home
+      ? phase === "preview"
+        ? `${away.name} vs ${home.name} Week ${opts.week} Preview 2026`
+        : `${away.name} vs ${home.name} Week ${opts.week} Highlights 2026`
+      : phase === "preview"
+        ? `${opts.awayAbbr} vs ${opts.homeAbbr} Week ${opts.week} Preview NFL`
+        : `${opts.awayAbbr} vs ${opts.homeAbbr} Week ${opts.week} Highlights NFL`;
   const searchUrl = youtubeSearchUrl(searchQ);
   try {
     const nickQ =
       away && home
-        ? `${away.nickname} vs ${home.nickname} Week ${opts.week} Game Highlights`
+        ? phase === "preview"
+          ? `${away.nickname} vs ${home.nickname} Week ${opts.week} Preview`
+          : `${away.nickname} vs ${home.nickname} Week ${opts.week} Game Highlights`
         : searchQ;
+    const teamIds = teamRssChannelIds([opts.awayAbbr, opts.homeAbbr]);
     const { hits, anyOk } = await settledHits([
       ...leagueRssChannelIds().map((id) => fetchRssChannel(id)),
+      ...teamIds.map((id) => fetchRssChannel(id)),
       searchInnertube(searchQ),
       searchInnertube(nickQ),
     ]);
     return {
       ok: true,
-      videos: await withProbedEmbeddable(pickGameHighlights(hits, opts)),
+      videos: await withProbedEmbeddable(
+        pickGameHighlights(hits, { ...opts, phase })
+      ),
       unavailable: !anyOk,
       searchUrl,
+      phase,
     };
   } catch (e) {
     console.error("game videos failed", e);
-    return { ok: true, videos: [], unavailable: true, searchUrl };
+    return { ok: true, videos: [], unavailable: true, searchUrl, phase };
   }
 }

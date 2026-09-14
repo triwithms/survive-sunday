@@ -78,7 +78,7 @@ export const NFL_TEAM_META: Record<string, NflTeamMeta> = {
     name: "Denver Broncos",
     city: "Denver",
     nickname: "Broncos",
-    aliases: ["Broncos", "Denver Broncos"],
+    aliases: ["Broncos", "Denver Broncos", "Denver"],
   },
   DET: {
     abbr: "DET",
@@ -120,7 +120,7 @@ export const NFL_TEAM_META: Record<string, NflTeamMeta> = {
     name: "Kansas City Chiefs",
     city: "Kansas City",
     nickname: "Chiefs",
-    aliases: ["Chiefs", "Kansas City Chiefs"],
+    aliases: ["Chiefs", "Kansas City Chiefs", "Kansas City"],
   },
   LV: {
     abbr: "LV",

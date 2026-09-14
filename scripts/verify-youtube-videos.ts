@@ -7,8 +7,11 @@ import assert from "node:assert/strict";
 import {
   bucketFromDuration,
   clipAllowsWebsiteEmbed,
+  clipFitsGamePhase,
   clipIsThisNflSeason,
+  clipRole,
   extractInnertubeVideos,
+  gameVideoPhase,
   groupWeeklyVideos,
   parseDurationLabel,
   parseRelativePublishedMs,
@@ -18,6 +21,7 @@ import {
   titleLooksOldSeason,
   titleMatchesGame,
   titleMentionsTeam,
+  titleHasAbbrMatchup,
   youtubeEmbedUrl,
   type RawYoutubeHit,
 } from "../src/lib/youtube-parse";
@@ -28,6 +32,7 @@ import {
   YT_NFL_NETWORK,
   isAllowlistedChannel,
   shouldMountYoutubeIframe,
+  teamChannelId,
 } from "../src/lib/youtube-channels";
 
 assert.equal(parseDurationLabel("16:19"), 16 * 60 + 19);
@@ -171,6 +176,37 @@ assert.equal(
   titleMatchesGame("Rams vs Chargers Week 1 Highlights", "LAR", "LAC"),
   true
 );
+assert.equal(
+  titleMatchesGame("Denver at Kansas City Monday Night Football Preview", "DEN", "KC"),
+  true
+);
+assert.equal(titleHasAbbrMatchup("It's almost time for #DENvsKC", "DEN", "KC"), true);
+assert.equal(titleHasAbbrMatchup("DENvsKC preview", "KC", "DEN"), true);
+assert.equal(clipRole("NFL Week 1: Broncos vs Chiefs Game Preview"), "preview");
+assert.equal(
+  clipRole("Dallas Cowboys vs New York Giants Game Highlights | NFL 2026 Season Week 1"),
+  "highlight"
+);
+assert.equal(
+  clipFitsGamePhase("Broncos vs Chiefs Week 1 Preview 2026", "preview"),
+  true
+);
+assert.equal(
+  clipFitsGamePhase("Broncos vs Chiefs Week 1 Preview 2026", "highlight"),
+  false
+);
+assert.equal(
+  clipFitsGamePhase("Broncos vs Chiefs Game Highlights | NFL 2026 Season Week 1", "preview"),
+  false
+);
+assert.equal(gameVideoPhase({ status: "scheduled" }), "preview");
+assert.equal(gameVideoPhase({ status: "live" }), "highlight");
+assert.equal(gameVideoPhase({ status: "final" }), "highlight");
+assert.equal(
+  gameVideoPhase({ status: "scheduled", kickoff: "2026-09-14T00:00:00Z" }, Date.parse("2026-09-14T01:00:00Z")),
+  "highlight"
+);
+assert.equal(teamChannelId("KC"), "UC-hXefb6XBFSubWz6Ezf_lA");
 
 assert.ok(isAllowlistedChannel(YT_NFL));
 assert.equal(isAllowlistedChannel("UC-random-fan-channel"), false);
@@ -396,6 +432,116 @@ assert.equal(game[1].embeddable, true);
 assert.equal(shouldMountYoutubeIframe(game[1]), true);
 assert.ok(youtubeEmbedUrl("abc").includes("controls=1"));
 assert.ok(youtubeEmbedUrl("abc").includes("fs=1"));
+
+const KC_YT = "UC-hXefb6XBFSubWz6Ezf_lA";
+const DEN_YT = "UCDGdBexlDZA8T7hnweWWyow";
+const mnfHits: RawYoutubeHit[] = [
+  {
+    videoId: "FIV1p5bzl7k",
+    title:
+      "NFL Week 1: Denver Broncos vs. Kansas City Chiefs on MNF - Game Preview + Predictions",
+    channelName: "Kansas City Chiefs",
+    channelId: KC_YT,
+    thumbnailUrl: null,
+    publishedAt: "2026-09-13T12:00:00Z",
+    publishedLabel: null,
+    durationSeconds: 12 * 60,
+    durationLabel: "12:00",
+    isShort: false,
+  },
+  {
+    videoId: "DENPREV",
+    title:
+      "Previewing the Broncos’ Week 1 game against the Kansas City Chiefs | Altitude Advantage",
+    channelName: "Denver Broncos",
+    channelId: DEN_YT,
+    thumbnailUrl: null,
+    publishedAt: "2026-09-11T18:31:00Z",
+    publishedLabel: null,
+    durationSeconds: 18 * 60,
+    durationLabel: "18:00",
+    isShort: false,
+  },
+  {
+    videoId: "FAKEHL",
+    title:
+      "Kansas City Chiefs vs. Denver Broncos | FULL GAME HIGHLIGHTS | NFL Week 1 2026",
+    channelName: "NFL",
+    channelId: YT_NFL,
+    thumbnailUrl: null,
+    publishedAt: "2026-09-14T12:00:00Z",
+    publishedLabel: null,
+    durationSeconds: 11 * 60,
+    durationLabel: "11:00",
+    isShort: false,
+  },
+  {
+    videoId: "NYGHL",
+    title:
+      "Dallas Cowboys vs New York Giants Game Highlights | NFL 2026 Season Week 1",
+    channelName: "NFL",
+    channelId: YT_NFL,
+    thumbnailUrl: null,
+    publishedAt: "2026-09-14T04:00:00Z",
+    publishedLabel: null,
+    durationSeconds: 16 * 60,
+    durationLabel: "16:00",
+    isShort: false,
+  },
+  {
+    videoId: "NYGPREV",
+    title: "Cowboys vs Giants Week 1 Preview 2026",
+    channelName: "NFL",
+    channelId: YT_NFL,
+    thumbnailUrl: null,
+    publishedAt: "2026-09-12T00:00:00Z",
+    publishedLabel: null,
+    durationSeconds: 11 * 60,
+    durationLabel: "11:00",
+    isShort: false,
+  },
+];
+const mnfPreview = pickGameHighlights(mnfHits, {
+  week: 1,
+  awayAbbr: "DEN",
+  homeAbbr: "KC",
+  phase: "preview",
+});
+assert.ok(mnfPreview.some((c) => c.id === "FIV1p5bzl7k"));
+assert.ok(mnfPreview.some((c) => c.id === "DENPREV"));
+assert.equal(mnfPreview.some((c) => c.id === "FAKEHL"), false);
+
+const mnfAfter = pickGameHighlights(mnfHits, {
+  week: 1,
+  awayAbbr: "DEN",
+  homeAbbr: "KC",
+  phase: "highlight",
+});
+assert.ok(mnfAfter.some((c) => c.id === "FAKEHL"));
+assert.equal(mnfAfter.some((c) => c.id === "FIV1p5bzl7k"), false);
+
+const weekMix = groupWeeklyVideos(
+  mnfHits,
+  1,
+  [
+    { awayAbbr: "DAL", homeAbbr: "NYG", status: "final" },
+    {
+      awayAbbr: "DEN",
+      homeAbbr: "KC",
+      status: "scheduled",
+      kickoff: "2026-09-14T20:15:00-04:00",
+    },
+  ],
+  3,
+  Date.parse("2026-09-14T16:00:00Z")
+);
+const weekIds = [...weekMix.short, ...weekMix.medium, ...weekMix.long].map(
+  (c) => c.id
+);
+assert.ok(weekIds.includes("FIV1p5bzl7k"), "MNF preview should list before kickoff");
+assert.ok(weekIds.includes("NYGHL"), "finished-game highlights should list");
+assert.equal(weekIds.includes("NYGPREV"), false, "finished-game preview should be gone");
+assert.equal(weekIds.includes("FAKEHL"), false, "unplayed game must not show highlights");
 
 const innertube = {
   contents: {

@@ -252,8 +252,74 @@ export function titleMatchesGame(
 ): boolean {
   const away = teamMeta(awayAbbr);
   const home = teamMeta(homeAbbr);
-  if (!away || !home) return false;
-  return titleMentionsTeam(title, away) && titleMentionsTeam(title, home);
+  if (away && home && titleMentionsTeam(title, away) && titleMentionsTeam(title, home)) {
+    return true;
+  }
+  return titleHasAbbrMatchup(title, awayAbbr, homeAbbr);
+}
+
+/** "#DENvsKC" / "DEN at KC" style titles from team channels. */
+export function titleHasAbbrMatchup(
+  title: string,
+  awayAbbr: string,
+  homeAbbr: string
+): boolean {
+  const compact = title.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  if (!compact) return false;
+  const a = awayAbbr.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  const b = homeAbbr.replace(/[^a-z0-9]/gi, "").toLowerCase();
+  if (a.length < 2 || b.length < 2) return false;
+  return (
+    compact.includes(`${a}vs${b}`) ||
+    compact.includes(`${b}vs${a}`) ||
+    compact.includes(`${a}at${b}`) ||
+    compact.includes(`${b}at${a}`)
+  );
+}
+
+export type GameVideoPhase = "preview" | "highlight";
+
+export type WeekGameRef = {
+  awayAbbr: string;
+  homeAbbr: string;
+  status: string;
+  kickoff?: Date | string | null;
+};
+
+export function gameVideoPhase(
+  game: Pick<WeekGameRef, "status" | "kickoff">,
+  nowMs = Date.now()
+): GameVideoPhase {
+  const status = (game.status || "").toLowerCase();
+  if (status === "final" || status === "live") return "highlight";
+  if (game.kickoff != null) {
+    const t = new Date(game.kickoff).getTime();
+    if (Number.isFinite(t) && t <= nowMs) return "highlight";
+  }
+  return "preview";
+}
+
+const HIGHLIGHT_TITLE =
+  /\b(highlights?|best plays?|condensed game|top plays?|every touchdown|recap)\b/i;
+const PREVIEW_TITLE =
+  /\b(preview|what to (know|watch)|matchup|keys to (the )?game|gameday preview)\b/i;
+
+export function clipRole(title: string): "preview" | "highlight" | "other" {
+  const highlight = HIGHLIGHT_TITLE.test(title);
+  const preview = PREVIEW_TITLE.test(title);
+  if (highlight && !preview) return "highlight";
+  if (preview && !highlight) return "preview";
+  if (highlight) return "highlight";
+  return "other";
+}
+
+export function clipFitsGamePhase(
+  title: string,
+  phase: GameVideoPhase
+): boolean {
+  const role = clipRole(title);
+  if (phase === "preview") return role !== "highlight";
+  return role === "highlight";
 }
 
 function decodeXml(s: string): string {
@@ -446,6 +512,19 @@ export function scoreGameHit(hit: RawYoutubeHit, week: number): number {
   return n;
 }
 
+export function scoreGamePreviewHit(hit: RawYoutubeHit, week: number): number {
+  let n = channelRank(hit.channelId);
+  const t = hit.title;
+  if (/\bpreview\b/i.test(t)) n += 22;
+  if (/\bmonday night|mnf\b/i.test(t)) n += 10;
+  if (/\bwhat to (know|watch)|matchup|keys to\b/i.test(t)) n += 8;
+  if (titleHasWeek(t, week)) n += 16;
+  if (THIS_SEASON.test(t)) n += 14;
+  const dur = hit.durationSeconds;
+  if (dur != null && dur >= 4 * 60 && dur <= 30 * 60) n += 6;
+  return n;
+}
+
 function usableHit(
   hit: RawYoutubeHit,
   extraTeams: string[] = []
@@ -466,14 +545,21 @@ function usableHit(
 export function groupWeeklyVideos(
   hits: RawYoutubeHit[],
   week: number,
-  perBucket = 3
+  games: WeekGameRef[] = [],
+  perBucket = 3,
+  nowMs = Date.now()
 ): VideoGroups {
   const groups: VideoGroups = { short: [], medium: [], long: [] };
+  const extraTeams = games.flatMap((g) => [g.awayAbbr, g.homeAbbr]);
+  const anyPreview = games.some((g) => gameVideoPhase(g, nowMs) === "preview");
+  const anyHighlight = games.some((g) => gameVideoPhase(g, nowMs) === "highlight");
   const ranked = hits
     .map((hit) => {
-      const bucket = usableHit(hit);
+      const bucket = usableHit(hit, extraTeams);
       if (!bucket) return null;
-      if (!titleHasWeek(hit.title, week)) return null;
+      if (!weeklyHitFitsWeek(hit, week, games, anyPreview, anyHighlight, nowMs)) {
+        return null;
+      }
       return { hit, bucket, score: scoreWeeklyHit(hit, week) };
     })
     .filter((row): row is NonNullable<typeof row> => Boolean(row))
@@ -489,17 +575,55 @@ export function groupWeeklyVideos(
   return groups;
 }
 
+function weeklyHitFitsWeek(
+  hit: RawYoutubeHit,
+  week: number,
+  games: WeekGameRef[],
+  anyPreview: boolean,
+  anyHighlight: boolean,
+  nowMs: number
+): boolean {
+  if (!games.length) {
+    return titleHasWeek(hit.title, week);
+  }
+  const matched = games.filter((g) =>
+    titleMatchesGame(hit.title, g.awayAbbr, g.homeAbbr)
+  );
+  if (matched.length) {
+    return matched.some((g) =>
+      clipFitsGamePhase(hit.title, gameVideoPhase(g, nowMs))
+    );
+  }
+  if (!titleHasWeek(hit.title, week)) return false;
+  const role = clipRole(hit.title);
+  if (role === "preview") return anyPreview;
+  if (role === "highlight") return anyHighlight;
+  return anyPreview || anyHighlight;
+}
+
 export function pickGameHighlights(
   hits: RawYoutubeHit[],
-  opts: { week: number; awayAbbr: string; homeAbbr: string; limit?: number }
+  opts: {
+    week: number;
+    awayAbbr: string;
+    homeAbbr: string;
+    limit?: number;
+    phase?: GameVideoPhase;
+  }
 ): VideoClip[] {
   const extra = [opts.awayAbbr, opts.homeAbbr];
+  const phase: GameVideoPhase = opts.phase ?? "highlight";
   const ranked = hits
     .map((hit) => {
       const bucket = usableHit(hit, extra);
       if (!bucket) return null;
       if (!titleMatchesGame(hit.title, opts.awayAbbr, opts.homeAbbr)) return null;
-      return { hit, bucket, score: scoreGameHit(hit, opts.week) };
+      if (!clipFitsGamePhase(hit.title, phase)) return null;
+      const score =
+        phase === "preview"
+          ? scoreGamePreviewHit(hit, opts.week)
+          : scoreGameHit(hit, opts.week);
+      return { hit, bucket, score };
     })
     .filter((row): row is NonNullable<typeof row> => Boolean(row))
     .sort((a, b) => b.score - a.score);

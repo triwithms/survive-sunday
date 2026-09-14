@@ -30,7 +30,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Home Screen prompt** — after Join or first Sign in on a phone browser (not already the Home Screen icon), we ask if they already added the app. Yes = don’t ask again on that phone. Show me how = iPhone Safari / Android Chrome steps. Not now = skip for a while. Already installed = no nag (optional one-time “You’re good”).
 - **Share Board / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). No Share button on the screen. On Board or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
 - **Scores Details ›** — merged [PR #46](https://github.com/triwithms/survive-sunday/pull/46). Each game card shows gold **Details ›** (live, Final, and upcoming) so friends know the card opens more info.
-- **Videos** — merged [PR #51](https://github.com/triwithms/survive-sunday/pull/51). Header **Videos** plus Home title cards; Scores → **Details** for that game. **This 2026/27 season only** — [PR #52](https://github.com/triwithms/survive-sunday/pull/52). **NFL official clips open on YouTube** (they block in-app playback) — [PR #53](https://github.com/triwithms/survive-sunday/pull/53); no broken embed / no raw HTML. ESPN / TSN / some team clips can still play in the app when YouTube allows it.
+- **Videos** — merged [PR #51](https://github.com/triwithms/survive-sunday/pull/51). Header **Videos** plus Home title cards; Scores → **Details** for that game. **This 2026/27 season only** — [PR #52](https://github.com/triwithms/survive-sunday/pull/52). **NFL official clips open on YouTube** (they block in-app playback) — merged [PR #53](https://github.com/triwithms/survive-sunday/pull/53). **Previews until kickoff, then highlights** — this PR (including tonight’s DEN @ KC).
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset and sign-in codes are **not** gated by these prefs.
 - **Pool rules — mulligan** + **Hand the pool to someone else** — commissioner can turn off the free mulligan from a chosen week (one-and-done; already-scored weeks stay) and give Admin to another existing member (they keep playing; you stay as a player). Different from **Make administrator**.
 
@@ -424,12 +424,13 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Weekly videos + game highlights | [#51](https://github.com/triwithms/survive-sunday/pull/51) | Header **Videos** (and Home title cards). Scores → **Details** for that game’s highlights. |
 | Videos: this season only | [#52](https://github.com/triwithms/survive-sunday/pull/52) | Weekly previews and game highlights are **2026/27 only**. Titles with older years, throwback / vault wording, or no this-season publish date are skipped. |
 | Videos: Watch on YouTube when NFL blocks embeds | [#53](https://github.com/triwithms/survive-sunday/pull/53) | NFL / NFL Films / NFL Network never load an in-app player (that was the “Video unavailable” + raw HTML). Thumbnail + **Watch on YouTube** only. In-app player only when YouTube actually allows embedding. |
+| Videos: previews until kickoff, then highlights | this PR | Game previews only before kickoff. After a game is live or Final, that game’s previews come down and highlights show. Fixes missing DEN @ KC (MNF) previews. |
 
 ### Open — not on `main` yet
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
-| Videos: Watch on YouTube when NFL blocks embeds | [#53](https://github.com/triwithms/survive-sunday/pull/53) (until merge) | NFL official clips open on YouTube instead of a broken in-app player. |
+| Videos: previews until kickoff, then highlights | this PR (until merge) | Previews for games that have not started (including DEN @ KC MNF). Highlights after kickoff / Final. NFL open-on-YouTube from #53 stays. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
