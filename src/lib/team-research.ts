@@ -7,6 +7,11 @@ import {
   fetchEspnJson,
   normAbbr,
 } from "@/lib/espn";
+import {
+  namesMatch,
+  playerSlug,
+  type RosterSide,
+} from "@/lib/nfl-player";
 
 /** Server-only team research: profiles/rosters JSON + live ESPN news (TTL cache). Do not import from client components. */
 
@@ -471,12 +476,190 @@ export function getTeamRoster(abbr: string): FullTeamRoster | null {
   };
 }
 
-export function splitRosterPlayers(players: RosterPlayer[]): {
-  starters: RosterPlayer[];
-  depth: RosterPlayer[];
+export function splitRosterPlayers<T extends { role: string }>(players: T[]): {
+  starters: T[];
+  depth: T[];
 } {
   const starters = players.filter((p) => p.role === "starter");
   const depth = players.filter((p) => p.role !== "starter");
   // If no starters marked, treat all as a single list (callers handle)
   return { starters, depth };
+}
+
+export type PlayerInjuryNote = {
+  player: string;
+  position: string;
+  status: string;
+  injury: string;
+  updated: string | null;
+  comment?: string | null;
+  playerUrl?: string | null;
+};
+
+export type NflPlayerView = {
+  name: string;
+  number: number | null;
+  position: string;
+  college: string | null;
+  role: RosterPlayer["role"];
+  side: RosterSide;
+  slug: string;
+  keyPlayer: boolean;
+  injury: PlayerInjuryNote | null;
+};
+
+const SIDE_ORDER: RosterSide[] = ["offence", "defence", "special_teams"];
+
+function matchNamedInjury<T extends { player: string }>(
+  injuries: T[],
+  name: string
+): T | null {
+  return injuries.find((row) => namesMatch(row.player, name)) ?? null;
+}
+
+/** Attach ESPN injury rows by player name. Do not use sample_injury_news.json. */
+export function withLiveInjuries(
+  players: NflPlayerView[],
+  injuries: Array<{
+    player: string;
+    position: string;
+    status: string;
+    injury: string;
+    updated: string | null;
+    comment?: string | null;
+    playerUrl?: string | null;
+  }>
+): NflPlayerView[] {
+  return players.map((p) => {
+    const row = matchNamedInjury(injuries, p.name);
+    if (!row) return { ...p, injury: null };
+    return {
+      ...p,
+      injury: {
+        player: row.player,
+        position: row.position,
+        status: row.status,
+        injury: row.injury,
+        updated: row.updated,
+        comment: row.comment,
+        playerUrl: row.playerUrl,
+      },
+    };
+  });
+}
+
+function isKeyPlayer(profile: TeamProfile | null, name: string): boolean {
+  return Boolean(profile?.top_players?.some((p) => namesMatch(p.name, name)));
+}
+
+function assignUniqueSlugs(players: Omit<NflPlayerView, "slug">[]): NflPlayerView[] {
+  const used = new Set<string>();
+  return players.map((p) => {
+    let slug = playerSlug(p.name, p.number);
+    if (used.has(slug)) slug = playerSlug(p.name, p.number, p.position);
+    if (used.has(slug)) slug = playerSlug(p.name, p.number, p.side);
+    used.add(slug);
+    return { ...p, slug };
+  });
+}
+
+/** All rostered NFL players for a team, with slugs and key-player flags. */
+export function listNflPlayers(abbr: string): NflPlayerView[] {
+  const roster = getTeamRoster(abbr);
+  if (!roster) return [];
+  const profile = getTeamProfile(abbr);
+
+  const rows: Omit<NflPlayerView, "slug">[] = [];
+  for (const side of SIDE_ORDER) {
+    const group =
+      side === "offence"
+        ? roster.offence
+        : side === "defence"
+          ? roster.defence
+          : roster.special_teams;
+    for (const p of group) {
+      rows.push({
+        name: p.name,
+        number: p.number ?? null,
+        position: p.position,
+        college: p.college ?? null,
+        role: p.role,
+        side,
+        keyPlayer: isKeyPlayer(profile, p.name),
+        injury: null,
+      });
+    }
+  }
+  return assignUniqueSlugs(rows);
+}
+
+export function findNflPlayer(
+  abbr: string,
+  slug: string
+): NflPlayerView | null {
+  const wanted = (slug || "").trim().toLowerCase();
+  if (!wanted) return null;
+  const players = listNflPlayers(abbr);
+  const exact = players.find((p) => p.slug === wanted);
+  if (exact) return exact;
+
+  // Name-only slug (no number) when it is unique on the team.
+  const byName = players.filter((p) => playerSlug(p.name) === wanted);
+  return byName.length === 1 ? byName[0] : null;
+}
+
+/** Profile top_players, matched to roster slugs when possible. */
+export function listKeyPlayers(abbr: string): NflPlayerView[] {
+  const profile = getTeamProfile(abbr);
+  const rostered = listNflPlayers(abbr);
+  if (!profile?.top_players?.length) {
+    return rostered.filter((p) => p.keyPlayer);
+  }
+
+  const used = new Set<string>();
+  const out: NflPlayerView[] = [];
+  for (const p of profile.top_players) {
+    const match = rostered.find((r) => namesMatch(r.name, p.name));
+    if (match) {
+      if (!used.has(match.slug)) {
+        used.add(match.slug);
+        out.push({ ...match, keyPlayer: true });
+      }
+      continue;
+    }
+    const fallbackSlug = playerSlug(p.name, p.number, p.position);
+    out.push({
+      name: p.name,
+      number: p.number ?? null,
+      position: p.position,
+      college: p.college ?? null,
+      role: "unknown",
+      side: OFFENCE_POS.has((p.position || "").toUpperCase().trim())
+        ? "offence"
+        : DEFENCE_POS.has((p.position || "").toUpperCase().trim())
+          ? "defence"
+          : SPECIAL_POS.has((p.position || "").toUpperCase().trim())
+            ? "special_teams"
+            : "unknown",
+      slug: fallbackSlug,
+      keyPlayer: true,
+      injury: null,
+    });
+  }
+  return out;
+}
+
+export function findKeyOrRosterPlayer(
+  abbr: string,
+  slug: string
+): NflPlayerView | null {
+  const fromRoster = findNflPlayer(abbr, slug);
+  if (fromRoster) return fromRoster;
+  const wanted = (slug || "").trim().toLowerCase();
+  if (!wanted) return null;
+  return (
+    listKeyPlayers(abbr).find(
+      (p) => p.slug === wanted || playerSlug(p.name) === wanted
+    ) ?? null
+  );
 }

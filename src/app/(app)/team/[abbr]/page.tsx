@@ -12,8 +12,11 @@ import {
   getTeamNews,
   getTeamProfile,
   getTeamRoster,
+  listKeyPlayers,
+  listNflPlayers,
   splitRosterPlayers,
-  type RosterPlayer,
+  withLiveInjuries,
+  type NflPlayerView,
   type TeamNewsItem,
 } from "@/lib/team-research";
 import { getTeamInjuries, type LiveInjury } from "@/lib/live-injuries";
@@ -21,43 +24,22 @@ import { formatWinPct } from "@/lib/standings-format";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { InjuryChip } from "@/components/InjuryChip";
 import { isDemoMode } from "@/lib/pool-mode";
+import { formatKickoff } from "@/lib/utils";
+import { namesMatch } from "@/lib/nfl-player";
+import { KeyPlayerCards, NflPlayerRows, playerHref } from "@/components/NflPlayerRows";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function PlayerRows({ players }: { players: RosterPlayer[] }) {
-  return (
-    <ul className="divide-y divide-stadium-border text-sm">
-      {players.map((p) => (
-        <li
-          key={`${p.role}-${p.number}-${p.name}-${p.position}`}
-          className="py-2 flex items-baseline gap-2 min-w-0"
-        >
-          <span className="font-mono text-[var(--text-muted)] w-8 shrink-0 text-xs">
-            {p.number != null ? `#${p.number}` : "—"}
-          </span>
-          <span className="font-mono text-xs text-gold-400 w-8 shrink-0">
-            {p.position}
-          </span>
-          <span className="min-w-0 flex-1 font-medium break-words">
-            {p.name}
-          </span>
-          <span className="text-xs text-[var(--text-muted)] shrink-0 max-w-[35%] text-right break-words">
-            {p.college || "—"}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 function SideSections({
   title,
+  teamAbbr,
   players,
   rolesApproximate,
 }: {
   title: string;
-  players: RosterPlayer[];
+  teamAbbr: string;
+  players: NflPlayerView[];
   rolesApproximate: boolean;
 }) {
   if (players.length === 0) {
@@ -79,7 +61,7 @@ function SideSections({
           {title}
           <span className="chip chip-gold text-xs">{players.length}</span>
         </h3>
-        <PlayerRows players={players} />
+        <NflPlayerRows teamAbbr={teamAbbr} players={players} />
       </div>
     );
   }
@@ -96,14 +78,14 @@ function SideSections({
             </span>
           )}
         </h3>
-        <PlayerRows players={starters} />
+        <NflPlayerRows teamAbbr={teamAbbr} players={starters} />
       </div>
       <div className="space-y-2 pt-2 border-t border-stadium-border">
         <h3 className="text-sm font-medium text-[var(--text-muted)] flex items-center gap-2">
           {title} depth
           <span className="chip chip-one-loss text-xs">{depth.length}</span>
         </h3>
-        <PlayerRows players={depth} />
+        <NflPlayerRows teamAbbr={teamAbbr} players={depth} />
       </div>
     </div>
   );
@@ -154,12 +136,29 @@ function statusChipClass(status: string): string {
   return "chip-one-loss";
 }
 
-function InjuryList({ rows }: { rows: LiveInjury[] }) {
+function InjuryList({
+  rows,
+  teamAbbr,
+  players,
+}: {
+  rows: LiveInjury[];
+  teamAbbr: string;
+  players: NflPlayerView[];
+}) {
   return (
     <ul className="divide-y divide-stadium-border text-sm">
       {rows.map((row) => {
         const when = formatInjuryWhen(row.updated);
-        const name = row.playerUrl ? (
+        const rosterMatch = players.find((p) => namesMatch(p.name, row.player));
+        const name = rosterMatch ? (
+          <Link
+            href={playerHref(teamAbbr, rosterMatch.slug)}
+            prefetch={false}
+            className="font-medium underline decoration-gold-400/40 underline-offset-2 hover:decoration-gold-400"
+          >
+            {row.player}
+          </Link>
+        ) : row.playerUrl ? (
           <a
             href={row.playerUrl}
             target="_blank"
@@ -246,8 +245,27 @@ export default async function TeamResearchPage({
 
   const profile = getTeamProfile(abbr);
   const roster = getTeamRoster(abbr);
-  const news = await getTeamNews(abbr);
-  const injuries = await getTeamInjuries(abbr);
+  const [news, injuries] = await Promise.all([
+    getTeamNews(abbr),
+    getTeamInjuries(abbr),
+  ]);
+  const players = withLiveInjuries(listNflPlayers(abbr), injuries.injuries);
+  const keyPlayers = withLiveInjuries(listKeyPlayers(abbr), injuries.injuries);
+  const week = await prisma.week.findUnique({
+    where: {
+      poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },
+    },
+    include: { games: true },
+  });
+  const game = week?.games.find(
+    (g) => g.awayAbbr === abbr || g.homeAbbr === abbr
+  );
+  const opponentAbbr = game
+    ? game.awayAbbr === abbr
+      ? game.homeAbbr
+      : game.awayAbbr
+    : null;
+  const atHome = game ? game.homeAbbr === abbr : false;
   const standing = {
     wins: team.wins,
     losses: team.losses,
@@ -261,10 +279,11 @@ export default async function TeamResearchPage({
       ? `${team.wins}-${team.losses}-${team.ties}`
       : `${team.wins}-${team.losses}`;
 
-  const oCount = roster?.offence.length ?? 0;
-  const dCount = roster?.defence.length ?? 0;
-  const stCount = roster?.special_teams.length ?? 0;
-  const totalPlayers = oCount + dCount + stCount;
+  const offence = players.filter((p) => p.side === "offence");
+  const defence = players.filter((p) => p.side === "defence");
+  const special = players.filter((p) => p.side === "special_teams");
+  const stCount = special.length;
+  const totalPlayers = players.length;
 
   return (
     <div className="team-research space-y-5 min-w-0 text-base leading-relaxed">
@@ -331,6 +350,38 @@ export default async function TeamResearchPage({
         </div>
       </header>
 
+      {game && opponentAbbr && (
+        <section className="card-glass p-4 space-y-1">
+          <h2 className="text-xl font-semibold text-gold-400">This week</h2>
+          <p className="text-base">
+            {atHome ? "Home" : "Away"} vs{" "}
+            <Link
+              href={`/team/${opponentAbbr}`}
+              prefetch={false}
+              className="font-mono text-gold-400 underline underline-offset-2"
+            >
+              {opponentAbbr}
+            </Link>
+          </p>
+          <p className="text-sm text-[var(--text-muted)]">
+            {formatKickoff(game.kickoff)}
+            {game.network ? ` · ${game.network}` : ""}
+          </p>
+        </section>
+      )}
+
+      {keyPlayers.length > 0 && (
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-xl font-semibold text-gold-400">Key players</h2>
+            <p className="text-sm text-[var(--text-muted)] mt-0.5">
+              Tap a name for college, depth role, and any ESPN injury note.
+            </p>
+          </div>
+          <KeyPlayerCards teamAbbr={team.abbr} players={keyPlayers} />
+        </section>
+      )}
+
       {profile && (
         <section className="card-glass p-4 space-y-2">
           <h2 className="text-xl font-semibold text-gold-400">Style summary</h2>
@@ -373,12 +424,12 @@ export default async function TeamResearchPage({
             {roster?.fromFullFile
               ? `Full roster from ${roster.source || "team_rosters.json"}${
                   roster.asOf ? ` · as of ${roster.asOf}` : ""
-                }. ${
+                }. Tap a player for details. ${
                   isDemoMode(me.pool.mode)
                     ? "Demo research only — not official NFL depth charts for wagering."
                     : "Research only — not official NFL depth charts for wagering."
                 }`
-              : "Seeded key players from team profiles — not a full depth chart."}
+              : "Seeded key players from team profiles — not a full depth chart. Tap a name for details."}
           </p>
           {roster?.sourceNote && (
             <p className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">
@@ -393,13 +444,15 @@ export default async function TeamResearchPage({
           <>
             <SideSections
               title="Offence"
-              players={roster.offence}
+              teamAbbr={team.abbr}
+              players={offence}
               rolesApproximate={roster.rolesApproximate}
             />
             <div className="border-t border-stadium-border pt-4">
               <SideSections
                 title="Defence"
-                players={roster.defence}
+                teamAbbr={team.abbr}
+                players={defence}
                 rolesApproximate={roster.rolesApproximate}
               />
             </div>
@@ -413,7 +466,7 @@ export default async function TeamResearchPage({
                   None listed (ESPN often omits KR/PR as distinct positions).
                 </p>
               ) : (
-                <PlayerRows players={roster.special_teams} />
+                <NflPlayerRows teamAbbr={team.abbr} players={special} />
               )}
             </div>
           </>
@@ -469,7 +522,11 @@ export default async function TeamResearchPage({
           </p>
         ) : (
           <>
-            <InjuryList rows={injuries.injuries} />
+            <InjuryList
+              rows={injuries.injuries}
+              teamAbbr={team.abbr}
+              players={players}
+            />
             <p className="text-sm text-[var(--text-muted)] pt-1">
               Full lists:{" "}
               <a
