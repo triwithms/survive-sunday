@@ -26,9 +26,10 @@ export default async function NotificationPrefsPage() {
           Notification preferences
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Choose what Survive Sunday emails you. Missing-pick texts follow the
-          same switch if you saved a cell. Password-reset codes always send when
-          you ask for one. Path: Account (header) → Notification preferences.
+          Choose what Survive Sunday emails you. Add your cell for SMS
+          missing-pick reminders — those texts follow the same Missing pick
+          reminder switch. Password-reset codes always send when you ask for
+          one. Path: Account (header) → Notification preferences.
         </p>
       </div>
       <NotificationPrefsForm initial={prefs} initialError={error} />

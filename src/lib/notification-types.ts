@@ -46,7 +46,7 @@ export const NOTIFICATION_COPY: Record<
 > = {
   missingPickReminder: {
     label: "Missing pick reminder",
-    hint: "Before lock, if you still have no pick. Email, plus a text if you saved a cell.",
+    hint: "Before lock, if you still have no pick. Email, plus a text to your cell.",
   },
   pickConfirmed: {
     label: "Pick saved or changed",

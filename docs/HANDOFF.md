@@ -23,7 +23,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Pick backup:** Off by default. Copy another player within **30 minutes** of lock (JaJa → **Gams** for later weeks if she still has no pick — no 💩). Or auto-pick the best remaining **2025 rank** team (same `#N` list as Pick) within **~2 minutes** — that stamps 💩 beside the nickname and that player cannot be the official winner. Server jobs apply this — opening the app is not required.
 - **Week 1 pick-change until kickoff** — merged [PR #25](https://github.com/triwithms/survive-sunday/pull/25). Week 1: you can still change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock** (first kickoff).
 - Forgot password **code is on `main`**; codes will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**
-- **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). Password-reset codes are **not** gated by these prefs.
+- **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset codes are **not** gated by these prefs.
 
 The Real-mode playbook is [`docs/REAL-MODE.md`](./REAL-MODE.md). Earlier handoff refreshes ([PR #13](https://github.com/triwithms/survive-sunday/pull/13), [PR #15](https://github.com/triwithms/survive-sunday/pull/15)) are **superseded by this file**.
 
@@ -137,9 +137,9 @@ Same steps are in [DEPLOY.md](../DEPLOY.md) section **3b**. `onboarding@resend.d
 
 | Name | What it does |
 |------|----------------|
-| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM_NUMBER` | Text the code if the friend saved a cell. Skip if email is enough today. |
+| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM_NUMBER` | Text the code to a friend’s cell. Skip if email is enough today. |
 
-Friends can still **save a cell number** under Account. Missing-pick reminder **emails** (and texts if Twilio is set) go out only when that friend left **Missing pick reminder** on. The same Resend keys as Forgot password send the emails. A daily Vercel cron plus **Admin → Nudge missing picks** can fire them in the 24 hours before lock.
+Friends add their cell for SMS reminders on the first-run prompt, or later from Account. Missing-pick reminder **emails** (and texts if Twilio is set) go out only when that friend left **Missing pick reminder** on. The same Resend keys as Forgot password send the emails. A daily Vercel cron plus **Admin → Nudge missing picks** can fire them in the 24 hours before lock.
 
 A full list with local-dev notes is in [`.env.example`](../.env.example) and [`DEPLOY.md`](../DEPLOY.md).
 
