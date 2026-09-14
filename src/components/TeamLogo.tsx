@@ -2,10 +2,24 @@
 
 import { useState } from "react";
 
+/** Shared ESPN mark sizes. Compact is the default for Scores / Board / League rows. */
+export const TEAM_LOGO_SIZE = {
+  /** Scores game rows + friend picks — modest, scorebug-safe. */
+  compact: 32,
+  /** Board, League, Scores detail — same family, a bit more room. */
+  row: 36,
+  /** Pick slate matchup sides. */
+  slate: 50,
+  /** Current pick / confirm dialog. */
+  featured: 64,
+  /** Team research header only — do not use in lists. */
+  hero: 72,
+} as const;
+
 export function TeamLogo({
   abbr,
   logoUrl,
-  size = 40,
+  size = TEAM_LOGO_SIZE.compact,
 }: {
   abbr: string;
   logoUrl: string | null;

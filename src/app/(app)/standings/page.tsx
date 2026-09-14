@@ -15,7 +15,7 @@ import {
 } from "@/lib/tiebreak";
 import { AutoPickStamps } from "@/components/AutoPickStamps";
 import { StatusChip } from "@/components/StatusChip";
-import { TeamLogo } from "@/components/TeamLogo";
+import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { formatKickoff } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -212,7 +212,7 @@ export default async function StandingsPage() {
                           pick.teamAbbr,
                           logoByAbbr.get(pick.teamAbbr)
                         )}
-                        size={28}
+                        size={TEAM_LOGO_SIZE.row}
                       />
                       <span className="font-mono text-base sm:text-lg font-semibold text-gold-400">
                         {pick.teamAbbr}

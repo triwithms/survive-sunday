@@ -3,7 +3,7 @@ import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { TeamLogo } from "@/components/TeamLogo";
+import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import {
   formatCurrentStanding,
   formatPriorYearRank,
@@ -296,7 +296,7 @@ export default async function TeamResearchPage({
         <TeamLogo
           abbr={team.abbr}
           logoUrl={teamLogoUrl(team.abbr, team.logoUrl)}
-          size={64}
+          size={TEAM_LOGO_SIZE.hero}
         />
         <div className="min-w-0 flex-1">
           <h1 className="font-display text-3xl sm:text-4xl text-gold-400 tracking-wide break-words">

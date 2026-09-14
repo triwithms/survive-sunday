@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { TeamLogo } from "@/components/TeamLogo";
+import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { ScoreGameDetailSheet } from "@/components/ScoreGameDetailSheet";
 import {
   formatLiveScorebug,
@@ -50,7 +50,7 @@ function ScoreTeamRow({
       aria-label={`Team details for ${abbr}${hasBall ? ", has the ball" : ""}`}
       onClick={(e) => e.stopPropagation()}
     >
-      <TeamLogo abbr={abbr} logoUrl={logoUrl} size={30} />
+      <TeamLogo abbr={abbr} logoUrl={logoUrl} size={TEAM_LOGO_SIZE.compact} />
       <span
         className={`font-mono text-sm font-semibold ${
           leading ? "text-field-400" : "text-[var(--text-primary)]"
