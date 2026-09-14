@@ -107,11 +107,11 @@ export function PhoneEditor({
       try {
         data = await res.json();
       } catch {
-        setError(`Couldn’t skip (HTTP ${res.status})`);
+        setError(`Couldn’t dismiss (HTTP ${res.status})`);
         return;
       }
       if (!res.ok) {
-        setError(data.error || "Couldn’t skip");
+        setError(data.error || "Couldn’t dismiss");
         return;
       }
       setSoftOpen(false);
@@ -165,7 +165,7 @@ export function PhoneEditor({
             className="font-semibold text-lg text-gold-400"
           >
             {isSoft
-              ? "Add your cell for SMS reminders?"
+              ? "Add your cell for SMS reminders"
               : phoneE164
                 ? "Change cell number"
                 : "Add cell number"}
@@ -175,8 +175,8 @@ export function PhoneEditor({
               <>
                 We’ll text you if you’re missing a pick before lock — unless you
                 turn that reminder off under Account → Notification
-                preferences. SMS only for now — WhatsApp later. You can skip
-                and add this anytime from the header.
+                preferences. SMS only for now — WhatsApp later. You can add or
+                change this later from Account or the header.
               </>
             ) : (
               <>
@@ -223,7 +223,7 @@ export function PhoneEditor({
                 onClick={() => void skip()}
                 data-testid="skip-phone"
               >
-                {busy ? "…" : "Skip for now"}
+                {busy ? "…" : "Not now"}
               </button>
             ) : (
               <button
