@@ -6,6 +6,7 @@
 import assert from "node:assert/strict";
 import {
   bucketFromDuration,
+  clipAllowsWebsiteEmbed,
   clipIsThisNflSeason,
   extractInnertubeVideos,
   groupWeeklyVideos,
@@ -20,7 +21,14 @@ import {
   youtubeEmbedUrl,
   type RawYoutubeHit,
 } from "../src/lib/youtube-parse";
-import { YT_NFL, isAllowlistedChannel } from "../src/lib/youtube-channels";
+import {
+  YT_ESPN,
+  YT_NFL,
+  YT_NFL_FILMS,
+  YT_NFL_NETWORK,
+  isAllowlistedChannel,
+  shouldMountYoutubeIframe,
+} from "../src/lib/youtube-channels";
 
 assert.equal(parseDurationLabel("16:19"), 16 * 60 + 19);
 assert.equal(parseDurationLabel("1:02:03"), 3600 + 120 + 3);
@@ -169,6 +177,36 @@ assert.equal(isAllowlistedChannel("UC-random-fan-channel"), false);
 assert.ok(isAllowlistedChannel("UCk2FqoG8dN5EAz5WU3A0D7A", ["NYG", "DAL"]));
 assert.equal(isAllowlistedChannel("UCk2FqoG8dN5EAz5WU3A0D7A", ["KC", "BUF"]), false);
 
+assert.equal(clipAllowsWebsiteEmbed({ channelId: YT_NFL }), false);
+assert.equal(clipAllowsWebsiteEmbed({ channelId: YT_NFL_FILMS }), false);
+assert.equal(clipAllowsWebsiteEmbed({ channelId: YT_NFL_NETWORK }), false);
+assert.equal(clipAllowsWebsiteEmbed({ channelId: YT_ESPN }), true);
+assert.equal(
+  clipAllowsWebsiteEmbed({ channelId: YT_ESPN, playableInEmbed: false }),
+  false
+);
+assert.equal(
+  clipAllowsWebsiteEmbed({ channelId: YT_NFL, playableInEmbed: true }),
+  false
+);
+assert.equal(clipAllowsWebsiteEmbed({ channelId: null }), false);
+assert.equal(
+  shouldMountYoutubeIframe({ embeddable: true, channelId: YT_NFL }),
+  false
+);
+assert.equal(
+  shouldMountYoutubeIframe({ embeddable: true, channelId: YT_ESPN }),
+  true
+);
+assert.equal(
+  shouldMountYoutubeIframe({ embeddable: false, channelId: YT_ESPN }),
+  false
+);
+assert.equal(
+  shouldMountYoutubeIframe({ embeddable: true, channelId: YT_NFL_FILMS }),
+  false
+);
+
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">
  <title>NFL</title>
@@ -273,6 +311,7 @@ const weekly = groupWeeklyVideos(
 );
 assert.equal(weekly.medium.length, 1);
 assert.equal(weekly.medium[0].id, "PREV1");
+assert.equal(weekly.medium[0].embeddable, false);
 assert.equal(weekly.short.length, 0);
 
 const game = pickGameHighlights(
@@ -288,6 +327,19 @@ const game = pickGameHighlights(
       publishedLabel: null,
       durationSeconds: 16 * 60 + 19,
       durationLabel: "16:19",
+      isShort: false,
+    },
+    {
+      videoId: "ESPNHL",
+      title:
+        "Dallas Cowboys vs New York Giants Game Highlights | NFL 2026 Season Week 1",
+      channelName: "ESPN",
+      channelId: YT_ESPN,
+      thumbnailUrl: null,
+      publishedAt: null,
+      publishedLabel: null,
+      durationSeconds: 10 * 60,
+      durationLabel: "10:00",
       isShort: false,
     },
     {
@@ -330,10 +382,18 @@ const game = pickGameHighlights(
   ],
   { week: 1, awayAbbr: "DAL", homeAbbr: "NYG" }
 );
-assert.equal(game.length, 1);
+assert.equal(game.length, 2);
 assert.equal(game[0].id, "9R8P93W2iKE");
-assert.ok(game[0].embedUrl.includes("youtube-nocookie.com/embed/9R8P93W2iKE"));
+assert.equal(game[0].embeddable, false);
+assert.equal(
+  shouldMountYoutubeIframe(game[0]),
+  false,
+  "NFL official must not mount an iframe"
+);
 assert.ok(game[0].watchUrl.includes("watch?v=9R8P93W2iKE"));
+assert.equal(game[1].id, "ESPNHL");
+assert.equal(game[1].embeddable, true);
+assert.equal(shouldMountYoutubeIframe(game[1]), true);
 assert.ok(youtubeEmbedUrl("abc").includes("controls=1"));
 assert.ok(youtubeEmbedUrl("abc").includes("fs=1"));
 

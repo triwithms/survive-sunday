@@ -89,7 +89,7 @@ export function GameHighlights({
               rel="noopener noreferrer"
               className="text-gold-400 underline-offset-2 hover:underline"
             >
-              Open in YouTube
+              Watch on YouTube
             </a>
           ) : null}
         </p>

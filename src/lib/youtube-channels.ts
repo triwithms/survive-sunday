@@ -111,3 +111,29 @@ export function channelRank(channelId: string | null | undefined): number {
 export function leagueRssChannelIds(): string[] {
   return LEAGUE_CHANNELS.map((c) => c.id);
 }
+
+/**
+ * Official NFL league channels set playableInEmbed=false. Website iframes
+ * show YouTube’s “Video unavailable… blocked from display on this website”
+ * overlay (and raw HTML like `<a href=…>`). Do not mount those iframes.
+ */
+export const CHANNELS_THAT_BLOCK_WEBSITE_EMBEDS = new Set<string>([
+  YT_NFL,
+  YT_NFL_FILMS,
+  YT_NFL_NETWORK,
+]);
+
+export function channelBlocksWebsiteEmbeds(
+  channelId: string | null | undefined
+): boolean {
+  return Boolean(channelId && CHANNELS_THAT_BLOCK_WEBSITE_EMBEDS.has(channelId));
+}
+
+/** Never iframe NFL official / any clip flagged not embeddable. */
+export function shouldMountYoutubeIframe(clip: {
+  embeddable?: boolean;
+  channelId: string | null | undefined;
+}): boolean {
+  if (channelBlocksWebsiteEmbeds(clip.channelId)) return false;
+  return clip.embeddable === true;
+}
