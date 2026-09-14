@@ -2,7 +2,9 @@
 
 const MESSAGES: Record<string, string> = {
   CredentialsSignin:
-    "That email or password is not right. Try again, or tap Forgot password.",
+    "That email or password is not right. Try again, or tap Forgot password — only after you have Joined.",
+  OtpSignin:
+    "That sign-in code is wrong or expired. Request a new one, or use your password instead.",
   MissingFields: "Enter both your email and password.",
   NoSession:
     "Sign-in did not stay signed in on this phone. Refresh this page and try again on this same link.",
@@ -12,11 +14,11 @@ const MESSAGES: Record<string, string> = {
     "Sign-in hit a server problem. Wait a moment and try again.",
   AccessDenied: "That account is not allowed to sign in right now.",
   OAuthAccountNotLinked:
-    "That Google account is not linked to a pool login. Use email and password, or Join the pool.",
+    "Use the email and password you Joined with, or ask for a sign-in code.",
   OAuthCallbackError:
-    "Google sign-in did not finish. Try email and password, or try Google again.",
+    "Sign-in did not finish. Use your email, then a sign-in code or your password.",
   OAuthSignInError:
-    "Google sign-in did not finish. Try email and password, or try Google again.",
+    "Sign-in did not finish. Use your email, then a sign-in code or your password.",
   Verification: "That sign-in link expired. Try signing in again.",
   CSRF: "Sign-in hiccup. Refresh this page and try again.",
   MissingCSRF: "Sign-in hiccup. Refresh this page and try again.",

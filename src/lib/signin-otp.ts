@@ -1,11 +1,11 @@
-import bcrypt from "bcryptjs";
 import { prisma } from "./db";
+import { INVITE_CODE } from "./constants";
+import { isDemoEmail, isLiveMode } from "./pool-mode";
 import {
   OTP,
-  OTP_PURPOSE_PASSWORD_RESET,
+  OTP_PURPOSE_SIGN_IN,
   generateOtpCode,
   hashSecret,
-  isDemoEmail,
   isValidOtpShape,
   maskDestination,
   normalizeEmail,
@@ -18,8 +18,9 @@ import {
   type OtpChannel,
 } from "./otp";
 import { canRevealDevCode, deliverOtp } from "./otp-delivery";
+import type { AuthorizedUser } from "./credentials-user";
 
-export type ResetStatus = {
+export type SignInCodeStatus = {
   channel: OtpChannel;
   destinationMasked: string;
   expiresInSec: number;
@@ -61,7 +62,7 @@ function statusFrom(
   expiresAt: Date,
   lastSentAt: Date,
   extras: { stubbed: boolean; canEmail: boolean; canSms: boolean; devCode?: string }
-): ResetStatus {
+): SignInCodeStatus {
   return {
     channel,
     destinationMasked: maskDestination(channel, destination),
@@ -74,12 +75,31 @@ function statusFrom(
   };
 }
 
-export async function requestPasswordReset(
+async function liveModeBlocksPracticeEmail(
+  email: string,
+  userId: string
+): Promise<boolean> {
+  if (!isDemoEmail(email)) return false;
+  const pool = await prisma.pool.findUnique({
+    where: { inviteCode: INVITE_CODE },
+    select: { id: true, mode: true },
+  });
+  if (!isLiveMode(pool?.mode) || !pool) return false;
+  const admins = await prisma.membership.findMany({
+    where: { poolId: pool.id, role: "admin" },
+    select: { userId: true, user: { select: { email: true } } },
+  });
+  const hasRealCommissioner = admins.some((a) => !isDemoEmail(a.user.email));
+  const isPracticeAdmin = admins.some((a) => a.userId === userId);
+  return hasRealCommissioner || !isPracticeAdmin;
+}
+
+export async function requestSignInCode(
   emailRaw: string,
   requestedChannel?: unknown
 ): Promise<
-  | { ok: true; demo?: boolean; message?: string; status?: ResetStatus }
-  | { ok: false; error: string; status?: ResetStatus }
+  | { ok: true; demo?: boolean; message?: string; status?: SignInCodeStatus }
+  | { ok: false; error: string; status?: SignInCodeStatus }
 > {
   try {
     const email = normalizeEmail(emailRaw);
@@ -92,7 +112,7 @@ export async function requestPasswordReset(
         ok: true,
         demo: true,
         message:
-          "Demo seats always use password demo1234. Use the picker on the home page — no reset needed.",
+          "Demo seats always use password demo1234. Use the picker on the home page — no code needed.",
       };
     }
 
@@ -105,7 +125,7 @@ export async function requestPasswordReset(
       return {
         ok: false,
         error:
-          "We don’t have that email. Check the spelling, or ask the commissioner.",
+          "We don’t have that email. Check the spelling, or Join first (don’t use a code before you Join).",
       };
     }
 
@@ -117,29 +137,39 @@ export async function requestPasswordReset(
       };
     }
 
-    return withSendLock(user.id, () => sendResetCode(user, parseChannel(requestedChannel)));
+    if (await liveModeBlocksPracticeEmail(email, user.id)) {
+      return {
+        ok: false,
+        error:
+          "That practice login does not work in the real pool. Join with your own email, or Sign in with it.",
+      };
+    }
+
+    return withSendLock(user.id, () =>
+      sendSignInCode(user, parseChannel(requestedChannel))
+    );
   } catch (error) {
-    console.error("[password-reset] request failed", error);
+    console.error("[signin-otp] request failed", error);
     return { ok: false, error: "Could not send a code. Try again." };
   }
 }
 
-async function sendResetCode(
+async function sendSignInCode(
   user: { id: string; email: string; phoneE164: string | null },
   requested: OtpChannel | null
 ): Promise<
-  | { ok: true; status: ResetStatus }
-  | { ok: false; error: string; status?: ResetStatus }
+  | { ok: true; status: SignInCodeStatus }
+  | { ok: false; error: string; status?: SignInCodeStatus }
 > {
   const canEmail = Boolean(user.email);
   const canSms = Boolean(user.phoneE164);
   const channel = preferredChannel(canSms, requested);
   if (channel === "sms" && !user.phoneE164) {
-    return { ok: false, error: "No cell number on file. We’ll need to email the code." };
+    return { ok: false, error: "No cell number on file. We’ll email the code instead." };
   }
 
   const destination = channel === "sms" ? user.phoneE164! : user.email;
-  const purpose = OTP_PURPOSE_PASSWORD_RESET;
+  const purpose = OTP_PURPOSE_SIGN_IN;
 
   const existing = await prisma.otpChallenge.findFirst({
     where: {
@@ -182,12 +212,12 @@ async function sendResetCode(
   }
 
   const code = generateOtpCode();
-  let delivered = await deliverOtp(channel, destination, code);
+  let delivered = await deliverOtp(channel, destination, code, purpose);
   let usedChannel = channel;
   let usedDestination = destination;
 
   if (!delivered.ok && channel === "sms" && canEmail) {
-    delivered = await deliverOtp("email", user.email, code);
+    delivered = await deliverOtp("email", user.email, code, purpose);
     if (delivered.ok) {
       usedChannel = "email";
       usedDestination = user.email;
@@ -227,49 +257,43 @@ async function sendResetCode(
   };
 }
 
-export async function resetPasswordWithCode(
+/**
+ * Consume a sign-in code and return the user. Must not throw — Auth.js
+ * maps authorize exceptions to CallbackRouteError.
+ */
+export async function userFromSignInOtp(
   emailRaw: string,
-  rawCode: unknown,
-  rawPassword: unknown
-): Promise<{ ok: true } | { ok: false; error: string; locked?: boolean }> {
+  rawCode: unknown
+): Promise<AuthorizedUser | null> {
   try {
     const email = normalizeEmail(emailRaw);
     const code = normalizeOtpInput(typeof rawCode === "string" ? rawCode : "");
-    const password = typeof rawPassword === "string" ? rawPassword : "";
-
-    if (isDemoEmail(email)) {
-      return {
-        ok: false,
-        error: "Demo seats always use password demo1234.",
-      };
-    }
-    if (!isValidOtpShape(code)) {
-      return { ok: false, error: "Enter the 6-digit code." };
-    }
-    if (password.length < OTP.minPasswordLength) {
-      return { ok: false, error: `New password must be at least ${OTP.minPasswordLength} characters.` };
-    }
+    if (!email || !isValidOtpShape(code)) return null;
+    if (isDemoEmail(email)) return null;
 
     const user = await prisma.user.findUnique({
       where: { email },
-      select: { id: true, email: true, passwordHash: true },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        image: true,
+        passwordHash: true,
+      },
     });
-    if (!user?.passwordHash) {
-      return { ok: false, error: "That code is wrong or expired. Request a new one." };
-    }
+    if (!user?.passwordHash) return null;
+    if (await liveModeBlocksPracticeEmail(email, user.id)) return null;
 
     const challenge = await prisma.otpChallenge.findFirst({
       where: {
         userId: user.id,
-        purpose: OTP_PURPOSE_PASSWORD_RESET,
+        purpose: OTP_PURPOSE_SIGN_IN,
         consumedAt: null,
         expiresAt: { gt: new Date() },
       },
       orderBy: { createdAt: "desc" },
     });
-    if (!challenge) {
-      return { ok: false, error: "That code is wrong or expired. Request a new one." };
-    }
+    if (!challenge) return null;
 
     const updated = await prisma.otpChallenge.update({
       where: { id: challenge.id },
@@ -281,40 +305,26 @@ export async function resetPasswordWithCode(
         where: { id: challenge.id },
         data: { expiresAt: new Date() },
       });
-      return {
-        ok: false,
-        error: "Too many tries on this code. Request a new one.",
-        locked: true,
-      };
+      return null;
     }
 
     if (!secretsMatch(code, "otp", challenge.codeHash)) {
-      const left = OTP.maxAttempts - updated.attempts;
-      return {
-        ok: false,
-        error:
-          left > 0
-            ? `That code doesn’t match. ${left} ${left === 1 ? "try" : "tries"} left.`
-            : "Too many tries on this code. Request a new one.",
-        locked: left <= 0,
-      };
+      return null;
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
-    await prisma.$transaction([
-      prisma.user.update({
-        where: { id: user.id },
-        data: { passwordHash },
-      }),
-      prisma.otpChallenge.update({
-        where: { id: challenge.id },
-        data: { consumedAt: new Date() },
-      }),
-    ]);
+    await prisma.otpChallenge.update({
+      where: { id: challenge.id },
+      data: { consumedAt: new Date() },
+    });
 
-    return { ok: true };
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      image: user.image,
+    };
   } catch (error) {
-    console.error("[password-reset] reset failed", error);
-    return { ok: false, error: "Could not update that password. Try again." };
+    console.error("[signin-otp] verify failed", error);
+    return null;
   }
 }

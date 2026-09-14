@@ -23,6 +23,8 @@ import {
   isDemoMode,
   normalizePoolMode,
 } from "@/lib/pool-mode";
+import { listClaimableSeats } from "@/lib/claim-seat-db";
+import { PersonalInvitePanel } from "@/components/PersonalInvitePanel";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -54,6 +56,12 @@ export default async function AdminPage() {
     where: { poolId: me.poolId },
     orderBy: { nickname: "asc" },
   });
+  let inviteSeats: Awaited<ReturnType<typeof listClaimableSeats>> = [];
+  try {
+    inviteSeats = await listClaimableSeats();
+  } catch (error) {
+    console.error("[admin] invite seats failed", error);
+  }
   const grants = await listPoolRoleGrants(prisma, me.poolId);
   const adminUserIds = new Set(
     grants
@@ -142,6 +150,8 @@ export default async function AdminPage() {
           })
           .map((m) => m.id)}
       />
+
+      <PersonalInvitePanel seats={inviteSeats} />
 
       <Link
         href="/admin/roster"

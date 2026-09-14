@@ -50,10 +50,9 @@ export default async function RosterPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           Nickname is what the board shows. Real name is the person behind it.
-          Fix either if it’s wrong. Set <strong>Pick backup</strong>: off,
-          copy from another member (JaJa → Gams, no 💩), or auto 2025-rank
-          team (stamps 💩). JaJa Week 1 is <strong>DAL</strong>. Saves are
-          audit-logged.
+          Fix either if it’s wrong. Set <strong>Pick backup</strong>: off, copy
+          from another member (no 💩), or auto 2025-rank team (stamps 💩). Saves
+          are audit-logged.
         </p>
       </div>
 

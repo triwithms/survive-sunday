@@ -82,8 +82,9 @@ export default async function LandingPage() {
           )}
           <p className="text-xs pt-2">
             On your phone: add this site to your Home Screen (Safari → Share →
-            Add to Home Screen, or Chrome → Install). Once you sign in, you stay
-            signed in — just tap the icon. Forgot your password?{" "}
+            Add to Home Screen, or Chrome → Install). Join once with your email
+            and password — on this phone you should stay signed in. Use Forgot
+            password only with that same email, and only after you have Joined.{" "}
             <Link href="/login/forgot" className="text-gold-400 hover:underline">
               Reset it here
             </Link>

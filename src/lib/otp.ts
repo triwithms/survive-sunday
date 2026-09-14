@@ -12,6 +12,11 @@ export const OTP = {
 
 export type OtpChannel = "email" | "sms";
 export const OTP_PURPOSE_PASSWORD_RESET = "password_reset";
+export const OTP_PURPOSE_SIGN_IN = "sign_in";
+
+export function isSignInOtpPurpose(purpose: string): boolean {
+  return purpose === OTP_PURPOSE_SIGN_IN;
+}
 
 export { isDemoEmail } from "./pool-mode";
 
