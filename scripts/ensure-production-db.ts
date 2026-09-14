@@ -17,6 +17,7 @@ import { spawnSync } from "child_process";
 import { PrismaClient } from "@prisma/client";
 import { prismaDatasourceUrl } from "../src/lib/prisma-url";
 import { applyCanonicalRosterNames } from "../src/lib/roster-name-patch";
+import { restorePendingPracticeEmails } from "../src/lib/pending-practice-email";
 import { ensureLiveWeekIsolation } from "../src/lib/week-isolation";
 import { ensureWeek2Slate } from "../src/lib/ensure-week-slate";
 import { isLiveMode } from "../src/lib/pool-mode";
@@ -325,6 +326,28 @@ async function main() {
       } catch (error) {
         console.warn(
           "[ensure-db] live roster seats skipped (build continues)",
+          error
+        );
+      }
+      try {
+        const pending = await restorePendingPracticeEmails(prisma, pool.id);
+        if (pending.updated.length === 0) {
+          console.log("[ensure-db] pending practice emails already restored");
+        } else {
+          for (const row of pending.updated) {
+            console.log(
+              `[ensure-db] restored ${row.nickname ?? "seat"} ${row.from} → ${row.to}`
+            );
+          }
+        }
+        for (const row of pending.skipped) {
+          console.warn(
+            `[ensure-db] skipped pending email ${row.email} (${row.reason})`
+          );
+        }
+      } catch (error) {
+        console.warn(
+          "[ensure-db] pending practice email restore skipped (build continues)",
           error
         );
       }

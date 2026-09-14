@@ -1,10 +1,6 @@
 import { prisma } from "./db";
 import { RESET_POOL_CONFIRM } from "./constants";
-import {
-  DEMO_EMAIL_SUFFIX,
-  POOL_MODE_LIVE,
-  isDemoEmail,
-} from "./pool-mode";
+import { POOL_MODE_LIVE, isDemoEmail } from "./pool-mode";
 
 export type ResetPoolPreview = {
   poolId: string;
@@ -104,15 +100,17 @@ export async function resetPoolSeasonData(opts: {
     });
     const actorIsReal = !isDemoEmail(actorUser?.email);
 
-    const demoMemberships = await tx.membership.findMany({
+    const resetCandidates = await tx.membership.findMany({
       where: {
         poolId: opts.poolId,
         userId: { not: opts.actorUserId },
-        user: { email: { endsWith: DEMO_EMAIL_SUFFIX } },
         ...(actorIsReal ? {} : { role: { not: "admin" } }),
       },
-      select: { id: true, userId: true },
+      select: { id: true, userId: true, user: { select: { email: true } } },
     });
+    const demoMemberships = resetCandidates.filter((m) =>
+      isDemoEmail(m.user.email)
+    );
 
     const demoMembershipIds = demoMemberships.map((m) => m.id);
     const demoUserIds = [...new Set(demoMemberships.map((m) => m.userId))];

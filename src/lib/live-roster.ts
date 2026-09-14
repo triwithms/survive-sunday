@@ -1,11 +1,16 @@
 import bcrypt from "bcryptjs";
 import type { PrismaClient } from "@prisma/client";
 import { DEMO_PASSWORD } from "./constants";
-import { DEMO_EMAIL_SUFFIX, isDemoEmail } from "./pool-mode";
+import {
+  DEMO_EMAIL_SUFFIX,
+  PENDING_EMAIL_SUFFIX,
+  isDemoEmail,
+  isPendingPlaceholderEmail,
+} from "./pool-mode";
 import { grantPoolRole } from "./roles-db";
 import { POOL_ROLES } from "./roles";
 
-export const PENDING_EMAIL_SUFFIX = "@pending.survivesunday.local";
+export { PENDING_EMAIL_SUFFIX };
 
 export type CanonicalLiveSeat = {
   nickname: string;
@@ -40,10 +45,10 @@ export function practiceEmailForNickname(nickname: string): string {
 }
 
 export function isPendingPracticeEmail(email: string | null | undefined): boolean {
-  return (email ?? "").trim().toLowerCase().endsWith(PENDING_EMAIL_SUFFIX);
+  return isPendingPlaceholderEmail(email);
 }
 
-/** Pending.local looks “claimed” on Join. Demo practice emails do not. */
+/** Leftover pending placeholders should become `@survivesunday.demo`. */
 export function needsClaimablePracticeEmail(
   email: string | null | undefined
 ): boolean {
