@@ -277,7 +277,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 ### Scores & injuries (live on `main`)
 
 - **Scores** (and Home / Pick / Schedule) refresh from ESPN while games are on. Finals auto-grade.
-- **Scores**, **Pick**, and the **Board** show ESPN team logos beside abbreviations (`Team.logoUrl` or the ESPN CDN). Possession is a **🏈** plus a gold bar.
+- **Scores**, **Pick**, the **Board**, and **League** show ESPN team logos beside abbreviations (`Team.logoUrl` or the ESPN CDN). Possession is a **🏈** plus a gold bar.
 - **Team pages** show ESPN’s public injury report (not official NFL). Compact Out / Doubtful / Q chips appear next to picks. Tap a **player name** on the roster or injury list for a detail page.
 - If ESPN is blocked or down, last saved scores stay; injury cards say the feed failed and link out.
 - `data/sample_injury_news.json` is schema-only and is **not** shown in the UI on `main`.
@@ -418,12 +418,13 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Commissioner: turn off mulligan + transfer | [#8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player and lose Admin). Dual roles / Make administrator stay. |
 | NFL player details | [#11](https://github.com/triwithms/survive-sunday/pull/11) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth, and any matching ESPN injury note (same feed as the team injury card — not a sample file). |
 | Head coach + team page order | [#20](https://github.com/triwithms/survive-sunday/pull/20) | **Coach** card (ESPN name + ESPN / Wikipedia / team links). Team info (record, this week, coach, style) sits at the top; **Key players** is further down. Tap a player still opens details. |
+| Larger team logos (first bump) | [#43](https://github.com/triwithms/survive-sunday/pull/43) | ESPN marks beside abbreviations on Scores, Pick, Board, and League. Modest ~20–30% bump. |
 
 ### Open — not on `main` yet
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
-| — | — | No open feature PRs at the moment. |
+| Bigger team logos (second bump) | this PR | Clear step up from [#43](https://github.com/triwithms/survive-sunday/pull/43): Scores/Pick/Board/League ESPN marks ~33–38% larger. Not live until merged. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 

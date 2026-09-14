@@ -45,7 +45,7 @@ function ScoreTeamRow({
     <Link
       href={`/team/${abbr}`}
       prefetch={false}
-      className={`relative z-10 flex items-center gap-2 min-h-11 min-w-0 rounded-md px-1.5 -mx-0.5 hover:bg-gold-400/5 active:bg-gold-400/10 ${
+      className={`relative z-10 flex items-center gap-1.5 sm:gap-2 min-h-11 min-w-0 rounded-md px-1.5 -mx-0.5 hover:bg-gold-400/5 active:bg-gold-400/10 ${
         hasBall ? "border-l-[3px] border-gold-400 bg-gold-400/5" : "border-l-[3px] border-transparent"
       }`}
       aria-label={`Team details for ${abbr}${hasBall ? ", has the ball" : ""}`}
