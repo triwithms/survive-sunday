@@ -37,7 +37,9 @@ export function JoinForm({
   const [nickname, setNickname] = useState("");
   const [realName, setRealName] = useState("");
   const [membershipId, setMembershipId] = useState(initialSeat);
-  const [newPlayer, setNewPlayer] = useState(seats.length === 0);
+  const [newPlayer, setNewPlayer] = useState(
+    seats.length === 0 && !viaPersonal
+  );
   const [dismissClaimedInvite, setDismissClaimedInvite] = useState(false);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
