@@ -6,6 +6,7 @@ import {
   poolRulesAdminSummary,
   poolRulesPlayerLabel,
 } from "@/lib/pool-rules";
+import { effectiveCurrentWeek } from "@/lib/pool-mode";
 
 export async function GET() {
   const admin = await requireAdmin();
@@ -17,7 +18,7 @@ export async function GET() {
 
   return NextResponse.json({
     ok: true,
-    currentWeek: pool.currentWeek,
+    currentWeek: effectiveCurrentWeek(pool.mode, pool.currentWeek),
     singleEliminationFromWeek: pool.singleEliminationFromWeek,
     summary: poolRulesAdminSummary(pool.singleEliminationFromWeek),
     playerLabel: poolRulesPlayerLabel(pool.singleEliminationFromWeek),
@@ -65,7 +66,7 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     ok: true,
-    currentWeek: updated.currentWeek,
+    currentWeek: effectiveCurrentWeek(updated.mode, updated.currentWeek),
     singleEliminationFromWeek: updated.singleEliminationFromWeek,
     summary: poolRulesAdminSummary(updated.singleEliminationFromWeek),
     playerLabel: poolRulesPlayerLabel(updated.singleEliminationFromWeek),

@@ -25,6 +25,7 @@ import { backfillPoolAccessRoles } from "../src/lib/roles-db";
 import { ensureDualMembershipIndex } from "../src/lib/membership-schema";
 import { ensureNotificationTables } from "../src/lib/notification-schema";
 import { ensurePickMirrorColumn } from "../src/lib/pick-mirror-schema";
+import { ensurePoolRulesColumns } from "../src/lib/pool-rules-schema";
 import { ensureCanonicalLiveSeats } from "../src/lib/live-roster";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
@@ -94,19 +95,6 @@ async function dropAbandonedTables(prisma: PrismaClient) {
 async function ensureMembershipIsAdminColumn(prisma: PrismaClient) {
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "isAdmin" BOOLEAN NOT NULL DEFAULT false
-  `);
-}
-
-/** Mulligan toggle + spectator→player after handing the pool. */
-async function ensurePoolRulesColumns(prisma: PrismaClient) {
-  await prisma.$executeRawUnsafe(`
-    ALTER TABLE "Pool" ADD COLUMN IF NOT EXISTS "singleEliminationFromWeek" INTEGER
-  `);
-  await prisma.$executeRawUnsafe(`
-    ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "isParticipant" BOOLEAN NOT NULL DEFAULT true
-  `);
-  await prisma.$executeRawUnsafe(`
-    ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "playingFromWeek" INTEGER
   `);
 }
 
