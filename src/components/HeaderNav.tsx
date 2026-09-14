@@ -75,6 +75,12 @@ export function HeaderNav({
       href: "/schedule",
       label: "Schedule",
       active: path === "/schedule" || path.startsWith("/schedule/"),
+    },
+    {
+      key: "videos",
+      href: "/videos",
+      label: "Videos",
+      active: path === "/videos" || path.startsWith("/videos/"),
     }
   );
 

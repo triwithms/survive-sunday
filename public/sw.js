@@ -1,4 +1,4 @@
-const CACHE = "survive-sunday-shell-v6";
+const CACHE = "survive-sunday-shell-v7";
 /** Only these never-change shell assets — never Next chunks (stable names in next dev). */
 const SHELL = ["/manifest.webmanifest", "/icons/icon.svg"];
 
@@ -51,6 +51,7 @@ function shouldBypass(url, request) {
     p.startsWith("/login") ||
     p.startsWith("/join") ||
     p.startsWith("/help") ||
+    p.startsWith("/videos") ||
     p.startsWith("/api/")
   );
 }

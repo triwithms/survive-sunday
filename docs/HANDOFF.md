@@ -30,6 +30,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Home Screen prompt** — after Join or first Sign in on a phone browser (not already the Home Screen icon), we ask if they already added the app. Yes = don’t ask again on that phone. Show me how = iPhone Safari / Android Chrome steps. Not now = skip for a while. Already installed = no nag (optional one-time “You’re good”).
 - **Share Board / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). No Share button on the screen. On Board or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
 - **Scores Details ›** — merged [PR #46](https://github.com/triwithms/survive-sunday/pull/46). Each game card shows gold **Details ›** (live, Final, and upcoming) so friends know the card opens more info.
+- **Videos** — header **Videos** plus Home title cards: weekly NFL YouTube previews / recaps / highlights (short · medium · longer). Scores → **Details** shows that game’s YouTube highlights when they exist (live or after Final). Plays in the app with YouTube’s own controls; **Open in YouTube** if the embed is blocked. Missing videos never break picks or scores.
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset and sign-in codes are **not** gated by these prefs.
 - **Pool rules — mulligan** + **Hand the pool to someone else** — commissioner can turn off the free mulligan from a chosen week (one-and-done; already-scored weeks stay) and give Admin to another existing member (they keep playing; you stay as a player). Different from **Make administrator**.
 
@@ -375,16 +376,14 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 ### BONUS (do not start unless you ask)
 
 - **Live odds-based favourite strength meter** on the pick screen until kickoff. Today the pick screen shows a **static** spread from seeded data, not a live meter.
-- **Weekly video previews** — lowest priority; see Later / Wave 2. Do not start unless the owner asks.
 
-Live **scores** and **injury report** (ESPN public JSON) are already wired on `main` — not a bonus.
+Live **scores** and **injury report** (ESPN public JSON) are already wired on `main` — not a bonus. **Weekly videos + game highlights** are shipped (header **Videos**, Scores → Details) — do not rebuild them.
 
 ### Later / Wave 2 (do not confuse with MUST)
 
 Lowest priority. Do **not** start unless the owner asks. None of this is on `main`.
 
 - H2H gloves animation, banter, weekly SMS/email **digests**, WhatsApp, extra visual polish. **Notification type preferences are shipped** (not this list). If digests ever happen, include Canadian TV (TSN / CTV / RDS / DAZN) in the copy — that is not an app feature today.
-- **Weekly video previews (lowest priority):** a Help and/or Home section (or a simple link) with **curated** video links for that week — about **1–2 short** (5–10 min), **1–2 medium** (10–20 min), and **1–2 long** (20 min up to ~2.5 hr). Sources: **NFL YouTube channel**, **ESPN**, and/or **TSN**. Links only / embed-friendly preview. **Not** required for core picks / board / in-vs-out. Do not invent a live video feed or scrape YouTube. Do not implement this unless the owner asks. A free or basic Grok chat may later *draft a short list of official links* if asked — that is still not a feature on `main`.
 
 ---
 
@@ -422,6 +421,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Head coach + team page order | [#20](https://github.com/triwithms/survive-sunday/pull/20) | **Coach** card (ESPN name + ESPN / Wikipedia / team links). Team info (record, this week, coach, style) sits at the top; **Key players** is further down. Tap a player still opens details. |
 | Larger team logos (first bump) | [#43](https://github.com/triwithms/survive-sunday/pull/43) | ESPN marks beside abbreviations on Scores, Pick, Board, and League. Modest ~20–30% bump. |
 | Larger team logos (second bump) | [#49](https://github.com/triwithms/survive-sunday/pull/49) | Clear step up on a phone: compact 32→44, row 36→48, slate 50→66, featured 64→84, hero 72→96. |
+| Weekly videos + game highlights | this PR | Header **Videos** (and Home title cards): short / medium / longer NFL YouTube lists for the selected week. Scores → **Details** embeds that game’s highlights when NFL has posted them. Standard YouTube player + **Open in YouTube**. Empty/quiet if YouTube is down — picks and scores still work. |
 
 ### Open — not on `main` yet
 
@@ -507,7 +507,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 - Multi-file refactors that touch Auth.js + Prisma + Neon together (needs a proper coding agent, or a human who can run the app)
 - Merging **conflicting** PRs or resolving git conflicts across several branches
 - Clicking Vercel / GitHub **for** the owner
-- Inventing live data feeds, weekly video libraries, Canadian channel listings, or features as if they were already on `main`
+- Inventing live data feeds, Canadian channel listings, or features as if they were already on `main`. Weekly videos already ship from official YouTube channels — do not add a second library.
 
 **Rules for every chat**
 
@@ -577,7 +577,7 @@ Then only these paths unless a listed open PR is the task:
 - DEPLOY.md
 
 Owner is not a coder. Explain steps in plain English (en-CA), click-by-click.
-Make one small PR. Do not add Wave 2 extras, the live-odds bonus, or weekly video previews unless I ask.
+Make one small PR. Do not add Wave 2 extras or the live-odds bonus unless I ask. Weekly videos already ship — do not rebuild them.
 
 Honest status:
 - Login/session cookie + AUTH_SECRET / AUTH_TRUST_HOST / AUTH_URL pitfalls are already fixed on main.
@@ -613,7 +613,7 @@ Official REAL Week 1 picks (incl Go Giants, Pauli, JaJa → DAL) are already imp
 Board / pick-list sort on main: same pick → same game → nickname A–Z (no-pick last). Do not sort these lists status-first.
 Friends may open the app without picking every week; a missed week still counts as a loss after lock unless I ask to change that rule.
 Pick header prev/next week is **on main** (merged PR #14). Do not start a second copy.
-No favourite-strength-meter bonus or weekly video previews unless I ask.
+No favourite-strength-meter bonus unless I ask. Weekly videos already ship.
 My problem: [describe pick / lock / board issue]
 ```
 
@@ -642,7 +642,7 @@ MUST on main (already shipped):
 - Roster real-name editor (including Go Giants, Pauli, JaJa). Pick backup (copy from another member within 30 min of kickoff) is on Account and Admin → Roster.
 - Turn off mulligan / one-and-done from a week; **Hand the pool to someone else** (confirm nickname; previous stays a player and loses Admin). Do not start a second copy.
 
-Small PR only. Do not expand into Wave 2 SMS/digests or weekly video previews.
+Small PR only. Do not expand into Wave 2 SMS/digests. Weekly videos already ship.
 My problem: [describe admin / import / lock-override / mulligan / transfer / mode issue]
 ```
 
@@ -700,6 +700,7 @@ You are free / basic Grok chat — not Grok Bot. Trust main for what is live:
 - Live scores / injuries upgrade already shipped as merged PR #12. Do not invent another feed.
 - Real-mode League W-L syncs from ESPN (not demo week2-standings). Do not show player-facing demo League copy.
 - Head coach card already shipped as merged PR #20. Do not open a second copy.
+- Weekly YouTube videos (header Videos) and Scores → Details highlights already ship. Do not invent a second video library.
 
 Canadian TSN / CTV / RDS / DAZN listings are not in the app. Do not invent a live Canadian TV feed.
 Small PR only. Do not rewrite picks / board / in-out.

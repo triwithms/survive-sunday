@@ -11,7 +11,7 @@ export type WeekSwitcherOption = {
 };
 
 /**
- * Week nav for Pool/Scores: dropdown + prev/next arrows only.
+ * Week nav for Pool/Scores/Videos: dropdown + prev/next arrows only.
  * Future weeks stay on Schedule unless allowFuture is set.
  */
 export function WeekSwitcher({
