@@ -25,6 +25,7 @@ import { backfillPoolAccessRoles } from "../src/lib/roles-db";
 import { ensureDualMembershipIndex } from "../src/lib/membership-schema";
 import { ensureNotificationTables } from "../src/lib/notification-schema";
 import { ensurePickMirrorColumn } from "../src/lib/pick-mirror-schema";
+import { ensurePoolRulesColumns } from "../src/lib/pool-rules-schema";
 import { ensureCanonicalLiveSeats } from "../src/lib/live-roster";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
@@ -247,6 +248,7 @@ async function main() {
     await ensurePoolModeColumn(prisma);
     await ensureDualMembershipIndex(prisma);
     await ensureMembershipIsAdminColumn(prisma);
+    await ensurePoolRulesColumns(prisma);
     await ensurePoolAccessRoleTable(prisma);
     await ensureNotificationTables(prisma);
     await ensurePickMirrorColumn(prisma);
@@ -267,6 +269,7 @@ async function main() {
       await ensurePoolModeColumn(prisma);
       await ensureDualMembershipIndex(prisma);
       await ensureMembershipIsAdminColumn(prisma);
+      await ensurePoolRulesColumns(prisma);
       await ensurePoolAccessRoleTable(prisma);
       await ensureOtpChallengeTable(prisma);
       await ensureNotificationTables(prisma);
@@ -278,6 +281,7 @@ async function main() {
       // db push from `main` (still @@unique) can put the leftover back.
       await ensureDualMembershipIndex(prisma);
       await ensurePoolAccessRoleTable(prisma);
+      await ensurePoolRulesColumns(prisma);
       await ensureNotificationTables(prisma);
       await ensurePickMirrorColumn(prisma);
       await assertRequiredSchema(prisma);
@@ -372,7 +376,41 @@ async function main() {
           error
         );
       }
-      console.log(`[ensure-db] demo pool present (${users} users)`);
+      // Spectator commissioners (no real picks) stay off the player board
+      // after isParticipant was added. Playing commissioners with picks
+      // are left on the board.
+      let spectatorsMarked = 0;
+      try {
+        const admins = await prisma.membership.findMany({
+          where: { role: "admin", isParticipant: true },
+          include: {
+            picks: {
+              where: { source: { not: "missed" }, NOT: { teamAbbr: "MISS" } },
+              take: 1,
+            },
+          },
+        });
+        for (const admin of admins) {
+          if (admin.picks.length === 0) {
+            await prisma.membership.update({
+              where: { id: admin.id },
+              data: { isParticipant: false },
+            });
+            spectatorsMarked += 1;
+          }
+        }
+      } catch (error) {
+        console.warn(
+          "[ensure-db] spectator commissioner mark skipped (build continues)",
+          error
+        );
+      }
+      console.log(
+        `[ensure-db] demo pool present (${users} users)` +
+          (spectatorsMarked
+            ? `; marked ${spectatorsMarked} spectator commissioner(s)`
+            : "")
+      );
       return false;
     }
     return true;

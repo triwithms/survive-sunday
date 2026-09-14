@@ -31,6 +31,7 @@
     "verify:pending-practice-email": "tsx scripts/verify-pending-practice-email.ts",
     "verify:claim-attach": "tsx scripts/verify-claim-attach.ts",
     "verify:roles": "tsx scripts/verify-roles.ts",
+    "verify:pool-rules": "tsx scripts/verify-pool-rules.ts",
     "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
     "verify:login-error": "tsx scripts/verify-login-error.ts",
     "verify:auth-rewrite": "tsx scripts/verify-auth-rewrite.ts",

@@ -21,6 +21,7 @@ import { teamLogoUrl } from "@/lib/espn-teams";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { ShareExport } from "@/components/ShareExport";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
+import { isPoolParticipant } from "@/lib/pool-rules";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -112,7 +113,7 @@ export default async function ScoresPage({
   });
   const participants = sortParticipants(
     members
-      .filter((member) => member.role !== "admin")
+      .filter((member) => isPoolParticipant(member))
       .map((member) => ({
         ...member,
         ...boardPickFields(member.picks[0], week.games),

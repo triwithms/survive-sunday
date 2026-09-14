@@ -356,7 +356,7 @@ export async function POST(req: Request) {
       pick.result = immediate;
 
       if (immediate === "loss" || immediate === "push") {
-        await applyLossToMembership(member.id);
+        await applyLossToMembership(member.id, weekNumber);
       } else if (immediate === "win") {
         await applyWinToMembership(member.id);
       }

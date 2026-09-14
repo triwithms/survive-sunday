@@ -11,7 +11,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">**Pick one team each week** to win. You can’t reuse a team you’ve already picked, and bye-week teams are off the board.</li>
           <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). After lock, everyone’s picks go public. **Week 1 only:** you can still change an existing pick until that team’s kickoff if the new game has not started. After Week 1 that extra window goes away.</li>
-          <li className="text-[var(--text-primary)]">**You get one mulligan.** Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you.</li>
+          <li className="text-[var(--text-primary)]">**You get one mulligan** unless the commissioner turns it off. Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you. If the commissioner switches to one-and-done, the app shows **From Week X: no mulligan / one-and-done.**</li>
           <li className="text-[var(--text-primary)]"><strong>Personal Join link</strong> from the commissioner. Join <strong>once</strong> with your own email and password so your Week 1 picks stay. On that phone you stay signed in. Next time, Sign in with a <strong>sign-in code</strong> (or your password). If that name is already claimed, tap <strong>Sign in</strong>. Don’t use Forgot password before you Join. Returning BM Boys: <strong>Account → Change nickname</strong>. New joiners not on the list can join as a new player.</li>
           <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for SMS missing-pick reminders. You can add or change it later from Account or the header. Choose what we send under <strong>Account → Notification preferences</strong>. Wave 2 social features are marked below as coming soon.</li>
         </ul>
@@ -137,13 +137,14 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h3 className="font-semibold mt-3 mb-1">No team reuse</h3>
         <p className="text-[var(--text-muted)] mb-2">Any team you pick is struck from your list for the rest of the season, whether that pick won or lost. Plan ahead: burning a favourite early might leave you scrambling in December.</p>
         <p className="text-[var(--text-muted)] mb-2">**Bye-week teams are unavailable.** The picker disables them so you can’t select a club that isn’t playing.</p>
-        <h3 className="font-semibold mt-3 mb-1">One mulligan</h3>
+        <h3 className="font-semibold mt-3 mb-1">One mulligan (unless the commissioner turns it off)</h3>
         <p className="text-[var(--text-muted)] mb-2">Everyone starts with **one** mulligan for the season. You don’t choose when to burn it — it **auto-burns** on your first wrong pick **or** on a missed pick at lock.</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">After that first loss: status becomes **one loss** — you’re still in.</li>
           <li className="text-[var(--text-primary)]">A second loss: you’re **eliminated**.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">There’s no manual “save my mulligan for later” switch.</p>
+        <p className="text-[var(--text-muted)] mb-2">The commissioner can **turn off the free mulligan** from a chosen week (or immediately). From that week on, the pool is **one-and-done**: one loss or a missed pick puts you out. A gold banner says **From Week X: no mulligan / one-and-done.** Already-scored weeks stay as they were — nobody is retroactively eliminated. If you already used your mulligan (**One loss**), you stay in; your next loss still puts you out.</p>
         <h3 className="font-semibold mt-3 mb-1">Lock time</h3>
         <p className="text-[var(--text-muted)] mb-2">The week locks at the **kickoff of the first scheduled game** that week. After lock:</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
@@ -315,6 +316,8 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Remove players** who shouldn’t be in the pool.</li>
           <li className="text-[var(--text-primary)]">**Roster:** open **Admin → Roster** to see every nickname and real name, and fix either if it’s wrong. Each change is audit-logged. You can also set <strong>Pick backup</strong> (off, optional copy-from-member if no pick within 30 minutes — no 💩 — or optional best unused 2025-rank team within about 2 minutes, which stamps 💩). Official winner must be 💩-free.</li>
           <li className="text-[var(--text-primary)]">**Roles:** one login can be a **Player** and an **Administrator**. If you have both, use **Playing as …** / **Admin tools** to switch. Players without Admin never see Admin tools. You can **Make administrator** for someone already in the pool (they stay on the board). The pool always keeps at least one administrator. A later **Watcher** role (follow the board, no picks) is reserved and not in the app yet.</li>
+          <li className="text-[var(--text-primary)]">**Turn off the free mulligan** (one-and-done from a chosen week). Already-graded weeks are not re-scored. People who already used a mulligan stay in with one loss.</li>
+          <li className="text-[var(--text-primary)]">**Hand the pool to someone else** — transfer Admin to another member who is already in the pool. You stay as a player and lose Admin. They keep their picks and stay on the board. This is different from **Make administrator**, which lets more than one person have Admin tools.</li>
           <li className="text-[var(--text-primary)]">**Pool notes & missing-pick nudge:** Admin → send a short note (only friends who left Pool notes on) or nudge anyone still without a pick (only if they left Missing pick reminder on).</li>
           <li className="text-[var(--text-primary)]"><strong>Coming later:</strong> weekly digests. Late-pick reminders already respect Notification preferences.</li>
           <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> and <strong>sign-in codes</strong> use the same Resend keys (owner sets them on Vercel). Optional Twilio for texts if a cell is saved. <strong>Wave 2 — Coming soon:</strong> WhatsApp group stub.</li>
@@ -322,9 +325,13 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
             <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> mark demo-mode team data so “demo” labels stay honest.</li>
           )}
         </ul>
+        <h3 className="font-semibold mt-3 mb-1">Turn off the mulligan (one-and-done)</h3>
+        <p className="text-[var(--text-muted)] mb-2">Open **Admin → Pool rules — mulligan**. Tick the box, choose the starting week (this week or later — or an earlier week if you only want the label; old games are not re-scored), and save. Confirm the prompt.</p>
+        <p className="text-[var(--text-muted)] mb-2">You can turn the free mulligan back on the same way. That does not revive anyone already eliminated.</p>
+        <h3 className="font-semibold mt-3 mb-1">Hand the pool to someone else</h3>
+        <p className="text-[var(--text-muted)] mb-2">Open **Admin → Hand the pool to someone else**. Pick a person who is already a member, type their nickname, tick the confirmation box, and confirm. You stay in the pool as a player and lose Admin. They keep their picks and get the Admin screen. This is different from **Make administrator**, which lets both of you keep Admin tools. If nobody else is in the pool yet, the app will not let you transfer — that would lock everyone out.</p>
         <p className="text-[var(--text-muted)] mb-2">**Important:** you cannot silently edit another player’s pick. Any such change must leave an **audit log** entry visible to the pool.</p>
         <p className="text-[var(--text-muted)] mb-2">Remind the group: this is entertainment among friends — no in-app betting.</p>
-        <p className="text-[var(--text-muted)] mb-2">---</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="15-importing-prior-picks">
@@ -361,7 +368,9 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **Board** | Pool board: same pick (team abbr; no pick last), then same game (earlier kickoff), then nickname A–Z. Status chips show on each row but do not split a pick group. After lock, Home still groups by kickoff-ordered games then away/home clusters; each cluster (and Scores’ pick list) uses that same order. |
 | **Share (picture)** | Board or Scores: press and hold the title, or triple-tap the week label. No Share button on the screen. Full long picture is always offered. |
 | **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
-| **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock). |
+| **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock), unless the commissioner turns it off. |
+| **One-and-done** | Commissioner rule: from a chosen week, one loss (or missed pick) puts you out. Banner: “From Week X: no mulligan / one-and-done.” |
+| **Transfer commissioner** | Current admin gives Admin to another pool member and stays as a player. Different from Make administrator (that keeps both people as Admin). |
 | **Notification preferences** | Account → Notification preferences. Toggles for which emails (and missing-pick texts) you want. |
 | **Pick backup** | Optional: copy-from-member if no pick within 30 minutes (no 💩), or best unused 2025-rank team within ~2 minutes (stamps 💩). Official winner must be 💩-free. |
 | **Auto-pick 💩** | Stamp only when the ~2-minute ranked leftover writes a pick. Shown beside the nickname on Board / Home. Clean record required to win. |

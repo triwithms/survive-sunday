@@ -14,6 +14,7 @@ import { getInjuryCountsByTeam } from "@/lib/live-injuries";
 import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
+import { isPoolParticipant } from "@/lib/pool-rules";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -78,6 +79,7 @@ export default async function PickPage({
 
   const locked = isWeekLocked(week);
   const eliminated = me.status === "eliminated";
+  const spectator = !isPoolParticipant(me);
 
   const myPick = await prisma.pick.findUnique({
     where: {
@@ -90,6 +92,7 @@ export default async function PickPage({
       : null;
   const canChange =
     !eliminated &&
+    !spectator &&
     week.number === currentWeek &&
     canEditExistingPick({
       weekNumber: week.number,
@@ -172,6 +175,7 @@ export default async function PickPage({
         locked={locked}
         canChange={canChange}
         eliminated={eliminated}
+        spectator={spectator}
         currentPick={currentAbbr}
         games={games}
       />

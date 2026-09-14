@@ -133,6 +133,7 @@ export async function ensureDemoAccount(email: string, password: string): Promis
       nickname,
       realName: profile.realName,
       role: profile.role,
+      isParticipant: profile.role !== "admin",
     },
   });
 }

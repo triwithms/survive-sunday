@@ -64,6 +64,9 @@ async function main() {
       ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "isParticipant" BOOLEAN NOT NULL DEFAULT true
     `);
     await prisma.$executeRawUnsafe(`
+      ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "playingFromWeek" INTEGER
+    `);
+    await prisma.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS "TwoFactorChallenge" (
         "id" TEXT NOT NULL,
         "email" TEXT NOT NULL,
@@ -106,6 +109,9 @@ async function main() {
     if (!(await columnExists(prisma, "Membership", "isParticipant"))) {
       fail("other-PR Membership column was dropped");
     }
+    if (!(await columnExists(prisma, "Membership", "playingFromWeek"))) {
+      fail("other-PR Membership playingFromWeek column was dropped");
+    }
     if (!(await columnExists(prisma, "Pool", "mode"))) {
       fail("Pool.mode from Real mode was not added");
     }
@@ -147,6 +153,9 @@ async function main() {
     );
     await prisma.$executeRawUnsafe(
       `ALTER TABLE "Membership" DROP COLUMN IF EXISTS "isParticipant"`
+    );
+    await prisma.$executeRawUnsafe(
+      `ALTER TABLE "Membership" DROP COLUMN IF EXISTS "playingFromWeek"`
     );
     await prisma.$executeRawUnsafe(`DROP TABLE IF EXISTS "TwoFactorChallenge" CASCADE`);
     await prisma.$disconnect();

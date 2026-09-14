@@ -28,6 +28,7 @@ import {
   weeksForParticipants,
 } from "@/lib/pool-mode";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
+import { isPoolParticipant } from "@/lib/pool-rules";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -106,7 +107,7 @@ export default async function PoolPage({
   });
 
   const participants = members
-    .filter((m) => m.role !== "admin")
+    .filter((m) => isPoolParticipant(m))
     .map((m) => ({
       ...m,
       ...boardPickFields(m.picks[0], week.games),
@@ -273,7 +274,7 @@ export default async function PoolPage({
           </div>
         ) : self.status === "eliminated" ? (
           <p className="text-[var(--text-muted)]">You&apos;re eliminated — still welcome to hang out.</p>
-        ) : self.role === "admin" ? (
+        ) : self.role === "admin" || !isPoolParticipant(self) ? (
           <div className="space-y-2">
             <p className="text-[var(--text-muted)]">
               Commissioner view — you&apos;re not required to pick.

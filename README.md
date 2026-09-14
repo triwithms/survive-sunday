@@ -96,7 +96,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - Own pick always visible; after lock show matchup + choice; spreads on pick UI
 - Live ESPN scores (poll ~45s while games are on) + auto-grade finals; admin simulate button
 - Near-live ESPN injury report on team pages and pick-adjacent chips (Out / Doubtful / Questionable)
-- Light admin: lock override, remove player, force grade, **audit log**
+- Light admin: lock override, remove player, force grade, **audit log**, **mulligan / one-and-done from a week**, **transfer commissioner**
 - **Import Week picks** (CSV / paste) for groups mid-season — counts for grading/mulligan/reuse
 - Season-end tiebreak helpers (clean record / no ranked auto-pick 💩 → fewest losses → weeks survived → nickname A–Z)
 - `/help` from HELP-COPY (+ importing prior picks); footer disclaimer

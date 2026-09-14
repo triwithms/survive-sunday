@@ -18,6 +18,7 @@ import {
 } from "@/lib/pick-change";
 import { schedulePickConfirmed } from "@/lib/notification-events";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
+import { isPoolParticipant } from "@/lib/pool-rules";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
   if (membership.status === "eliminated") {
     return NextResponse.json({ error: "Eliminated — no picks" }, { status: 403 });
   }
-  if (membership.role === "admin") {
+  if (!isPoolParticipant(membership)) {
     return NextResponse.json(
       { error: "Commissioner is not a participant — no pick required" },
       { status: 403 }
@@ -213,7 +214,7 @@ export async function GET(req: Request) {
 
   const participants = sortParticipants(
     members
-      .filter((m) => m.role !== "admin")
+      .filter((m) => isPoolParticipant(m))
       .map((m) => ({
         ...m,
         ...boardPickFields(m.picks[0], weekFresh.games),
