@@ -69,9 +69,10 @@ export default async function VideosPage({
           Videos
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Official NFL (and a few reputable) YouTube videos for {selected.label}.
-          Tap a thumbnail to play here — YouTube’s own controls, including
-          fullscreen. If a clip won’t play in the app, use Open in YouTube.
+          Official NFL (and a few reputable) YouTube videos for {selected.label}
+          — <strong>2026/27 season only</strong>, not old archives. Tap a
+          thumbnail to play here — YouTube’s own controls, including fullscreen.
+          If a clip won’t play in the app, use Open in YouTube.
         </p>
       </div>
       <WeekSwitcher

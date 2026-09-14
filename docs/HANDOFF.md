@@ -30,6 +30,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Home Screen prompt** — after Join or first Sign in on a phone browser (not already the Home Screen icon), we ask if they already added the app. Yes = don’t ask again on that phone. Show me how = iPhone Safari / Android Chrome steps. Not now = skip for a while. Already installed = no nag (optional one-time “You’re good”).
 - **Share Board / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). No Share button on the screen. On Board or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
 - **Scores Details ›** — merged [PR #46](https://github.com/triwithms/survive-sunday/pull/46). Each game card shows gold **Details ›** (live, Final, and upcoming) so friends know the card opens more info.
+- **Videos** — merged [PR #51](https://github.com/triwithms/survive-sunday/pull/51). Header **Videos** plus Home title cards; Scores → **Details** for that game. **This 2026/27 season only** (this PR) — older years and archive / throwback clips are skipped.
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset and sign-in codes are **not** gated by these prefs.
 - **Pool rules — mulligan** + **Hand the pool to someone else** — commissioner can turn off the free mulligan from a chosen week (one-and-done; already-scored weeks stay) and give Admin to another existing member (they keep playing; you stay as a player). Different from **Make administrator**.
 
@@ -420,12 +421,14 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Head coach + team page order | [#20](https://github.com/triwithms/survive-sunday/pull/20) | **Coach** card (ESPN name + ESPN / Wikipedia / team links). Team info (record, this week, coach, style) sits at the top; **Key players** is further down. Tap a player still opens details. |
 | Larger team logos (first bump) | [#43](https://github.com/triwithms/survive-sunday/pull/43) | ESPN marks beside abbreviations on Scores, Pick, Board, and League. Modest ~20–30% bump. |
 | Larger team logos (second bump) | [#49](https://github.com/triwithms/survive-sunday/pull/49) | Clear step up on a phone: compact 32→44, row 36→48, slate 50→66, featured 64→84, hero 72→96. |
+| Weekly videos + game highlights | [#51](https://github.com/triwithms/survive-sunday/pull/51) | Header **Videos** (and Home title cards). Scores → **Details** embeds that game’s highlights. Standard YouTube player + **Open in YouTube**. |
+| Videos: this season only | this PR | Weekly previews and game highlights are **2026/27 only**. Titles with older years, throwback / vault wording, or no this-season publish date are skipped. |
 
 ### Open — not on `main` yet
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
-| Weekly videos + game highlights | [#51](https://github.com/triwithms/survive-sunday/pull/51) | Header **Videos** (and Home title cards): short / medium / longer NFL YouTube lists. Scores → **Details** embeds that game’s highlights when NFL has posted them. Standard YouTube player + **Open in YouTube**. Empty/quiet if YouTube is down — picks and scores still work. |
+| — | — | No open feature PRs at the moment. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 

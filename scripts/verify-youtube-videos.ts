@@ -6,9 +6,11 @@
 import assert from "node:assert/strict";
 import {
   bucketFromDuration,
+  clipIsThisNflSeason,
   extractInnertubeVideos,
   groupWeeklyVideos,
   parseDurationLabel,
+  parseRelativePublishedMs,
   parseYoutubeAtomFeed,
   pickGameHighlights,
   titleHasWeek,
@@ -46,6 +48,100 @@ assert.equal(
 assert.equal(
   titleLooksOldSeason("Dallas Cowboys vs New York Giants Game Highlights | NFL 2026 Season Week 1"),
   false
+);
+
+const now = Date.parse("2026-09-14T16:00:00Z");
+assert.equal(
+  clipIsThisNflSeason(
+    {
+      title: "Dallas Cowboys vs New York Giants Game Highlights | NFL 2026 Season Week 1",
+      publishedAt: null,
+      publishedLabel: null,
+    },
+    now
+  ),
+  true
+);
+assert.equal(
+  clipIsThisNflSeason(
+    {
+      title: "Dallas Cowboys vs. New York Giants | 2023 Week 1 Game Highlights",
+      publishedAt: "2023-09-10T00:00:00Z",
+      publishedLabel: null,
+    },
+    now
+  ),
+  false
+);
+assert.equal(
+  clipIsThisNflSeason(
+    {
+      title: "Giants vs. Cowboys | NFL Week 1 Game Highlights",
+      publishedAt: null,
+      publishedLabel: null,
+    },
+    now
+  ),
+  false
+);
+assert.equal(
+  clipIsThisNflSeason(
+    {
+      title: "CAN THE COWBOYS MOUNT A COMEBACK IN NYC? Cowboys vs Giants Week 1 Ending",
+      publishedAt: "2026-09-14T04:00:00Z",
+      publishedLabel: null,
+    },
+    now
+  ),
+  true
+);
+assert.equal(
+  clipIsThisNflSeason(
+    {
+      title: "Giants vs. Cowboys | Week 1 Highlights | NFL",
+      publishedAt: "2019-09-08T00:00:00Z",
+      publishedLabel: null,
+    },
+    now
+  ),
+  false
+);
+assert.equal(
+  clipIsThisNflSeason(
+    {
+      title: "Players We're Obsessing Over in Week 2 | Good Morning Football",
+      publishedAt: null,
+      publishedLabel: "3 days ago",
+    },
+    now
+  ),
+  true
+);
+assert.equal(
+  clipIsThisNflSeason(
+    {
+      title: "Who were the Top Performers from Week 2?",
+      publishedAt: null,
+      publishedLabel: "1 year ago",
+    },
+    now
+  ),
+  false
+);
+assert.equal(
+  clipIsThisNflSeason(
+    {
+      title: "NFL Throwback: Cowboys vs Giants Week 1",
+      publishedAt: "2026-09-14T00:00:00Z",
+      publishedLabel: null,
+    },
+    now
+  ),
+  false
+);
+assert.ok(parseRelativePublishedMs("1 year ago", now)! < Date.UTC(2026, 0, 1));
+assert.ok(
+  parseRelativePublishedMs("3 days ago", now)! > Date.UTC(2026, 8, 1)
 );
 
 assert.equal(titleMentionsTeam("Cowboys vs Giants", "DAL"), true);
@@ -119,6 +215,7 @@ const weekly = groupWeeklyVideos(
       channelId: YT_NFL,
       thumbnailUrl: null,
       publishedAt: null,
+      publishedLabel: null,
       durationSeconds: 12 * 60,
       durationLabel: "12:00",
       isShort: false,
@@ -130,6 +227,7 @@ const weekly = groupWeeklyVideos(
       channelId: YT_NFL,
       thumbnailUrl: null,
       publishedAt: null,
+      publishedLabel: null,
       durationSeconds: 12 * 60,
       durationLabel: "12:00",
       isShort: false,
@@ -141,6 +239,7 @@ const weekly = groupWeeklyVideos(
       channelId: YT_NFL,
       thumbnailUrl: null,
       publishedAt: null,
+      publishedLabel: null,
       durationSeconds: 15 * 60,
       durationLabel: "15:01",
       isShort: false,
@@ -152,6 +251,19 @@ const weekly = groupWeeklyVideos(
       channelId: "UCnotallowlisted000000000",
       thumbnailUrl: null,
       publishedAt: null,
+      publishedLabel: null,
+      durationSeconds: 12 * 60,
+      durationLabel: "12:00",
+      isShort: false,
+    },
+    {
+      videoId: "NOYEAR",
+      title: "NFL Week 2 Preview",
+      channelName: "NFL",
+      channelId: YT_NFL,
+      thumbnailUrl: null,
+      publishedAt: null,
+      publishedLabel: null,
       durationSeconds: 12 * 60,
       durationLabel: "12:00",
       isShort: false,
@@ -173,6 +285,7 @@ const game = pickGameHighlights(
       channelId: YT_NFL,
       thumbnailUrl: null,
       publishedAt: null,
+      publishedLabel: null,
       durationSeconds: 16 * 60 + 19,
       durationLabel: "16:19",
       isShort: false,
@@ -185,6 +298,7 @@ const game = pickGameHighlights(
       channelId: "UCY_wPnc5xrvPekvHpLAvZvQ",
       thumbnailUrl: null,
       publishedAt: null,
+      publishedLabel: null,
       durationSeconds: 45 * 60,
       durationLabel: "45:41",
       isShort: false,
@@ -196,8 +310,21 @@ const game = pickGameHighlights(
       channelId: YT_NFL,
       thumbnailUrl: null,
       publishedAt: null,
+      publishedLabel: null,
       durationSeconds: 11 * 60,
       durationLabel: "11:12",
+      isShort: false,
+    },
+    {
+      videoId: "ARCHIVEHL",
+      title: "Giants vs. Cowboys | NFL Week 1 Game Highlights",
+      channelName: "NFL",
+      channelId: YT_NFL,
+      thumbnailUrl: null,
+      publishedAt: null,
+      publishedLabel: "5 years ago",
+      durationSeconds: 8 * 60,
+      durationLabel: "8:49",
       isShort: false,
     },
   ],
@@ -230,6 +357,7 @@ const innertube = {
                         ],
                       },
                       lengthText: { simpleText: "14:02" },
+                      publishedTimeText: { simpleText: "2 days ago" },
                       ownerText: {
                         runs: [
                           {
@@ -256,6 +384,7 @@ assert.equal(extracted.length, 1);
 assert.equal(extracted[0].videoId, "abc123XYZ_1");
 assert.equal(extracted[0].durationSeconds, 14 * 60 + 2);
 assert.equal(extracted[0].channelId, YT_NFL);
+assert.equal(extracted[0].publishedLabel, "2 days ago");
 
 const emptyGame = pickGameHighlights([] as RawYoutubeHit[], {
   week: 1,
