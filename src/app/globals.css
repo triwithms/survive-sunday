@@ -160,3 +160,14 @@ a:focus-visible, button:focus-visible {
 .team-research a {
   overflow-wrap: anywhere;
 }
+
+/* Share / export: hide chrome and filtered rows while we make the picture */
+.share-capture-hide {
+  display: none !important;
+}
+.share-capturing [data-share-stamp] {
+  display: block !important;
+}
+[data-share-stamp] {
+  display: none;
+}

@@ -175,6 +175,9 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
   return (
     <li
       className={`card-glass p-3 ${isLive ? "border border-field-400/50" : ""}`}
+      data-share-chunk=""
+      data-share-game=""
+      data-game-status={game.status}
     >
       <div
         role="button"

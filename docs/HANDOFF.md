@@ -25,6 +25,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - Forgot password **and sign-in codes** are on `main` after this merge; emails will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**
 - **Personal Join links** — Admin → **Personal Join links** → one **Copy** per friend who has not Joined (`/join?who=cannoli-stuffer` when the nickname is unique; otherwise `/join?seat=…`). Opens Join with that seat already picked. Invite code `SUNDAY26` is filled in. If the seat is already claimed, the friend sees Sign in — not a broken form. Send one link per friend; do not blast one link to the group chat. Roster has the same Copy button, without extra wording. **Help → Getting started**.
 - **Home Screen prompt** — after Join or first Sign in on a phone browser (not already the Home Screen icon), we ask if they already added the app. Yes = don’t ask again on that phone. Show me how = iPhone Safari / Android Chrome steps. Not now = skip for a while. Already installed = no nag (optional one-time “You’re good”).
+- **Share Board / Scores as a picture** — **not on `main` until you merge this PR.** After merge: Board or Scores → **Share** → pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. Help documents the flow. Does not change picks, Join, Sign in, or lock.
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset and sign-in codes are **not** gated by these prefs.
 
 The Real-mode playbook is [`docs/REAL-MODE.md`](./REAL-MODE.md). Earlier handoff refreshes ([PR #13](https://github.com/triwithms/survive-sunday/pull/13), [PR #15](https://github.com/triwithms/survive-sunday/pull/15)) are **superseded by this file**.
@@ -285,6 +286,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 ### Scores, League, team pages
 
 - **Scores** pulls the ESPN scoreboard, shows live / scheduled / final, and auto-grades games that are final.
+- **Share as a picture** (this PR — not live until merge): Board and Scores have a **Share** button. Full long screenshot is always a choice. Shorter options (this week’s picks, scores only, still in, undefeated, live games) plus split pages when the page is very long. Save image or the phone’s Send sheet. Help → **Share Board & Scores as a picture**. Does **not** change picks, Join, Sign in, or lock.
 - **League** and **Schedule** are research screens (standings / full slate). In Real mode, League **W-L syncs from ESPN** (not the demo `week2-standings.json` seed, and no player-facing “demo” League copy). Kickoff times in the app are the **US slate** (ET + US networks such as CBS / Fox / NBC).
 - **Team pages** (`/team/KC` and so on): roster, college, news links, record, and ESPN’s public injury report (not official NFL).
 - Tapping an individual NFL **player** for a detail page is **not on `main` yet** (open [PR #11](https://github.com/triwithms/survive-sunday/pull/11)).
@@ -332,6 +334,7 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 | Demo lock toggle | Header **Before / After deadline** — commissioner only, and only in Demo mode. |
 | **Administrators** | Grant Admin tools to an existing pool player (confirm). They stay on the board. Same login can be Player + Administrator; switch views. Remove Admin is allowed only if another administrator remains. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
 | **Pool notes & nudge** | Send a short email note to friends who left **Pool notes** on. **Nudge missing picks** emails/texts friends who still have no pick (and left that reminder on). Uses Resend / optional Twilio. |
+| **Share Board / Scores** | Not on Admin. After this PR merges: Board or Scores → **Share** → full long picture (always) or a shorter / split option → Make picture → Save or Send. |
 
 **Not on Admin yet (other open PRs):** turn off the mulligan / one-and-done, **hand the whole pool** to someone else (they become the commissioner seat — [PR #8](https://github.com/triwithms/survive-sunday/pull/8)). That is different from **Make administrator** (they keep playing).
 
@@ -406,6 +409,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 
 | Work | Where | What it will add (from that PR — not live) |
 |------|--------|--------------------------------------------|
+| Share Board / Scores as pictures | this PR (`cursor/board-scores-share-export-f6cc`) | **Share** on Board and Scores. Always includes the **full long picture**. Shorter options and split pages when the page is long. Save or Send. Help + this file. Does not touch picks / Join / Sign in / lock. |
 | Commissioner: turn off mulligan + transfer | [PR #8](https://github.com/triwithms/survive-sunday/pull/8) | **Pool rules — mulligan** (one-and-done from a chosen week; already-scored weeks stay). **Hand the pool to someone else** (existing member only; they keep picks; you stay as a player). Branch `cursor/commissioner-mulligan-transfer-a878`. May need a rebase onto latest `main`. |
 | NFL player details | [PR #11](https://github.com/triwithms/survive-sunday/pull/11) (open, **not draft**) | On a team page, tap a **key player** or roster name. Shows number, position, college, starter vs depth. That PR’s own injury notes were **sample / demo** — `main` already has ESPN injuries on team pages, so a rebase should not invent a second feed. Branch `cursor/nfl-player-team-details-a32a`. |
 | Head coach on team pages | [PR #20](https://github.com/triwithms/survive-sunday/pull/20) | Team research page **Coach** card (ESPN name + links). Does not touch picks or auth. Branch `cursor/team-page-head-coach-9d0f`. |
