@@ -53,6 +53,31 @@ export function personalWhoJoinUrl(origin: string, nickname: string): string {
   return joinUrl(origin, personalJoinWhoPath(nickname));
 }
 
+/** True when this nickname slug maps to exactly one roster seat. */
+export function nicknameSlugIsUnique(
+  nickname: string,
+  roster: { nickname: string }[]
+): boolean {
+  const slug = nicknameInviteSlug(nickname);
+  if (!slug) return false;
+  return roster.filter((s) => nicknameInviteSlug(s.nickname) === slug).length === 1;
+}
+
+/**
+ * One URL to copy per seat. Prefer the friendlier `?who=` nickname form when
+ * that slug is unique on the roster; otherwise the stable `?seat=` id.
+ */
+export function personalInviteUrl(
+  origin: string,
+  seat: { membershipId: string; nickname: string },
+  roster: { nickname: string }[]
+): string {
+  if (nicknameSlugIsUnique(seat.nickname, roster)) {
+    return personalWhoJoinUrl(origin, seat.nickname);
+  }
+  return personalSeatJoinUrl(origin, seat.membershipId);
+}
+
 export function resolveSeatFromInvite(
   seats: ClaimableSeat[],
   params: { seat?: string | null; who?: string | null }

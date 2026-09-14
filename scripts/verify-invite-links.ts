@@ -12,6 +12,7 @@ import {
   personalJoinWhoPath,
   personalSeatJoinUrl,
   personalWhoJoinUrl,
+  personalInviteUrl,
   PUBLIC_APP_ORIGIN,
   resolveSeatFromInvite,
 } from "../src/lib/invite-link";
@@ -57,6 +58,34 @@ assert.equal(
 assert.equal(
   personalWhoJoinUrl(PUBLIC_APP_ORIGIN, "Cannoli Stuffer"),
   "https://survive-sunday.vercel.app/join?who=cannoli-stuffer"
+);
+
+const uniqueRoster = [
+  { nickname: "Cannoli Stuffer" },
+  { nickname: "Gams" },
+];
+assert.equal(
+  personalInviteUrl(PUBLIC_APP_ORIGIN, { membershipId: "mem-1", nickname: "Cannoli Stuffer" }, uniqueRoster),
+  "https://survive-sunday.vercel.app/join?who=cannoli-stuffer",
+  "unique nickname uses ?who="
+);
+assert.equal(
+  personalInviteUrl(
+    PUBLIC_APP_ORIGIN,
+    { membershipId: "dup-1", nickname: "Steve" },
+    [{ nickname: "Steve" }, { nickname: "steve" }]
+  ),
+  "https://survive-sunday.vercel.app/join?seat=dup-1",
+  "duplicate slug falls back to ?seat="
+);
+assert.equal(
+  personalInviteUrl(
+    PUBLIC_APP_ORIGIN,
+    { membershipId: "blank-1", nickname: "???" },
+    [{ nickname: "???" }]
+  ),
+  "https://survive-sunday.vercel.app/join?seat=blank-1",
+  "empty slug falls back to ?seat="
 );
 
 const seats: ClaimableSeat[] = [

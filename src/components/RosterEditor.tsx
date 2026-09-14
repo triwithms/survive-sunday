@@ -48,6 +48,7 @@ export function RosterEditor({
           <RosterCard
             key={m.id}
             member={m}
+            rosterNicknames={members.map((row) => row.nickname)}
             mirrorOptions={mirrorOptions.filter((o) => o.id !== m.id)}
             disabled={busyId !== null && busyId !== m.id}
             busy={busyId === m.id}
@@ -63,6 +64,7 @@ export function RosterEditor({
 
 function RosterCard({
   member,
+  rosterNicknames,
   mirrorOptions,
   disabled,
   busy,
@@ -71,6 +73,7 @@ function RosterCard({
   onErr,
 }: {
   member: RosterMember;
+  rosterNicknames: string[];
   mirrorOptions: RosterMirrorOption[];
   disabled: boolean;
   busy: boolean;
@@ -156,6 +159,7 @@ function RosterCard({
           membershipId={member.id}
           nickname={member.nickname}
           claimed={isSeatClaimed(member.email)}
+          rosterNicknames={rosterNicknames}
         />
       )}
       <label className="block text-sm">

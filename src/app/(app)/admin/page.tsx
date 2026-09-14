@@ -157,7 +157,7 @@ export default async function AdminPage() {
         href="/admin/roster"
         className="btn-primary inline-flex items-center justify-center w-full"
       >
-        Roster — nicknames, real names, and invite links
+        Roster — nicknames and real names
       </Link>
 
       <Link

@@ -63,8 +63,8 @@ export function AddToHomeScreenPrompt() {
           You’re good
         </h2>
         <p className="text-sm text-[var(--text-muted)]">
-          You’re opening Survive Sunday from your Home Screen icon. Stay signed
-          in on this phone — we won’t keep asking.
+          You’re using the Home Screen icon. Stay signed in — we won’t keep
+          asking.
         </p>
         <button
           type="button"
@@ -83,16 +83,13 @@ export function AddToHomeScreenPrompt() {
   return (
     <ModalDialog labelledBy="ath-ask-title" placement="sheet">
       <h2 id="ath-ask-title" className="font-display text-xl text-gold-400">
-        {how ? "Add to Home Screen" : "Home Screen app"}
+        {how ? "Add to Home Screen" : "Home Screen"}
       </h2>
       {!how ? (
         <>
           <p className="text-sm text-[var(--text-muted)]">
-            Already added Survive Sunday to your Home Screen?
-          </p>
-          <p className="text-xs text-[var(--text-muted)]">
-            The icon keeps you signed in on this phone. You only Join or Sign in
-            once.
+            Add Survive Sunday to your Home Screen? Stay signed in on this
+            phone.
           </p>
           <button
             type="button"
@@ -102,7 +99,7 @@ export function AddToHomeScreenPrompt() {
               setDecision("hide");
             }}
           >
-            Yes — don’t ask again
+            Yes
           </button>
           <button
             type="button"

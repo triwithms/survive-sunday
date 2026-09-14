@@ -33,7 +33,7 @@ Friends stay signed in. We do **not** ask for a code at every sign-in.
 
 If they forget the password: Sign in → **Forgot password?** → 6-digit code by email → new password → back in the pool.
 
-If they already Joined and would rather not type the password: Sign in → **Email me a sign-in code** (same keys). Optional **Text me a code** only if a cell is saved. This is not a code at every login.
+If they already Joined: Sign in starts with **Email me a sign-in code** (same keys). **Use password instead** if they know it. Optional **Text me a code** only if a cell is saved. This is not a code at every login.
 
 Demo seats (`@survivesunday.demo`) always use **demo1234**. No reset.
 

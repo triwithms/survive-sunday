@@ -140,8 +140,6 @@ export function JoinForm({
           </p>
           <p className="text-sm text-[var(--text-muted)]">
             If that’s you, Sign in with the same email you used when you Joined.
-            Do not use Forgot password unless you have already Joined with that
-            email.
           </p>
           <Link
             href="/login"
@@ -188,10 +186,12 @@ export function JoinForm({
       )}
       <p className="text-[var(--text-muted)] text-sm mb-6">
         {newPlayer
-          ? "Invite-only. Choose a nickname your friends will recognise. Join once with your email and password. On this phone you should stay signed in."
+          ? "Choose a nickname your friends will recognise. Join once with your email and a password. Stay signed in on this phone."
           : oneTapClaim
-            ? `Signed in as ${signedIn?.email}. Pick your name — no password re-entry. Your Week 1 picks stay.`
-            : "Join once with your email and a password. On this phone you should stay signed in. Pick yourself from the live roster — your Week 1 picks stay with that name. Don’t use Forgot password before you Join. Already have this login? Same email adds the Player role — or Sign in first then claim."}
+            ? `Signed in as ${signedIn?.email}. Pick your name — your Week 1 picks stay.`
+            : viaPersonal
+              ? "Your name is picked. Enter your email and a password — once. Stay signed in on this phone."
+              : "Join once with your email and a password. Stay signed in on this phone. Pick your name from the list."}
       </p>
       <form onSubmit={onSubmit} className="space-y-4 card-glass p-5">
         <label className="block text-sm">
@@ -205,8 +205,7 @@ export function JoinForm({
           />
           {viaPersonal && (
             <span className="block mt-1 text-xs text-[var(--text-muted)]">
-              Filled in from your personal link. Leave it unless the
-              commissioner gave you a different code.
+              Already filled in.
             </span>
           )}
         </label>

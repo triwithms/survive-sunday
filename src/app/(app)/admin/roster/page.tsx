@@ -50,11 +50,9 @@ export default async function RosterPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           Nickname is what the board shows. Real name is the person behind it.
-          Fix either if it’s wrong. Each open seat has a{" "}
-          <strong>personal Join link</strong> you can copy and send to that
-          friend. Set <strong>Pick backup</strong>: off, copy from another
-          member (no 💩), or auto 2025-rank team (stamps 💩). Saves are
-          audit-logged.
+          Fix either if it’s wrong. Set <strong>Pick backup</strong>: off, copy
+          from another member (no 💩), or auto 2025-rank team (stamps 💩). Saves
+          are audit-logged.
         </p>
       </div>
 

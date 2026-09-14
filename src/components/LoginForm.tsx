@@ -3,19 +3,23 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
 import { SignInCodeForm } from "@/components/SignInCodeForm";
 import { friendlyLoginError, loginEmailQueryValue, safeLoginCallbackPath } from "@/lib/login-error";
 import { markAddToHomePending } from "@/lib/pwa-install";
 
+function preferPasswordForm(error: string | null): boolean {
+  return error === "CredentialsSignin" || error === "MissingFields";
+}
+
 export function LoginForm({ demoMode }: { demoMode: boolean }) {
-  const [busy, setBusy] = useState(false);
-  const [codePath, setCodePath] = useState(false);
   const params = useSearchParams();
+  const errCode = params.get("error");
+  const [busy, setBusy] = useState(false);
+  const [codePath, setCodePath] = useState(() => !preferPasswordForm(errCode));
   const showDemo = demoMode && params.get("demo") === "1";
   const emailPrefill = loginEmailQueryValue(params.get("email"));
-  const err = friendlyLoginError(params.get("error"));
+  const err = friendlyLoginError(errCode);
   const callbackUrl = safeLoginCallbackPath(params.get("callbackUrl"));
 
   return (
@@ -25,9 +29,7 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
       </Link>
       <h1 className="font-display text-3xl text-gold-400 mt-6 mb-2">Sign in</h1>
       <p className="text-[var(--text-muted)] text-sm mb-6">
-        Join once with your email and password. On this phone you should stay
-        signed in. Use Forgot password only with that same email. Don’t use
-        Forgot password before you Join.
+        Join once. On this phone you stay signed in.
       </p>
 
       {showDemo && (
@@ -51,75 +53,60 @@ export function LoginForm({ demoMode }: { demoMode: boolean }) {
           <SignInCodeForm emailPrefill={emailPrefill} callbackUrl={callbackUrl} />
           <button
             type="button"
-            className="w-full text-sm text-gold-400 underline underline-offset-2 min-h-11"
+            className="w-full text-sm text-[var(--text-muted)] underline underline-offset-2 min-h-11"
             onClick={() => setCodePath(false)}
           >
-            ← Back to email and password
+            Use password instead
           </button>
         </div>
       ) : (
-      <form
-        action="/api/login"
-        method="post"
-        className="space-y-4 card-glass p-5"
-        onSubmit={() => {
-          markAddToHomePending();
-          setBusy(true);
-        }}
-      >
-        <input type="hidden" name="callbackUrl" value={callbackUrl} />
-        <label className="block text-sm">
-          <span className="text-[var(--text-muted)]">Email</span>
-          <input
-            type="email"
-            name="email"
-            required
-            defaultValue={emailPrefill}
-            autoComplete="email"
-            className="mt-1"
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="text-[var(--text-muted)]">Password</span>
-          <input
-            type="password"
-            name="password"
-            required
-            autoComplete="current-password"
-            className="mt-1"
-          />
-        </label>
-        <p className="text-sm">
-          <Link href="/login/forgot" className="text-gold-400">
-            Forgot password?
-          </Link>
-        </p>
-        <button type="submit" className="btn-primary w-full" disabled={busy}>
-          {busy ? "Signing in…" : "Sign in"}
-        </button>
-        <button
-          type="button"
-          className="btn-secondary w-full"
-          onClick={() => setCodePath(true)}
-        >
-          Email me a sign-in code
-        </button>
-        <button
-          type="button"
-          className="btn-secondary w-full"
-          onClick={() => {
+        <form
+          action="/api/login"
+          method="post"
+          className="space-y-4 card-glass p-5"
+          onSubmit={() => {
             markAddToHomePending();
-            void signIn("google", { callbackUrl });
+            setBusy(true);
           }}
         >
-          Continue with Google
-        </button>
-        <p className="text-xs text-[var(--text-muted)]">
-          {demoMode
-            ? "Google works when AUTH_GOOGLE_ID / AUTH_GOOGLE_SECRET are set. Demo accounts work without Google."
-            : "Use the email and password you created when you Joined. A sign-in code is optional — we do not ask for a code every time."}
-        </p>
-      </form>
+          <input type="hidden" name="callbackUrl" value={callbackUrl} />
+          <label className="block text-sm">
+            <span className="text-[var(--text-muted)]">Email</span>
+            <input
+              type="email"
+              name="email"
+              required
+              defaultValue={emailPrefill}
+              autoComplete="email"
+              className="mt-1"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="text-[var(--text-muted)]">Password</span>
+            <input
+              type="password"
+              name="password"
+              required
+              autoComplete="current-password"
+              className="mt-1"
+            />
+          </label>
+          <button type="submit" className="btn-primary w-full" disabled={busy}>
+            {busy ? "Signing in…" : "Sign in"}
+          </button>
+          <button
+            type="button"
+            className="w-full text-sm text-gold-400 underline underline-offset-2 min-h-11"
+            onClick={() => setCodePath(true)}
+          >
+            Email me a sign-in code
+          </button>
+          <p className="text-sm text-center">
+            <Link href="/login/forgot" className="text-[var(--text-muted)] underline underline-offset-2">
+              Forgot password?
+            </Link>
+          </p>
+        </form>
       )}
 
       {demoMode && !showDemo && (

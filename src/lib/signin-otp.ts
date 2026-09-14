@@ -133,7 +133,7 @@ export async function requestSignInCode(
       return {
         ok: false,
         error:
-          "This email signs in with Google. Use Continue with Google on the sign-in page.",
+          "This email does not have a password. Join with email and a password, or ask the commissioner.",
       };
     }
 
