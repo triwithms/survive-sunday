@@ -15,12 +15,12 @@ export type CanonicalLiveSeat = {
   mirrorFromNickname: string | null;
 };
 
-/** Sister seat — Join-claimable practice email, Week 1 KC with Gams. */
+/** Sister seat — Join-claimable practice email, Week 1 DAL. Mirror Gams later. */
 export const JAJA_SEAT: CanonicalLiveSeat = {
   nickname: "JaJa",
   realName: "Jacquie Gama",
   practiceEmail: `jaja${DEMO_EMAIL_SUFFIX}`,
-  week1Team: "KC",
+  week1Team: "DAL",
   mirrorFromNickname: "Gams",
 };
 
@@ -67,9 +67,10 @@ function nickKey(value: string): string {
 
 /**
  * Create missing live seats (JaJa) with a Join-claimable practice email,
- * import the official Week 1 team if she still has no pick, and wire
- * “copy from Gams if no pick within 30 min.” Idempotent. Never resets
- * the pool or other members’ picks.
+ * import the official Week 1 team (DAL) if she still has no pick — or
+ * correct a leftover imported/mirrored KC — and wire “copy from Gams
+ * if no pick within 30 min” for later weeks. Idempotent. Never resets
+ * the pool or other members’ picks. Does not stamp 💩.
  */
 export async function ensureCanonicalLiveSeats(
   db: PrismaClient,
@@ -241,8 +242,13 @@ async function ensureOneLiveSeat(
     const replaceMiss =
       existingPick &&
       (existingPick.source === "missed" || existingPick.teamAbbr === "MISS");
-    if (game && (!existingPick || replaceMiss)) {
-      if (replaceMiss && existingPick) {
+    const replaceCanonical =
+      existingPick &&
+      existingPick.teamAbbr !== seat.week1Team &&
+      (existingPick.source === "imported" ||
+        existingPick.source === "mirrored");
+    if (game && (!existingPick || replaceMiss || replaceCanonical)) {
+      if (existingPick && (replaceMiss || replaceCanonical)) {
         await db.pick.delete({ where: { id: existingPick.id } });
       }
       await db.pick.create({

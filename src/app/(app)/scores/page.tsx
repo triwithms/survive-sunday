@@ -13,6 +13,7 @@ import {
   weeksForParticipants,
 } from "@/lib/pool-mode";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
+import { AutoPickStamps } from "@/components/AutoPickStamps";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
@@ -211,6 +212,7 @@ export default async function ScoresPage({
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-medium min-w-0 truncate">
                     {member.nickname}
+                    <AutoPickStamps count={member.autoPickStamps} />
                     {isSelf ? " (you)" : ""}
                     {member.realName ? (
                       <span className="text-xs font-normal text-[var(--text-muted)]">

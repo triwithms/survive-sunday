@@ -124,6 +124,9 @@ async function main() {
     if (!(await columnExists(prisma, "Membership", "pickBackup"))) {
       fail("Membership.pickBackup was not added");
     }
+    if (!(await columnExists(prisma, "Membership", "autoPickStamps"))) {
+      fail("Membership.autoPickStamps was not added");
+    }
 
     const row = await prisma.otpChallenge.create({
       data: {

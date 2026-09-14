@@ -42,5 +42,11 @@ export async function ensurePickMirrorColumn(prisma: SchemaClient) {
     WHERE "mirrorFromMembershipId" IS NOT NULL
       AND ("pickBackup" IS NULL OR "pickBackup" = 'off')
   `);
-  console.log("[ensure-db] Membership.mirrorFromMembershipId + pickBackup ready");
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Membership"
+      ADD COLUMN IF NOT EXISTS "autoPickStamps" INTEGER NOT NULL DEFAULT 0
+  `);
+  console.log(
+    "[ensure-db] Membership.mirrorFromMembershipId + pickBackup + autoPickStamps ready"
+  );
 }

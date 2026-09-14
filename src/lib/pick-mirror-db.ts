@@ -13,6 +13,7 @@ import {
   resolvePickBackupMode,
   type PickBackupMode,
 } from "./pick-mirror";
+import { shouldStampAutoPick } from "./auto-pick-stamps";
 import { isPlayerSeat } from "./roles";
 
 export const MIRROR_PICK_AUDIT = "pick_mirrored";
@@ -283,6 +284,12 @@ async function writeBackupPick(args: {
     });
   } catch {
     return false;
+  }
+  if (shouldStampAutoPick(args.source)) {
+    await prisma.membership.update({
+      where: { id: args.member.id },
+      data: { autoPickStamps: { increment: 1 } },
+    });
   }
   await rebuildUsedTeams(args.member.id);
   await prisma.auditLog.create({

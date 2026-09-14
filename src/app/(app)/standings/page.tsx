@@ -11,7 +11,9 @@ import {
   sortParticipants,
   resolveSeasonWinners,
   boardPickFields,
+  isAlive,
 } from "@/lib/tiebreak";
+import { AutoPickStamps } from "@/components/AutoPickStamps";
 import { StatusChip } from "@/components/StatusChip";
 import { TeamLogo } from "@/components/TeamLogo";
 import { formatKickoff } from "@/lib/utils";
@@ -178,6 +180,7 @@ export default async function StandingsPage() {
               <div className="flex-1 min-w-0 overflow-hidden">
                 <div className="font-medium truncate">
                   {m.nickname}
+                  <AutoPickStamps count={m.autoPickStamps} />
                   {isSelf ? " (you)" : ""}
                   {m.realName ? (
                     <span className="text-xs font-normal text-[var(--text-muted)]">
@@ -263,21 +266,33 @@ export default async function StandingsPage() {
       <section className="card-glass p-4 text-sm space-y-2 min-w-0">
         <h2 className="font-semibold text-gold-400">Season-end tiebreak</h2>
         <p className="text-[var(--text-muted)]">
-          Prefer a sole survivor. If multiple remain alive: fewest losses → most
-          weeks survived → nickname A–Z. Shared win if still tied.
+          Official winner must have a <strong>clean</strong> season — no
+          ranked auto-pick 💩. Copy-from-member and manual / imported picks
+          do not stamp. Auto-pick is for staying in for fun when busy. Among
+          eligible players: fewest losses → most weeks survived → shared win
+          if still tied.
         </p>
         {winners.sole && (
           <p className="break-words">
-            Current sole leader:{" "}
+            Current official sole leader:{" "}
             <span className="text-gold-400">{winners.sole.nickname}</span>
           </p>
         )}
         {!winners.sole && winners.shared.length > 0 && (
           <p className="break-words">
-            Shared lead:{" "}
+            Shared official lead:{" "}
             {winners.shared.map((m) => m.nickname).join(", ")}
           </p>
         )}
+        {!winners.sole &&
+          winners.shared.length === 0 &&
+          winners.officialEligible.length === 0 &&
+          participants.some((m) => isAlive(m.status)) && (
+            <p className="text-[var(--text-muted)]">
+              No official leader — remaining players used the ~2-minute
+              best-ranked auto-pick (💩).
+            </p>
+          )}
       </section>
     </div>
   );

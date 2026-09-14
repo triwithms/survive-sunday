@@ -133,7 +133,7 @@ const SLATE_PICKS: Record<string, string | null> = {
   JimmyC: "NYJ", // NYJ @ TEN
   "Long Snapper": "ATL", // ATL @ PIT
   Steve: "KC", // DEN @ KC
-  JaJa: "KC", // DEN @ KC — same as live Gams
+  JaJa: "DAL", // DAL @ NYG / CLE @ DAL — owner Week 1, not Gams KC
 };
 
 /** Slug nickname → valid demo email local-part (e.g. Deep and Delicious → deep-and-delicious). */

@@ -51,10 +51,12 @@ export default async function MirrorPicksPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-2">
           Optional. Off by default. Copy another member’s pick (JaJa copies
-          Gams) if you still have none within 30 minutes, or auto-pick the
-          best remaining <strong>2025 rank</strong> team (same list as Pick)
-          within about 2 minutes of lock. A pick you already submitted is
-          never replaced.
+          Gams after Week 1) if you still have none within 30 minutes — no
+          💩. Or auto-pick the best remaining <strong>2025 rank</strong> team
+          (same list as Pick) within about 2 minutes of lock — that stamps
+          💩 and you cannot be the official winner. A pick you already
+          submitted is never replaced. JaJa’s Week 1 pick is{" "}
+          <strong>DAL</strong> (imported, not an auto-pick).
         </p>
       </div>
       <section className="card-glass p-4">

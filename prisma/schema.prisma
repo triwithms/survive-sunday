@@ -115,6 +115,9 @@ model Membership {
   usedTeamsJson     String           @default("[]") // JSON string[] of abbrs
   /// off | mirror | ranked. Default off. JaJa uses mirror (Gams).
   pickBackup        String           @default("off")
+  /// Ranked leftover auto-picks (~2 min) this season. Official winner
+  /// must stay 0. Copy-from-member and manual / import never increment.
+  autoPickStamps    Int              @default(0)
   /// If pickBackup=mirror, copy that member’s pick when this seat still
   /// has none within 30 minutes of the relevant kickoff / week lock.
   mirrorFromMembershipId String?

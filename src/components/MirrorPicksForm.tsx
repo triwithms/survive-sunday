@@ -156,10 +156,12 @@ export function MirrorPicksForm({
       </fieldset>
       <p className="text-xs text-[var(--text-muted)]">
         Never overwrites a pick you already made. Copy-from uses that member’s
-        team 30 minutes before lock (Week 1: that pick’s kickoff). Ranked uses
-        the same <strong>2025 rank #N</strong> list as Pick (1 = strongest),
-        skipping teams you’ve already used and bye weeks, starting 2 minutes
-        before week lock.
+        team 30 minutes before lock (Week 1: that pick’s kickoff) and does{" "}
+        <strong>not</strong> stamp 💩. Ranked uses the same{" "}
+        <strong>2025 rank #N</strong> list as Pick (1 = strongest), skipping
+        teams you’ve already used and bye weeks, starting 2 minutes before
+        week lock — each use stamps 💩 and you cannot win the pool
+        officially.
       </p>
       {error && (
         <p className="text-crimson-400 text-sm" role="alert">

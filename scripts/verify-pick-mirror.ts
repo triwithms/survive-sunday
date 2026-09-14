@@ -17,6 +17,7 @@ import {
   resolvePickBackupMode,
 } from "../src/lib/pick-mirror";
 import {
+  JAJA_SEAT,
   isPendingPracticeEmail,
   needsClaimablePracticeEmail,
   practiceEmailForNickname,
@@ -149,6 +150,11 @@ assert.deepEqual(
   { action: "skip", reason: "eliminated" }
 );
 
+assert.equal(JAJA_SEAT.nickname, "JaJa");
+assert.equal(JAJA_SEAT.realName, "Jacquie Gama");
+assert.equal(JAJA_SEAT.week1Team, "DAL", "JaJa Week 1 is DAL, not KC");
+assert.equal(JAJA_SEAT.mirrorFromNickname, "Gams");
+assert.equal(JAJA_SEAT.practiceEmail, "jaja@survivesunday.demo");
 assert.equal(practiceEmailForNickname("JaJa"), "jaja@survivesunday.demo");
 assert.equal(isPendingPracticeEmail("jaja@pending.survivesunday.local"), true);
 assert.equal(isPendingPracticeEmail("jaja@survivesunday.demo"), false);

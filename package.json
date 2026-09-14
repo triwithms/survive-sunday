@@ -36,6 +36,7 @@
     "verify:week1-pick-change": "tsx scripts/verify-week1-pick-change.ts",
     "verify:notification-prefs": "tsx scripts/verify-notification-prefs.ts",
     "verify:pick-mirror": "tsx scripts/verify-pick-mirror.ts",
+    "verify:auto-pick-stamps": "tsx scripts/verify-auto-pick-stamps.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {

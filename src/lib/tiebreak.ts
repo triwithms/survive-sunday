@@ -1,17 +1,24 @@
+import { isOfficialWinnerEligible } from "./auto-pick-stamps";
+
 /**
  * Season-end tiebreak helpers (en-CA).
- * Prefer sole survivor. If multiple remain alive after Week 18:
+ * Official winner must have a clean season (no ranked auto-pick 💩).
+ * Copy-from-member does not stamp. Prefer sole survivor among eligible
+ * players. If multiple remain eligible after Week 18:
  * 1. Fewest losses
  * 2. Most weeks survived
  * 3. Still tied → shared win (co-champions). Nickname A–Z is display order only —
  *    never used to crown a sole winner.
  * Optional backup (commissioner / offline): one extra pick week among tied players only.
  */
+
 export type AliveMember = {
   nickname: string;
   status: string;
   losses: number;
   weeksSurvived: number;
+  /** Ranked leftover auto-picks this season. Official winners must be 0. */
+  autoPickStamps?: number | null;
 };
 
 export function isAlive(status: string): boolean {
@@ -122,19 +129,23 @@ export function resolveSeasonWinners(alive: AliveMember[]): {
   sole: AliveMember | null;
   shared: AliveMember[];
   ranked: AliveMember[];
+  officialEligible: AliveMember[];
 } {
   const living = alive.filter((m) => isAlive(m.status));
-  if (living.length === 0) {
-    return { sole: null, shared: [], ranked: [] };
+  const officialEligible = living.filter((m) =>
+    isOfficialWinnerEligible(m.autoPickStamps)
+  );
+  if (officialEligible.length === 0) {
+    return { sole: null, shared: [], ranked: living, officialEligible };
   }
-  const ranked = [...living].sort((a, b) => {
+  const ranked = [...officialEligible].sort((a, b) => {
     if (a.losses !== b.losses) return a.losses - b.losses;
     if (a.weeksSurvived !== b.weeksSurvived)
       return b.weeksSurvived - a.weeksSurvived;
     return a.nickname.localeCompare(b.nickname, "en-CA");
   });
   if (ranked.length === 1) {
-    return { sole: ranked[0], shared: [], ranked };
+    return { sole: ranked[0], shared: [], ranked, officialEligible };
   }
   const best = ranked[0];
   const tied = ranked.filter(
@@ -142,7 +153,7 @@ export function resolveSeasonWinners(alive: AliveMember[]): {
       m.losses === best.losses && m.weeksSurvived === best.weeksSurvived
   );
   if (tied.length === 1) {
-    return { sole: tied[0], shared: [], ranked };
+    return { sole: tied[0], shared: [], ranked, officialEligible };
   }
-  return { sole: null, shared: tied, ranked };
+  return { sole: null, shared: tied, ranked, officialEligible };
 }

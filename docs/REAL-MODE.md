@@ -106,7 +106,7 @@ This cannot be undone. If you only wanted to hide the practice picker, tap **Rea
 
 Long Snapper → **John Stilo**, Steve → **Steve Venerus**, Gdogss → **Tony Gyuro**.
 
-Live roster also includes **Go Giants** (Carson Gama), **Pauli** (Paul Gama), and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Join seat is claimable (`jaja@survivesunday.demo`) and her Week 1 pick is **KC** (same as Gams). She is set to copy Gams’ pick if she still has none within 30 minutes of kickoff / lock. Any player can instead auto-pick the best remaining **2025 rank** team (~2 minutes before lock) from Account or Admin → Roster.
+Live roster also includes **Go Giants** (Carson Gama), **Pauli** (Paul Gama), and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Join seat is claimable (`jaja@survivesunday.demo`) and her Week 1 pick is **DAL** (Dallas — not Gams’ KC). She is set to copy Gams’ pick if she still has none within 30 minutes of kickoff / lock (later weeks; copy does not stamp 💩). Any player can instead auto-pick the best remaining **2025 rank** team (~2 minutes before lock) from Account or Admin → Roster — that stamps 💩 and they cannot be the official winner.
 
 This is applied to the **live database** on deploy (and again when the site loads). Changing seed files alone is not enough.
 
@@ -116,7 +116,7 @@ To fix any other name: **Admin → Roster — nicknames and real names**.
 
 ## Week 1 picks (already imported)
 
-Official Week 1 picks (including Go Giants, Pauli, and JaJa → KC) are **already on the live board**. You do not need to import again tonight.
+Official Week 1 picks (including Go Giants, Pauli, and JaJa → DAL) are **already on the live board**. You do not need to import again tonight.
 
 If one name looks wrong later:
 
