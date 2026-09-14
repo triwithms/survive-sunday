@@ -541,7 +541,7 @@ function SideButton({
 
   return (
     <div
-      className={`flex min-h-[88px] flex-col gap-1.5 rounded-lg border p-2 transition sm:p-3 ${
+      className={`flex min-h-[88px] min-w-0 flex-col gap-1.5 rounded-lg border p-2 transition sm:p-3 ${
         isAway ? "items-start text-left" : "items-end text-right"
       } ${
         selected
@@ -555,7 +555,7 @@ function SideButton({
         prefetch={false}
         onClick={(e) => e.stopPropagation()}
         aria-label={`Team details for ${side.name}`}
-        className={`flex items-center gap-2 min-h-11 min-w-0 rounded-md hover:opacity-90 active:bg-gold-400/5 ${
+        className={`flex items-center gap-1.5 sm:gap-2 min-h-11 min-w-0 rounded-md hover:opacity-90 active:bg-gold-400/5 ${
           isAway ? "" : "flex-row-reverse"
         }`}
       >
