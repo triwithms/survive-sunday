@@ -23,6 +23,8 @@ import {
   pickConfirmedCopy,
   resultsCopy,
 } from "../src/lib/notification-copy";
+import { isMissingNotificationSchema } from "../src/lib/notification-schema";
+import { readFileSync } from "node:fs";
 
 assert.equal(DEFAULT_NOTIFICATION_PREFS.missingPickReminder, true);
 assert.equal(DEFAULT_NOTIFICATION_PREFS.pickConfirmed, true);
@@ -146,5 +148,23 @@ const miss = missingPickCopy({
 });
 assert.match(miss.smsBody ?? "", /no Week 1 pick/);
 console.log("PASS  copy");
+
+assert.equal(isMissingNotificationSchema({ code: "P2021" }), true);
+assert.equal(isMissingNotificationSchema({ code: "P2022" }), true);
+assert.equal(
+  isMissingNotificationSchema(new Error("The table `public.NotificationPreference` does not exist in the current database.")),
+  true
+);
+assert.equal(isMissingNotificationSchema(new Error("unrelated")), false);
+console.log("PASS  missing-schema detector");
+
+const accountMenu = readFileSync("src/components/AccountMenu.tsx", "utf8");
+assert.match(accountMenu, /href="\/account\/notifications"/);
+assert.match(accountMenu, /Notification preferences/);
+assert.match(
+  readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
+  /ensureNotificationPrefs/
+);
+console.log("PASS  Account sheet link");
 
 console.log("\nverify-notification-prefs OK");

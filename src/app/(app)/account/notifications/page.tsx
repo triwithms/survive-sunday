@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { NotificationPrefsForm } from "@/components/NotificationPrefsForm";
 import { ensureNotificationPrefs } from "@/lib/notification-prefs";
+import { DEFAULT_NOTIFICATION_PREFS } from "@/lib/notification-types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -10,7 +11,12 @@ export const revalidate = 0;
 export default async function NotificationPrefsPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
-  const prefs = await ensureNotificationPrefs(session.user.id);
+  let prefs = DEFAULT_NOTIFICATION_PREFS;
+  try {
+    prefs = await ensureNotificationPrefs(session.user.id);
+  } catch (error) {
+    console.error("[notifications] ensure prefs failed", error);
+  }
 
   return (
     <div className="space-y-5">
