@@ -45,31 +45,18 @@ export async function deliverOtp(
 ): Promise<DeliverResult> {
   const kind = otpCopyKind(purpose);
   if (channel === "sms") {
-    if (smsProviderReady() || canStubDelivery()) {
-      return sendTwilioMessage({
-        to: destination,
-        body: otpSmsBody(code, kind),
-      });
-    }
-    return {
-      ok: false,
-      error: "Text messages aren’t set up yet. Ask for an email code instead.",
-    };
-  }
-
-  if (emailProviderReady() || canStubDelivery()) {
-    return sendResendMessage({
+    return sendTwilioMessage({
       to: destination,
-      subject: otpEmailSubject(kind),
-      text: emailText(code, kind),
-      html: emailHtml(code, kind),
+      body: otpSmsBody(code, kind),
     });
   }
-  return {
-    ok: false,
-    error:
-      "We couldn’t email a code. The commissioner still needs to add the Resend key (see DEPLOY.md).",
-  };
+
+  return sendResendMessage({
+    to: destination,
+    subject: otpEmailSubject(kind),
+    text: emailText(code, kind),
+    html: emailHtml(code, kind),
+  });
 }
 
 function emailText(code: string, kind: OtpCopyKind): string {

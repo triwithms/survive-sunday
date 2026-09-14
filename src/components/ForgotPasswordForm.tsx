@@ -151,7 +151,10 @@ export function ForgotPasswordForm() {
       <p className="text-[var(--text-muted)] text-sm mb-6">
         We’ll send a 6-digit code to your email, or a text if you’ve saved a
         cell number. Then you pick a new password. You stay signed in on this
-        phone afterwards — no extra code every time you open the app.
+        phone afterwards — no extra code every time you open the app. If we
+        cannot send, this page will say why in plain English (missing Resend
+        keys, a test From address, or an unverified domain) — it will not
+        pretend the code went out.
       </p>
 
       {step === "email" ? (

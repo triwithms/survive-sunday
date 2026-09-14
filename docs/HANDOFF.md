@@ -14,6 +14,8 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 **Snapshot (14 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Live tonight:
 
+- **Cannoli Stuffer (Mike Frigo) has Joined.** Email codes are failing. This merge writes a one-shot temporary password **`Cannoli1!`** on the Production deploy (Neon), and adds **Admin → Set a temporary password** for anyone else. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login) → **Use password instead**. His sign-in email is on **Admin → Roster**. He should change the password after he is in.
+
 - **Who are you? Join** + **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** switcher — merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
 - **Week 2 schedule restored** in Real/live (viewable; Demo isolation is practice UX only — it does **not** hide the Week 2 slate) — merged [PR #22](https://github.com/triwithms/survive-sunday/pull/22)
@@ -184,7 +186,7 @@ Nicknames stay as friends know them. Real names show in brackets on the board an
 | Nickname | Real name | On live Join |
 |----------|-----------|--------------|
 | Black Cobra | Justin John | Unclaimed |
-| Cannoli Stuffer | Michael Frigo | Unclaimed |
+| Cannoli Stuffer | Michael Frigo | **Claimed** (codes failing — temp password on this deploy; see Admin → Roster for his email) |
 | Colin | Colin Malone | Unclaimed |
 | Daddy Chill | Joachim Kuzel | Unclaimed |
 | Deep and Delicious | Kent Richmond | Unclaimed |
@@ -333,6 +335,7 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 | Lock controls | Reopen week, unlock (testing), lock now + missed picks, clear override. |
 | **Pool rules — mulligan** | Turn off the free mulligan from a chosen week (or immediately). One loss = out from that week. Already-scored weeks stay as they are. People who already used a mulligan stay in with one loss. Players see a banner. You can turn the mulligan back on. |
 | **Hand the pool to someone else** | Transfer Admin to another **existing** member. Type their nickname and confirm. You stay as a player and lose Admin. They keep their picks and stay on the board. Different from **Make administrator** (that keeps both of you as Admin). The app will not transfer if nobody else is in the pool. |
+| **Set a temporary password** | Pick a friend who already Joined, type their nickname, save a password, **text it**. Audit-logged (password not stored in the log). If they have not Joined, send their personal Join link instead. **Shipped.** |
 | Simulate scores | Fake remaining finals (testing). |
 | Force grade | Grade + apply missed picks now. |
 | Remove player | Drops a member from the pool. |

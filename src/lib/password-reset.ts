@@ -182,7 +182,7 @@ async function sendResetCode(
   }
 
   const code = generateOtpCode();
-  let delivered = await deliverOtp(channel, destination, code);
+  let delivered = await deliverOtp(channel, destination, code, purpose);
   let usedChannel = channel;
   let usedDestination = destination;
 
