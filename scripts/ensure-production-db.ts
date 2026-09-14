@@ -27,6 +27,7 @@ import { ensureNotificationTables } from "../src/lib/notification-schema";
 import { ensurePickMirrorColumn } from "../src/lib/pick-mirror-schema";
 import { ensurePoolRulesColumns } from "../src/lib/pool-rules-schema";
 import { ensureCanonicalLiveSeats } from "../src/lib/live-roster";
+import { applyCannoliTempPasswordOneshot } from "../src/lib/oneshot-cannoli-password";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
 
@@ -330,6 +331,25 @@ async function main() {
       } catch (error) {
         console.warn(
           "[ensure-db] live roster seats skipped (build continues)",
+          error
+        );
+      }
+      try {
+        const cannoli = await applyCannoliTempPasswordOneshot(prisma);
+        if (cannoli.status === "applied") {
+          console.log(
+            `[ensure-db] Cannoli Stuffer temp password written for ${cannoli.email} (user ${cannoli.userId})`
+          );
+        } else if (cannoli.status === "already") {
+          console.log("[ensure-db] Cannoli Stuffer temp password one-shot already applied");
+        } else {
+          console.warn(
+            `[ensure-db] Cannoli Stuffer temp password skipped (${cannoli.reason})`
+          );
+        }
+      } catch (error) {
+        console.warn(
+          "[ensure-db] Cannoli Stuffer temp password one-shot skipped (build continues)",
           error
         );
       }

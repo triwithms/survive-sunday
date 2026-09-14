@@ -41,18 +41,26 @@ Demo seats (`@survivesunday.demo`) always use **demo1234**. No reset.
 
 | Variable | What to paste |
 |---|---|
-| `RESEND_API_KEY` | API key from [resend.com](https://resend.com) (free). |
-| `RESEND_FROM_EMAIL` | A From address Resend has **verified**, e.g. `Survive Sunday <noreply@yourdomain.com>`. |
+| `RESEND_API_KEY` | API key from [resend.com](https://resend.com) (free). Starts with `re_`. |
+| `RESEND_FROM_EMAIL` | A From address Resend has **verified**, e.g. `Survive Sunday <noreply@yourdomain.com>`. **Not** `onboarding@resend.dev`. |
 
-Click-by-click:
+Click-by-click (you do this; a chat cannot):
 
-1. Sign up at [resend.com](https://resend.com) (free).
+1. Sign up at [resend.com](https://resend.com) (free) if you do not already have an account.
 2. **Domains → Add domain** for a domain you own. Add the DNS records Resend shows. Wait until it says **Verified**.
-3. **API Keys → Create**. Copy the key once.
-4. In Vercel, add the two names above. Environment: **Production** (add Preview too if you want to test the preview URL first).
-5. Merge this pull request. If you added the keys after a deploy already ran, open Vercel → Deployments → the latest Production row → ⋮ → **Redeploy**.
+3. **API Keys → Create**. Copy the key once (it starts with `re_`).
+4. Open [vercel.com](https://vercel.com) → team **nfl-pool** → project **survive-sunday** → **Settings → Environment Variables**.
+5. Find `RESEND_API_KEY`. If it is missing, **Add**. Paste the `re_…` key. Tick **Production** (Preview-only does **not** help the live site). Save.
+6. Find `RESEND_FROM_EMAIL`. If it is missing or still `onboarding@resend.dev`, set it to `Survive Sunday <noreply@your-verified-domain>`. Tick **Production**. Save.
+7. Open the row again and confirm Production is ticked for **both** names. A key that only exists on Preview / Development will not send codes to friends on survive-sunday.vercel.app.
+8. If you added or changed a key: **Deployments** → ⋮ on the latest **Production** row → **Redeploy**. Do **not** tick “use existing build cache.”
+9. On the live site, **Sign in → Use password instead → Forgot password?** with **your** real email. You should get a 6-digit code. If sending fails, the page now says the real reason (missing key, test From address, unverified domain) instead of pretending it worked.
 
-Without those two keys, Forgot password and sign-in codes say we couldn’t send a code. The same two keys send pool emails (pick saved, results, missing-pick reminder, commissioner notes) to friends who left those types on under **Account → Notification preferences**.
+`onboarding@resend.dev` only delivers to *your* Resend login email, not friends — do not use it for the group. That is the usual reason “it worked once for me, but Mike never gets a code.”
+
+Without those two Production keys, Forgot password and sign-in codes say we couldn’t send a code. The same two keys send pool emails (pick saved, results, missing-pick reminder, commissioner notes) to friends who left those types on under **Account → Notification preferences**.
+
+**Stuck friend (e.g. Cannoli Stuffer / Mike Frigo):** after this change is live, Admin → **Set a temporary password** → pick that nickname → type the nickname to confirm → save a password → **text it** to them. They Sign in → **Use password instead**. Do not ask a chat to invent a password. Raw SQL cannot hash a password correctly — use Admin, or `scripts/set-member-password.ts` with Neon `DATABASE_URL` if a coder is helping.
 
 Optional texts (only if a friend saved a cell). Skip for today if email is enough:
 

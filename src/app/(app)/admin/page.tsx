@@ -7,8 +7,10 @@ import { AdminAnnouncePanel } from "@/components/AdminAnnouncePanel";
 import { AdminPanel } from "@/components/AdminPanel";
 import { AdminRolesPanel } from "@/components/AdminRolesPanel";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
+import { DeliveryStatusCard } from "@/components/DeliveryStatusCard";
 import { PoolModePanel } from "@/components/PoolModePanel";
 import { CommissionerAccountPanel } from "@/components/CommissionerAccountPanel";
+import { SetMemberPasswordForm } from "@/components/SetMemberPasswordForm";
 import { SignOutButton } from "@/components/SignOutButton";
 import {
   canDemoteAdmin,
@@ -28,6 +30,9 @@ import { PersonalInvitePanel } from "@/components/PersonalInvitePanel";
 import { PoolRulesForm } from "@/components/PoolRulesForm";
 import { TransferCommissionerForm } from "@/components/TransferCommissionerForm";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { isSeatClaimed } from "@/lib/claim-seat";
+import { maskEmail } from "@/lib/otp";
+import { readEmailDeliveryStatus } from "@/lib/delivery";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -57,8 +62,10 @@ export default async function AdminPage() {
 
   const members = await prisma.membership.findMany({
     where: { poolId: me.poolId },
+    include: { user: { select: { email: true } } },
     orderBy: { nickname: "asc" },
   });
+  const deliveryStatus = readEmailDeliveryStatus();
   let inviteSeats: Awaited<ReturnType<typeof listClaimableSeats>> = [];
   try {
     inviteSeats = await listClaimableSeats();
@@ -96,9 +103,9 @@ export default async function AdminPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
           Light admin — your login, pool mode, reset, roster, administrators,
-          pool rules, hand the pool to someone else, lock override, import
-          picks, simulate scores, remove players. Pick and name edits are
-          always audited.
+          pool rules, hand the pool to someone else, set a temporary password,
+          lock override, import picks, simulate scores, remove players. Pick
+          and name edits are always audited.
         </p>
         <p className="text-sm text-[var(--text-muted)] mt-2">
           Mode switch is the first card below. Real mode is Week 1. Week 2
@@ -121,6 +128,22 @@ export default async function AdminPage() {
       <CommissionerAccountPanel
         currentEmail={session.user.email ?? me.user.email ?? null}
         isPracticeLogin={isDemoEmail(session.user.email ?? me.user.email)}
+      />
+
+      <DeliveryStatusCard status={deliveryStatus} />
+
+      <SetMemberPasswordForm
+        members={members
+          .filter((m) => isPlayerSeat(m))
+          .map((m) => ({
+            id: m.id,
+            nickname: m.nickname,
+            realName: m.realName,
+            claimed: isSeatClaimed(m.user.email),
+            emailMasked: isSeatClaimed(m.user.email)
+              ? maskEmail(m.user.email)
+              : null,
+          }))}
       />
 
       <AdminRolesPanel

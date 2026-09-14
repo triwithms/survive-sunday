@@ -75,7 +75,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
           <li className="text-[var(--text-primary)]">Join <strong>once</strong> first. Codes only work after that.</li>
           <li className="text-[var(--text-primary)]">On this phone you stay signed in. Open the Home Screen icon to land in the pool.</li>
-          <li className="text-[var(--text-primary)]">If you need Sign in: enter the <strong>same email</strong> you Joined with, then tap <strong>Email me a sign-in code</strong>.</li>
+          <li className="text-[var(--text-primary)]">If you need Sign in: enter the <strong>same email</strong> you Joined with, then tap <strong>Email me a sign-in code</strong>. If sending fails, the page says why (it will not pretend a code went out).</li>
           <li className="text-[var(--text-primary)]">Know your password? Tap <strong>Use password instead</strong>.</li>
           <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> is a small link on the password screen — only after you Joined.</li>
         </ol>
@@ -291,8 +291,9 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Missed SMS or emails | Account → Notification preferences — confirm that type is on. Add or update your cell under Account. Forgot-password codes always send when you request one (needs Resend keys). |
 | Personal Join link says already claimed | That friend already Joined. They should Sign in with the email they used — not Join again. |
 | Forgot password before Join | Don’t. Join first with your email + password. Forgot password only works after that same email has Joined. |
-| Sign-in code did not arrive | Sign in → Email me a sign-in code. Use the Join email. Needs the same Resend keys as Forgot password. |
-| Forgot password | Sign in → Use password instead → Forgot password?${showDemoCopy ? " Demo seats use demo1234." : ""} |
+| Sign-in code did not arrive | Sign in → Email me a sign-in code. Use the Join email. The page now shows the real Resend reason if keys are missing or the From address is still onboarding@resend.dev. Commissioner: Admin shows Sign-in and reset emails status. |
+| Forgot password | Sign in → Use password instead → Forgot password?${showDemoCopy ? " Demo seats use demo1234." : ""} If sending fails, read the red text — do not assume the code is in spam until the page said it was sent. |
+| Friend stuck (no code) | Commissioner: Admin → Set a temporary password (claimed seats only). Text them that password. They Sign in → Use password instead. If they have not Joined, send their personal Join link instead. |
 | Home Screen prompt keeps asking | Tap Yes if you already added the icon. Opening from the icon should not nag. |
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
 | Want to switch account | Header → Account → Sign out (also on Admin and Help). Then Sign in. |
@@ -320,7 +321,8 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Hand the pool to someone else** — transfer Admin to another member who is already in the pool. You stay as a player and lose Admin. They keep their picks and stay on the board. This is different from **Make administrator**, which lets more than one person have Admin tools.</li>
           <li className="text-[var(--text-primary)]">**Pool notes & missing-pick nudge:** Admin → send a short note (only friends who left Pool notes on) or nudge anyone still without a pick (only if they left Missing pick reminder on).</li>
           <li className="text-[var(--text-primary)]"><strong>Coming later:</strong> weekly digests. Late-pick reminders already respect Notification preferences.</li>
-          <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> and <strong>sign-in codes</strong> use the same Resend keys (owner sets them on Vercel). Optional Twilio for texts if a cell is saved. <strong>Wave 2 — Coming soon:</strong> WhatsApp group stub.</li>
+          <li className="text-[var(--text-primary)]"><strong>Set a temporary password:</strong> Admin → pick a friend who already Joined → type their nickname → save a password → text it to them. Audit-logged. Does <strong>not</strong> email the password. If they have not Joined, send their personal Join link instead.</li>
+          <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> and <strong>sign-in codes</strong> use the same Resend keys (owner sets them on Vercel Production). Admin shows whether those keys look set. Optional Twilio for texts if a cell is saved. <strong>Wave 2 — Coming soon:</strong> WhatsApp group stub.</li>
           {showDemoCopy && (
             <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> mark demo-mode team data so “demo” labels stay honest.</li>
           )}
@@ -330,6 +332,16 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <p className="text-[var(--text-muted)] mb-2">You can turn the free mulligan back on the same way. That does not revive anyone already eliminated.</p>
         <h3 className="font-semibold mt-3 mb-1">Hand the pool to someone else</h3>
         <p className="text-[var(--text-muted)] mb-2">Open **Admin → Hand the pool to someone else**. Pick a person who is already a member, type their nickname, tick the confirmation box, and confirm. You stay in the pool as a player and lose Admin. They keep their picks and get the Admin screen. This is different from **Make administrator**, which lets both of you keep Admin tools. If nobody else is in the pool yet, the app will not let you transfer — that would lock everyone out.</p>
+        <h3 className="font-semibold mt-3 mb-1">Set a temporary password (stuck friend)</h3>
+        <p className="text-[var(--text-muted)] mb-2">When a friend already Joined but cannot get a sign-in or reset code (codes need Resend keys), open **Admin → Set a temporary password**.</p>
+        <ol className="list-decimal pl-5 space-y-1 mb-2 text-[var(--text-muted)]">
+          <li className="text-[var(--text-primary)]">Pick their nickname (example: <strong>Cannoli Stuffer</strong> / Mike Frigo). Only people who already Joined appear.</li>
+          <li className="text-[var(--text-primary)]">Type that nickname again to confirm.</li>
+          <li className="text-[var(--text-primary)]">Tap <strong>Suggest a password I can text</strong>, or type one (at least 6 characters).</li>
+          <li className="text-[var(--text-primary)]">Save. Copy it. <strong>Text it to them yourself</strong> — the app does not email it.</li>
+          <li className="text-[var(--text-primary)]">They open Sign in → <strong>Use password instead</strong> → that password.</li>
+        </ol>
+        <p className="text-[var(--text-muted)] mb-2">If the name is greyed out or missing, they have <strong>not Joined</strong> yet. Copy their personal Join link instead of a password. This change is audit-logged (nickname only — never the password).</p>
         <p className="text-[var(--text-muted)] mb-2">**Important:** you cannot silently edit another player’s pick. Any such change must leave an **audit log** entry visible to the pool.</p>
         <p className="text-[var(--text-muted)] mb-2">Remind the group: this is entertainment among friends — no in-app betting.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
