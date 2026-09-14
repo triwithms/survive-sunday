@@ -19,6 +19,7 @@ import { redirect } from "next/navigation";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
+import { ShareExport } from "@/components/ShareExport";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 
 export const dynamic = "force-dynamic";
@@ -133,43 +134,70 @@ export default async function ScoresPage({
   const poll = shouldPollLiveScores(games);
 
   return (
-    <div className="space-y-4 min-w-0">
-      <div>
-        <h1 className="font-display text-2xl text-gold-400 tracking-wide">
-          {week.label} scores
-        </h1>
-        <p className="text-sm text-[var(--text-muted)] mt-1">
-          Live scores from ESPN. Team logos sit beside the abbreviations.
-          Tap Details on a game — live or Final — for more. Logos open
-          team pages. Finals auto-grade picks.
-        </p>
-        {liveCount > 0 ? (
-          <p className="text-sm text-[var(--text-muted)] mt-1">
-            {liveCount} live now
-          </p>
-        ) : null}
-        {espnSyncError && (
-          <p className="text-xs text-crimson-400 mt-1">{espnSyncError}</p>
-        )}
+    <div
+      id="share-scores"
+      data-share-root="scores"
+      data-share-week={week.label}
+      className="space-y-4 min-w-0"
+    >
+        <div
+          className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"
+          data-share-chunk=""
+          data-share-section="heading"
+        >
+          <div className="min-w-0">
+            <ShareExport
+              surface="scores"
+              rootId="share-scores"
+              weekLabel={week.label}
+              titleRest=" scores"
+              gameCount={games.length}
+              liveGameCount={liveCount}
+              pickRowCount={participants.length}
+            />
+            <p className="text-sm text-[var(--text-muted)] mt-1">
+              Live scores from ESPN. Team logos sit beside the abbreviations.
+              Logos open team pages. Finals auto-grade picks.
+            </p>
+            <p
+              className="text-sm text-[var(--text-muted)] mt-1"
+              data-share-chrome=""
+            >
+              Tap Details on a game — live or Final — for more.
+            </p>
+            {liveCount > 0 ? (
+              <p className="text-sm text-[var(--text-muted)] mt-1">
+                {liveCount} live now
+              </p>
+            ) : null}
+            {espnSyncError && (
+              <p className="text-xs text-crimson-400 mt-1">{espnSyncError}</p>
+            )}
+          </div>
+        </div>
+
+      <div data-share-chrome="">
+        <WeekSwitcher
+          weeks={weekOptions}
+          selectedWeek={week.number}
+          currentWeek={currentWeek}
+          basePath="/scores"
+          allowFuture
+        />
+        <LiveScoresRefresh weekNumber={week.number} poll={poll} />
       </div>
 
-      <WeekSwitcher
-        weeks={weekOptions}
-        selectedWeek={week.number}
-        currentWeek={currentWeek}
-        basePath="/scores"
-        allowFuture
-      />
-
-      <LiveScoresRefresh weekNumber={week.number} poll={poll} />
-
       {games.length === 0 ? (
-        <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
+        <div
+          className="card-glass p-4 text-sm text-[var(--text-muted)]"
+          data-share-chunk=""
+          data-share-section="games"
+        >
           Games for {week.label} have not been seeded yet. Check back when the
           games are available.
         </div>
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-2" data-share-section="games">
           {games.map((g) => (
             <ScoreGameCard
               key={g.id}
@@ -191,8 +219,11 @@ export default async function ScoresPage({
         </ul>
       )}
 
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-baseline gap-2">
+      <section className="space-y-3" data-share-section="picks">
+        <div
+          className="flex flex-wrap items-baseline gap-2"
+          data-share-chunk=""
+        >
           <h2 className="font-display text-xl text-gold-400 tracking-wide">
             Participants&apos; picks
           </h2>
@@ -213,7 +244,13 @@ export default async function ScoresPage({
                 : null;
             const result = rawPick?.result ?? "pending";
             return (
-              <li key={member.id} className="card-glass p-3">
+              <li
+                key={member.id}
+                className="card-glass p-3"
+                data-share-chunk=""
+                data-share-row=""
+                data-status={member.status}
+              >
                 <div className="flex items-center justify-between gap-3">
                   <span className="font-medium min-w-0 truncate">
                     {member.nickname}
@@ -274,6 +311,12 @@ export default async function ScoresPage({
           })}
         </ul>
       </section>
+      <p
+        data-share-stamp=""
+        className="text-[11px] text-[var(--text-muted)] pt-1"
+      >
+        Survive Sunday · {week.label} · for friends, not betting
+      </p>
     </div>
   );
 }

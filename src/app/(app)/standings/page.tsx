@@ -16,6 +16,7 @@ import {
 import { AutoPickStamps } from "@/components/AutoPickStamps";
 import { StatusChip } from "@/components/StatusChip";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
+import { ShareExport } from "@/components/ShareExport";
 import { formatKickoff } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -88,6 +89,9 @@ export default async function StandingsPage() {
   const showMutedChange =
     !locked && (me.role === "admin" || me.status === "eliminated");
   const revealAllPicks = locked;
+  const stillInCount = sorted.filter((m) => isAlive(m.status)).length;
+  const undefeatedCount = sorted.filter((m) => m.status === "undefeated").length;
+  const eliminatedCount = sorted.filter((m) => m.status === "eliminated").length;
 
   const teamAbbrs = [
     ...new Set(
@@ -104,12 +108,28 @@ export default async function StandingsPage() {
   const logoByAbbr = new Map(teams.map((t) => [t.abbr, t.logoUrl]));
 
   return (
-    <div className="space-y-6 min-w-0">
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+    <div
+      id="share-board"
+      data-share-root="board"
+      data-share-week={weekLabel}
+      className="space-y-6 min-w-0"
+    >
+      <div
+        className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"
+        data-share-chunk=""
+        data-share-section="heading"
+      >
         <div className="min-w-0">
-          <h1 className="font-display text-2xl text-gold-400 tracking-wide">
-            {weekLabel} · Survival board
-          </h1>
+          <ShareExport
+            surface="board"
+            rootId="share-board"
+            weekLabel={weekLabel}
+            titleRest=" · Survival board"
+            stillInCount={stillInCount}
+            undefeatedCount={undefeatedCount}
+            eliminatedCount={eliminatedCount}
+            pickRowCount={sorted.length}
+          />
           <p className="text-sm text-[var(--text-muted)] mt-1">
             {week
               ? `Lock: ${formatKickoff(effectiveLockAt(week))}${
@@ -130,28 +150,30 @@ export default async function StandingsPage() {
               : ""}
           </p>
         </div>
-        {canChangePick ? (
-          <Link
-            href="/pick"
-            prefetch={false}
-            className="btn-primary text-center text-sm shrink-0"
-          >
-            Change pick
-          </Link>
-        ) : showMutedChange ? (
-          <Link
-            href="/pick"
-            prefetch={false}
-            className="btn-secondary text-center text-sm shrink-0 opacity-60"
-            title={
-              me.role === "admin"
-                ? "Commissioner — optional"
-                : "Picks unavailable"
-            }
-          >
-            {me.role === "admin" ? "Change pick (optional)" : "Pick"}
-          </Link>
-        ) : null}
+        <div className="flex flex-wrap gap-2 shrink-0" data-share-chrome="">
+          {canChangePick ? (
+            <Link
+              href="/pick"
+              prefetch={false}
+              className="btn-primary text-center text-sm shrink-0"
+            >
+              Change pick
+            </Link>
+          ) : showMutedChange ? (
+            <Link
+              href="/pick"
+              prefetch={false}
+              className="btn-secondary text-center text-sm shrink-0 opacity-60"
+              title={
+                me.role === "admin"
+                  ? "Commissioner — optional"
+                  : "Picks unavailable"
+              }
+            >
+              {me.role === "admin" ? "Change pick (optional)" : "Pick"}
+            </Link>
+          ) : null}
+        </div>
       </div>
 
       <ul className="space-y-2">
@@ -171,6 +193,9 @@ export default async function StandingsPage() {
           return (
             <li
               key={m.id}
+              data-share-chunk=""
+              data-share-row=""
+              data-status={m.status}
               className={`card-glass p-3 flex items-center gap-2 sm:gap-3 min-w-0 ${
                 m.status === "eliminated" ? "opacity-60" : ""
               }`}
@@ -235,6 +260,7 @@ export default async function StandingsPage() {
                       <Link
                         href="/pick"
                         prefetch={false}
+                        data-share-chrome=""
                         className="btn-primary text-xs px-2.5 py-2 min-h-11"
                       >
                         Change
@@ -250,6 +276,7 @@ export default async function StandingsPage() {
                       <Link
                         href="/pick"
                         prefetch={false}
+                        data-share-chrome=""
                         className="btn-primary text-xs px-2.5 py-2 min-h-11"
                       >
                         Pick
@@ -267,7 +294,11 @@ export default async function StandingsPage() {
         })}
       </ul>
 
-      <section className="card-glass p-4 text-sm space-y-2 min-w-0">
+      <section
+        className="card-glass p-4 text-sm space-y-2 min-w-0"
+        data-share-chunk=""
+        data-share-section="tiebreak"
+      >
         <h2 className="font-semibold text-gold-400">Season-end tiebreak</h2>
         <p className="text-[var(--text-muted)]">
           Official winner must have a <strong>clean</strong> season — no
@@ -298,6 +329,12 @@ export default async function StandingsPage() {
             </p>
           )}
       </section>
+      <p
+        data-share-stamp=""
+        className="text-[11px] text-[var(--text-muted)] pt-1"
+      >
+        Survive Sunday · {weekLabel} · for friends, not betting
+      </p>
     </div>
   );
 }

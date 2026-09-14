@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Countdown } from "@/components/Countdown";
@@ -10,16 +11,49 @@ import {
   weekNavForPath,
   type WeekNavOption,
 } from "@/lib/weeks";
+import {
+  isTripleTap,
+  recordTapTimes,
+  SHARE_OPEN_EVENT,
+} from "@/lib/share-export";
 
 export type HeaderWeek = WeekNavOption & {
   lockAt: string;
 };
 
-function WeekBadge({ weekNumber }: { weekNumber: number }) {
+function shareablePath(path: string): boolean {
+  return (
+    path === "/standings" ||
+    path.startsWith("/standings/") ||
+    path === "/scores" ||
+    path.startsWith("/scores/")
+  );
+}
+
+function WeekBadge({
+  weekNumber,
+  allowShareGesture,
+}: {
+  weekNumber: number;
+  allowShareGesture?: boolean;
+}) {
+  const taps = useRef<number[]>([]);
+
+  function onWeekClick() {
+    if (!allowShareGesture) return;
+    taps.current = recordTapTimes(taps.current, Date.now());
+    if (isTripleTap(taps.current)) {
+      taps.current = [];
+      window.dispatchEvent(new Event(SHARE_OPEN_EVENT));
+    }
+  }
+
   return (
     <span
-      className="chip chip-gold shrink-0 min-w-9 justify-center"
+      className="chip chip-gold shrink-0 min-w-9 justify-center select-none"
       aria-current="true"
+      data-testid="header-week-badge"
+      onClick={allowShareGesture ? onWeekClick : undefined}
     >
       W{weekNumber}
     </span>
@@ -33,9 +67,13 @@ export function HeaderWeekBadge({
   weekNumber: number;
   lockAt: string | null;
 }) {
+  const pathname = usePathname();
   return (
     <div className="flex items-center gap-1.5 sm:gap-2 text-sm min-w-0 flex-1 justify-center overflow-hidden">
-      <WeekBadge weekNumber={weekNumber} />
+      <WeekBadge
+        weekNumber={weekNumber}
+        allowShareGesture={shareablePath(pathname)}
+      />
       {lockAt && (
         <span className="min-w-0 overflow-hidden">
           <Countdown lockAt={lockAt} />
@@ -116,7 +154,10 @@ export function HeaderWeekNav({
         >
           <ChevronLeft className="h-5 w-5" aria-hidden />
         </button>
-        <WeekBadge weekNumber={selectedWeek} />
+        <WeekBadge
+          weekNumber={selectedWeek}
+          allowShareGesture={shareablePath(pathname)}
+        />
         <button
           type="button"
           onClick={() => next && goTo(next)}

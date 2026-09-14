@@ -68,6 +68,7 @@ export function HeaderNav({ canChangePick, showMutedChangePick }: Props) {
   return (
     <nav
       aria-label="Secondary"
+      data-share-chrome=""
       className="mx-auto max-w-pool w-full px-3 sm:px-4 pb-2.5 -mt-0.5"
     >
       <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

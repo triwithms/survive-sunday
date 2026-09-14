@@ -43,6 +43,7 @@
     "verify:notification-schema": "tsx scripts/verify-notification-schema.ts",
     "verify:pick-mirror": "tsx scripts/verify-pick-mirror.ts",
     "verify:auto-pick-stamps": "tsx scripts/verify-auto-pick-stamps.ts",
+    "verify:share-export": "tsx scripts/verify-share-export.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {
@@ -50,6 +51,7 @@
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
+    "html-to-image": "^1.11.13",
     "lucide-react": "^1.45.0",
     "next": "^15.5.25",
     "next-auth": "^5.0.0-beta.32",
