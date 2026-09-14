@@ -1,5 +1,6 @@
 import { teamMeta, type NflTeamMeta } from "@/lib/nfl-team-meta";
 import {
+  channelBlocksWebsiteEmbeds,
   channelLabel,
   channelRank,
   isAllowlistedChannel,
@@ -19,6 +20,8 @@ export type VideoClip = {
   bucket: VideoBucket;
   watchUrl: string;
   embedUrl: string;
+  /** False = never mount an iframe; thumbnail + Watch on YouTube only. */
+  embeddable: boolean;
 };
 
 export type VideoGroups = {
@@ -39,6 +42,8 @@ export type RawYoutubeHit = {
   durationSeconds: number | null;
   durationLabel: string | null;
   isShort: boolean;
+  /** Innertube player `videoDetails.playableInEmbed` when known. */
+  playableInEmbed?: boolean | null;
 };
 
 const SHORT_MIN_S = 90;
@@ -70,6 +75,22 @@ export function youtubeEmbedUrl(id: string): string {
     controls: "1",
   });
   return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?${q}`;
+}
+
+/**
+ * Only true when the source actually allows website embeds.
+ * NFL / NFL Films / NFL Network always false. Unknown → false (link-out first)
+ * unless the channel is a known-allow source (ESPN, TSN, team channels).
+ */
+export function clipAllowsWebsiteEmbed(hit: {
+  channelId: string | null | undefined;
+  playableInEmbed?: boolean | null;
+}): boolean {
+  if (hit.playableInEmbed === false) return false;
+  if (channelBlocksWebsiteEmbeds(hit.channelId)) return false;
+  if (hit.playableInEmbed === true) return true;
+  if (!hit.channelId) return false;
+  return !channelBlocksWebsiteEmbeds(hit.channelId);
 }
 
 export function youtubeThumbUrl(id: string): string {
@@ -389,7 +410,15 @@ export function clipFromHit(hit: RawYoutubeHit, bucket: VideoBucket): VideoClip 
     bucket,
     watchUrl: youtubeWatchUrl(hit.videoId),
     embedUrl: youtubeEmbedUrl(hit.videoId),
+    embeddable: clipAllowsWebsiteEmbed(hit),
   };
+}
+
+export function withEmbeddableFlag(
+  clip: VideoClip,
+  embeddable: boolean
+): VideoClip {
+  return { ...clip, embeddable };
 }
 
 export function scoreWeeklyHit(hit: RawYoutubeHit, week: number): number {

@@ -1,11 +1,15 @@
 import "server-only";
-import { leagueRssChannelIds } from "@/lib/youtube-channels";
+import {
+  channelBlocksWebsiteEmbeds,
+  leagueRssChannelIds,
+} from "@/lib/youtube-channels";
 import { teamMeta } from "@/lib/nfl-team-meta";
 import {
   extractInnertubeVideos,
   groupWeeklyVideos,
   parseYoutubeAtomFeed,
   pickGameHighlights,
+  withEmbeddableFlag,
   youtubeSearchUrl,
   type RawYoutubeHit,
   type VideoClip,
@@ -21,11 +25,14 @@ const YT_HEADERS: HeadersInit = {
 
 const RSS_TTL_MS = 10 * 60_000;
 const SEARCH_TTL_MS = 8 * 60_000;
+const EMBED_TTL_MS = 60 * 60_000;
 const FETCH_MS = 7000;
+const EMBED_PROBE_MS = 2500;
 
 type CacheEntry<T> = { at: number; data: T };
 const rssCache = new Map<string, CacheEntry<RawYoutubeHit[]>>();
 const searchCache = new Map<string, CacheEntry<RawYoutubeHit[]>>();
+const embedCache = new Map<string, CacheEntry<boolean | null>>();
 
 async function fetchText(url: string, init?: RequestInit): Promise<string> {
   const res = await fetch(url, {
@@ -108,6 +115,91 @@ async function settledHits(
   return { hits, anyOk };
 }
 
+/**
+ * Innertube player `playableInEmbed`. oEmbed 200 is NOT a valid check —
+ * NFL videos still return oEmbed while blocking website iframes (emb_err).
+ * Probe failure → null (caller keeps the channel default).
+ */
+async function probePlayableInEmbed(videoId: string): Promise<boolean | null> {
+  const now = Date.now();
+  const cached = embedCache.get(videoId);
+  if (cached && now - cached.at < EMBED_TTL_MS) return cached.data;
+  try {
+    const res = await fetch(
+      "https://www.youtube.com/youtubei/v1/player?prettyPrint=false",
+      {
+        method: "POST",
+        cache: "no-store",
+        signal: AbortSignal.timeout(EMBED_PROBE_MS),
+        headers: {
+          ...YT_HEADERS,
+          "Content-Type": "application/json",
+          "X-YouTube-Client-Name": "1",
+          "X-YouTube-Client-Version": "2.20260901.00.00",
+        },
+        body: JSON.stringify({
+          context: {
+            client: {
+              clientName: "WEB",
+              clientVersion: "2.20260901.00.00",
+              hl: "en",
+              gl: "CA",
+            },
+          },
+          videoId,
+        }),
+      }
+    );
+    if (!res.ok) {
+      embedCache.set(videoId, { at: now, data: null });
+      return null;
+    }
+    const json = (await res.json()) as {
+      videoDetails?: { playableInEmbed?: boolean };
+      playabilityStatus?: { status?: string };
+    };
+    let embeddable: boolean | null = null;
+    if (typeof json.videoDetails?.playableInEmbed === "boolean") {
+      embeddable = json.videoDetails.playableInEmbed;
+    } else {
+      const status = json.playabilityStatus?.status;
+      if (status === "UNPLAYABLE" || status === "ERROR" || status === "LOGIN_REQUIRED") {
+        embeddable = false;
+      }
+    }
+    embedCache.set(videoId, { at: now, data: embeddable });
+    return embeddable;
+  } catch (e) {
+    console.error("youtube embed probe skipped", videoId, e);
+    embedCache.set(videoId, { at: now, data: null });
+    return null;
+  }
+}
+
+async function withProbedEmbeddable(clips: VideoClip[]): Promise<VideoClip[]> {
+  return Promise.all(
+    clips.map(async (clip) => {
+      if (channelBlocksWebsiteEmbeds(clip.channelId)) {
+        return withEmbeddableFlag(clip, false);
+      }
+      if (!clip.embeddable) return clip;
+      const probed = await probePlayableInEmbed(clip.id);
+      if (probed === false) return withEmbeddableFlag(clip, false);
+      if (probed === true) return withEmbeddableFlag(clip, true);
+      return clip;
+    })
+  );
+}
+
+async function withProbedGroups(groups: VideoGroups): Promise<VideoGroups> {
+  const [short, medium, long] = await Promise.all([
+    withProbedEmbeddable(groups.short),
+    withProbedEmbeddable(groups.medium),
+    withProbedEmbeddable(groups.long),
+  ]);
+  return { short, medium, long };
+}
+
 export type WeeklyVideosResult = {
   ok: true;
   week: number;
@@ -141,7 +233,7 @@ export async function loadWeeklyVideos(week: number): Promise<WeeklyVideosResult
     return {
       ok: true,
       week,
-      groups: groupWeeklyVideos(hits, week),
+      groups: await withProbedGroups(groupWeeklyVideos(hits, week)),
       unavailable: !anyOk,
       nflChannelUrl: "https://www.youtube.com/@NFL",
     };
@@ -187,7 +279,7 @@ export async function loadGameVideos(opts: {
     ]);
     return {
       ok: true,
-      videos: pickGameHighlights(hits, opts),
+      videos: await withProbedEmbeddable(pickGameHighlights(hits, opts)),
       unavailable: !anyOk,
       searchUrl,
     };
