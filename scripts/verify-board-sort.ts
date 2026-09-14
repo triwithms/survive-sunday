@@ -36,6 +36,7 @@ type Row = {
   losses: number;
   pickTeamAbbr?: string | null;
   pickGameKickoff?: Date | string | number | null;
+  pickGameId?: string | null;
 };
 
 function nicknames(rows: Row[]): string[] {
@@ -57,8 +58,13 @@ function assertContiguous(order: string[], group: string[]) {
   );
 }
 
-// Owner Week 1 case: all Undefeated; Daddy Chill (SEA WIN, weeksSurvived 1)
-// must rank above Black Cobra / Cannoli / Colin (LAC PENDING, weeksSurvived 0).
+// Real Week 1 slate times: KC is TNF; LAC / SEA / DET share Sunday 4:25 ET;
+// JAX is Monday night.
+const kcKickoff = "2026-09-10T00:20:00.000Z";
+const sundayLate = "2026-09-13T20:25:00.000Z";
+const jaxKickoff = "2026-09-15T00:15:00.000Z";
+
+// No-pick rows: nickname A–Z. Status / weeks survived must not reorder.
 assert.deepEqual(
   nicknames([
     { nickname: "Black Cobra", status: "undefeated", weeksSurvived: 0, losses: 0 },
@@ -66,37 +72,62 @@ assert.deepEqual(
     { nickname: "Colin", status: "undefeated", weeksSurvived: 0, losses: 0 },
     { nickname: "Daddy Chill", status: "undefeated", weeksSurvived: 1, losses: 0 },
   ]),
-  ["Daddy Chill", "Black Cobra", "Cannoli", "Colin"]
+  ["Black Cobra", "Cannoli", "Colin", "Daddy Chill"]
 );
 
-// Status tier still wins over weeks survived.
 assert.deepEqual(
   nicknames([
     { nickname: "Zed", status: "eliminated", weeksSurvived: 8, losses: 2 },
     { nickname: "Ann", status: "one_loss", weeksSurvived: 1, losses: 1 },
     { nickname: "Mo", status: "undefeated", weeksSurvived: 0, losses: 0 },
   ]),
-  ["Mo", "Ann", "Zed"]
+  ["Ann", "Mo", "Zed"]
 );
 
-// Same status: fewer losses after weeks survived.
-assert.deepEqual(
-  nicknames([
-    { nickname: "Bee", status: "one_loss", weeksSurvived: 3, losses: 1 },
-    { nickname: "Ace", status: "one_loss", weeksSurvived: 3, losses: 1 },
-    { nickname: "Cal", status: "one_loss", weeksSurvived: 3, losses: 0 },
-  ]),
-  ["Cal", "Ace", "Bee"]
-);
+// Owner correction: same pick stays clustered even when status differs.
+// Status-first (PR #38) split LAC across undefeated vs one_loss.
+const mixedStatusLac = nicknames([
+  {
+    nickname: "Zed",
+    status: "undefeated",
+    weeksSurvived: 1,
+    losses: 0,
+    pickTeamAbbr: "LAC",
+    pickGameKickoff: sundayLate,
+    pickGameId: "2026-w1-lac",
+  },
+  {
+    nickname: "Ann",
+    status: "eliminated",
+    weeksSurvived: 0,
+    losses: 2,
+    pickTeamAbbr: "LAC",
+    pickGameKickoff: sundayLate,
+    pickGameId: "2026-w1-lac",
+  },
+  {
+    nickname: "Mo",
+    status: "one_loss",
+    weeksSurvived: 0,
+    losses: 1,
+    pickTeamAbbr: "DET",
+    pickGameKickoff: sundayLate,
+    pickGameId: "2026-w1-det",
+  },
+  {
+    nickname: "Bea",
+    status: "one_loss",
+    weeksSurvived: 3,
+    losses: 1,
+    pickTeamAbbr: "LAC",
+    pickGameKickoff: sundayLate,
+    pickGameId: "2026-w1-lac",
+  },
+]);
+assert.deepEqual(mixedStatusLac, ["Mo", "Ann", "Bea", "Zed"]);
+assertContiguous(mixedStatusLac, ["Ann", "Bea", "Zed"]);
 
-// Real Week 1 slate times: KC is TNF; LAC / SEA / DET share Sunday 4:25 ET;
-// JAX is Monday night.
-const kcKickoff = "2026-09-10T00:20:00.000Z";
-const sundayLate = "2026-09-13T20:25:00.000Z";
-const jaxKickoff = "2026-09-15T00:15:00.000Z";
-
-// Owner follow-up: Gams (KC pending) must not sit alphabetically between LAC
-// names. Steve / Daddy Chill (weeksSurvived 1) stay above 0-week rows.
+// Primary: pick team abbr (DET → JAX → KC → LAC → SEA). Same pick contiguous.
 const ownerBoard = nicknames([
   {
     nickname: "Black Cobra",
@@ -124,9 +155,9 @@ const ownerBoard = nicknames([
   },
   {
     nickname: "Daddy Chill",
-    status: "undefeated",
+    status: "one_loss",
     weeksSurvived: 1,
-    losses: 0,
+    losses: 1,
     pickTeamAbbr: "SEA",
     pickGameKickoff: sundayLate,
   },
@@ -148,9 +179,9 @@ const ownerBoard = nicknames([
   },
   {
     nickname: "Gdogss",
-    status: "undefeated",
+    status: "one_loss",
     weeksSurvived: 0,
-    losses: 0,
+    losses: 1,
     pickTeamAbbr: "LAC",
     pickGameKickoff: sundayLate,
   },
@@ -182,15 +213,15 @@ const ownerBoard = nicknames([
 
 assert.deepEqual(ownerBoard, [
   "Steve",
-  "Daddy Chill",
+  "Deep and Delicious",
+  "JimmyC",
+  "Long Snapper",
   "Gams",
   "Black Cobra",
   "Cannoli Stuffer",
   "Colin",
   "Gdogss",
-  "Deep and Delicious",
-  "JimmyC",
-  "Long Snapper",
+  "Daddy Chill",
 ]);
 assertContiguous(ownerBoard, [
   "Black Cobra",
@@ -200,18 +231,14 @@ assertContiguous(ownerBoard, [
 ]);
 assert.ok(
   ownerBoard.indexOf("Gams") < ownerBoard.indexOf("Black Cobra"),
-  "Gams (KC) should not sit among LAC pending rows"
+  "Gams (KC) should not sit among LAC rows"
 );
 assert.ok(
-  ownerBoard.indexOf("Steve") < ownerBoard.indexOf("Gams"),
-  "Steve (weeksSurvived 1) stays above 0-week rows"
-);
-assert.ok(
-  ownerBoard.indexOf("Daddy Chill") < ownerBoard.indexOf("Gams"),
-  "Daddy Chill (weeksSurvived 1) stays above 0-week rows"
+  ownerBoard.indexOf("Gdogss") === ownerBoard.indexOf("Colin") + 1,
+  "one-loss Gdogss stays with the other LAC picks"
 );
 
-// Same game: LAC and LV share a kickoff — cluster, then pick abbr, then A–Z.
+// Same game: LAC and LV share a kickoff — cluster by pick abbr, then A–Z.
 assert.deepEqual(
   nicknames([
     {
@@ -224,9 +251,9 @@ assert.deepEqual(
     },
     {
       nickname: "Ava",
-      status: "undefeated",
+      status: "one_loss",
       weeksSurvived: 0,
-      losses: 0,
+      losses: 1,
       pickTeamAbbr: "LAC",
       pickGameKickoff: sundayLate,
     },
@@ -242,29 +269,54 @@ assert.deepEqual(
   ["Ava", "Bob", "Zoe"]
 );
 
-// No-pick / pending-without-team last within the same status / weeks / losses.
+// Same pick + same kickoff: game id keeps matchups apart, then nickname.
 assert.deepEqual(
   nicknames([
     {
-      nickname: "Mo",
-      status: "undefeated",
-      weeksSurvived: 0,
-      losses: 0,
-      pickTeamAbbr: null,
-    },
-    {
-      nickname: "Ann",
+      nickname: "Bee",
       status: "undefeated",
       weeksSurvived: 0,
       losses: 0,
       pickTeamAbbr: "LAC",
       pickGameKickoff: sundayLate,
+      pickGameId: "game-b",
+    },
+    {
+      nickname: "Ace",
+      status: "one_loss",
+      weeksSurvived: 2,
+      losses: 1,
+      pickTeamAbbr: "LAC",
+      pickGameKickoff: sundayLate,
+      pickGameId: "game-a",
+    },
+  ]),
+  ["Ace", "Bee"]
+);
+
+// No-pick / missed last, regardless of status.
+assert.deepEqual(
+  nicknames([
+    {
+      nickname: "Mo",
+      status: "undefeated",
+      weeksSurvived: 4,
+      losses: 0,
+      pickTeamAbbr: null,
+    },
+    {
+      nickname: "Ann",
+      status: "one_loss",
+      weeksSurvived: 0,
+      losses: 1,
+      pickTeamAbbr: "LAC",
+      pickGameKickoff: sundayLate,
     },
     {
       nickname: "Bea",
-      status: "undefeated",
+      status: "eliminated",
       weeksSurvived: 0,
-      losses: 0,
+      losses: 2,
       pickTeamAbbr: "LAC",
       pickGameKickoff: sundayLate,
     },
@@ -286,11 +338,12 @@ assert.deepEqual(
   ["Ann", "Bea", "Mo", "Ned", "Pat"]
 );
 
-// boardPickFields resolves kickoff from the week slate when pick.game is missing.
+// boardPickFields resolves kickoff + game id from the week slate.
 const resolved = boardPickFields({ teamAbbr: "KC", source: "imported" }, [
   { id: "2026-w1-01", awayAbbr: "BAL", homeAbbr: "KC", kickoff: kcKickoff },
 ]);
 assert.equal(resolved.pickTeamAbbr, "KC");
 assert.equal(resolved.pickGameKickoff, kcKickoff);
+assert.equal(resolved.pickGameId, "2026-w1-01");
 
 console.log("verify-board-sort OK");

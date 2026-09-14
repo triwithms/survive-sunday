@@ -17,7 +17,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Who are you? Join** + **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** switcher — merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
 - **Week 2 schedule restored** in Real/live (viewable; Demo isolation is practice UX only — it does **not** hide the Week 2 slate) — merged [PR #22](https://github.com/triwithms/survive-sunday/pull/22)
-- Survival board sort: **status → weeks survived → losses → same pick → same game → A–Z** — merged [PR #21](https://github.com/triwithms/survive-sunday/pull/21) / [PR #24](https://github.com/triwithms/survive-sunday/pull/24)
+- Survival board / participant pick lists: **same pick → same game → nickname A–Z** (no-pick last). Status chips stay visible but do **not** split a pick group.
 - ESPN live scores + injuries; **League W-L syncs from ESPN** (not the demo `week2-standings` seed); no player-facing demo League copy in Real mode
 - Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **DAL** (Dallas — not Gams’ KC). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
 - **Pick backup:** Off by default. Copy another player within **30 minutes** of lock (JaJa → **Gams** for later weeks if she still has no pick — no 💩). Or auto-pick the best remaining **2025 rank** team (same `#N` list as Pick) within **~2 minutes** — that stamps 💩 beside the nickname and that player cannot be the official winner. Server jobs apply this — opening the app is not required.
@@ -277,7 +277,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 ### Standings / in vs out
 
-- **Home** (`/pool`) and **Board** (`/standings`): undefeated → one loss → eliminated, then most weeks survived, then fewest losses, then same pick, then same game (earlier kickoff first), then nickname A–Z.
+- **Home** (`/pool`), **Board** (`/standings`), Scores **Participants’ picks**, and `GET /api/picks`: same pick (team abbr; no pick last), then same game (earlier kickoff / game id), then nickname A–Z. Status does not split a pick group.
 - You can open Home, Scores, League, Board, Help, and team pages **without** making a pick. If lock hits and a player still has no pick, the app records a **missed pick** (loss / mulligan), except the commissioner.
 
 ### Scores, League, team pages
@@ -386,7 +386,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Safari sign-in + Account Sign out | [#18](https://github.com/triwithms/survive-sunday/pull/18) | Login errors show on the page. Header **Account → Sign out**. |
 | Who are you? live-roster claim + Player/Admin roles | [#19](https://github.com/triwithms/survive-sunday/pull/19) | Friends pick `Gams (Robert Gama)` (or Pauli, Go Giants, …) from the live roster. **One user, multiple roles** — not a separate admin account. **Playing as … / Admin tools**. Promote another member. |
 | Week 2 schedule in Real/live | [#22](https://github.com/triwithms/survive-sunday/pull/22) | Week 2 is a real NFL week on Schedule / Pick. Demo isolation does **not** hide the slate. |
-| Survival board sort | [#21](https://github.com/triwithms/survive-sunday/pull/21), [#24](https://github.com/triwithms/survive-sunday/pull/24) | Status → weeks survived → losses → same pick → same game (earlier kickoff) → nickname A–Z. |
+| Survival board / pick-list sort | [#21](https://github.com/triwithms/survive-sunday/pull/21), [#24](https://github.com/triwithms/survive-sunday/pull/24), then owner correction after [#38](https://github.com/triwithms/survive-sunday/pull/38) | Same pick → same game → nickname A–Z. Status-first was wrong for these lists. |
 | League W-L from ESPN (no demo leak) | live-standings merge (`538be1f`) | Real-mode League syncs ESPN W-L. Demo `week2-standings` seed is not shown to Real-mode friends. |
 | Week 1 pick-change until kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock.** |
 | Notification preferences | [#29](https://github.com/triwithms/survive-sunday/pull/29) | Account → Notification preferences. Types: missing pick, pick saved/changed, results, you’re out / mulligan, pool notes (default on); live scores, injury notes (default off). Email via Resend. Missing-pick SMS follows the same switch. |
@@ -580,7 +580,7 @@ You are free / basic Grok chat — not Grok Bot. One small PR. Continue existing
 Core MUST: submit pick, group board, in vs out — keep ~100% reliable.
 Real mode is already on main (merged PR #10): Week 1 is the real current week. Week 2 is a real NFL week on the schedule (merged PR #22) — Demo isolation does not hide it.
 Official REAL Week 1 picks (incl Go Giants, Pauli, JaJa → DAL) are already imported — see docs/HANDOFF.md section 6b. Not the demo CSV.
-Board sort on main: status → weeks survived → losses → same pick → same game → A–Z (merged PRs #21 / #24).
+Board / pick-list sort on main: same pick → same game → nickname A–Z (no-pick last). Do not sort these lists status-first.
 Friends may open the app without picking every week; a missed week still counts as a loss after lock unless I ask to change that rule.
 Pick header prev/next week is **on main** (merged PR #14). Do not start a second copy.
 No favourite-strength-meter bonus or weekly video previews unless I ask.

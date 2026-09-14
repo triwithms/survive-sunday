@@ -35,13 +35,15 @@ export type BoardMember = {
   pickTeamAbbr?: string | null;
   /** Kickoff of the pick’s game (schedule order). Missing games sort last. */
   pickGameKickoff?: Date | string | number | null;
+  /** Game id when kickoffs collide. Missing ids sort last. */
+  pickGameId?: string | null;
 };
 
 export type BoardPickSource = {
   teamAbbr?: string | null;
   source?: string | null;
   gameId?: string | null;
-  game?: { kickoff?: Date | string | number | null } | null;
+  game?: { id?: string | null; kickoff?: Date | string | number | null } | null;
 };
 
 export type BoardGameSource = {
@@ -66,17 +68,28 @@ function boardKickoffMs(member: BoardMember): number {
   return Number.isFinite(t) ? t : Number.POSITIVE_INFINITY;
 }
 
-/** Attach current-week pick + game kickoff used by the Survival board sort. */
+function boardGameId(member: BoardMember): string | null {
+  const id = member.pickGameId?.trim() ?? "";
+  return id || null;
+}
+
+/** Attach current-week pick + game used by the Survival board / pick-list sort. */
 export function boardPickFields(
   pick?: BoardPickSource | null,
   games: BoardGameSource[] = []
-): { pickTeamAbbr: string | null; pickGameKickoff: Date | string | number | null } {
+): {
+  pickTeamAbbr: string | null;
+  pickGameKickoff: Date | string | number | null;
+  pickGameId: string | null;
+} {
+  const empty = {
+    pickTeamAbbr: null,
+    pickGameKickoff: null,
+    pickGameId: null,
+  };
   const abbr = pick?.teamAbbr?.trim().toUpperCase() ?? "";
   if (!pick || !abbr || pick.source === "missed" || abbr === MISSED_PICK_TEAM) {
-    return { pickTeamAbbr: null, pickGameKickoff: null };
-  }
-  if (pick.game?.kickoff != null) {
-    return { pickTeamAbbr: abbr, pickGameKickoff: pick.game.kickoff };
+    return empty;
   }
   const match = games.find(
     (g) =>
@@ -84,45 +97,55 @@ export function boardPickFields(
       g.awayAbbr === abbr ||
       g.homeAbbr === abbr
   );
-  return { pickTeamAbbr: abbr, pickGameKickoff: match?.kickoff ?? null };
+  const gameId = pick.gameId ?? pick.game?.id ?? match?.id ?? null;
+  if (pick.game?.kickoff != null) {
+    return {
+      pickTeamAbbr: abbr,
+      pickGameKickoff: pick.game.kickoff,
+      pickGameId: gameId,
+    };
+  }
+  return {
+    pickTeamAbbr: abbr,
+    pickGameKickoff: match?.kickoff ?? null,
+    pickGameId: gameId,
+  };
 }
 
 /**
- * Player-facing board order — reuse anywhere a week’s participant picks
- * are listed (Board, Home/Pool, Scores, week picks API):
- * 1. Status: undefeated → one_loss → eliminated
- * 2. weeksSurvived descending
- * 3. losses ascending
- * 4. Same current-week pick team (no-pick / pending-without-team last)
- * 5. Same game (earlier kickoff first) when pick teams differ
- * 6. Nickname A–Z
+ * Player-facing board / week pick-list order — reuse anywhere a week’s
+ * participant picks are listed (Board, Home/Pool, Scores, week picks API):
+ * 1. Same pick (team abbr; no-pick / missed last)
+ * 2. Same game (earlier kickoff, then game id)
+ * 3. Nickname A–Z
+ * Status does not split a pick group. Weeks survived is only a last-resort
+ * tiebreak when pick, game, and nickname are identical.
  */
 export function sortParticipants<T extends BoardMember>(members: T[]): T[] {
-  const order: Record<string, number> = {
-    undefeated: 0,
-    one_loss: 1,
-    eliminated: 2,
-  };
   return [...members].sort((a, b) => {
-    const sa = order[a.status] ?? 9;
-    const sb = order[b.status] ?? 9;
-    if (sa !== sb) return sa - sb;
-    if (a.weeksSurvived !== b.weeksSurvived)
-      return b.weeksSurvived - a.weeksSurvived;
-    if (a.losses !== b.losses) return a.losses - b.losses;
-
     const teamA = boardPickTeam(a);
     const teamB = boardPickTeam(b);
     if (teamA !== teamB) {
       if (!teamA) return 1;
       if (!teamB) return -1;
-      const ka = boardKickoffMs(a);
-      const kb = boardKickoffMs(b);
-      if (ka !== kb) return ka - kb;
       return teamA.localeCompare(teamB, "en-CA");
     }
 
-    return a.nickname.localeCompare(b.nickname, "en-CA");
+    const ka = boardKickoffMs(a);
+    const kb = boardKickoffMs(b);
+    if (ka !== kb) return ka - kb;
+
+    const idA = boardGameId(a);
+    const idB = boardGameId(b);
+    if (idA !== idB) {
+      if (!idA) return 1;
+      if (!idB) return -1;
+      return idA.localeCompare(idB, "en-CA");
+    }
+
+    const byName = a.nickname.localeCompare(b.nickname, "en-CA");
+    if (byName !== 0) return byName;
+    return b.weeksSurvived - a.weeksSurvived;
   });
 }
 
