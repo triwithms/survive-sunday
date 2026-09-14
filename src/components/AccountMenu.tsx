@@ -7,6 +7,8 @@ import { ChevronDown } from "lucide-react";
 import { ModalDialog } from "@/components/ModalDialog";
 import { PhoneEditor } from "@/components/PhoneEditor";
 import { SignOutButton } from "@/components/SignOutButton";
+import { RoleSwitcher } from "@/components/RoleSwitcher";
+import type { RoleView } from "@/lib/roles";
 
 const MAX_NICKNAME = 24;
 
@@ -19,6 +21,8 @@ type Props = {
   userId: string;
   role: string;
   showAdmin?: boolean;
+  canSwitchRoles?: boolean;
+  roleView?: RoleView;
   phoneE164: string | null;
   phoneSoftPrompt: boolean;
 };
@@ -29,6 +33,8 @@ export function AccountMenu({
   userId,
   role,
   showAdmin,
+  canSwitchRoles,
+  roleView = "player",
   phoneE164,
   phoneSoftPrompt,
 }: Props) {
@@ -132,6 +138,9 @@ export function AccountMenu({
               {statusLabel}
             </p>
           </div>
+          {canSwitchRoles ? (
+            <RoleSwitcher playerName={nickname} activeView={roleView} />
+          ) : null}
           <SignOutButton next="/login" className="btn-danger w-full" />
           {(showAdmin ?? role === "admin") && (
             <Link

@@ -145,11 +145,15 @@ export function channelBlocksWebsiteEmbeds(
   return Boolean(channelId && CHANNELS_THAT_BLOCK_WEBSITE_EMBEDS.has(channelId));
 }
 
-/** Never iframe NFL official / any clip flagged not embeddable. */
+/**
+ * Never mount a website iframe. NFL official clips (and many others) show
+ * YouTube’s “Video unavailable… blocked from display on this website”
+ * overlay and raw HTML. Friends always get thumbnail + Watch on YouTube.
+ */
 export function shouldMountYoutubeIframe(clip: {
   embeddable?: boolean;
   channelId: string | null | undefined;
 }): boolean {
-  if (channelBlocksWebsiteEmbeds(clip.channelId)) return false;
-  return clip.embeddable === true;
+  void clip;
+  return false;
 }

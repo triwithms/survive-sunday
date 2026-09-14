@@ -12,7 +12,8 @@ export type WeekSwitcherOption = {
 
 /**
  * Week nav for Pool/Scores/Videos: dropdown + prev/next arrows only.
- * Future weeks stay on Schedule unless allowFuture is set.
+ * Future weeks stay on Schedule unless allowFuture is set (Pick / Schedule / Videos).
+ * Scores never allows future weeks.
  */
 export function WeekSwitcher({
   weeks,
@@ -28,7 +29,7 @@ export function WeekSwitcher({
   allowFuture?: boolean;
 }) {
   const router = useRouter();
-  // allowFuture (Schedule / Pick / Scores): every week, including TBA. Pool: past+current with games.
+  // allowFuture (Schedule / Pick / Videos): every week, including TBA. Pool / Scores: past+current.
   const selectable = selectableWeeks(weeks, currentWeek, allowFuture);
   const selected = weeks.find((week) => week.number === selectedWeek);
   const options =
@@ -104,7 +105,7 @@ export function WeekSwitcher({
       </div>
       {!allowFuture ? (
         <p className="text-[10px] text-[var(--text-muted)] px-0.5">
-          Future weeks are on Schedule — picks stay on the current week.
+          Future weeks are on Schedule.
         </p>
       ) : (
         <p className="text-[10px] text-[var(--text-muted)] px-0.5">

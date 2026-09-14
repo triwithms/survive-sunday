@@ -23,7 +23,6 @@ import {
 } from "@/lib/pool-mode";
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
-import { RoleSwitcher } from "@/components/RoleSwitcher";
 import { PoolRulesBanner } from "@/components/PoolRulesBanner";
 
 export const dynamic = "force-dynamic";
@@ -167,6 +166,8 @@ export default async function AppLayout({
             userId={session.user.id}
             role={membership.role}
             showAdmin={showAdminChrome}
+            canSwitchRoles={isPlayer && isAdmin}
+            roleView={roleView}
             phoneE164={membership.user.phoneE164}
             phoneSoftPrompt={
               membership.user.phoneE164 == null &&
@@ -181,14 +182,6 @@ export default async function AppLayout({
         />
         {showDemoLockToggle && week && (
           <DemoLockToggle locked={locked} weekNumber={week.number} />
-        )}
-        {isPlayer && isAdmin && (
-          <div className="mx-auto max-w-pool w-full px-3 sm:px-4 pb-3">
-            <RoleSwitcher
-              playerName={membership.nickname}
-              activeView={roleView}
-            />
-          </div>
         )}
         <PoolRulesBanner
           singleEliminationFromWeek={membership.pool.singleEliminationFromWeek}

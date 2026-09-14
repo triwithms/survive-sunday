@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
 import type { VideoClip, VideoGroups } from "@/lib/youtube-parse";
 
@@ -23,7 +22,6 @@ export function WeeklyVideoLists({
   unavailable?: boolean;
   nflChannelUrl: string;
 }) {
-  const [playingId, setPlayingId] = useState<string | null>(null);
   const empty =
     groups.short.length + groups.medium.length + groups.long.length === 0;
 
@@ -76,11 +74,7 @@ export function WeeklyVideoLists({
             <ul className="space-y-4">
               {list.map((video: VideoClip) => (
                 <li key={video.id}>
-                  <YouTubeEmbed
-                    video={video}
-                    playingId={playingId}
-                    onPlay={setPlayingId}
-                  />
+                  <YouTubeEmbed video={video} />
                 </li>
               ))}
             </ul>

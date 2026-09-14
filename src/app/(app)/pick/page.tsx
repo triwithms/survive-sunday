@@ -16,7 +16,7 @@ import {
 } from "@/lib/live-scores";
 import { getInjuryCountsByTeam } from "@/lib/live-injuries";
 import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
-import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
+import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { isPoolParticipant } from "@/lib/pool-rules";
 
@@ -78,10 +78,12 @@ export default async function PickPage({
     currentPick: myCurrentWeekPick,
     playingFromWeek: me.playingFromWeek,
   });
-  const selectedNumber = resolveSelectedWeekNumber({
+  const selectedNumber = resolvePageWeekNumber({
     requested: parseWeekParam(params?.week),
     weekNumbers: weeks.map((row) => row.number),
-    currentWeek: decision.actionWeek,
+    basePath: "/pick",
+    poolCurrentWeek: currentWeek,
+    pickActionWeek: decision.actionWeek,
     allowFuture: true,
   });
   const weekRef =
