@@ -88,7 +88,8 @@ export function boardPickFields(
 }
 
 /**
- * Player-facing board order:
+ * Player-facing board order — reuse anywhere a week’s participant picks
+ * are listed (Board, Home/Pool, Scores, week picks API):
  * 1. Status: undefeated → one_loss → eliminated
  * 2. weeksSurvived descending
  * 3. losses ascending

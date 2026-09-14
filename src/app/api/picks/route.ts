@@ -17,6 +17,7 @@ import {
   pickChangeErrorMessage,
 } from "@/lib/pick-change";
 import { schedulePickConfirmed } from "@/lib/notification-events";
+import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -210,43 +211,48 @@ export async function GET(req: Request) {
     },
   });
 
-  const participants = members
-    .filter((m) => m.role !== "admin")
-    .map((m) => {
-      const pick = m.picks[0] || null;
-      const isSelf = m.id === membership.id;
-      const showPick = locked || isSelf;
-      const isMissed = pick?.source === "missed";
-      return {
-        id: m.id,
-        nickname: m.nickname,
-        realName: m.realName,
-        status: m.status,
-        mulliganRemaining: m.mulliganRemaining,
-        role: m.role,
-        isSelf,
-        pick:
-          showPick && pick && !isMissed
-            ? {
-                teamAbbr: pick.teamAbbr,
-                result: pick.result,
-                source: pick.source,
-                game: pick.game
-                  ? {
-                      awayAbbr: pick.game.awayAbbr,
-                      homeAbbr: pick.game.homeAbbr,
-                      kickoff: pick.game.kickoff,
-                      status: pick.game.status,
-                      scoreAway: pick.game.scoreAway,
-                      scoreHome: pick.game.scoreHome,
-                    }
-                  : null,
-              }
-            : showPick
-              ? null
-              : { hidden: true },
-      };
-    });
+  const participants = sortParticipants(
+    members
+      .filter((m) => m.role !== "admin")
+      .map((m) => ({
+        ...m,
+        ...boardPickFields(m.picks[0], weekFresh.games),
+      }))
+  ).map((m) => {
+    const pick = m.picks[0] || null;
+    const isSelf = m.id === membership.id;
+    const showPick = locked || isSelf;
+    const isMissed = pick?.source === "missed";
+    return {
+      id: m.id,
+      nickname: m.nickname,
+      realName: m.realName,
+      status: m.status,
+      mulliganRemaining: m.mulliganRemaining,
+      role: m.role,
+      isSelf,
+      pick:
+        showPick && pick && !isMissed
+          ? {
+              teamAbbr: pick.teamAbbr,
+              result: pick.result,
+              source: pick.source,
+              game: pick.game
+                ? {
+                    awayAbbr: pick.game.awayAbbr,
+                    homeAbbr: pick.game.homeAbbr,
+                    kickoff: pick.game.kickoff,
+                    status: pick.game.status,
+                    scoreAway: pick.game.scoreAway,
+                    scoreHome: pick.game.scoreHome,
+                  }
+                : null,
+            }
+          : showPick
+            ? null
+            : { hidden: true },
+    };
+  });
 
   return NextResponse.json({
     week: {

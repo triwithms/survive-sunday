@@ -1,5 +1,7 @@
 /**
  * Survival board / standings list order (no database).
+ * Home/Pool week pick clusters, Scores “Participants’ picks”, and GET /api/picks
+ * reuse sortParticipants — do not add a second comparator.
  *
  *   npx tsx scripts/verify-board-sort.ts
  */

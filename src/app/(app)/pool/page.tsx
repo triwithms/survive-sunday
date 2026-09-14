@@ -171,14 +171,11 @@ export default async function PoolPage({
       ? pickRaw
       : undefined;
   };
-  const byNickname = (a: Participant, b: Participant) =>
-    a.nickname.localeCompare(b.nickname, "en-CA");
   const gamesByKickoff = [...week.games].sort(
     (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime(),
   );
-  const missedOrNoPick = participants
-    .filter((m) => !validPick(m))
-    .sort(byNickname);
+  // Same comparator as the Survival board (filter keeps that order).
+  const missedOrNoPick = sorted.filter((m) => !validPick(m));
 
   return (
     <div className="space-y-6">
@@ -314,12 +311,12 @@ export default async function PoolPage({
             {gamesByKickoff.map((game) => {
               const isLive = game.status === "live";
               const isFinal = game.status === "final";
-              const awayCluster = participants
-                .filter((m) => validPick(m)?.teamAbbr === game.awayAbbr)
-                .sort(byNickname);
-              const homeCluster = participants
-                .filter((m) => validPick(m)?.teamAbbr === game.homeAbbr)
-                .sort(byNickname);
+              const awayCluster = sorted.filter(
+                (m) => validPick(m)?.teamAbbr === game.awayAbbr
+              );
+              const homeCluster = sorted.filter(
+                (m) => validPick(m)?.teamAbbr === game.homeAbbr
+              );
               return (
                 <div key={game.id} className="card-glass p-4 space-y-3">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
