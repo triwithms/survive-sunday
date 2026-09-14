@@ -17,6 +17,74 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         </ul>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
+      <section id="getting-started-join-signin-home-screen">
+        <h2 className="text-lg font-semibold text-gold-400 mb-2">Getting started — Join, Sign in, Home Screen</h2>
+        <p className="text-[var(--text-muted)] mb-3">
+          Click-by-click for friends and the commissioner. More detail is in
+          Help §11 (install), §12 (accounts), §13 (troubleshooting), and §14
+          (commissioner).
+        </p>
+
+        <h3 className="font-semibold mt-3 mb-1">A. Friend: open your personal Join link</h3>
+        <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
+          <li className="text-[var(--text-primary)]">Open the link the commissioner sent <strong>only to you</strong> (text or email). It looks like <code>survive-sunday.vercel.app/join?seat=…</code> or <code>…/join?who=cannoli-stuffer</code>.</li>
+          <li className="text-[var(--text-primary)]">Join should already show <strong>your name</strong>. The invite code <code>SUNDAY26</code> is filled in — leave it.</li>
+          <li className="text-[var(--text-primary)]">Enter <strong>your own email and a password</strong> (at least 6 characters). Tap Join. Do this <strong>once</strong>.</li>
+          <li className="text-[var(--text-primary)]">On this phone you should stay signed in. Next time, tap the Home Screen icon or Sign in — do not Join again.</li>
+        </ol>
+        <p className="text-[var(--text-muted)] mb-3">
+          <strong>If the page says this seat is already claimed:</strong> that
+          name already Joined. Tap <strong>Sign in</strong> with the email used
+          when joining. Do not fill the Join form. Do not use Forgot password
+          unless you have already Joined with that email.
+        </p>
+
+        <h3 className="font-semibold mt-3 mb-1">B. Commissioner: copy a personal Join link</h3>
+        <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
+          <li className="text-[var(--text-primary)]">Sign in. Tap <strong>Admin</strong> (gold link, top right).</li>
+          <li className="text-[var(--text-primary)]">Find <strong>Personal Join links</strong>. (Same copy buttons are on <strong>Admin → Roster</strong>.)</li>
+          <li className="text-[var(--text-primary)]">Next to that friend (only if they have not Joined yet), tap <strong>Copy</strong>.</li>
+          <li className="text-[var(--text-primary)]">Text or email that <strong>one person</strong> their link. Do not paste one link into the group chat.</li>
+          <li className="text-[var(--text-primary)]">Already-joined friends should Sign in. Their row says they do not need a Join link.</li>
+        </ol>
+
+        <h3 className="font-semibold mt-3 mb-1">C. Add to Home Screen (make it an app)</h3>
+        <p className="text-[var(--text-muted)] mb-2">
+          After you Join or Sign in on a phone browser, we may ask:{" "}
+          <strong>Already added Survive Sunday to your Home Screen?</strong>{" "}
+          Tap <strong>Yes</strong> if you already did (we stop asking on this
+          phone). Tap <strong>Show me how</strong> for the steps below. Tap{" "}
+          <strong>Not now</strong> to skip for a while. If you already open the{" "}
+          <strong>Home Screen icon</strong>, we do not nag.
+        </p>
+        <p className="text-sm font-medium text-[var(--text-primary)] mb-1">iPhone / iPad — Safari</p>
+        <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
+          <li className="text-[var(--text-primary)]">Stay in <strong>Safari</strong> (not Chrome, and not the browser inside Messages).</li>
+          <li className="text-[var(--text-primary)]">Tap <strong>Share</strong> (square with an arrow pointing up).</li>
+          <li className="text-[var(--text-primary)]">Scroll and tap <strong>Add to Home Screen</strong>, then <strong>Add</strong>.</li>
+          <li className="text-[var(--text-primary)]">Open the new Survive Sunday icon. You stay signed in.</li>
+        </ol>
+        <p className="text-sm font-medium text-[var(--text-primary)] mb-1">Android — Chrome</p>
+        <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
+          <li className="text-[var(--text-primary)]">Stay in <strong>Chrome</strong>.</li>
+          <li className="text-[var(--text-primary)]">If you see <strong>Install</strong>, tap it. Or tap the three dots → <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>
+          <li className="text-[var(--text-primary)]">Open the new icon. You stay signed in.</li>
+        </ol>
+        <p className="text-[var(--text-muted)] mb-3">
+          Stuck? See <a href="#11-install-the-app-pwa" className="text-gold-400">Help §11</a> and{" "}
+          <a href="#13-troubleshooting" className="text-gold-400">troubleshooting</a> (prompt keeps asking, asked to sign in again).
+        </p>
+
+        <h3 className="font-semibold mt-3 mb-1">D. Sign in later (same email)</h3>
+        <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
+          <li className="text-[var(--text-primary)]">Join <strong>once</strong> first. Forgot password and sign-in codes only work after that.</li>
+          <li className="text-[var(--text-primary)]">On this phone you should stay signed in (~90 days). Open the Home Screen icon; you should land in the pool.</li>
+          <li className="text-[var(--text-primary)]">If you need Sign in: use the <strong>same email</strong> you Joined with, plus your password.</li>
+          <li className="text-[var(--text-primary)]">Prefer a code? Tap <strong>Email me a sign-in code</strong>. We email a 6-digit code (or text if a cell is saved). This is optional — we do <strong>not</strong> ask for a code every time you open the app.</li>
+          <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> is only for after you Joined, with that same email. Do not use it before Join.</li>
+        </ol>
+        <p className="text-[var(--text-muted)] mb-2">---</p>
+      </section>
       <section id="1-welcome-to-survive-sunday">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">1. Welcome to Survive Sunday</h2>
         <p className="text-[var(--text-muted)] mb-2">Survive Sunday is a private, invite-only NFL survivor (elimination) pool for friends. Each week, every active player picks one team to win. Pick right and you keep going. Pick wrong and you burn your mulligan — or you’re out.</p>
@@ -182,20 +250,20 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       </section>
       <section id="12-privacy-accounts">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">12. Privacy &amp; accounts</h2>
-        <p className="text-[var(--text-muted)] mb-2">Pools are **private and invite-only**. Join with a **personal Join link** or the invite code, then sign in with **email and password**, an optional **email/text sign-in code**, or **Google**.</p>
+        <p className="text-[var(--text-muted)] mb-2">Pools are <strong>private and invite-only</strong>. Join with a <strong>personal Join link</strong> or the invite code, then sign in with <strong>email and password</strong>, an optional <strong>email/text sign-in code</strong>, or <strong>Google</strong>.</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; tap **Account** in the header, then **Change nickname**. New members create a nickname when they join.</li>
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
           <li className="text-[var(--text-primary)]">**Cell number:** add your cell for SMS missing-pick reminders and for password-reset texts. You can add or edit it later from Account. Missing-pick texts follow your Notification preferences; password-reset codes do not.</li>
           <li className="text-[var(--text-primary)]">**Notification preferences:** <strong>Account → Notification preferences</strong>. Save the toggles you want. Defaults are safe for friends (core on, noisy off).</li>
           <li className="text-[var(--text-primary)]">
-            **Sign-in code:** on Sign in, tap <strong>Email me a sign-in code</strong> if you already Joined and would rather not type your password. We email (or text, if a cell is saved) a 6-digit code. This is optional — we do **not** ask for a code every time you open the app.
+            <strong>Sign-in code:</strong> on Sign in, tap <strong>Email me a sign-in code</strong> if you already Joined and would rather not type your password. We email (or text, if a cell is saved) a 6-digit code. This is optional — we do <strong>not</strong> ask for a code every time you open the app.
             {showDemoCopy
               ? " Demo seats (@survivesunday.demo) always use password demo1234."
               : " Use the email you Joined with."}
           </li>
           <li className="text-[var(--text-primary)]">
-            **Forgot password:** only after you have Joined, and only with that same email. On the sign-in page, tap Forgot password. We send a 6-digit code to your email, or a text if a cell is saved.
+            <strong>Forgot password:</strong> only after you have Joined, and only with that same email. On the sign-in page, tap Forgot password. We send a 6-digit code to your email, or a text if a cell is saved.
             {showDemoCopy
               ? " Demo seats (@survivesunday.demo) always use password demo1234 — no reset needed."
               : " Don’t use Forgot password before Join — there is no account yet."}
@@ -229,7 +297,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h2 className="text-lg font-semibold text-gold-400 mb-2">14. For commissioners (admins)</h2>
         <p className="text-[var(--text-muted)] mb-2">You’re the light touch that keeps the pool fair:</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
-          <li className="text-[var(--text-primary)]"><strong>Personal Join links:</strong> open <strong>Admin</strong> (or <strong>Admin → Roster</strong>). Each friend who has not Joined yet has a copy button. Send that person their own link (for example <code>…/join?seat=…</code>). A nickname-friendly <code>…/join?who=cannoli-stuffer</code> works too. They tap it, see their name already picked, and set their own email + password. The invite code <code>SUNDAY26</code> is filled in. If they already Joined, the link says the seat is claimed and points them to Sign in. Do <strong>not</strong> blast one link to the whole group chat.</li>
+          <li className="text-[var(--text-primary)]"><strong>Personal Join links:</strong> click-by-click in <a href="#getting-started-join-signin-home-screen" className="text-gold-400">Getting started</a>. Short version: Admin (or Admin → Roster) → Copy next to that friend → send that one person their link. If they already Joined, the link says Sign in instead. Do <strong>not</strong> blast one link to the group chat.</li>
           <li className="text-[var(--text-primary)]">Open weeks and confirm the schedule import.</li>
           <li className="text-[var(--text-primary)]">**Import prior picks** (CSV or form) when the season is already underway — see [Importing prior picks](#15-importing-prior-picks).</li>
           <li className="text-[var(--text-primary)]">**Override lock time** when needed (testing or rare schedule changes).</li>

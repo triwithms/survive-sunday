@@ -23,7 +23,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Pick backup:** Off by default. Copy another player within **30 minutes** of lock (JaJa → **Gams** for later weeks if she still has no pick — no 💩). Or auto-pick the best remaining **2025 rank** team (same `#N` list as Pick) within **~2 minutes** — that stamps 💩 beside the nickname and that player cannot be the official winner. Server jobs apply this — opening the app is not required.
 - **Week 1 pick-change until kickoff** — merged [PR #25](https://github.com/triwithms/survive-sunday/pull/25). Week 1: you can still change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock** (first kickoff).
 - Forgot password **and optional sign-in codes** are on `main` after this merge; emails will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**
-- **Personal Join links** — Admin (and Roster) copy a per-person URL like `https://survive-sunday.vercel.app/join?seat=…` (friendly alias `?who=cannoli-stuffer` also works). Opens Join with that seat already picked. Invite code `SUNDAY26` is filled in. If the seat is already claimed, the friend sees a clear Sign in message — not a broken form. Send one link per friend; do not blast one link to the group chat.
+- **Personal Join links** — Admin (and Roster) copy a per-person URL like `https://survive-sunday.vercel.app/join?seat=…` (friendly alias `?who=cannoli-stuffer` also works). Opens Join with that seat already picked. Invite code `SUNDAY26` is filled in. If the seat is already claimed, the friend sees a clear Sign in message — not a broken form. Send one link per friend; do not blast one link to the group chat. In-app **Help → Getting started** has click-by-click steps for you and for friends.
 - **Home Screen prompt** — after Join or first Sign in on a phone browser (not already the Home Screen icon), we ask if they already added the app. Yes = don’t ask again on that phone. Show me how = iPhone Safari / Android Chrome steps. Not now = skip for a while. Already installed = no nag (optional one-time “You’re good”).
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset and sign-in codes are **not** gated by these prefs.
 
@@ -302,6 +302,8 @@ After Join or first Sign in on a **phone browser**, the app asks if they already
 - **Computer:** any modern browser. Bookmark if you like.
 
 Stay-logged-in is about **90 days** on this phone/browser (opening the app keeps it fresh). Clearing site data or signing out logs them out. Sign in once inside the Home Screen app if the icon opens logged-out.
+
+In-app **Help → Getting started** has the same iPhone / Android steps plus Join-link and Sign-in-code click-by-click. Update that Help whenever those processes change.
 
 Hold the **group invite** until Resend keys are set and Forgot password actually delivers a code. Then send **personal Join links** (Admin), not one blast to the whole chat. Install steps themselves are ready.
 
