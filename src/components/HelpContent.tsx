@@ -10,7 +10,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <p className="text-[var(--text-muted)] mb-2">Welcome to Survive Sunday — your private NFL survivor pool for the 2026/27 season.</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">**Pick one team each week** to win. You can’t reuse a team you’ve already picked, and bye-week teams are off the board.</li>
-          <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). After lock, everyone’s picks go public. **Week 1 only:** you can still change an existing pick until that team’s kickoff if the new game has not started. After Week 1 that extra window goes away.</li>
+          <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). After lock, everyone’s picks go public. **Week 1 only:** you can still change an existing pick until that team’s kickoff if the new game has not started. **Once your pick’s game has started, next week’s picks open for you right away** — you don’t wait for Monday Night Football. New friends who join after that week’s deadline go straight to the next week’s pick.</li>
           <li className="text-[var(--text-primary)]">**You get one mulligan** unless the commissioner turns it off. Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you. If the commissioner switches to one-and-done, the app shows **From Week X: no mulligan / one-and-done.**</li>
           <li className="text-[var(--text-primary)]"><strong>Personal Join link</strong> from the commissioner. Join <strong>once</strong> with your own email and password so your Week 1 picks stay. On that phone you stay signed in. Next time, Sign in with a <strong>sign-in code</strong> (or your password). If that name is already claimed, tap <strong>Sign in</strong>. Don’t use Forgot password before you Join. Returning BM Boys: <strong>Account → Change nickname</strong>. New joiners not on the list can join as a new player.</li>
           <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for SMS missing-pick reminders. You can add or change it later from Account or the header. Choose what we send under <strong>Account → Notification preferences</strong>. Wave 2 social features are marked below as coming soon.</li>
@@ -94,7 +94,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <ol className="list-decimal pl-5 space-y-1 mb-2">
           <li>Open your <strong>personal Join link</strong>. Your name should already be picked. Set your own email and password — once. Stay signed in on this phone. If the seat is already claimed, Sign in instead. New joiners not on the list can create a unique nickname.</li>
           <li>Open **Pick** and choose from **This week’s games** — pick **exactly one** NFL team to win. Use the arrows beside the **W#** badge in the header to flip to other weeks.</li>
-          <li>Submit before the **Pick deadline** (header countdown) — the week locks at the kickoff of the first game that week (usually Thursday Night Football). **Week 1 only:** you can still change your pick until **that team’s** kickoff, as long as the new game has not started either. After Week 1 this extra change window goes away. Past weeks stay read-only after lock; future weeks show that week’s games if they’re already in the app.</li>
+          <li>Submit before the **Pick deadline** (header countdown) — the week locks at the kickoff of the first game that week (usually Thursday Night Football). **Week 1 only:** you can still change your pick until **that team’s** kickoff, as long as the new game has not started either. **When that game starts, next week opens for you immediately** (no waiting for Monday Night Football). If you join after that week has already locked and you never had a pick path, the next week is the obvious next action. After Week 1 this extra change window goes away. Past weeks stay read-only after lock.</li>
           <li>If your team wins, you survive. If it loses, your mulligan absorbs the first hit (you’re still alive with one loss) or a second loss eliminates you.</li>
           <li>You **cannot reuse** any team you’ve already picked — win or lose.</li>
           <li>Last friends standing win the bragging rights (and whatever your group agreed offline).</li>
@@ -148,8 +148,9 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h3 className="font-semibold mt-3 mb-1">Lock time</h3>
         <p className="text-[var(--text-muted)] mb-2">The week locks at the **kickoff of the first scheduled game** that week. After lock:</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
-          <li className="text-[var(--text-primary)]">**Week 1 only:** you may change an existing pick to another team whose game has **not started yet**, as long as **your current pick’s game has also not started**. Once that kickoff starts (or the game is live/final), the pick locks. A missed first pick at lock still counts as a miss — this is not a late first-pick window.</li>
-          <li className="text-[var(--text-primary)]">**Weeks 2+ keep the normal lock:** no pick changes after first kickoff, unless the commissioner reopens the week.</li>
+          <li className="text-[var(--text-primary)]">**Week 1 only:** you may change an existing pick to another team whose game has **not started yet**, as long as **your current pick’s game has also not started**. Once that kickoff starts (or the game is live/final), the pick locks **and the next week’s picks open for you** — you do not wait until Monday Night Football. A missed first pick at lock still counts as a miss — this is not a late first-pick window.</li>
+          <li className="text-[var(--text-primary)]">**Weeks 2+ keep the normal lock:** no pick changes after first kickoff, unless the commissioner reopens the week. You can still make that week’s pick as soon as your previous week’s pick is locked.</li>
+          <li className="text-[var(--text-primary)]">**New joiners after a deadline:** if you never had a pick path for the locked week, Pick goes to the **next** week (for example **Week 2 is open — make your pick**). The header will not strand you on “Deadline passed.”</li>
           <li className="text-[var(--text-primary)]">Late pickers who never selected take an automatic loss (mulligan applies if you still have it).</li>
           <li className="text-[var(--text-primary)]">Everyone’s picks become visible.</li>
         </ul>
@@ -300,7 +301,8 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
 | Share picture failed | Press and hold the Board or Scores title (or triple-tap the week). Try a shorter option. Or take a regular screenshot. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
-| Can’t change my pick | Weeks 2+ freeze at week lock. Week 1: you can still change until your pick’s kickoff, but only onto a game that has not started. |`}</pre>
+| Deadline passed / empty Pick | That week’s first kickoff has gone. If **your** game has started (or you never had a pick path), open **Pick** — next week should already be available (**Week 2 is open — make your pick**). You do not wait for Monday Night Football. |
+| Can’t change my pick | Weeks 2+ freeze at week lock. Week 1: you can still change until your pick’s kickoff, but only onto a game that has not started. Once that game starts, make next week’s pick instead. |`}</pre>
         <p className="text-[var(--text-muted)] mb-2">Still stuck? Ask your commissioner or check the pool notice for schedule overrides.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -374,8 +376,8 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
         <h2 className="text-lg font-semibold text-gold-400 mb-2">16. Glossary</h2>
         <pre className="card-glass p-3 text-xs overflow-x-auto whitespace-pre-wrap mb-2">| Term | Meaning |
 |------|---------|
-| **Pick deadline** | Header countdown to lock — first kickoff of the week; after that picks freeze. |
-| **Lock** | Same moment as the pick deadline: picks become visible and missed picks apply. After Week 1, picks also freeze then. Week 1 only: you can still change an existing pick until that team’s kickoff. |
+| **Pick deadline** | Header countdown to lock — first kickoff of the week. After that, everyone’s picks reveal. **Your next week opens when your own pick is locked** (your game started), not after Monday Night Football. |
+| **Lock** | Same moment as the pick deadline for the group board. Week 1 only: you can still change an existing pick until that team’s kickoff. When that game starts, next week’s picks open for you. |
 | **This week’s games** | The list of matchups you pick from on the Pick screen (not “slate”). |
 | **Board** | Pool board: same pick (team abbr; no pick last), then same game (earlier kickoff), then nickname A–Z. Status chips show on each row but do not split a pick group. After lock, Home still groups by kickoff-ordered games then away/home clusters; each cluster (and Scores’ pick list) uses that same order. |
 | **Share (picture)** | Board or Scores: press and hold the title, or triple-tap the week label. No Share button on the screen. Full long picture is always offered. |

@@ -7,9 +7,15 @@ type Props = {
   canChangePick: boolean;
   /** Show muted Change pick for commissioner when they cannot pick */
   showMutedChangePick?: boolean;
+  /** Next week is open for this player — offer Make pick instead of silence. */
+  showMakePick?: boolean;
 };
 
-export function HeaderNav({ canChangePick, showMutedChangePick }: Props) {
+export function HeaderNav({
+  canChangePick,
+  showMutedChangePick,
+  showMakePick,
+}: Props) {
   const path = usePathname();
 
   type Item = {
@@ -35,6 +41,13 @@ export function HeaderNav({ canChangePick, showMutedChangePick }: Props) {
       key: "change",
       href: "/pick",
       label: "Change pick",
+      active: path === "/pick" || path.startsWith("/pick/"),
+    });
+  } else if (showMakePick) {
+    items.push({
+      key: "make",
+      href: "/pick",
+      label: "Make pick",
       active: path === "/pick" || path.startsWith("/pick/"),
     });
   } else if (showMutedChangePick) {

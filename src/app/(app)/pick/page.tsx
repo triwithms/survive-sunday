@@ -3,6 +3,10 @@ import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { isWeekLocked, ensureWeekLockedEffects, parseUsedTeams, MISSED_TEAM } from "@/lib/grading";
 import { canEditExistingPick, gameForPick } from "@/lib/pick-change";
+import {
+  isPlayerPickWeek,
+  resolvePlayerPickWeekFromLoaded,
+} from "@/lib/next-week-picks";
 import { redirect } from "next/navigation";
 import { PickClient } from "@/components/PickClient";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
@@ -40,18 +44,49 @@ export default async function PickPage({
     await prisma.week.findMany({
       where: { poolId: me.poolId },
       orderBy: { number: "asc" },
-      select: { id: true, number: true },
+      include: {
+        games: {
+          select: {
+            id: true,
+            status: true,
+            kickoff: true,
+            awayAbbr: true,
+            homeAbbr: true,
+          },
+        },
+      },
     })
   );
+  const currentWeekRow = weeks.find((row) => row.number === currentWeek);
+  const myCurrentWeekPick = currentWeekRow
+    ? await prisma.pick.findUnique({
+        where: {
+          membershipId_weekId: {
+            membershipId: me.id,
+            weekId: currentWeekRow.id,
+          },
+        },
+      })
+    : null;
+  const decision = resolvePlayerPickWeekFromLoaded({
+    poolCurrentWeek: currentWeek,
+    weeks: weeks.map((row) => ({
+      number: row.number,
+      locked: isWeekLocked(row),
+      games: row.games,
+    })),
+    currentPick: myCurrentWeekPick,
+    playingFromWeek: me.playingFromWeek,
+  });
   const selectedNumber = resolveSelectedWeekNumber({
     requested: parseWeekParam(params?.week),
     weekNumbers: weeks.map((row) => row.number),
-    currentWeek,
+    currentWeek: decision.actionWeek,
     allowFuture: true,
   });
   const weekRef =
     weeks.find((row) => row.number === selectedNumber) ??
-    weeks.find((row) => row.number === currentWeek);
+    weeks.find((row) => row.number === decision.actionWeek);
   if (!weekRef) {
     return (
       <div className="card-glass p-4 text-sm text-[var(--text-muted)]">
@@ -93,7 +128,7 @@ export default async function PickPage({
   const canChange =
     !eliminated &&
     !spectator &&
-    week.number === currentWeek &&
+    isPlayerPickWeek(decision, week.number) &&
     canEditExistingPick({
       weekNumber: week.number,
       weekLocked: locked,
@@ -171,7 +206,7 @@ export default async function PickPage({
       <PickClient
         key={week.number}
         weekNumber={week.number}
-        currentWeek={currentWeek}
+        decision={decision}
         locked={locked}
         canChange={canChange}
         eliminated={eliminated}

@@ -19,6 +19,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Who are you? Join** + **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** switcher — merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
 - **Week 2 schedule restored** in Real/live (viewable; Demo isolation is practice UX only — it does **not** hide the Week 2 slate) — merged [PR #22](https://github.com/triwithms/survive-sunday/pull/22)
+- **Next-week picks unlock per player** as soon as *their* current-week game has started (not after Monday Night Football). Week 2 pick UI is live for those players and for new joiners who missed a Week 1 pick path. Friends still waiting on their own Week 1 kickoff keep the normal Week 1 change-pick flow.
 - Survival board / participant pick lists: **same pick → same game → nickname A–Z** (no-pick last). Status chips stay visible but do **not** split a pick group.
 - ESPN live scores + injuries; **League W-L syncs from ESPN** (not the demo `week2-standings` seed); no player-facing demo League copy in Real mode
 - Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **DAL** (Dallas — not Gams’ KC). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
@@ -232,7 +233,7 @@ JaJa,DAL
 
 The pool has two commissioner-controlled modes. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). **This is shipped on `main`** (merged PR #10). Do not describe Real mode as “open PR #10” or “not shipped.”
 
-- **Real mode (use this for the season):** home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see the word “demo” or the `demo1234` practice picker. The pool sits on **Week 1** for picks. **Week 2 stays on Schedule / Pick week arrows** — friends can view the slate and pick when that week unlocks. Demo isolation ≠ hide Week 2.
+- **Real mode (use this for the season):** home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see the word “demo” or the `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Week 2 stays on Schedule / Pick week arrows.** Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Demo isolation ≠ hide Week 2.
 - **Demo mode (commissioner / testing):** practice account picker is visible. Demo copy is allowed. Same NFL weeks, including Week 2. Practice-seat sandbox picks are what stay isolated — not the schedule.
 
 A new empty database still **seeds in Demo mode**. After deploy, open **Admin** and tap **Real mode** if the home page still shows the practice picker.
@@ -260,19 +261,19 @@ The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY
 
 1. Bottom nav → **Pick**.
 2. Tap a team that is playing this week and not already used.
-3. Confirm. **Week 1 only** (merged [PR #25](https://github.com/triwithms/survive-sunday/pull/25)): you can change that pick until **your team’s kickoff**, as long as the new game has not started either. **Weeks 2+ keep the normal week lock** (first kickoff).
+3. Confirm. **Week 1 only** (merged [PR #25](https://github.com/triwithms/survive-sunday/pull/25)): you can change that pick until **your team’s kickoff**, as long as the new game has not started either. **When that game starts, next week opens for you right away** (Week 2 pick UI). **Weeks 2+ keep the normal week lock** (first kickoff) for changing that week’s pick.
 
-On `main`, Pick shows the current week (Week 1 in Real mode). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
+On `main`, Pick opens on **your** open week (Week 1 while your game is still upcoming; Week 2 as soon as that pick is locked, or if you never had a Week 1 pick path). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
 
 Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on the pick screen are **static seeded values** (example: “Favourite: KC -3.5”), not a live odds meter.
 
 ### Lock
 
-- Lock = first kickoff of the week (unless the commissioner overrides it). Header countdown is labelled as the pick deadline.
+- Lock = first kickoff of the week (unless the commissioner overrides it). Header countdown is labelled as the pick deadline. After that first kickoff, **the next week opens for a player as soon as their own pick is locked** (their game started) — **not** after Monday Night Football. MNF is only for the weekly recap later. New joiners who never had a Week 1 pick path see **Week 2 is open — make your pick** instead of a stranded “Deadline passed” empty Pick screen.
 - Before lock: only **your** pick is visible.
 - After lock: everyone’s picks show; missed picks are applied once; finals are graded.
-- **Week 1 only:** after that first kickoff, a player who already picked may still switch to another **not-started** game if their current pick’s game has also **not started**. Example: LAC still scheduled → can move to another Sunday/Monday game that has not kicked off. Once LAC is live/final (or kickoff time has passed), that LAC pick cannot change. A missed first pick at lock stays a miss.
-- **After Week 1:** this extra change window does **not** apply. Weeks 2+ use the normal week lock (picks freeze at first kickoff).
+- **Week 1 only:** after that first kickoff, a player who already picked may still switch to another **not-started** game if their current pick’s game has also **not started**. Example: LAC still scheduled → can move to another Sunday/Monday game that has not kicked off. Once LAC is live/final (or kickoff time has passed), that LAC pick cannot change **and Week 2 opens for them**. A missed first pick at lock stays a miss; those players (and late joiners) go to Week 2.
+- **After Week 1:** the extra change-until-kickoff window does **not** apply. Weeks 2+ freeze at first kickoff. You can still *make* that week’s pick as soon as your previous week’s pick is locked.
 
 ### Scores & injuries (live on `main`)
 
@@ -408,6 +409,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Survival board / pick-list sort | [#21](https://github.com/triwithms/survive-sunday/pull/21), [#24](https://github.com/triwithms/survive-sunday/pull/24), then owner correction after [#38](https://github.com/triwithms/survive-sunday/pull/38) | Same pick → same game → nickname A–Z. Status-first was wrong for these lists. |
 | League W-L from ESPN (no demo leak) | live-standings merge (`538be1f`) | Real-mode League syncs ESPN W-L. Demo `week2-standings` seed is not shown to Real-mode friends. |
 | Week 1 pick-change until kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock.** |
+| Next-week picks unlock per player | [#50](https://github.com/triwithms/survive-sunday/pull/50) | Once **your** current-week game has started (pick locked), **next week’s picks open for you immediately**. Do **not** wait for Monday Night Football. New joiners who never had a Week 1 pick path see **Week 2 is open — make your pick**. Friends still waiting on their own Week 1 kickoff keep the Week 1 flow. |
 | Notification preferences | [#29](https://github.com/triwithms/survive-sunday/pull/29) | Header → **Account → Notification preferences**. Types: missing pick, pick saved/changed, results, you’re out / mulligan, pool notes (default on); live scores, injury notes (default off). Email via Resend. Missing-pick SMS follows the same switch. If that page 500s, production is missing NotificationPreference columns — boot + request retry now add them. |
 | JaJa seat + pick backup | [#37](https://github.com/triwithms/survive-sunday/pull/37) | **JaJa (Jacquie Gama)** is on Join as claimable, Week 1 **DAL**. Pick backup: off / copy-from-member (30 min, no 💩; JaJa → Gams later) / auto best remaining **2025 rank** team (~2 min, stamps 💩). Official winner must have no 💩. Help stays general (no JaJa / Gams copy example) — [#41](https://github.com/triwithms/survive-sunday/pull/41). |
 | Unclaim leftover pending.local seats | [#27](https://github.com/triwithms/survive-sunday/pull/27) | **Go Giants** and **Pauli** are Join-claimable again if they still had leftover pending emails. |
@@ -605,7 +607,8 @@ You are helping maintain Survive Sunday. Read docs/HANDOFF.md first, then only:
 You are free / basic Grok chat — not Grok Bot. One small PR. Continue existing branches.
 
 Core MUST: submit pick, group board, in vs out — keep ~100% reliable.
-Real mode is already on main (merged PR #10): Week 1 is the real current week. Week 2 is a real NFL week on the schedule (merged PR #22) — Demo isolation does not hide it.
+Real mode is already on main (merged PR #10): Week 1 is the real current board week. Week 2 is a real NFL week on the schedule (merged PR #22) — Demo isolation does not hide it.
+Once a player’s current-week game has started, next week’s picks open for them immediately (do not wait for MNF). New joiners after a locked week go to the next week. Keep the Week 1 change-until-kickoff path (merged PR #25) for anyone whose game has not started.
 Official REAL Week 1 picks (incl Go Giants, Pauli, JaJa → DAL) are already imported — see docs/HANDOFF.md section 6b. Not the demo CSV.
 Board / pick-list sort on main: same pick → same game → nickname A–Z (no-pick last). Do not sort these lists status-first.
 Friends may open the app without picking every week; a missed week still counts as a loss after lock unless I ask to change that rule.
@@ -726,12 +729,12 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Draft PR** | A pull request that is not ready to merge yet. None of the live-tonight work is draft. |
 | **Rebase** | Replay an open PR’s changes on top of the latest `main` after another PR merged. Ask a chat to continue **that** branch. |
 | **Redeploy** | Rebuild the same code with the latest env vars. |
-| **Lock** | Pick deadline: first kickoff (unless overridden). **Week 1 exception** (merged PR #25): you can still change an existing pick until **that team’s** kickoff if the new game has not started. Weeks 2+ keep this normal lock. |
+| **Lock** | Pick deadline: first kickoff (unless overridden). **Week 1 exception** (merged PR #25): you can still change an existing pick until **that team’s** kickoff if the new game has not started. Once that game starts, **next week opens for you** (do not wait for MNF). Weeks 2+ freeze at first kickoff. |
 | **PWA** | Website you can pin to the phone home screen. |
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |
 | **Audit log** | A written record of commissioner changes (imports, removals, real-name edits, pool rules, transfer). |
-| **Real mode** | Season mode on `main` (merged PR #10). Hides the practice picker. Week 1 is the current pick week. Week 2 stays on the schedule (merged PR #22). |
+| **Real mode** | Season mode on `main` (merged PR #10). Hides the practice picker. Week 1 is the current board week. Week 2 stays on the schedule (merged PR #22). Each player’s Week 2 pick opens when their own Week 1 game has started. |
 | **Demo / practice picker** | Home-page list of BM Boys nicknames with built-in `demo1234`. Visible only while **Demo mode** is on. Real-mode Help never mentions this password. |
 | **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname (e.g. **Pauli**, **Go Giants**, **JaJa**, Gams), sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
 | **Personal Join link** | Per-person URL from Admin (`/join?who=cannoli-stuffer` when unique). Opens Join with that seat picked. Claimed seats → Sign in. |

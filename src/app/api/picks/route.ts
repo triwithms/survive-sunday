@@ -16,6 +16,11 @@ import {
   gameForPick,
   pickChangeErrorMessage,
 } from "@/lib/pick-change";
+import {
+  isPlayerPickWeek,
+  playerPickWeekError,
+  resolvePlayerPickWeekFromLoaded,
+} from "@/lib/next-week-picks";
 import { schedulePickConfirmed } from "@/lib/notification-events";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { isPoolParticipant } from "@/lib/pool-rules";
@@ -44,9 +49,37 @@ export async function POST(req: Request) {
     membership.pool.mode,
     membership.pool.currentWeek
   );
-  if (weekNumber !== currentWeek) {
+  const relatedWeeks = await prisma.week.findMany({
+    where: {
+      poolId: membership.poolId,
+      number: { in: [currentWeek, currentWeek + 1, Number(weekNumber)] },
+    },
+    include: { games: true },
+  });
+  const currentWeekRow = relatedWeeks.find((row) => row.number === currentWeek);
+  const myCurrentWeekPick = currentWeekRow
+    ? await prisma.pick.findUnique({
+        where: {
+          membershipId_weekId: {
+            membershipId: membership.id,
+            weekId: currentWeekRow.id,
+          },
+        },
+      })
+    : null;
+  const decision = resolvePlayerPickWeekFromLoaded({
+    poolCurrentWeek: currentWeek,
+    weeks: relatedWeeks.map((row) => ({
+      number: row.number,
+      locked: isWeekLocked(row),
+      games: row.games,
+    })),
+    currentPick: myCurrentWeekPick,
+    playingFromWeek: membership.playingFromWeek,
+  });
+  if (!isPlayerPickWeek(decision, weekNumber)) {
     return NextResponse.json(
-      { error: "You can only change the current week's pick" },
+      { error: playerPickWeekError(decision, weekNumber) },
       { status: 403 }
     );
   }

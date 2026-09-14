@@ -1,0 +1,248 @@
+/**
+ * Per-player next-week pick unlock (no database).
+ *
+ *   npx tsx scripts/verify-next-week-picks.ts
+ */
+import assert from "node:assert/strict";
+import {
+  homeEmptyPickCopy,
+  isPlayerPickWeek,
+  nextWeekOpenHeadline,
+  pickScreenCopy,
+  playerPickWeekError,
+  resolvePlayerPickWeek,
+  resolvePlayerPickWeekFromLoaded,
+} from "../src/lib/next-week-picks";
+
+const sunday = new Date("2026-09-13T16:00:00.000Z");
+const lacKickoff = new Date("2026-09-13T20:25:00.000Z");
+const mnfKickoff = new Date("2026-09-15T00:15:00.000Z");
+
+const lacScheduled = { status: "scheduled", kickoff: lacKickoff };
+const lacLive = { status: "live", kickoff: lacKickoff };
+const mnfScheduled = { status: "scheduled", kickoff: mnfKickoff };
+const lacPick = { source: "user", teamAbbr: "LAC", result: "pending" };
+const missedPick = { source: "missed", teamAbbr: "MISS", result: "loss" };
+const importedLac = { source: "imported", teamAbbr: "LAC", result: "pending" };
+
+function week1Open(over: Partial<Parameters<typeof resolvePlayerPickWeek>[0]> = {}) {
+  return resolvePlayerPickWeek({
+    poolCurrentWeek: 1,
+    currentWeekLocked: true,
+    existingCurrentPick: lacPick,
+    existingCurrentGame: lacScheduled,
+    nextWeekHasGames: true,
+    nextWeekLocked: false,
+    now: sunday,
+    ...over,
+  });
+}
+
+// Still waiting on their own Week 1 game — stay on Week 1. Do not open Week 2.
+const pending = week1Open();
+assert.equal(pending.actionWeek, 1, "pending Week 1 stays on Week 1");
+assert.equal(pending.nextWeekOpen, false, "do not open Week 2 before their kickoff");
+assert.equal(pending.canStillPlayCurrentWeek, true);
+assert.equal(pending.reason, "current_game_pending");
+assert.equal(isPlayerPickWeek(pending, 1), true);
+assert.equal(isPlayerPickWeek(pending, 2), false);
+assert.match(playerPickWeekError(pending, 2), /opens after your Week 1 game starts/);
+
+// Imported official pick, game not started — same Week 1 flow.
+assert.equal(
+  week1Open({ existingCurrentPick: importedLac }).actionWeek,
+  1,
+  "imported pending pick stays on Week 1"
+);
+
+// Their Week 1 game has started — Week 2 opens immediately (MNF still upcoming).
+const started = week1Open({ existingCurrentGame: lacLive });
+assert.equal(started.actionWeek, 2, "game started → Week 2");
+assert.equal(started.nextWeekOpen, true);
+assert.equal(started.canStillPlayCurrentWeek, false);
+assert.equal(started.reason, "current_pick_locked");
+assert.equal(isPlayerPickWeek(started, 2), true);
+assert.equal(isPlayerPickWeek(started, 1), false);
+assert.match(playerPickWeekError(started, 1), /Week 1 is closed for you/);
+assert.equal(
+  nextWeekOpenHeadline(2, true),
+  "Week 2 is open — make your pick"
+);
+
+// Kickoff time passed (ESPN still scheduled) — treat as started.
+assert.equal(
+  week1Open({
+    existingCurrentGame: {
+      status: "scheduled",
+      kickoff: new Date("2026-09-13T15:00:00.000Z"),
+    },
+  }).nextWeekOpen,
+  true,
+  "kickoff passed unlocks Week 2"
+);
+
+// Missed / empty Week 1 after lock (new joiner or no pick path) → Week 2.
+const missed = week1Open({
+  existingCurrentPick: missedPick,
+  existingCurrentGame: null,
+});
+assert.equal(missed.actionWeek, 2);
+assert.equal(missed.nextWeekOpen, true);
+assert.equal(missed.reason, "current_week_closed");
+
+const noPick = week1Open({
+  existingCurrentPick: null,
+  existingCurrentGame: null,
+});
+assert.equal(noPick.actionWeek, 2, "empty Week 1 after lock → Week 2");
+assert.equal(noPick.nextWeekOpen, true);
+assert.equal(homeEmptyPickCopy(noPick).missed, false);
+assert.equal(
+  homeEmptyPickCopy(noPick).message,
+  "Week 2 is open — make your pick"
+);
+assert.equal(
+  homeEmptyPickCopy(noPick).ctaLabel,
+  "Make your pick"
+);
+
+// Brand-new player with playingFromWeek=2.
+const late = week1Open({
+  playingFromWeek: 2,
+  existingCurrentPick: null,
+  existingCurrentGame: null,
+});
+assert.equal(late.reason, "late_start");
+assert.equal(late.actionWeek, 2);
+assert.equal(late.nextWeekOpen, true);
+
+// Week 1 still unlocked — first pick stays on Week 1; do not jump to Week 2.
+const openWeek = resolvePlayerPickWeek({
+  poolCurrentWeek: 1,
+  currentWeekLocked: false,
+  existingCurrentPick: null,
+  existingCurrentGame: null,
+  nextWeekHasGames: true,
+  nextWeekLocked: false,
+  now: sunday,
+});
+assert.equal(openWeek.actionWeek, 1);
+assert.equal(openWeek.nextWeekOpen, false);
+assert.equal(openWeek.reason, "current_week_open");
+assert.equal(homeEmptyPickCopy(openWeek).ctaLabel, "Pick now");
+
+// Slate missing — wait copy, not a fake pickable week.
+const waiting = week1Open({
+  existingCurrentGame: lacLive,
+  nextWeekHasGames: false,
+});
+assert.equal(waiting.actionWeek, 2);
+assert.equal(waiting.nextWeekOpen, false);
+assert.equal(waiting.reason, "slate_not_ready");
+assert.equal(isPlayerPickWeek(waiting, 2), false);
+assert.match(playerPickWeekError(waiting, 2), /aren’t listed yet/);
+assert.match(
+  nextWeekOpenHeadline(2, false),
+  /aren’t listed yet/
+);
+
+// Next week already locked (TNF) — cannot pick it.
+const nextLocked = week1Open({
+  existingCurrentGame: lacLive,
+  nextWeekLocked: true,
+});
+assert.equal(nextLocked.nextWeekOpen, false);
+assert.equal(nextLocked.reason, "next_week_locked");
+assert.equal(isPlayerPickWeek(nextLocked, 2), false);
+
+// Loaded-weeks helper: MNF still scheduled does not block Week 2.
+const fromLoaded = resolvePlayerPickWeekFromLoaded({
+  poolCurrentWeek: 1,
+  currentPick: lacPick,
+  weeks: [
+    {
+      number: 1,
+      locked: true,
+      games: [
+        { id: "lac", status: "live", kickoff: lacKickoff, awayAbbr: "LAC", homeAbbr: "KC" },
+        { id: "mnf", status: "scheduled", kickoff: mnfKickoff, awayAbbr: "NYJ", homeAbbr: "BUF" },
+      ],
+    },
+    {
+      number: 2,
+      locked: false,
+      games: [
+        { id: "w2", status: "scheduled", kickoff: new Date("2026-09-18T00:15:00.000Z"), awayAbbr: "DET", homeAbbr: "BUF" },
+      ],
+    },
+  ],
+  now: sunday,
+});
+assert.equal(fromLoaded.nextWeekOpen, true, "MNF leftover is not the unlock");
+assert.equal(fromLoaded.actionWeek, 2);
+
+// Pick screen: Week 2 open is the obvious action, not “future week”.
+const week2Copy = pickScreenCopy({
+  weekNumber: 2,
+  decision: started,
+  locked: false,
+  canChange: true,
+  eliminated: false,
+  spectator: false,
+  hasCurrentPick: true,
+});
+assert.equal(week2Copy.kicker, "Week 2 is open — make your pick");
+assert.equal(week2Copy.banner, null);
+assert.equal(week2Copy.showDismissibleTip, true);
+assert.equal(week2Copy.showWeek1ChangeCard, false);
+
+const week1ClosedCopy = pickScreenCopy({
+  weekNumber: 1,
+  decision: started,
+  locked: true,
+  canChange: false,
+  eliminated: false,
+  spectator: false,
+  hasCurrentPick: true,
+});
+assert.equal(week1ClosedCopy.kicker, "Your Week 1 pick is locked.");
+assert.equal(week1ClosedCopy.banner?.title, "Week 2 is open — make your pick");
+assert.equal(week1ClosedCopy.banner?.href, "/pick?week=2");
+
+const newJoinerCopy = pickScreenCopy({
+  weekNumber: 1,
+  decision: noPick,
+  locked: true,
+  canChange: false,
+  eliminated: false,
+  spectator: false,
+  hasCurrentPick: false,
+});
+assert.equal(newJoinerCopy.kicker, "Week 1 is closed for you.");
+assert.equal(newJoinerCopy.banner?.title, "Week 2 is open — make your pick");
+
+const stillWeek1Copy = pickScreenCopy({
+  weekNumber: 1,
+  decision: pending,
+  locked: true,
+  canChange: true,
+  eliminated: false,
+  spectator: false,
+  hasCurrentPick: true,
+});
+assert.equal(stillWeek1Copy.showWeek1ChangeCard, true);
+assert.match(stillWeek1Copy.kicker, /Week 1 only/);
+
+const browsingEarly = pickScreenCopy({
+  weekNumber: 2,
+  decision: pending,
+  locked: false,
+  canChange: false,
+  eliminated: false,
+  spectator: false,
+  hasCurrentPick: true,
+});
+assert.match(browsingEarly.banner?.title ?? "", /isn’t open for picks yet/);
+assert.match(browsingEarly.banner?.body ?? "", /after your Week 1 game starts/);
+
+console.log("verify-next-week-picks OK");

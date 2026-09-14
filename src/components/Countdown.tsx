@@ -5,7 +5,13 @@ import { useEffect, useState } from "react";
 /**
  * Header countdown to the week's pick deadline (first kickoff / effective lock).
  */
-export function Countdown({ lockAt }: { lockAt: string }) {
+export function Countdown({
+  lockAt,
+  nextOpen,
+}: {
+  lockAt: string;
+  nextOpen?: { weekNumber: number; lockAt: string } | null;
+}) {
   // Stable placeholder on the server so Date.now() cannot mismatch hydration.
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
@@ -45,6 +51,34 @@ export function Countdown({ lockAt }: { lockAt: string }) {
   const diff = target - now;
 
   if (diff <= 0) {
+    const nextTarget = nextOpen?.lockAt
+      ? new Date(nextOpen.lockAt).getTime()
+      : NaN;
+    const nextDiff = Number.isFinite(nextTarget) ? nextTarget - now : 0;
+    if (nextOpen && nextDiff > 0) {
+      const sNext = Math.floor(nextDiff / 1000);
+      const dNext = Math.floor(sNext / 86400);
+      const hNext = Math.floor((sNext % 86400) / 3600);
+      const mNext = Math.floor((sNext % 3600) / 60);
+      const compactNext = [
+        dNext > 0 ? `${dNext}d` : null,
+        `${hNext.toString().padStart(2, "0")}h`,
+        `${mNext.toString().padStart(2, "0")}m`,
+      ].filter(Boolean);
+      return (
+        <span
+          className="inline-flex flex-col items-center sm:items-start gap-0 min-w-0"
+          title={`Week ${nextOpen.weekNumber} is open — make your pick. Countdown is that week’s first kickoff.`}
+        >
+          <span className="font-display tracking-wide text-gold-400 text-xs sm:text-sm uppercase shrink-0">
+            Week {nextOpen.weekNumber} is open
+          </span>
+          <span className="font-mono text-gold-400 text-xs sm:text-sm tabular-nums whitespace-nowrap">
+            {compactNext.join(" ")}
+          </span>
+        </span>
+      );
+    }
     return (
       <span
         className="inline-flex flex-col items-center sm:items-start gap-0 min-w-0"
