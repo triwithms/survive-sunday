@@ -1,7 +1,13 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
-import { Share2 } from "lucide-react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { ModalDialog } from "@/components/ModalDialog";
 import {
   canSharePictures,
@@ -13,16 +19,22 @@ import {
 import {
   alwaysIncludesFull,
   isComfortablyLong,
+  isTripleTap,
+  recordTapTimes,
   shareCaption,
   shareOptionsFor,
+  SHARE_LONG_PRESS_MS,
+  SHARE_OPEN_EVENT,
   type ShareOptionId,
   type ShareSurface,
 } from "@/lib/share-export";
 
-export type ShareExportButtonProps = {
+export type ShareExportProps = {
   surface: ShareSurface;
   rootId: string;
   weekLabel: string;
+  /** Text after the week label in the page title, e.g. " · Survival board". */
+  titleRest: string;
   stillInCount?: number;
   undefeatedCount?: number;
   eliminatedCount?: number;
@@ -31,17 +43,18 @@ export type ShareExportButtonProps = {
   pickRowCount?: number;
 };
 
-export function ShareExportButton({
+export function ShareExport({
   surface,
   rootId,
   weekLabel,
+  titleRest,
   stillInCount = 0,
   undefeatedCount = 0,
   eliminatedCount = 0,
   gameCount = 0,
   liveGameCount = 0,
   pickRowCount = 0,
-}: ShareExportButtonProps) {
+}: ShareExportProps) {
   const titleId = useId();
   const [open, setOpen] = useState(false);
   const [option, setOption] = useState<ShareOptionId>("full");
@@ -49,6 +62,8 @@ export function ShareExportButton({
   const [error, setError] = useState<string | null>(null);
   const [pictures, setPictures] = useState<SharePicture[]>([]);
   const [tooLong, setTooLong] = useState(false);
+  const holdTimer = useRef<number | null>(null);
+  const taps = useRef<number[]>([]);
 
   const options = useMemo(
     () =>
@@ -76,6 +91,19 @@ export function ShareExportButton({
 
   const label = surface === "board" ? "Board" : "Scores";
 
+  function measureTooLong() {
+    const root = document.getElementById(rootId);
+    const height = root
+      ? Math.max(root.scrollHeight, root.offsetHeight)
+      : 0;
+    setTooLong(isComfortablyLong(height));
+  }
+
+  function openSheet() {
+    measureTooLong();
+    setOpen(true);
+  }
+
   function close() {
     setOpen(false);
     setBusy(false);
@@ -84,13 +112,41 @@ export function ShareExportButton({
     setOption("full");
   }
 
-  function measureTooLong() {
-    const root = document.getElementById(rootId);
-    const height = root
-      ? Math.max(root.scrollHeight, root.offsetHeight)
-      : 0;
-    setTooLong(isComfortablyLong(height));
+  function clearHold() {
+    if (holdTimer.current != null) {
+      window.clearTimeout(holdTimer.current);
+      holdTimer.current = null;
+    }
   }
+
+  function onTitlePointerDown(e: ReactPointerEvent) {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    clearHold();
+    holdTimer.current = window.setTimeout(() => {
+      holdTimer.current = null;
+      openSheet();
+    }, SHARE_LONG_PRESS_MS);
+  }
+
+  function onWeekTap() {
+    taps.current = recordTapTimes(taps.current, Date.now());
+    if (isTripleTap(taps.current)) {
+      taps.current = [];
+      openSheet();
+    }
+  }
+
+  useEffect(() => {
+    function onQuietOpen() {
+      openSheet();
+    }
+    window.addEventListener(SHARE_OPEN_EVENT, onQuietOpen);
+    return () => window.removeEventListener(SHARE_OPEN_EVENT, onQuietOpen);
+    // openSheet reads latest root height at click time
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rootId]);
+
+  useEffect(() => () => clearHold(), []);
 
   async function makePictures(next = option) {
     const root = document.getElementById(rootId);
@@ -127,18 +183,43 @@ export function ShareExportButton({
 
   return (
     <>
+      <h1
+        className="font-display text-2xl text-gold-400 tracking-wide select-none"
+        data-testid="share-export-title"
+        aria-label={`${weekLabel}${titleRest}. Press and hold to share as a picture.`}
+        onPointerDown={onTitlePointerDown}
+        onPointerUp={clearHold}
+        onPointerCancel={clearHold}
+        onPointerLeave={clearHold}
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        <span
+          role="button"
+          tabIndex={0}
+          className="cursor-default"
+          data-testid="share-export-week"
+          onClick={(e) => {
+            e.stopPropagation();
+            onWeekTap();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onWeekTap();
+            }
+          }}
+        >
+          {weekLabel}
+        </span>
+        {titleRest}
+      </h1>
       <button
         type="button"
-        className="btn-secondary text-sm shrink-0 inline-flex items-center justify-center gap-2 min-h-11"
-        data-testid="share-export-button"
-        data-share-hide=""
-        onClick={() => {
-          measureTooLong();
-          setOpen(true);
-        }}
+        className="sr-only"
+        data-testid="share-export-open"
+        onClick={openSheet}
       >
-        <Share2 size={16} strokeWidth={2} aria-hidden />
-        Share
+        Share {label} as a picture
       </button>
 
       {open ? (

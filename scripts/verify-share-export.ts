@@ -9,6 +9,8 @@ import {
   alwaysIncludesFull,
   isComfortablyLong,
   isShareUrlAllowed,
+  isTripleTap,
+  recordTapTimes,
   shareCaption,
   shareFilename,
   shareImageHostAllowed,
@@ -16,6 +18,8 @@ import {
   slugWeekLabel,
   splitHeightsIntoPages,
   COMFORTABLE_SHARE_HEIGHT,
+  SHARE_LONG_PRESS_MS,
+  SHARE_OPEN_EVENT,
   type ShareOptionContext,
 } from "../src/lib/share-export";
 import {
@@ -143,24 +147,69 @@ function mustInclude(path: string, needles: string[]) {
 }
 
 mustInclude("src/app/(app)/standings/page.tsx", [
-  "ShareExportButton",
+  "ShareExport",
   'data-share-root="board"',
   "share-board",
 ]);
 mustInclude("src/app/(app)/scores/page.tsx", [
-  "ShareExportButton",
+  "ShareExport",
   'data-share-root="scores"',
   "share-scores",
+]);
+mustInclude("src/components/ShareExport.tsx", [
+  "SHARE_LONG_PRESS_MS",
+  "share-export-week",
+  "share-export-title",
+]);
+mustInclude("src/components/HeaderWeekNav.tsx", [
+  "SHARE_OPEN_EVENT",
+  "isTripleTap",
+]);
+mustInclude("src/app/(app)/layout.tsx", ['data-share-chrome=""']);
+mustInclude("src/components/BottomNav.tsx", ['data-share-chrome=""']);
+mustInclude("src/components/ScoreGameCard.tsx", [
+  "GameDetailsHint",
+  'data-share-chrome=""',
 ]);
 mustInclude("src/components/HelpContent.tsx", [
   "Share Board &amp; Scores as a picture",
   "full long picture",
+  "press and hold the page title",
+  "tap the week label three times",
   'id="share-board-scores"',
 ]);
 mustInclude("docs/HANDOFF.md", [
   "Share Board / Scores as a picture",
+  "press and hold the page title",
   "full long picture",
 ]);
+
+const boardPage = readFileSync("src/app/(app)/standings/page.tsx", "utf8");
+const scoresPage = readFileSync("src/app/(app)/scores/page.tsx", "utf8");
+assert.doesNotMatch(
+  boardPage,
+  />Share<\/|ShareExportButton/,
+  "Board must not show a visible Share button"
+);
+assert.doesNotMatch(
+  scoresPage,
+  />Share<\/|ShareExportButton/,
+  "Scores must not show a visible Share button"
+);
+
+assert.ok(SHARE_LONG_PRESS_MS >= 400);
+assert.equal(SHARE_OPEN_EVENT, "ss-share-open");
+assert.equal(isTripleTap(recordTapTimes([], 1000)), false);
+assert.equal(
+  isTripleTap(
+    recordTapTimes(recordTapTimes(recordTapTimes([], 1000), 1100), 1200)
+  ),
+  true
+);
+assert.equal(
+  isTripleTap(recordTapTimes(recordTapTimes([], 1000), 2000)),
+  false
+);
 
 const help = readFileSync("src/components/HelpContent.tsx", "utf8");
 assert.doesNotMatch(

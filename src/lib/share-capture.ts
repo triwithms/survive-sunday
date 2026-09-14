@@ -36,13 +36,20 @@ function hide(el: Element) {
   el.classList.add(HIDE_CLASS);
 }
 
-function clearHides(root: HTMLElement) {
-  root.querySelectorAll(`.${HIDE_CLASS}`).forEach((el) => {
+function clearHides() {
+  document.querySelectorAll(`.${HIDE_CLASS}`).forEach((el) => {
     el.classList.remove(HIDE_CLASS);
   });
 }
 
+function hidePageChrome() {
+  document
+    .querySelectorAll("[data-share-hide], [data-share-chrome]")
+    .forEach(hide);
+}
+
 function applyFilter(root: HTMLElement, filter: CaptureFilter | undefined) {
+  hidePageChrome();
   root.querySelectorAll("[data-share-hide]").forEach(hide);
 
   if (filter?.hideSections?.length) {
@@ -407,6 +414,7 @@ async function withPreparedRoot<T>(
   fn: () => Promise<T>
 ): Promise<T> {
   root.classList.add("share-capturing");
+  document.documentElement.classList.add("share-capturing");
   applyFilter(root, filter);
   const restoreImgs = await inlineImages(root);
   try {
@@ -417,8 +425,9 @@ async function withPreparedRoot<T>(
     return await fn();
   } finally {
     restoreImgs();
-    clearHides(root);
+    clearHides();
     root.classList.remove("share-capturing");
+    document.documentElement.classList.remove("share-capturing");
   }
 }
 

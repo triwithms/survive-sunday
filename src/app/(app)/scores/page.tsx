@@ -19,7 +19,7 @@ import { redirect } from "next/navigation";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
-import { ShareExportButton } from "@/components/ShareExportButton";
+import { ShareExport } from "@/components/ShareExport";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 
 export const dynamic = "force-dynamic";
@@ -146,13 +146,24 @@ export default async function ScoresPage({
           data-share-section="heading"
         >
           <div className="min-w-0">
-            <h1 className="font-display text-2xl text-gold-400 tracking-wide">
-              {week.label} scores
-            </h1>
+            <ShareExport
+              surface="scores"
+              rootId="share-scores"
+              weekLabel={week.label}
+              titleRest=" scores"
+              gameCount={games.length}
+              liveGameCount={liveCount}
+              pickRowCount={participants.length}
+            />
             <p className="text-sm text-[var(--text-muted)] mt-1">
               Live scores from ESPN. Team logos sit beside the abbreviations.
-              Tap Details on a game — live or Final — for more. Logos open
-              team pages. Finals auto-grade picks.
+              Logos open team pages. Finals auto-grade picks.
+            </p>
+            <p
+              className="text-sm text-[var(--text-muted)] mt-1"
+              data-share-chrome=""
+            >
+              Tap Details on a game — live or Final — for more.
             </p>
             {liveCount > 0 ? (
               <p className="text-sm text-[var(--text-muted)] mt-1">
@@ -163,17 +174,9 @@ export default async function ScoresPage({
               <p className="text-xs text-crimson-400 mt-1">{espnSyncError}</p>
             )}
           </div>
-          <ShareExportButton
-            surface="scores"
-            rootId="share-scores"
-            weekLabel={week.label}
-            gameCount={games.length}
-            liveGameCount={liveCount}
-            pickRowCount={participants.length}
-          />
         </div>
 
-      <div data-share-hide="">
+      <div data-share-chrome="">
         <WeekSwitcher
           weeks={weekOptions}
           selectedWeek={week.number}

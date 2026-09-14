@@ -2,7 +2,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
       <aside className="card-glass border border-gold-400/30 p-4 space-y-2" aria-label="Feature availability">
-        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, <strong>personal Join links</strong>, joining, sign-in that stays on your phone, sign-in codes, forgot-password codes, cell-number collection, <strong>notification preferences</strong> (<strong>Account → Notification preferences</strong>), and <strong>Share</strong> on Board and Scores (save or send a picture, including a full long screenshot).</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, prior-pick import, commissioner admin, PWA install, <strong>personal Join links</strong>, joining, sign-in that stays on your phone, sign-in codes, forgot-password codes, cell-number collection, <strong>notification preferences</strong> (<strong>Account → Notification preferences</strong>), and a quiet way to share Board or Scores as a picture (including a full long screenshot).</p>
         <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, WhatsApp, weekly digests, and close-game alerts.</p>
       </aside>
       <section id="onboarding-first-run">
@@ -219,14 +219,14 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       </section>
       <section id="share-board-scores">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">Share Board &amp; Scores as a picture</h2>
-        <p className="text-[var(--text-muted)] mb-2">Handy for the group text. Open <strong>Board</strong> or <strong>Scores</strong>, tap <strong>Share</strong>, pick what to include, then <strong>Make picture</strong>. Save the image on your phone, or tap <strong>Send…</strong> when your phone offers it (Messages, Mail, and so on). Works in the Home Screen app and in mobile Safari / Chrome, and on a computer.</p>
+        <p className="text-[var(--text-muted)] mb-2">Handy for the group text. There is <strong>no Share button</strong> on the screen (so it does not show up in a regular screenshot). On <strong>Board</strong> or <strong>Scores</strong>: <strong>press and hold the page title</strong>, or <strong>tap the week label three times</strong> (the gold <strong>W#</strong> up top, or the week words in the title). Then pick what to include and tap <strong>Make picture</strong>. Save the image, or tap <strong>Send…</strong> when your phone offers it. Works in the Home Screen app and in mobile Safari / Chrome, and on a computer.</p>
         <p className="text-[var(--text-muted)] mb-2">You always have a choice — we never force one format:</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]"><strong>Full long picture</strong> (always listed): the whole Board or the whole Scores page, like a Safari long screenshot — one tall image you can scroll in the preview.</li>
           <li className="text-[var(--text-primary)]"><strong>Shorter options:</strong> on Board, this week’s picks, still in, or undefeated only. On Scores, scores only, this week’s picks, or live games only (when a game is on).</li>
           <li className="text-[var(--text-primary)]"><strong>A few shorter pictures:</strong> if the page is very long, we also offer a split (for example scores, then picks). The full long picture stays in the list.</li>
         </ul>
-        <p className="text-[var(--text-muted)] mb-2">The picture is what you can already see on that screen. Before lock, other friends’ picks stay hidden in the picture too. Share / Change pick buttons are left off the image. If making the picture fails on an older phone, pick a shorter option or take a regular screenshot.</p>
+        <p className="text-[var(--text-muted)] mb-2">The picture is the Board or Scores content only — header, bottom tabs, Change pick, <strong>Details ›</strong>, “tap for details,” and other chrome are left off. Before lock, other friends’ picks stay hidden in the picture too. If making the picture fails on an older phone, pick a shorter option or take a regular screenshot.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="10-team-pages">
@@ -296,7 +296,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
 | Want to switch account | Header → Account → Sign out (also on Admin and Help). Then Sign in. |
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
-| Share picture failed | Try a shorter option (scores only, still in, picks). Or take a regular screenshot. Full long picture stays in the list. |
+| Share picture failed | Press and hold the Board or Scores title (or triple-tap the week). Try a shorter option. Or take a regular screenshot. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
 | Can’t change my pick | Weeks 2+ freeze at week lock. Week 1: you can still change until your pick’s kickoff, but only onto a game that has not started. |`}</pre>
         <p className="text-[var(--text-muted)] mb-2">Still stuck? Ask your commissioner or check the pool notice for schedule overrides.</p>
@@ -306,7 +306,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h2 className="text-lg font-semibold text-gold-400 mb-2">14. For commissioners (admins)</h2>
         <p className="text-[var(--text-muted)] mb-2">You’re the light touch that keeps the pool fair:</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
-          <li className="text-[var(--text-primary)]"><strong>Share the Board or Scores:</strong> open that page → <strong>Share</strong> → pick full long picture or a shorter option → Make picture → Save or Send. Good for the group text. Click-by-click in <a href="#share-board-scores" className="text-gold-400">Share Board &amp; Scores</a>.</li>
+          <li className="text-[var(--text-primary)]"><strong>Share the Board or Scores (quiet):</strong> no Share button on the screen. Press and hold the page title, or tap the week label (gold <strong>W#</strong>) three times → pick full long picture or a shorter option → Make picture → Save or Send. Click-by-click in <a href="#share-board-scores" className="text-gold-400">Share Board &amp; Scores</a>.</li>
           <li className="text-[var(--text-primary)]"><strong>Personal Join links:</strong> Admin → Copy next to that friend → send that one person their link. Do <strong>not</strong> blast one link to the group chat. Click-by-click in <a href="#getting-started-join-signin-home-screen" className="text-gold-400">Getting started</a>.</li>
           <li className="text-[var(--text-primary)]">Open weeks and confirm the schedule import.</li>
           <li className="text-[var(--text-primary)]">**Import prior picks** (CSV or form) when the season is already underway — see [Importing prior picks](#15-importing-prior-picks).</li>
@@ -359,7 +359,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **Lock** | Same moment as the pick deadline: picks become visible and missed picks apply. After Week 1, picks also freeze then. Week 1 only: you can still change an existing pick until that team’s kickoff. |
 | **This week’s games** | The list of matchups you pick from on the Pick screen (not “slate”). |
 | **Board** | Pool board: same pick (team abbr; no pick last), then same game (earlier kickoff), then nickname A–Z. Status chips show on each row but do not split a pick group. After lock, Home still groups by kickoff-ordered games then away/home clusters; each cluster (and Scores’ pick list) uses that same order. |
-| **Share (picture)** | Board or Scores → Share. Full long picture is always offered. Shorter and split options too. Save or Send for the group text. |
+| **Share (picture)** | Board or Scores: press and hold the title, or triple-tap the week label. No Share button on the screen. Full long picture is always offered. |
 | **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock). |
 | **Notification preferences** | Account → Notification preferences. Toggles for which emails (and missing-pick texts) you want. |

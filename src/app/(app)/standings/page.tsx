@@ -16,7 +16,7 @@ import {
 import { AutoPickStamps } from "@/components/AutoPickStamps";
 import { StatusChip } from "@/components/StatusChip";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
-import { ShareExportButton } from "@/components/ShareExportButton";
+import { ShareExport } from "@/components/ShareExport";
 import { formatKickoff } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -120,9 +120,16 @@ export default async function StandingsPage() {
         data-share-section="heading"
       >
         <div className="min-w-0">
-          <h1 className="font-display text-2xl text-gold-400 tracking-wide">
-            {weekLabel} · Survival board
-          </h1>
+          <ShareExport
+            surface="board"
+            rootId="share-board"
+            weekLabel={weekLabel}
+            titleRest=" · Survival board"
+            stillInCount={stillInCount}
+            undefeatedCount={undefeatedCount}
+            eliminatedCount={eliminatedCount}
+            pickRowCount={sorted.length}
+          />
           <p className="text-sm text-[var(--text-muted)] mt-1">
             {week
               ? `Lock: ${formatKickoff(effectiveLockAt(week))}${
@@ -143,16 +150,7 @@ export default async function StandingsPage() {
               : ""}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2 shrink-0" data-share-hide="">
-          <ShareExportButton
-            surface="board"
-            rootId="share-board"
-            weekLabel={weekLabel}
-            stillInCount={stillInCount}
-            undefeatedCount={undefeatedCount}
-            eliminatedCount={eliminatedCount}
-            pickRowCount={sorted.length}
-          />
+        <div className="flex flex-wrap gap-2 shrink-0" data-share-chrome="">
           {canChangePick ? (
             <Link
               href="/pick"
@@ -262,7 +260,7 @@ export default async function StandingsPage() {
                       <Link
                         href="/pick"
                         prefetch={false}
-                        data-share-hide=""
+                        data-share-chrome=""
                         className="btn-primary text-xs px-2.5 py-2 min-h-11"
                       >
                         Change
@@ -278,7 +276,7 @@ export default async function StandingsPage() {
                       <Link
                         href="/pick"
                         prefetch={false}
-                        data-share-hide=""
+                        data-share-chrome=""
                         className="btn-primary text-xs px-2.5 py-2 min-h-11"
                       >
                         Pick

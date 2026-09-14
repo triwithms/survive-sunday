@@ -32,6 +32,23 @@ export type ShareOptionContext = {
   tooLong: boolean;
 };
 
+/** Quiet open: long-press the page title or triple-tap the week label. */
+export const SHARE_OPEN_EVENT = "ss-share-open";
+export const SHARE_LONG_PRESS_MS = 550;
+export const SHARE_TRIPLE_TAP_MS = 500;
+
+export function recordTapTimes(
+  times: number[],
+  now: number,
+  windowMs = SHARE_TRIPLE_TAP_MS
+): number[] {
+  return [...times, now].filter((t) => now - t <= windowMs);
+}
+
+export function isTripleTap(times: number[]): boolean {
+  return times.length >= 3;
+}
+
 /** Comfortable tall picture (CSS pixels) before we also offer split pages. */
 export const COMFORTABLE_SHARE_HEIGHT = 2400;
 

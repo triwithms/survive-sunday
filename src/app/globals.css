@@ -165,6 +165,10 @@ a:focus-visible, button:focus-visible {
 .share-capture-hide {
   display: none !important;
 }
+html.share-capturing [data-share-chrome],
+html.share-capturing [data-share-hide] {
+  display: none !important;
+}
 .share-capturing [data-share-stamp] {
   display: block !important;
 }
