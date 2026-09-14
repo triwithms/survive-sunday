@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
+import { cronAuthorized } from "@/lib/cron-auth";
 import { sendMissingPickReminders } from "@/lib/notification-reminders";
-
-function cronAuthorized(req: Request): boolean {
-  if (req.headers.get("x-vercel-cron") === "1") return true;
-  const secret = process.env.CRON_SECRET?.trim();
-  if (!secret) return false;
-  const auth = req.headers.get("authorization");
-  return auth === `Bearer ${secret}`;
-}
 
 export async function GET(req: Request) {
   if (!cronAuthorized(req)) {

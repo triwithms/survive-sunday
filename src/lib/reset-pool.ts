@@ -140,6 +140,7 @@ export async function resetPoolSeasonData(opts: {
         losses: 0,
         weeksSurvived: 0,
         usedTeamsJson: "[]",
+        autoPickStamps: 0,
       },
     });
 

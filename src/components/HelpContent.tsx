@@ -92,12 +92,13 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h3 className="font-semibold mt-3 mb-1">Ties &amp; postponements</h3>
         <p className="text-[var(--text-muted)] mb-2">If your picked team’s game ends in a **tie** (after overtime), it counts as a **loss** unless a pool admin overrides. Postponed or **cancelled** games: your commissioner decides how to resolve — ask them, or check the pool notice.</p>
         <h3 className="font-semibold mt-3 mb-1">Season end</h3>
-        <p className="text-[var(--text-muted)] mb-2">We prefer a **sole survivor**. If more than one player is still alive after Week 18, apply this ladder:</p>
+        <p className="text-[var(--text-muted)] mb-2">We prefer a **sole survivor**. The official winner must have a **clean** season: **no 💩 stamps**. Ranked auto-pick (~2 minutes before lock) is for staying in for fun when you are busy — it keeps you on the board but you cannot win the pool. Copy-from-member, your own picks, and commissioner import / fix-pick do **not** stamp. If more than one **eligible** player is still alive after Week 18, apply this ladder:</p>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
+          <li>**Clean record** (no ranked auto-pick 💩).</li>
           <li>**Fewest losses** (undefeated beats one loss).</li>
           <li>**Most weeks survived**.</li>
           <li>Still tied → **shared win** (co-champions). Nickname A–Z is only for list order — it does not crown a sole winner.</li>
-          <li>**Optional backup:** the commissioner may run **one extra pick week** among only the tied players if the group wants a sole champ.</li>
+          <li>**Optional backup:** the commissioner may run **one extra pick week** among only the tied eligible players if the group wants a sole champ.</li>
         </ol>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -139,6 +140,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h2 className="text-lg font-semibold text-gold-400 mb-2">8. Notifications</h2>
         <p className="text-[var(--text-muted)] mb-2"><strong>Your choices:</strong> tap <strong>Account</strong> (header) → <strong>Notification preferences</strong>. Each signed-in friend picks what they want. Core items start <strong>on</strong> (missing-pick reminder, pick saved/changed, results, you’re out / mulligan used, pool notes). Optional noisier items start <strong>off</strong> (live score updates, injury notes). Phone / Home Screen push is listed as coming soon.</p>
         <p className="text-[var(--text-muted)] mb-2"><strong>Cell for missing-pick texts:</strong> after sign-in you may be asked for a Canadian or US cell number so we can text you if you haven’t picked before lock. You can <strong>Skip for now</strong>; add or change it anytime from Account (<strong>Add cell</strong>). If you turn <strong>Missing pick reminder</strong> off, we will not email or text that reminder. Password-reset codes still send when you ask for one. Numbers are stored in E.164. WhatsApp is later.</p>
+        <p className="text-[var(--text-muted)] mb-2"><strong>Pick backup:</strong> Account → <strong>Pick backup</strong> (or Admin → Roster). Off by default. (1) Copy another member’s pick if you still have <strong>no pick</strong> within <strong>30 minutes</strong> of lock (Week 1: that pick’s kickoff) — JaJa copies Gams for later weeks. Copy-from-member does <strong>not</strong> add a 💩. JaJa’s Week 1 pick is <strong>DAL</strong> (owner import — no stamp). (2) Or auto-pick the best remaining team by <strong>2025 rank #N</strong> (same prior-year composite Pick shows; 1 = strongest), skipping used teams and byes, if you still have none within <strong>about 2 minutes</strong> of lock. That ranked leftover <strong>does</strong> stamp 💩 beside your nickname (repeat, or 💩×N) and you cannot be the official winner. We never overwrite a pick you already submitted. Server jobs apply this — opening the app is not required.</p>
         <p className="text-[var(--text-muted)] mb-2"><strong>Coming later:</strong> weekly picks digests, WhatsApp messaging, and close-game alerts. Those are not the same as the preference toggles already in Account.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -220,7 +222,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Override lock time** when needed (testing or rare schedule changes).</li>
           <li className="text-[var(--text-primary)]">Manual overrides for ties, postponements, and **force-resolve** edge cases.</li>
           <li className="text-[var(--text-primary)]">**Remove players** who shouldn’t be in the pool.</li>
-          <li className="text-[var(--text-primary)]">**Roster:** open **Admin → Roster** to see every nickname and real name, and fix either if it’s wrong. Each change is audit-logged.</li>
+          <li className="text-[var(--text-primary)]">**Roster:** open **Admin → Roster** to see every nickname and real name, and fix either if it’s wrong. Each change is audit-logged. You can also set <strong>Pick backup</strong> (off, copy from a member — no 💩 — or auto 2025-rank team, which stamps 💩). JaJa’s Week 1 pick is **DAL**; she copies Gams later if she still has no pick.</li>
           <li className="text-[var(--text-primary)]">**Roles:** one login can be a **Player** and an **Administrator**. If you have both, use **Playing as …** / **Admin tools** to switch. Players without Admin never see Admin tools. You can **Make administrator** for someone already in the pool (they stay on the board). The pool always keeps at least one administrator. A later **Watcher** role (follow the board, no picks) is reserved and not in the app yet.</li>
           <li className="text-[var(--text-primary)]">**Pool notes & missing-pick nudge:** Admin → send a short note (only friends who left Pool notes on) or nudge anyone still without a pick (only if they left Missing pick reminder on).</li>
           <li className="text-[var(--text-primary)]"><strong>Coming later:</strong> weekly digests. Late-pick reminders already respect Notification preferences.</li>
@@ -269,6 +271,8 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock). |
 | **Notification preferences** | Account toggles for which emails (and missing-pick texts) you want. |
+| **Pick backup** | Optional: copy another member (30 min, no 💩) or auto-pick the best remaining 2025-rank team (~2 min, stamps 💩). Official winner must have none. |
+| **Auto-pick 💩** | Stamp only when the ~2-minute ranked leftover writes a pick. Shown beside the nickname on Board / Home. Clean record required to win. |
 | **Digest** | **Coming later:** post-lock summary of everyone’s picks. |
 | **H2H** | **Coming later:** head-to-head spotlight when two participants pick opposite sides. |
 | **en-CA** | Canadian English locale for copy, dates, and A–Z sorting. |
@@ -284,7 +288,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
           <li>Open **Commissioner → Import week picks**.</li>
           <li>Upload a CSV or paste rows: `nickname,team` (or `email,team`).</li>
           <li>Use the official Week 1 list in the owner handoff — not `/examples/week1-picks-import.csv` (leftover demo sample).</li>
-          <li>Imported picks are marked **imported**, written to the **audit log**, and follow normal rules: visible after lock, graded when games are final, mulligan / elimination applied, team reuse enforced.</li>
+          <li>Imported picks are marked **imported**, written to the **audit log**, and follow normal rules: visible after lock, graded when games are final, mulligan / elimination applied, team reuse enforced. Import / fix-pick does **not** add a 💩 — only the ranked auto-pick path does.</li>
           <li>If you need to force a mid-season import that reuses a team, tick the override — that is also audited.</li>
         </ol>
       </section>

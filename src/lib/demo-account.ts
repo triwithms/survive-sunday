@@ -62,6 +62,11 @@ const DEMO_PROFILES: Record<
     realName: "Steve Venerus",
     role: "member",
   },
+  "jaja@survivesunday.demo": {
+    nickname: "JaJa",
+    realName: "Jacquie Gama",
+    role: "member",
+  },
 };
 
 function profileFor(email: string) {

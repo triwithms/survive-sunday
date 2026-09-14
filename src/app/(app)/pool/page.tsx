@@ -5,6 +5,7 @@ import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { effectiveLockAt, isWeekLocked, ensureWeekLockedEffects, MISSED_TEAM } from "@/lib/grading";
 import { canEditExistingPick, gameForPick } from "@/lib/pick-change";
 import { StatusChip } from "@/components/StatusChip";
+import { AutoPickStamps } from "@/components/AutoPickStamps";
 import { formatKickoff } from "@/lib/utils";
 import {
   formatCurrentStanding,
@@ -371,6 +372,7 @@ export default async function PoolPage({
                                 <div className="flex items-center gap-2 flex-wrap min-w-0">
                                   <span className="font-medium min-w-0">
                                     {m.nickname}
+                                    <AutoPickStamps count={m.autoPickStamps} />
                                     {isSelf ? " (you)" : ""}
                                     {m.realName ? (
                                       <span className="text-xs font-normal text-[var(--text-muted)]">
@@ -433,6 +435,7 @@ export default async function PoolPage({
                         <div className="flex items-center gap-2 flex-wrap min-w-0">
                           <span className="font-medium min-w-0">
                             {m.nickname}
+                            <AutoPickStamps count={m.autoPickStamps} />
                             {isSelf ? " (you)" : ""}
                             {m.realName ? (
                               <span className="text-xs font-normal text-[var(--text-muted)]">
@@ -500,6 +503,7 @@ export default async function PoolPage({
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="font-medium min-w-0">
                                 {m.nickname}
+                                <AutoPickStamps count={m.autoPickStamps} />
                                 {isSelf ? " (you)" : ""}
                                 {m.realName ? (
                                   <span className="text-xs font-normal text-[var(--text-muted)]">

@@ -282,6 +282,13 @@ export function isWeekLocked(week: {
  * auto-grade any FINAL games. Safe on pool / picks / standings / scores / import.
  */
 export async function ensureWeekLockedEffects(weekId: string) {
+  try {
+    const { applyMirrorPicksForWeek } = await import("./pick-mirror-db");
+    await applyMirrorPicksForWeek(weekId);
+  } catch (error) {
+    console.warn("[mirror] apply skipped", error);
+  }
+
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: weekId },
   });

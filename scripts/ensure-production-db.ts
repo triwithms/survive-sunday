@@ -23,6 +23,8 @@ import { isLiveMode } from "../src/lib/pool-mode";
 import { backfillPoolAccessRoles } from "../src/lib/roles-db";
 import { ensureDualMembershipIndex } from "../src/lib/membership-schema";
 import { ensureNotificationTables } from "../src/lib/notification-schema";
+import { ensurePickMirrorColumn } from "../src/lib/pick-mirror-schema";
+import { ensureCanonicalLiveSeats } from "../src/lib/live-roster";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
 
@@ -246,6 +248,7 @@ async function main() {
     await ensureMembershipIsAdminColumn(prisma);
     await ensurePoolAccessRoleTable(prisma);
     await ensureNotificationTables(prisma);
+    await ensurePickMirrorColumn(prisma);
   });
 
   const pushed = pushSchema(env);
@@ -266,6 +269,7 @@ async function main() {
       await ensurePoolAccessRoleTable(prisma);
       await ensureOtpChallengeTable(prisma);
       await ensureNotificationTables(prisma);
+      await ensurePickMirrorColumn(prisma);
       await assertRequiredSchema(prisma);
     });
   } else {
@@ -274,6 +278,7 @@ async function main() {
       await ensureDualMembershipIndex(prisma);
       await ensurePoolAccessRoleTable(prisma);
       await ensureNotificationTables(prisma);
+      await ensurePickMirrorColumn(prisma);
       await assertRequiredSchema(prisma);
     });
   }
@@ -298,6 +303,28 @@ async function main() {
       } catch (error) {
         console.warn(
           "[ensure-db] roster realName patch skipped (build continues)",
+          error
+        );
+      }
+      try {
+        const seats = await ensureCanonicalLiveSeats(prisma, pool.id);
+        for (const row of seats) {
+          if (
+            row.createdMembership ||
+            row.importedWeek1 ||
+            row.mirrorSet ||
+            row.convertedPendingEmail
+          ) {
+            console.log(
+              `[ensure-db] live seat ${row.nickname}: created=${row.createdMembership} week1=${row.importedWeek1} mirror=${row.mirrorSet} pendingEmail=${row.convertedPendingEmail}`
+            );
+          } else {
+            console.log(`[ensure-db] live seat ${row.nickname} already present`);
+          }
+        }
+      } catch (error) {
+        console.warn(
+          "[ensure-db] live roster seats skipped (build continues)",
           error
         );
       }

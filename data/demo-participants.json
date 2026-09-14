@@ -145,6 +145,20 @@
         "submittedAt": "2026-09-09T21:03:00.000Z",
         "visibleAfterLock": true
       }
+    },
+    {
+      "id": "bm11",
+      "nickname": "JaJa",
+      "realName": "Jacquie Gama",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": {
+        "team": "DAL",
+        "submittedAt": "2026-09-09T21:10:00.000Z",
+        "visibleAfterLock": true
+      }
     }
   ],
   "defaultPostLockSort": {

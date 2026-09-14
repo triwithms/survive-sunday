@@ -12,14 +12,15 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 **Never paste secrets** (passwords, `AUTH_SECRET`, `DATABASE_URL`, API keys) into a chat, a screenshot, or a commit.
 
-**Snapshot (13 September 2026, evening):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Live tonight:
+**Snapshot (13 September 2026, late):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Live tonight:
 
 - **Who are you? Join** + **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** switcher — merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
 - **Week 2 schedule restored** in Real/live (viewable; Demo isolation is practice UX only — it does **not** hide the Week 2 slate) — merged [PR #22](https://github.com/triwithms/survive-sunday/pull/22)
 - Survival board sort: **status → weeks survived → losses → same pick → same game → A–Z** — merged [PR #21](https://github.com/triwithms/survive-sunday/pull/21) / [PR #24](https://github.com/triwithms/survive-sunday/pull/24)
 - ESPN live scores + injuries; **League W-L syncs from ESPN** (not the demo `week2-standings` seed); no player-facing demo League copy in Real mode
-- Real **Week 1 picks imported** for **12 BM Boys** (the original 10 plus **Go Giants** and **Pauli**). Pauli’s nickname is **Pauli** (Paul Gama)
+- Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **DAL** (Dallas — not Gams’ KC). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
+- **Pick backup:** Off by default. Copy another player within **30 minutes** of lock (JaJa → **Gams** for later weeks if she still has no pick — no 💩). Or auto-pick the best remaining **2025 rank** team (same `#N` list as Pick) within **~2 minutes** — that stamps 💩 beside the nickname and that player cannot be the official winner. Server jobs apply this — opening the app is not required.
 - **Week 1 pick-change until kickoff** — merged [PR #25](https://github.com/triwithms/survive-sunday/pull/25). Week 1: you can still change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock** (first kickoff).
 - Forgot password **code is on `main`**; codes will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). Password-reset codes are **not** gated by these prefs.
@@ -167,13 +168,13 @@ Normal path — no extra buttons:
 
 **First-time / empty database:** `npm run build` on Vercel also runs a schema sync and seeds the BM Boys demo pool if invite code `SUNDAY26` is missing. Do **not** re-run seed on purpose unless you want demo data refreshed.
 
-On each production build the helper also patches leftover short names in the live database if they are still stored as the old values: Long Snapper `J S` → **John Stilo**, Steve `Steve` → **Steve Venerus**. Changing seed files alone does not fix production. You can also edit any name on **Admin → Roster**. If the pool is already in **Real mode**, the same build parks it on **Week 1** and **restores the Week 2 NFL slate**. It only clears leftover **practice-seat** (`@survivesunday.demo`) Week 2 picks — it does **not** delete Week 2 games or hide the slate from friends.
+On each production build the helper also patches leftover short names in the live database if they are still stored as the old values: Long Snapper `J S` → **John Stilo**, Steve `Steve` → **Steve Venerus**. Changing seed files alone does not fix production. You can also edit any name on **Admin → Roster**. If **JaJa** is missing, the same helper creates her Join-claimable seat (`jaja@survivesunday.demo`), imports Week 1 **DAL**, and sets pick backup from **Gams**. If she already has a leftover imported/mirrored **KC**, it is corrected to **DAL** (no 💩). It does **not** reset the pool or other Week 1 picks. If the pool is already in **Real mode**, the same build parks it on **Week 1** and **restores the Week 2 NFL slate**. It only clears leftover **practice-seat** (`@survivesunday.demo`) Week 2 picks — it does **not** delete Week 2 games or hide the slate from friends.
 
 ---
 
 ## 6. BM Boys roster (confirmed real names)
 
-Nicknames stay as friends know them. Real names show in brackets on the board and on **Who are you?** / Join. Live evening 13 Sep 2026: **12 player seats**.
+Nicknames stay as friends know them. Real names show in brackets on the board and on **Who are you?** / Join. Live late 13 Sep 2026: **13 player seats**.
 
 | Nickname | Real name | On live Join |
 |----------|-----------|--------------|
@@ -188,15 +189,16 @@ Nicknames stay as friends know them. Real names show in brackets on the board an
 | JimmyC | Jim Coulson | Unclaimed |
 | Long Snapper | John Stilo | Unclaimed |
 | **Pauli** | **Paul Gama** | Claimed |
+| **JaJa** | **Jacquie Gama** | Unclaimed (Join-claimable) |
 | Steve | Steve Venerus | Unclaimed |
 
-**Go Giants** and **Pauli** were added on the live roster (not only in seed files). Pauli’s nickname is **Pauli**, not Paul. You can edit any row on **Admin → Roster**. Production still patches leftover short names on deploy (Long Snapper `J S` → John Stilo, Steve → Steve Venerus, Gdogss → Tony Gyuro).
+**Go Giants**, **Pauli**, and **JaJa** were added on the live roster (not only in seed files). Pauli’s nickname is **Pauli**, not Paul. JaJa uses `jaja@survivesunday.demo` so Join does **not** say already claimed. You can edit any row on **Admin → Roster**. Production still patches leftover short names on deploy (Long Snapper `J S` → John Stilo, Steve → Steve Venerus, Gdogss → Tony Gyuro) and **creates JaJa + her DAL pick + Gams backup if she is missing**.
 
 ---
 
 ## 6b. Official REAL Week 1 picks (already on the live board)
 
-Week 1 picks for all **12 BM Boys** (including **Go Giants** and **Pauli**) are **already imported on production**. Friends see them on the Board after lock. Do **not** tell a chat the board still has demo sample rows (SF / CAR / TB / IND / DET / HOU / NYJ / ATL / KC for the wrong people). Do **not** use `public/examples/week1-picks-import.csv` or `data/week1-picks-status.md` — those are leftover demo / partial files.
+Week 1 picks for the BM Boys (including **Go Giants**, **Pauli**, and **JaJa**) are **already imported on production**. Friends see them on the Board after lock. Do **not** tell a chat the board still has demo sample rows (SF / CAR / TB / IND / DET / HOU / NYJ / ATL / KC for the wrong people). Do **not** use `public/examples/week1-picks-import.csv` or `data/week1-picks-status.md` — those are leftover demo / partial files.
 
 Confirmed official teams for the original 10 (use this if you ever need to **re-import** week **1**):
 
@@ -212,9 +214,10 @@ Gdogss,LAC
 JimmyC,JAX
 Long Snapper,JAX
 Steve,DET
+JaJa,DAL
 ```
 
-**Go Giants** (Carson Gama) and **Pauli** (Paul Gama) also have Week 1 picks on the live Board. If a row looks wrong, fix it with **Admin → Import week picks** (week **1**) — read the live Board, do not invent a team. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
+**Go Giants** (Carson Gama), **Pauli** (Paul Gama), and **JaJa** (Jacquie Gama) also have Week 1 picks on the live Board (JaJa = **DAL**, not Gams’ KC). If a row looks wrong, fix it with **Admin → Import week picks** (week **1**) — read the live Board, do not invent a team. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
 ---
 
@@ -242,6 +245,7 @@ Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is 
 - **Forgot password?** on the sign-in page: we email (or text) a 6-digit code → new password → signed back in. This is **not** a code at every login. **Codes do not send until Resend keys are on Vercel** (section 4). That is still the group-invite blocker.
 - **Sign out:** header **Account** (top right) → **Sign out** (merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)). Also on Admin and Help.
 - **Notification preferences:** header **Account** → **Notification preferences**. Each friend chooses which emails they want. Missing-pick texts use the same Missing pick reminder switch. Password-reset codes always send when requested.
+- **Pick backup:** header **Account** → **Pick backup**. Off, copy from a member (30 min), or auto best remaining **2025 rank** team (~2 min). Commissioners can set the same on **Admin → Roster**. JaJa copies Gams by default.
 
 The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` (click-by-click in [DEPLOY.md](../DEPLOY.md) §3b), then Redeploy. Optional Twilio for texts. Do not claim codes are sending until those keys are set and you have tested once. Demo-mode practice seats stay on `demo1234` — friends in Real mode never see that password.
 
@@ -311,8 +315,8 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 |------|----------------|
 | **Real mode vs Demo mode** | First card on Admin. Tap **Real mode** or **Demo mode**. Real = Week 1 current, no `demo1234` practice picker, **Week 2 slate still visible**. Friends pick their name from the live roster, then set their own email. Demo = practice picker; same weeks. **Shipped.** |
 | **Your commissioner login** | Replace the practice commissioner email with a real email + password. Then sign out and sign in with that email. **Shipped.** |
-| **Reset pool** | Optional. Real mode is already Week 1. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Do not reset now** — Week 1 imports and the 12-player roster are already live. **Shipped.** |
-| **Roster** | See each nickname + real name (12 BM Boys including Go Giants and Pauli). Edit either when wrong. Audit-logged. |
+| **Reset pool** | Optional. Real mode is already Week 1. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Do not reset now** — Week 1 imports and the live roster (including JaJa) are already live. **Shipped.** |
+| **Roster** | See each nickname + real name (including Go Giants, Pauli, JaJa). Edit either when wrong. Set **If no pick within 30 min, copy from** (JaJa → Gams). Audit-logged. |
 | **Import week picks** | Paste or upload `nickname,team` (or `email,team`). This is how you **correct a player’s pick after the fact**. Week 1 is already imported. Changes are written to the **audit log**. There is no single-player “edit pick” button yet. |
 | Lock controls | Reopen week, unlock (testing), lock now + missed picks, clear override. |
 | Simulate scores | Fake remaining finals (testing). |
@@ -386,6 +390,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | League W-L from ESPN (no demo leak) | live-standings merge (`538be1f`) | Real-mode League syncs ESPN W-L. Demo `week2-standings` seed is not shown to Real-mode friends. |
 | Week 1 pick-change until kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock.** |
 | Notification preferences | [#29](https://github.com/triwithms/survive-sunday/pull/29) | Account → Notification preferences. Types: missing pick, pick saved/changed, results, you’re out / mulligan, pool notes (default on); live scores, injury notes (default off). Email via Resend. Missing-pick SMS follows the same switch. |
+| JaJa seat + pick backup | [#37](https://github.com/triwithms/survive-sunday/pull/37) | **JaJa (Jacquie Gama)** is on Join as claimable, Week 1 **DAL**. Pick backup: off / copy-from-member (30 min, no 💩; JaJa → Gams later) / auto best remaining **2025 rank** team (~2 min, stamps 💩). Official winner must have no 💩. |
 
 ### Open — not on `main` yet
 
@@ -452,7 +457,7 @@ Use the **same** link the friend opened (the vercel.app URL). Do not mix `localh
 
 **E. Board still shows demo sample picks (SF / CAR / TB / …)**
 
-That was last afternoon’s leftover seed. **As of this evening those official Week 1 rows are imported** for all 12 BM Boys. If a single name still looks wrong, **Admin → Import week picks** for week 1 (do not Reset the whole pool). Do not ask a chat to invent a live data feed to “fix” picks. Do not paste the demo example CSV.
+That was last afternoon’s leftover seed. **Official Week 1 rows are imported** (including JaJa → DAL). If a single name still looks wrong, **Admin → Import week picks** for week 1 (do not Reset the whole pool). Do not ask a chat to invent a live data feed to “fix” picks. Do not paste the demo example CSV.
 
 ---
 
@@ -574,7 +579,7 @@ You are free / basic Grok chat — not Grok Bot. One small PR. Continue existing
 
 Core MUST: submit pick, group board, in vs out — keep ~100% reliable.
 Real mode is already on main (merged PR #10): Week 1 is the real current week. Week 2 is a real NFL week on the schedule (merged PR #22) — Demo isolation does not hide it.
-Official REAL Week 1 picks for 12 BM Boys (incl Go Giants, Pauli) are already imported — see docs/HANDOFF.md section 6b. Not the demo CSV.
+Official REAL Week 1 picks (incl Go Giants, Pauli, JaJa → DAL) are already imported — see docs/HANDOFF.md section 6b. Not the demo CSV.
 Board sort on main: status → weeks survived → losses → same pick → same game → A–Z (merged PRs #21 / #24).
 Friends may open the app without picking every week; a missed week still counts as a loss after lock unless I ask to change that rule.
 Pick header prev/next week is **on main** (merged PR #14). Do not start a second copy.
@@ -604,7 +609,7 @@ MUST on main (already shipped):
 - Real vs Demo mode, reset pool, real commissioner login (merged PR #10). Do not open another Real-mode PR.
 - Who are you? claim + Player/Administrator roles + Make administrator (merged PR #19). Do not start a second copy.
 - Commissioner can change a participant pick after the fact (Import week picks, audit-logged). Week 1 is already imported — HANDOFF section 6b.
-- Roster real-name editor (12 BM Boys including Go Giants and Pauli).
+- Roster real-name editor (including Go Giants, Pauli, JaJa). Pick backup (copy from another member within 30 min of kickoff) is on Account and Admin → Roster.
 
 Not on main — continue the existing PR, do not start a second copy:
 - Turn off mulligan / one-and-done + transfer commissioner → open PR #8 (branch cursor/commissioner-mulligan-transfer-a878)
@@ -705,7 +710,8 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Audit log** | A written record of commissioner changes (imports, removals, real-name edits). |
 | **Real mode** | Season mode on `main` (merged PR #10). Hides the practice picker. Week 1 is the current pick week. Week 2 stays on the schedule (merged PR #22). |
 | **Demo / practice picker** | Home-page list of BM Boys nicknames with built-in `demo1234`. Visible only while **Demo mode** is on. Real-mode Help never mentions this password. |
-| **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname (e.g. **Pauli**, **Go Giants**, Gams), sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
+| **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname (e.g. **Pauli**, **Go Giants**, **JaJa**, Gams), sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
+| **Pick backup** | Off, copy from a member (30 min), or auto best remaining 2025-rank team (~2 min) if you still have no pick. JaJa copies Gams. |
 | **OTP** | One-time code (the 6-digit Forgot-password screen on `main`, merged PR #7). Not a code at every login. Codes send only after Resend keys are on Vercel. |
 | **One-and-done** | Planned commissioner rule (PR #8): no free mulligan from a chosen week. One loss = out. **Not live.** |
 | **Transfer commissioner** | Planned Admin tool (PR #8): give Admin to another existing member. **Not live.** |

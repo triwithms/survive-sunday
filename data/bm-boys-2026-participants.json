@@ -3,7 +3,7 @@
   "season": "2026/27",
   "source": "screenshot standings Overall (all T1 / total 1 after week 1)",
   "capturedNote": "Deep and Delicious had no real name on screen \u2014 set to Kent Richmond per Robert. Gams showed as Your team \u2014 mapped to Robert Gama.",
-  "count": 10,
+  "count": 11,
   "participants": [
     {
       "id": "bm01",
@@ -99,6 +99,16 @@
       "id": "bm10",
       "nickname": "Steve",
       "realName": "Steve Venerus",
+      "status": "undefeated",
+      "mulliganRemaining": true,
+      "usedTeams": [],
+      "pickHistory": [],
+      "week1Pick": null
+    },
+    {
+      "id": "bm11",
+      "nickname": "JaJa",
+      "realName": "Jacquie Gama",
       "status": "undefeated",
       "mulliganRemaining": true,
       "usedTeams": [],

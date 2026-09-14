@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 import { RosterEditor } from "@/components/RosterEditor";
+import { formatSeatLabel } from "@/lib/claim-seat";
 import { isDemoMode } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
@@ -49,7 +50,10 @@ export default async function RosterPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           Nickname is what the board shows. Real name is the person behind it.
-          Fix either if it’s wrong. Saves are audit-logged.
+          Fix either if it’s wrong. Set <strong>Pick backup</strong>: off,
+          copy from another member (JaJa → Gams, no 💩), or auto 2025-rank
+          team (stamps 💩). JaJa Week 1 is <strong>DAL</strong>. Saves are
+          audit-logged.
         </p>
       </div>
 
@@ -61,7 +65,16 @@ export default async function RosterPage() {
           status: m.status,
           role: m.role,
           email: m.user.email,
+          mirrorFromMembershipId: m.mirrorFromMembershipId,
+          pickBackup: m.pickBackup,
         }))}
+        mirrorOptions={members
+          .filter((m) => m.role !== "admin")
+          .map((m) => ({
+            id: m.id,
+            nickname: m.nickname,
+            label: formatSeatLabel(m.nickname, m.realName),
+          }))}
       />
     </div>
   );

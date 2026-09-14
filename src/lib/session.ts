@@ -1,6 +1,7 @@
 import { auth } from "./auth";
 import { prisma } from "./db";
 import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
+import { ensureCanonicalLiveSeatsThrottled } from "./live-roster";
 import { ensureLiveWeekIsolation } from "./week-isolation";
 import { hasRole, isAdministrator, isPlayerSeat, POOL_ROLES } from "./roles";
 import { backfillPoolAccessRoles, listUserPoolRoles } from "./roles-db";
@@ -50,6 +51,7 @@ export async function getUserPoolContext(userId: string) {
   let memberships = await loadMemberships(userId);
   if (memberships[0]) {
     await applyCanonicalRosterNamesThrottled(prisma, memberships[0].poolId);
+    await ensureCanonicalLiveSeatsThrottled(prisma, memberships[0].poolId);
     const isolation = await ensureLiveWeekIsolation(prisma, memberships[0].pool);
     if (isolation.changed) {
       memberships = await loadMemberships(userId);

@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { MirrorPicksForm, type MirrorOption } from "@/components/MirrorPicksForm";
+import { resolvePickBackupMode, type PickBackupMode } from "@/lib/pick-mirror";
 
 export type RosterMember = {
   id: string;
@@ -10,9 +12,19 @@ export type RosterMember = {
   status: string;
   role: string;
   email: string | null;
+  mirrorFromMembershipId: string | null;
+  pickBackup: string | null;
 };
 
-export function RosterEditor({ members }: { members: RosterMember[] }) {
+export type RosterMirrorOption = MirrorOption;
+
+export function RosterEditor({
+  members,
+  mirrorOptions,
+}: {
+  members: RosterMember[];
+  mirrorOptions: RosterMirrorOption[];
+}) {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -34,6 +46,7 @@ export function RosterEditor({ members }: { members: RosterMember[] }) {
           <RosterCard
             key={m.id}
             member={m}
+            mirrorOptions={mirrorOptions.filter((o) => o.id !== m.id)}
             disabled={busyId !== null && busyId !== m.id}
             busy={busyId === m.id}
             onBusy={(busy) => setBusyId(busy ? m.id : null)}
@@ -48,6 +61,7 @@ export function RosterEditor({ members }: { members: RosterMember[] }) {
 
 function RosterCard({
   member,
+  mirrorOptions,
   disabled,
   busy,
   onBusy,
@@ -55,6 +69,7 @@ function RosterCard({
   onErr,
 }: {
   member: RosterMember;
+  mirrorOptions: RosterMirrorOption[];
   disabled: boolean;
   busy: boolean;
   onBusy: (busy: boolean) => void;
@@ -64,6 +79,10 @@ function RosterCard({
   const router = useRouter();
   const [nickname, setNickname] = useState(member.nickname);
   const [realName, setRealName] = useState(member.realName ?? "");
+  const initialMode: PickBackupMode = resolvePickBackupMode(
+    member.pickBackup,
+    member.mirrorFromMembershipId
+  );
 
   useEffect(() => {
     setNickname(member.nickname);
@@ -161,6 +180,15 @@ function RosterCard({
       >
         {busy ? "Saving…" : "Save this person"}
       </button>
+      {member.role !== "admin" && (
+        <MirrorPicksForm
+          membershipId={member.id}
+          initialMode={initialMode}
+          initialSourceId={member.mirrorFromMembershipId}
+          options={mirrorOptions}
+          saveAsAdmin
+        />
+      )}
     </li>
   );
 }

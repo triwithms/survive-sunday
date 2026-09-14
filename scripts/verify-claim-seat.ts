@@ -20,6 +20,8 @@ assert.equal(formatSeatLabel("Colin", "  "), "Colin");
 
 assert.equal(isSeatClaimed("gams@survivesunday.demo"), false);
 assert.equal(isSeatClaimed("Gams@SurviveSunday.DEMO"), false);
+assert.equal(isSeatClaimed("jaja@survivesunday.demo"), false);
+assert.equal(isSeatClaimed("jaja@pending.survivesunday.local"), true);
 assert.equal(isSeatClaimed("robert@example.com"), true);
 assert.equal(isSeatClaimed(null), false);
 assert.equal(isSeatClaimed(""), false);
