@@ -8,6 +8,7 @@ import { effectiveCurrentWeek } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+/** Daily windows: 16:30 UTC (12:30 p.m. ET) and 23:45 UTC (7:45 p.m. ET). */
 export const maxDuration = 60;
 
 export async function GET(req: Request) {
