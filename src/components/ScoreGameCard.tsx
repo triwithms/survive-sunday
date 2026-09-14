@@ -50,7 +50,7 @@ function ScoreTeamRow({
       aria-label={`Team details for ${abbr}${hasBall ? ", has the ball" : ""}`}
       onClick={(e) => e.stopPropagation()}
     >
-      <TeamLogo abbr={abbr} logoUrl={logoUrl} size={28} />
+      <TeamLogo abbr={abbr} logoUrl={logoUrl} size={24} />
       <span
         className={`font-mono text-sm font-semibold ${
           leading ? "text-field-400" : "text-[var(--text-primary)]"

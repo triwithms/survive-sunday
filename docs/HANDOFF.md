@@ -266,6 +266,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 ### Scores & injuries (live on `main`)
 
 - **Scores** (and Home / Pick / Schedule) refresh from ESPN while games are on. Finals auto-grade.
+- **Scores**, **Pick**, and the **Board** show ESPN team logos beside abbreviations (`Team.logoUrl` or the ESPN CDN). Possession is a **🏈** plus a gold bar.
 - **Team pages** show ESPN’s public injury report (not official NFL). Compact Out / Doubtful / Q chips appear next to picks.
 - If ESPN is blocked or down, last saved scores stay; injury cards say the feed failed and link out.
 - `data/sample_injury_news.json` is schema-only and is **not** shown in the UI on `main`.

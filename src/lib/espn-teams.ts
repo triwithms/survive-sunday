@@ -55,3 +55,15 @@ export function abbrFromEspnTeamId(
   if (id == null || id === "") return null;
   return ESPN_ID_TO_ABBR[String(id)] ?? null;
 }
+
+/** ESPN CDN mark (same path as `data/teams.json` / Team.logoUrl). */
+export function espnTeamLogoUrl(abbr: string): string {
+  return `https://a.espncdn.com/i/teamlogos/nfl/500/${espnAbbr(abbr).toLowerCase()}.png`;
+}
+
+/** Prefer stored Team.logoUrl; otherwise the ESPN CDN logo. Never invents art. */
+export function teamLogoUrl(abbr: string, stored?: string | null): string {
+  const trimmed = stored?.trim();
+  if (trimmed) return trimmed;
+  return espnTeamLogoUrl(abbr);
+}

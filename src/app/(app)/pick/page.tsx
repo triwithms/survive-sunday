@@ -13,6 +13,7 @@ import {
 import { getInjuryCountsByTeam } from "@/lib/live-injuries";
 import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
+import { teamLogoUrl } from "@/lib/espn-teams";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -121,7 +122,7 @@ export default async function PickPage({
     return {
       abbr,
       name: t?.name ?? abbr,
-      logoUrl: t?.logoUrl ?? null,
+      logoUrl: teamLogoUrl(abbr, t?.logoUrl),
       alreadyUsed: used.includes(abbr),
       priorYearRank: t?.priorYearRank ?? null,
       injuries: injuryFeed.byTeam.get(abbr) ?? {

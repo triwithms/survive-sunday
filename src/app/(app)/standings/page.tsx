@@ -19,6 +19,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
+import { teamLogoUrl } from "@/lib/espn-teams";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -204,8 +205,11 @@ export default async function StandingsPage() {
                     >
                       <TeamLogo
                         abbr={pick.teamAbbr}
-                        logoUrl={logoByAbbr.get(pick.teamAbbr) ?? null}
-                        size={36}
+                        logoUrl={teamLogoUrl(
+                          pick.teamAbbr,
+                          logoByAbbr.get(pick.teamAbbr)
+                        )}
+                        size={28}
                       />
                       <span className="font-mono text-base sm:text-lg font-semibold text-gold-400">
                         {pick.teamAbbr}

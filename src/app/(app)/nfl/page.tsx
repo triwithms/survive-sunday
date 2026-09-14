@@ -8,6 +8,7 @@ import { isDemoMode } from "@/lib/pool-mode";
 import fs from "fs";
 import path from "path";
 import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
+import { teamLogoUrl } from "@/lib/espn-teams";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -77,7 +78,7 @@ export default async function NflStandingsPage() {
         teams={teams.map((t) => ({
           abbr: t.abbr,
           name: t.name,
-          logoUrl: t.logoUrl,
+          logoUrl: teamLogoUrl(t.abbr, t.logoUrl),
           conference: t.conference,
           division: t.division,
           wins: t.wins,

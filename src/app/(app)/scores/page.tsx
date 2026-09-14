@@ -16,12 +16,8 @@ import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
-import { espnAbbr } from "@/lib/espn-teams";
-
-function teamLogoUrl(abbr: string, stored: string | null | undefined) {
-  if (stored) return stored;
-  return `https://a.espncdn.com/i/teamlogos/nfl/500/${espnAbbr(abbr).toLowerCase()}.png`;
-}
+import { teamLogoUrl } from "@/lib/espn-teams";
+import { TeamLogo } from "@/components/TeamLogo";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -135,7 +131,8 @@ export default async function ScoresPage({
           {week.label} scores
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Live scores from ESPN. Tap a game for more. Finals auto-grade picks.
+          Live scores from ESPN. Team logos sit beside the abbreviations.
+          Tap a game for more. Finals auto-grade picks.
         </p>
         {liveCount > 0 ? (
           <p className="text-sm text-[var(--text-muted)] mt-1">
@@ -226,8 +223,16 @@ export default async function ScoresPage({
                           <Link
                             href={`/team/${pick.teamAbbr}`}
                             prefetch={false}
-                            className="font-mono text-gold-400 underline underline-offset-2 decoration-gold-400/40"
+                            className="inline-flex items-center justify-end gap-1.5 font-mono text-gold-400 underline underline-offset-2 decoration-gold-400/40"
                           >
+                            <TeamLogo
+                              abbr={pick.teamAbbr}
+                              logoUrl={teamLogoUrl(
+                                pick.teamAbbr,
+                                logoByAbbr.get(pick.teamAbbr)
+                              )}
+                              size={22}
+                            />
                             {pick.teamAbbr}
                           </Link>{" "}
                           <span
