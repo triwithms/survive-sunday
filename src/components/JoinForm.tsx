@@ -189,7 +189,7 @@ export function JoinForm({
           ? "Choose a nickname your friends will recognise. Join once with your email and a password. Stay signed in on this phone."
           : oneTapClaim
             ? `Signed in as ${signedIn?.email}. Pick your name — your Week 1 picks stay.`
-            : viaPersonal
+            : viaPersonal && invited && !invited.claimed
               ? "Your name is picked. Enter your email and a password — once. Stay signed in on this phone."
               : "Join once with your email and a password. Stay signed in on this phone. Pick your name from the list."}
       </p>
