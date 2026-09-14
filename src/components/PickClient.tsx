@@ -12,7 +12,7 @@ import {
   resolveFavourite,
   type StandingBits,
 } from "@/lib/matchup-meta";
-import { TeamLogo } from "@/components/TeamLogo";
+import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { InjuryChip } from "@/components/InjuryChip";
 import { formatScoreLine, type InjuryCountBits } from "@/lib/game-display";
 
@@ -196,7 +196,7 @@ export function PickClient({
               <TeamLogo
                 abbr={activeSide.abbr}
                 logoUrl={activeSide.logoUrl}
-                size={52}
+                size={TEAM_LOGO_SIZE.featured}
               />
               <div className="min-w-0">
                 <p className="font-mono text-2xl font-semibold text-gold-400 leading-none">
@@ -428,7 +428,7 @@ export function PickClient({
               <TeamLogo
                 abbr={confirm.side.abbr}
                 logoUrl={confirm.side.logoUrl}
-                size={48}
+                size={TEAM_LOGO_SIZE.featured}
               />
               <div>
                 <p className="text-2xl font-mono text-gold-400">
@@ -544,7 +544,7 @@ function SideButton({
           isAway ? "" : "flex-row-reverse"
         }`}
       >
-        <TeamLogo abbr={side.abbr} logoUrl={side.logoUrl} size={40} />
+        <TeamLogo abbr={side.abbr} logoUrl={side.logoUrl} size={TEAM_LOGO_SIZE.slate} />
         <div className="min-w-0">
           <div
             className={`flex items-center gap-1.5 flex-wrap ${

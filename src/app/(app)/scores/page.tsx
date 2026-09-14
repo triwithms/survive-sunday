@@ -18,7 +18,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
-import { TeamLogo } from "@/components/TeamLogo";
+import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 
 export const dynamic = "force-dynamic";
@@ -240,7 +240,7 @@ export default async function ScoresPage({
                                 pick.teamAbbr,
                                 logoByAbbr.get(pick.teamAbbr)
                               )}
-                              size={22}
+                              size={TEAM_LOGO_SIZE.compact}
                             />
                             {pick.teamAbbr}
                           </Link>{" "}

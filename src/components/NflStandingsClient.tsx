@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { TeamLogo } from "@/components/TeamLogo";
+import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import {
   DIVISION_ORDER,
   formatWinPct,
@@ -73,7 +73,7 @@ function StandingTable({
                   prefetch={false}
                   className="inline-flex items-center gap-2 min-h-11 min-w-0 py-1 hover:text-gold-400"
                 >
-                  <TeamLogo abbr={t.abbr} logoUrl={t.logoUrl} size={28} />
+                  <TeamLogo abbr={t.abbr} logoUrl={t.logoUrl} size={TEAM_LOGO_SIZE.row} />
                   <span className="font-mono font-semibold text-gold-400">
                     {t.abbr}
                   </span>
