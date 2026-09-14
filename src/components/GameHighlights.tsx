@@ -9,6 +9,7 @@ type Payload = {
   videos: VideoClip[];
   unavailable: boolean;
   searchUrl: string;
+  phase?: "preview" | "highlight";
 };
 
 export function GameHighlights({
@@ -23,6 +24,8 @@ export function GameHighlights({
   const [playingId, setPlayingId] = useState<string | null>(null);
   const live = status === "live";
   const final = status === "final";
+  const phase = data?.phase ?? (live || final ? "highlight" : "preview");
+  const preview = phase === "preview";
 
   useEffect(() => {
     let cancelled = false;
@@ -41,6 +44,7 @@ export function GameHighlights({
             ok: true,
             videos: [],
             unavailable: true,
+            phase: live || final ? "highlight" : "preview",
             searchUrl: "https://www.youtube.com/@NFL",
           });
         }
@@ -51,17 +55,21 @@ export function GameHighlights({
     return () => {
       cancelled = true;
     };
-  }, [gameId]);
+  }, [gameId, live, final]);
 
   const videos = data?.videos ?? [];
 
   return (
     <section>
       <h3 className="text-xs font-semibold uppercase tracking-wide text-gold-400 mb-1.5">
-        Highlights
+        {preview ? "Preview" : "Highlights"}
       </h3>
       {loading && !data ? (
-        <p className="text-xs text-[var(--text-muted)]">Looking for YouTube highlights…</p>
+        <p className="text-xs text-[var(--text-muted)]">
+          {preview
+            ? "Looking for YouTube previews…"
+            : "Looking for YouTube highlights…"}
+        </p>
       ) : videos.length ? (
         <ul className="space-y-3">
           {videos.map((video) => (
@@ -79,9 +87,9 @@ export function GameHighlights({
         <p className="text-xs text-[var(--text-muted)]">
           {data?.unavailable
             ? "Couldn’t load videos."
-            : live || final
-              ? "No YouTube highlights yet — they usually land during the game or after the final."
-              : "Highlights show up once the game is on, or after the final."}{" "}
+            : preview
+              ? "No YouTube preview yet — team and league clips usually land before kickoff."
+              : "No YouTube highlights yet — they usually land during the game or after the final."}{" "}
           {data?.searchUrl ? (
             <a
               href={data.searchUrl}

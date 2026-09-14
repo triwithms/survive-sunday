@@ -37,6 +37,8 @@ export async function GET(req: Request) {
       week: game.week.number,
       awayAbbr: game.awayAbbr,
       homeAbbr: game.homeAbbr,
+      status: game.status,
+      kickoff: game.kickoff,
     });
     return NextResponse.json(data);
   } catch (e) {
@@ -45,8 +47,11 @@ export async function GET(req: Request) {
       ok: true,
       videos: [],
       unavailable: true,
+      phase: game.status === "scheduled" ? "preview" : "highlight",
       searchUrl: youtubeSearchUrl(
-        `${game.awayAbbr} vs ${game.homeAbbr} Week ${game.week.number} Highlights`
+        `${game.awayAbbr} vs ${game.homeAbbr} Week ${game.week.number} ${
+          game.status === "scheduled" ? "Preview" : "Highlights"
+        }`
       ),
     });
   }

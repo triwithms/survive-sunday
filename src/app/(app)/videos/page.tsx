@@ -70,10 +70,13 @@ export default async function VideosPage({
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           Official NFL (and a few reputable) YouTube videos for {selected.label}
-          — <strong>2026/27 season only</strong>, not old archives. NFL official
-          clips open on YouTube (they block in-app playback). ESPN, TSN, and
-          some team clips can play here when YouTube allows it. After watching,
-          switch back to Survive Sunday — we don’t jump you back automatically.
+          — <strong>2026/27 season only</strong>, not old archives.{" "}
+          <strong>Previews</strong> show until that game’s kickoff; after the
+          game, we switch to <strong>highlights</strong> (not leftover
+          previews). NFL official clips open on YouTube (they block in-app
+          playback). ESPN, TSN, and some team clips can play here when YouTube
+          allows it. After watching, switch back to Survive Sunday — we don’t
+          jump you back automatically.
         </p>
       </div>
       <WeekSwitcher

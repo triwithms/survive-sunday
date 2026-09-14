@@ -42,7 +42,7 @@ export const TEAM_CHANNELS: Record<string, string> = {
   HOU: "UCa_FcpOBe8G6VAR18RYS-aA",
   IND: "UCyYn26HPC4HIedifGnNbjBw",
   JAX: "UCsGacW6z0GedR-Wv45SBRZg",
-  KC: "UCjNqfT9S7PPzbim_gPvsj4A",
+  KC: "UC-hXefb6XBFSubWz6Ezf_lA",
   LV: "UC1es5fp8FEK1L0EgHjCvmtQ",
   LAC: "UCUyz_gEY_N-KBU4zjt2s-uQ",
   LAR: "UCyJ6yZdVUkBvt2vl4R03jcA",
@@ -110,6 +110,22 @@ export function channelRank(channelId: string | null | undefined): number {
 
 export function leagueRssChannelIds(): string[] {
   return LEAGUE_CHANNELS.map((c) => c.id);
+}
+
+export function teamChannelId(abbr: string): string | null {
+  return TEAM_CHANNELS[abbr.trim().toUpperCase()] ?? null;
+}
+
+export function teamRssChannelIds(abbrs: string[]): string[] {
+  const ids: string[] = [];
+  const seen = new Set<string>();
+  for (const abbr of abbrs) {
+    const id = teamChannelId(abbr);
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    ids.push(id);
+  }
+  return ids;
 }
 
 /**

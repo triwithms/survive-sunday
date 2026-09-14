@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
+import { prisma } from "@/lib/db";
 import { loadWeeklyVideos } from "@/lib/youtube-videos";
+import { effectiveCurrentWeek } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -18,10 +20,26 @@ export async function GET(req: Request) {
 
   const url = new URL(req.url);
   const raw = Number(url.searchParams.get("week"));
-  const week = Number.isInteger(raw) && raw > 0 ? raw : me.pool.currentWeek;
+  const week =
+    Number.isInteger(raw) && raw > 0
+      ? raw
+      : effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
 
   try {
-    const data = await loadWeeklyVideos(week);
+    const weekRow = await prisma.week.findFirst({
+      where: { poolId: me.poolId, number: week },
+      include: {
+        games: {
+          select: {
+            awayAbbr: true,
+            homeAbbr: true,
+            status: true,
+            kickoff: true,
+          },
+        },
+      },
+    });
+    const data = await loadWeeklyVideos(week, weekRow?.games ?? []);
     return NextResponse.json(data);
   } catch (e) {
     console.error("videos week failed", e);
