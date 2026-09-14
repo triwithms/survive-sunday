@@ -43,6 +43,7 @@
     "verify:team-logo": "tsx scripts/verify-team-logo.ts",
     "verify:week1-pick-change": "tsx scripts/verify-week1-pick-change.ts",
     "verify:next-week-picks": "tsx scripts/verify-next-week-picks.ts",
+    "verify:weeks": "tsx scripts/verify-weeks.ts",
     "verify:notification-prefs": "tsx scripts/verify-notification-prefs.ts",
     "verify:notification-schema": "tsx scripts/verify-notification-schema.ts",
     "verify:pick-mirror": "tsx scripts/verify-pick-mirror.ts",

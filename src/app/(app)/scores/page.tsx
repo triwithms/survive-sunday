@@ -16,12 +16,13 @@ import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import { AutoPickStamps } from "@/components/AutoPickStamps";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
+import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { ShareExport } from "@/components/ShareExport";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { resolvePlayerPickWeekFromLoaded } from "@/lib/next-week-picks";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -53,18 +54,52 @@ export default async function ScoresPage({
     await prisma.week.findMany({
       where: { poolId: me.poolId },
       orderBy: { number: "asc" },
-      include: { games: { select: { id: true } } },
+      include: {
+        games: {
+          select: {
+            id: true,
+            status: true,
+            kickoff: true,
+            awayAbbr: true,
+            homeAbbr: true,
+          },
+        },
+      },
     })
   );
-  const selectedNumber = resolveSelectedWeekNumber({
+  const currentWeekRow = weeks.find((row) => row.number === currentWeek);
+  const myCurrentWeekPick = currentWeekRow
+    ? await prisma.pick.findUnique({
+        where: {
+          membershipId_weekId: {
+            membershipId: me.id,
+            weekId: currentWeekRow.id,
+          },
+        },
+      })
+    : null;
+  const decision = resolvePlayerPickWeekFromLoaded({
+    poolCurrentWeek: currentWeek,
+    weeks: weeks.map((row) => ({
+      number: row.number,
+      locked: isWeekLocked(row),
+      games: row.games,
+    })),
+    currentPick: myCurrentWeekPick,
+    playingFromWeek: me.playingFromWeek,
+  });
+  const focusWeek = decision.actionWeek;
+  const selectedNumber = resolvePageWeekNumber({
     requested: parseWeekParam(params?.week),
     weekNumbers: weeks.map((week) => week.number),
-    currentWeek,
+    basePath: "/scores",
+    poolCurrentWeek: currentWeek,
+    pickActionWeek: focusWeek,
     allowFuture: true,
   });
   const selectedRef =
     weeks.find((week) => week.number === selectedNumber) ??
-    weeks.find((week) => week.number === currentWeek) ??
+    weeks.find((week) => week.number === focusWeek) ??
     weeks[0];
 
   if (!selectedRef) {
@@ -182,7 +217,7 @@ export default async function ScoresPage({
         <WeekSwitcher
           weeks={weekOptions}
           selectedWeek={week.number}
-          currentWeek={currentWeek}
+          currentWeek={focusWeek}
           basePath="/scores"
           allowFuture
         />

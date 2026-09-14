@@ -234,7 +234,7 @@ JaJa,DAL
 
 The pool has two commissioner-controlled modes. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). **This is shipped on `main`** (merged PR #10). Do not describe Real mode as “open PR #10” or “not shipped.”
 
-- **Real mode (use this for the season):** home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see the word “demo” or the `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Week 2 stays on Schedule / Pick week arrows.** Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Demo isolation ≠ hide Week 2.
+- **Real mode (use this for the season):** home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see the word “demo” or the `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Scores and Pick open on that friend’s current pick week** (Week 1 until their game starts, then Week 2). Browse every week on **Schedule**. Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Demo isolation ≠ hide Week 2.
 - **Demo mode (commissioner / testing):** practice account picker is visible. Demo copy is allowed. Same NFL weeks, including Week 2. Practice-seat sandbox picks are what stay isolated — not the schedule.
 
 A new empty database still **seeds in Demo mode**. After deploy, open **Admin** and tap **Real mode** if the home page still shows the practice picker.
@@ -278,6 +278,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 ### Scores & injuries (live on `main`)
 
+- **Scores** opens on the signed-in friend’s **current pick week** (same week Pick is focused on). Light week arrows stay; full browsing is on Schedule. Do **not** bounce Week 2 pickers back to live Week 1 on Scores — they already see that on Pick.
 - **Scores** (and Home / Pick / Schedule) refresh from ESPN while games are on. Finals auto-grade.
 - **Scores**, **Pick**, the **Board**, and **League** show ESPN team logos beside abbreviations (`Team.logoUrl` or the ESPN CDN). Marks are sized to read at a glance on a phone (second bump after [#43](https://github.com/triwithms/survive-sunday/pull/43), in [#49](https://github.com/triwithms/survive-sunday/pull/49)). Possession is a **🏈** plus a gold bar.
 - **Team pages** show ESPN’s public injury report (not official NFL). Compact Out / Doubtful / Q chips appear next to picks. Tap a **player name** on the roster or injury list for a detail page.

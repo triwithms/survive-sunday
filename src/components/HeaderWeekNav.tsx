@@ -6,8 +6,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Countdown } from "@/components/Countdown";
 import {
   adjacentWeeks,
+  defaultWeekForPath,
   parseWeekParam,
-  resolveSelectedWeekNumber,
+  resolvePageWeekNumber,
   weekNavForPath,
   type WeekNavOption,
 } from "@/lib/weeks";
@@ -104,7 +105,7 @@ export function HeaderWeekNav({
 }: {
   weeks: HeaderWeek[];
   currentWeek: number;
-  /** Default week on /pick when the URL has no ?week=. */
+  /** Default week on /pick and /scores when the URL has no ?week=. */
   pickActionWeek?: number;
   nextOpen?: NextOpenDeadline | null;
 }) {
@@ -115,14 +116,17 @@ export function HeaderWeekNav({
 
   const weekNumbers = weeks.map((week) => week.number);
   const requested = route ? parseWeekParam(searchParams.get("week")) : null;
-  const defaultWeek =
-    route?.basePath === "/pick" && pickActionWeek
-      ? pickActionWeek
-      : currentWeek;
-  const selectedWeek = resolveSelectedWeekNumber({
+  const defaultWeek = defaultWeekForPath({
+    basePath: route?.basePath ?? "",
+    poolCurrentWeek: currentWeek,
+    pickActionWeek,
+  });
+  const selectedWeek = resolvePageWeekNumber({
     requested,
     weekNumbers,
-    currentWeek: defaultWeek,
+    basePath: route?.basePath ?? "",
+    poolCurrentWeek: currentWeek,
+    pickActionWeek,
     allowFuture: route?.allowFuture ?? false,
   });
   const selected =

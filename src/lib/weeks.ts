@@ -14,6 +14,31 @@ export const WEEK_NAV_PATHS = {
 
 export type WeekNavPath = keyof typeof WEEK_NAV_PATHS;
 
+/** Pick and Scores open on that friend’s current pick week. */
+export function usesPlayerPickWeekDefault(basePath: string): boolean {
+  return basePath === "/pick" || basePath === "/scores";
+}
+
+/**
+ * Default week when the URL has no `?week=`.
+ * Pick / Scores: the signed-in user’s current pick week.
+ * Schedule / Home / Videos: the pool’s current board week.
+ */
+export function defaultWeekForPath({
+  basePath,
+  poolCurrentWeek,
+  pickActionWeek,
+}: {
+  basePath: string;
+  poolCurrentWeek: number;
+  pickActionWeek?: number;
+}): number {
+  if (usesPlayerPickWeekDefault(basePath) && pickActionWeek != null) {
+    return pickActionWeek;
+  }
+  return poolCurrentWeek;
+}
+
 export function parseWeekParam(
   raw: string | string[] | undefined | null
 ): number | null {
@@ -44,6 +69,33 @@ export function resolveSelectedWeekNumber({
   }
   if (exists(currentWeek)) return currentWeek;
   return weekNumbers[0] ?? currentWeek;
+}
+
+export function resolvePageWeekNumber({
+  requested,
+  weekNumbers,
+  basePath,
+  poolCurrentWeek,
+  pickActionWeek,
+  allowFuture = false,
+}: {
+  requested: number | null;
+  weekNumbers: number[];
+  basePath: string;
+  poolCurrentWeek: number;
+  pickActionWeek?: number;
+  allowFuture?: boolean;
+}): number {
+  return resolveSelectedWeekNumber({
+    requested,
+    weekNumbers,
+    currentWeek: defaultWeekForPath({
+      basePath,
+      poolCurrentWeek,
+      pickActionWeek,
+    }),
+    allowFuture,
+  });
 }
 
 /** Weeks the arrows / dropdown can land on. Matches WeekSwitcher. */
