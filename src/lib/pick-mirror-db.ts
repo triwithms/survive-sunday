@@ -2,21 +2,32 @@ import { prisma } from "./db";
 import { effectiveLockAt, parseUsedTeams, rebuildUsedTeams } from "./grading";
 import { schedulePickConfirmed } from "./notification-events";
 import {
+  bestRemainingRankedTeam,
   decideMirrorCopy,
+  decideRankedAutoPick,
+  isPickBackupMode,
   MIRROR_PICK_SOURCE,
+  PICK_BACKUP_MIRROR,
+  PICK_BACKUP_OFF,
+  RANKED_PICK_SOURCE,
+  resolvePickBackupMode,
+  type PickBackupMode,
 } from "./pick-mirror";
 import { isPlayerSeat } from "./roles";
 
 export const MIRROR_PICK_AUDIT = "pick_mirrored";
+export const RANKED_PICK_AUDIT = "pick_ranked_auto";
 export const MIRROR_PREF_AUDIT = "mirror_from_updated";
 
-export async function setMembershipMirrorFrom(args: {
+export async function setMembershipPickBackup(args: {
   poolId: string;
   membershipId: string;
+  mode: PickBackupMode;
   sourceMembershipId: string | null;
   actorId?: string | null;
 }): Promise<{
   membershipId: string;
+  pickBackup: PickBackupMode;
   mirrorFromMembershipId: string | null;
   mirrorFromNickname: string | null;
 }> {
@@ -34,7 +45,12 @@ export async function setMembershipMirrorFrom(args: {
 
   let sourceId: string | null = null;
   let sourceNickname: string | null = null;
-  if (args.sourceMembershipId) {
+  if (args.mode === PICK_BACKUP_MIRROR) {
+    if (!args.sourceMembershipId) {
+      throw Object.assign(new Error("Choose a player to copy from"), {
+        status: 400,
+      });
+    }
     if (args.sourceMembershipId === member.id) {
       throw Object.assign(new Error("Choose someone else to copy from"), {
         status: 400,
@@ -59,8 +75,11 @@ export async function setMembershipMirrorFrom(args: {
 
   const updated = await prisma.membership.update({
     where: { id: member.id },
-    data: { mirrorFromMembershipId: sourceId },
-    select: { id: true, mirrorFromMembershipId: true },
+    data: {
+      pickBackup: args.mode,
+      mirrorFromMembershipId: sourceId,
+    },
+    select: { id: true, pickBackup: true, mirrorFromMembershipId: true },
   });
 
   await prisma.auditLog.create({
@@ -71,8 +90,14 @@ export async function setMembershipMirrorFrom(args: {
       targetType: "membership",
       targetId: member.id,
       details: JSON.stringify({
-        from: member.mirrorFromMembershipId,
-        to: sourceId,
+        from: {
+          pickBackup: member.pickBackup,
+          mirrorFromMembershipId: member.mirrorFromMembershipId,
+        },
+        to: {
+          pickBackup: updated.pickBackup,
+          mirrorFromMembershipId: sourceId,
+        },
         sourceNickname,
       }),
     },
@@ -80,10 +105,29 @@ export async function setMembershipMirrorFrom(args: {
 
   return {
     membershipId: updated.id,
+    pickBackup: resolvePickBackupMode(
+      updated.pickBackup,
+      updated.mirrorFromMembershipId
+    ),
     mirrorFromMembershipId: updated.mirrorFromMembershipId,
     mirrorFromNickname: sourceNickname,
   };
 }
+
+/** @deprecated use setMembershipPickBackup */
+export async function setMembershipMirrorFrom(args: {
+  poolId: string;
+  membershipId: string;
+  sourceMembershipId: string | null;
+  actorId?: string | null;
+}) {
+  return setMembershipPickBackup({
+    ...args,
+    mode: args.sourceMembershipId ? PICK_BACKUP_MIRROR : PICK_BACKUP_OFF,
+  });
+}
+
+export { isPickBackupMode };
 
 export async function applyMirrorPicksForWeek(
   weekId: string,
@@ -109,101 +153,161 @@ export async function applyMirrorPicksForWeek(
 
   const lockAt = effectiveLockAt(week);
   const byId = new Map(week.pool.memberships.map((m) => [m.id, m]));
+  const ranks = await prisma.team.findMany({
+    select: { abbr: true, priorYearRank: true },
+  });
   const copied: string[] = [];
 
   for (const member of week.pool.memberships) {
     if (!isPlayerSeat(member)) continue;
-    if (!member.mirrorFromMembershipId) continue;
+    const mode = resolvePickBackupMode(
+      member.pickBackup,
+      member.mirrorFromMembershipId
+    );
+    if (mode === PICK_BACKUP_OFF) continue;
 
-    const source = byId.get(member.mirrorFromMembershipId) ?? null;
-    const sourcePick =
-      source?.picks.find(
-        (p) => p.source !== "missed" && p.teamAbbr && p.teamAbbr !== "MISS"
-      ) ?? null;
-    const sourceGame = sourcePick
-      ? week.games.find(
-          (g) =>
-            g.id === sourcePick.gameId ||
-            g.awayAbbr === sourcePick.teamAbbr ||
-            g.homeAbbr === sourcePick.teamAbbr
-        ) ?? null
-      : null;
     const ownPick = member.picks[0] ?? null;
-    const teamPlaying = Boolean(
-      sourcePick &&
-        week.games.some(
-          (g) =>
-            g.awayAbbr === sourcePick.teamAbbr ||
-            g.homeAbbr === sourcePick.teamAbbr
-        )
-    );
+    const usedTeams = parseUsedTeams(member.usedTeamsJson);
 
-    const decision = decideMirrorCopy({
-      now,
-      weekNumber: week.number,
-      weekLockAt: lockAt,
-      existingPick: ownPick,
-      sourceMembershipId: member.mirrorFromMembershipId,
-      memberId: member.id,
-      sourcePick: sourcePick
-        ? {
-            teamAbbr: sourcePick.teamAbbr,
-            gameKickoff: sourceGame?.kickoff ?? null,
-          }
-        : null,
-      usedTeams: parseUsedTeams(member.usedTeamsJson),
-      teamPlaying,
-      eliminated: member.status === "eliminated",
-    });
-    if (decision.action !== "copy") continue;
-
-    const game = week.games.find(
-      (g) =>
-        g.awayAbbr === decision.teamAbbr || g.homeAbbr === decision.teamAbbr
-    );
-    try {
-      await prisma.pick.create({
-        data: {
-          membershipId: member.id,
-          weekId: week.id,
-          teamAbbr: decision.teamAbbr,
-          gameId: game?.id ?? null,
-          source: MIRROR_PICK_SOURCE,
-          result: "pending",
+    if (mode === PICK_BACKUP_MIRROR) {
+      const source = byId.get(member.mirrorFromMembershipId ?? "") ?? null;
+      const sourcePick =
+        source?.picks.find(
+          (p) => p.source !== "missed" && p.teamAbbr && p.teamAbbr !== "MISS"
+        ) ?? null;
+      const sourceGame = sourcePick
+        ? week.games.find(
+            (g) =>
+              g.id === sourcePick.gameId ||
+              g.awayAbbr === sourcePick.teamAbbr ||
+              g.homeAbbr === sourcePick.teamAbbr
+          ) ?? null
+        : null;
+      const teamPlaying = Boolean(
+        sourcePick &&
+          week.games.some(
+            (g) =>
+              g.awayAbbr === sourcePick.teamAbbr ||
+              g.homeAbbr === sourcePick.teamAbbr
+          )
+      );
+      const decision = decideMirrorCopy({
+        now,
+        weekNumber: week.number,
+        weekLockAt: lockAt,
+        existingPick: ownPick,
+        sourceMembershipId: member.mirrorFromMembershipId,
+        memberId: member.id,
+        sourcePick: sourcePick
+          ? {
+              teamAbbr: sourcePick.teamAbbr,
+              gameKickoff: sourceGame?.kickoff ?? null,
+            }
+          : null,
+        usedTeams,
+        teamPlaying,
+        eliminated: member.status === "eliminated",
+      });
+      if (decision.action !== "copy") continue;
+      const wrote = await writeBackupPick({
+        member,
+        week,
+        teamAbbr: decision.teamAbbr,
+        source: MIRROR_PICK_SOURCE,
+        auditAction: MIRROR_PICK_AUDIT,
+        extra: {
+          fromMembershipId: member.mirrorFromMembershipId,
+          fromNickname: source?.nickname ?? null,
         },
       });
-    } catch {
+      if (wrote) copied.push(member.id);
       continue;
     }
 
-    await rebuildUsedTeams(member.id);
-    await prisma.auditLog.create({
-      data: {
-        poolId: week.poolId,
-        action: MIRROR_PICK_AUDIT,
-        targetType: "membership",
-        targetId: member.id,
-        details: JSON.stringify({
-          weekId: week.id,
-          weekNumber: week.number,
-          teamAbbr: decision.teamAbbr,
-          fromMembershipId: member.mirrorFromMembershipId,
-          fromNickname: source?.nickname ?? null,
-        }),
+    const best = bestRemainingRankedTeam({
+      games: week.games,
+      usedTeams,
+      ranks,
+      now,
+    });
+    const decision = decideRankedAutoPick({
+      now,
+      weekLockAt: lockAt,
+      existingPick: ownPick,
+      eliminated: member.status === "eliminated",
+      teamAbbr: best?.teamAbbr ?? null,
+    });
+    if (decision.action !== "copy") continue;
+    const wrote = await writeBackupPick({
+      member,
+      week,
+      teamAbbr: decision.teamAbbr,
+      source: RANKED_PICK_SOURCE,
+      auditAction: RANKED_PICK_AUDIT,
+      extra: {
+        ranking: "2025 prior-year composite (Pick: 2025 rank #N)",
+        priorYearRank: best?.priorYearRank ?? null,
       },
     });
-    schedulePickConfirmed({
-      user: member.user,
-      nickname: member.nickname,
-      weekNumber: week.number,
-      weekId: week.id,
-      teamAbbr: decision.teamAbbr,
-      changed: false,
-    });
-    copied.push(member.id);
+    if (wrote) copied.push(member.id);
   }
 
   return { copied };
+}
+
+async function writeBackupPick(args: {
+  member: {
+    id: string;
+    nickname: string;
+    user: { id: string; email: string | null; phoneE164?: string | null };
+  };
+  week: { id: string; poolId: string; number: number; games: { id: string; awayAbbr: string; homeAbbr: string }[] };
+  teamAbbr: string;
+  source: string;
+  auditAction: string;
+  extra: Record<string, unknown>;
+}): Promise<boolean> {
+  const game = args.week.games.find(
+    (g) => g.awayAbbr === args.teamAbbr || g.homeAbbr === args.teamAbbr
+  );
+  try {
+    await prisma.pick.create({
+      data: {
+        membershipId: args.member.id,
+        weekId: args.week.id,
+        teamAbbr: args.teamAbbr,
+        gameId: game?.id ?? null,
+        source: args.source,
+        result: "pending",
+      },
+    });
+  } catch {
+    return false;
+  }
+  await rebuildUsedTeams(args.member.id);
+  await prisma.auditLog.create({
+    data: {
+      poolId: args.week.poolId,
+      action: args.auditAction,
+      targetType: "membership",
+      targetId: args.member.id,
+      details: JSON.stringify({
+        weekId: args.week.id,
+        weekNumber: args.week.number,
+        teamAbbr: args.teamAbbr,
+        ...args.extra,
+      }),
+    },
+  });
+  schedulePickConfirmed({
+    user: args.member.user,
+    nickname: args.member.nickname,
+    weekNumber: args.week.number,
+    weekId: args.week.id,
+    teamAbbr: args.teamAbbr,
+    changed: false,
+  });
+  return true;
 }
 
 export async function applyMirrorPicksForActiveWeeks(

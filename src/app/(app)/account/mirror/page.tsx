@@ -6,6 +6,7 @@ import { getMembershipForUser } from "@/lib/session";
 import { isPlayerSeat } from "@/lib/roles";
 import { formatSeatLabel } from "@/lib/claim-seat";
 import { MirrorPicksForm } from "@/components/MirrorPicksForm";
+import { resolvePickBackupMode } from "@/lib/pick-mirror";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -49,14 +50,20 @@ export default async function MirrorPicksPage() {
           Pick backup
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Optional. If lock or that pick’s kickoff is within 30 minutes and you
-          still have no pick, we copy the player you choose (JaJa can copy
-          Gams). A pick you already submitted is never replaced.
+          Optional. Off by default. Copy another member’s pick (JaJa copies
+          Gams) if you still have none within 30 minutes, or auto-pick the
+          best remaining <strong>2025 rank</strong> team (same list as Pick)
+          within about 2 minutes of lock. A pick you already submitted is
+          never replaced.
         </p>
       </div>
       <section className="card-glass p-4">
         <MirrorPicksForm
           membershipId={me.id}
+          initialMode={resolvePickBackupMode(
+            me.pickBackup,
+            me.mirrorFromMembershipId
+          )}
           initialSourceId={me.mirrorFromMembershipId}
           options={others.map((m) => ({
             id: m.id,

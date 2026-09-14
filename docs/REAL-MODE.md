@@ -106,7 +106,7 @@ This cannot be undone. If you only wanted to hide the practice picker, tap **Rea
 
 Long Snapper → **John Stilo**, Steve → **Steve Venerus**, Gdogss → **Tony Gyuro**.
 
-Live roster also includes **Go Giants** (Carson Gama), **Pauli** (Paul Gama), and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Join seat is claimable (`jaja@survivesunday.demo`) and her Week 1 pick is **KC** (same as Gams). She is set to copy Gams’ pick if she still has none within 30 minutes of kickoff / lock.
+Live roster also includes **Go Giants** (Carson Gama), **Pauli** (Paul Gama), and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Join seat is claimable (`jaja@survivesunday.demo`) and her Week 1 pick is **KC** (same as Gams). She is set to copy Gams’ pick if she still has none within 30 minutes of kickoff / lock. Any player can instead auto-pick the best remaining **2025 rank** team (~2 minutes before lock) from Account or Admin → Roster.
 
 This is applied to the **live database** on deploy (and again when the site loads). Changing seed files alone is not enough.
 

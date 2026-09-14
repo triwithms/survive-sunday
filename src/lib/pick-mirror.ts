@@ -1,12 +1,43 @@
-import { week1PickChangeApplies } from "./pick-change";
+import { isGameStarted, week1PickChangeApplies } from "./pick-change";
 
 /** Copy a source member’s pick this far before the relevant deadline. */
 export const MIRROR_LEAD_MS = 30 * 60 * 1000;
+/** Auto-pick the best remaining 2025-rank team this far before week lock. */
+export const RANK_LEAD_MS = 2 * 60 * 1000;
+
+export const PICK_BACKUP_OFF = "off";
+export const PICK_BACKUP_MIRROR = "mirror";
+export const PICK_BACKUP_RANKED = "ranked";
+export type PickBackupMode =
+  | typeof PICK_BACKUP_OFF
+  | typeof PICK_BACKUP_MIRROR
+  | typeof PICK_BACKUP_RANKED;
 
 /** Pick.source value for auto-copied backup picks. */
 export const MIRROR_PICK_SOURCE = "mirrored";
+/** Pick.source value for auto 2025-rank backups. */
+export const RANKED_PICK_SOURCE = "ranked";
 
 const MISSED_TEAM = "MISS";
+
+export function isPickBackupMode(value: unknown): value is PickBackupMode {
+  return (
+    value === PICK_BACKUP_OFF ||
+    value === PICK_BACKUP_MIRROR ||
+    value === PICK_BACKUP_RANKED
+  );
+}
+
+/** Leftover mirrorFrom without pickBackup still means “copy from member.” */
+export function resolvePickBackupMode(
+  mode: string | null | undefined,
+  mirrorFromMembershipId: string | null | undefined
+): PickBackupMode {
+  if (mode === PICK_BACKUP_RANKED) return PICK_BACKUP_RANKED;
+  if (mode === PICK_BACKUP_MIRROR) return PICK_BACKUP_MIRROR;
+  if (mirrorFromMembershipId) return PICK_BACKUP_MIRROR;
+  return PICK_BACKUP_OFF;
+}
 
 export type MirrorSkipReason =
   | "no_source_set"
@@ -102,4 +133,79 @@ export function decideMirrorCopy(input: {
   }
 
   return { action: "copy", teamAbbr };
+}
+
+/** True from 2 minutes before week lock onward (including after). */
+export function isRankedWindowOpen(deadline: Date, now: Date): boolean {
+  return now.getTime() >= deadline.getTime() - RANK_LEAD_MS;
+}
+
+export type RankedTeam = { abbr: string; priorYearRank: number | null };
+export type RankedGame = {
+  awayAbbr: string;
+  homeAbbr: string;
+  kickoff?: Date | string | number | null;
+  status?: string | null;
+};
+
+/**
+ * Highest 2025 composite power rank still available (1 = strongest).
+ * Same ranking Pick shows as “2025 rank #N”. Skips used teams and byes.
+ * Prefers a game that has not started; then best remaining by rank.
+ */
+export function bestRemainingRankedTeam(input: {
+  games: RankedGame[];
+  usedTeams: string[];
+  ranks: RankedTeam[];
+  now: Date;
+}): { teamAbbr: string; priorYearRank: number | null } | null {
+  const used = new Set(input.usedTeams.map((t) => t.toUpperCase()));
+  const rankBy = new Map(
+    input.ranks.map((t) => [t.abbr.toUpperCase(), t.priorYearRank] as const)
+  );
+  const seen = new Set<string>();
+  const cands: { abbr: string; rank: number; started: boolean }[] = [];
+  for (const game of input.games) {
+    for (const raw of [game.awayAbbr, game.homeAbbr]) {
+      const abbr = raw.toUpperCase();
+      if (seen.has(abbr) || used.has(abbr)) continue;
+      seen.add(abbr);
+      cands.push({
+        abbr,
+        rank: rankBy.get(abbr) ?? 999,
+        started: isGameStarted(game, input.now),
+      });
+    }
+  }
+  cands.sort((a, b) => {
+    if (a.started !== b.started) return a.started ? 1 : -1;
+    if (a.rank !== b.rank) return a.rank - b.rank;
+    return a.abbr.localeCompare(b.abbr, "en-CA");
+  });
+  const best = cands[0];
+  if (!best) return null;
+  return {
+    teamAbbr: best.abbr,
+    priorYearRank: best.rank === 999 ? null : best.rank,
+  };
+}
+
+export function decideRankedAutoPick(input: {
+  now: Date;
+  weekLockAt: Date;
+  existingPick: MirrorExistingPick;
+  eliminated: boolean;
+  teamAbbr: string | null;
+}): MirrorDecision {
+  if (input.eliminated) return { action: "skip", reason: "eliminated" };
+  if (hasOwnPick(input.existingPick)) {
+    return { action: "skip", reason: "has_pick" };
+  }
+  if (!isRankedWindowOpen(input.weekLockAt, input.now)) {
+    return { action: "skip", reason: "too_early" };
+  }
+  if (!input.teamAbbr) {
+    return { action: "skip", reason: "team_not_playing" };
+  }
+  return { action: "copy", teamAbbr: input.teamAbbr };
 }

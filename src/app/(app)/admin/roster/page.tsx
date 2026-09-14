@@ -50,9 +50,9 @@ export default async function RosterPage() {
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           Nickname is what the board shows. Real name is the person behind it.
-          Fix either if it’s wrong. You can also set{" "}
-          <strong>If no pick within 30 min of kickoff, copy from</strong> (JaJa
-          copies Gams by default). Saves are audit-logged.
+          Fix either if it’s wrong. Set <strong>Pick backup</strong>: off,
+          copy from another member (JaJa → Gams), or auto 2025-rank team.
+          Saves are audit-logged.
         </p>
       </div>
 
@@ -65,6 +65,7 @@ export default async function RosterPage() {
           role: m.role,
           email: m.user.email,
           mirrorFromMembershipId: m.mirrorFromMembershipId,
+          pickBackup: m.pickBackup,
         }))}
         mirrorOptions={members
           .filter((m) => m.role !== "admin")

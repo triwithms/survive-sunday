@@ -20,7 +20,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - Survival board sort: **status → weeks survived → losses → same pick → same game → A–Z** — merged [PR #21](https://github.com/triwithms/survive-sunday/pull/21) / [PR #24](https://github.com/triwithms/survive-sunday/pull/24)
 - ESPN live scores + injuries; **League W-L syncs from ESPN** (not the demo `week2-standings` seed); no player-facing demo League copy in Real mode
 - Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **KC** (same as Gams). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
-- **Pick backup:** a member can copy another player’s pick if they still have none within **30 minutes** of that week’s lock (or, in Week 1, that pick’s kickoff). JaJa is set to copy from **Gams**. Server jobs (daily around 12:30 p.m. ET and 7:45 p.m. ET, plus lock/score sync) apply this — opening the app is not required.
+- **Pick backup:** Off by default. Copy another player within **30 minutes** of lock (JaJa → **Gams**), or auto-pick the best remaining **2025 rank** team (same `#N` list as Pick) within **~2 minutes**. Server jobs apply this — opening the app is not required.
 - **Week 1 pick-change until kickoff** — merged [PR #25](https://github.com/triwithms/survive-sunday/pull/25). Week 1: you can still change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock** (first kickoff).
 - Forgot password **code is on `main`**; codes will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). Password-reset codes are **not** gated by these prefs.
@@ -245,7 +245,7 @@ Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is 
 - **Forgot password?** on the sign-in page: we email (or text) a 6-digit code → new password → signed back in. This is **not** a code at every login. **Codes do not send until Resend keys are on Vercel** (section 4). That is still the group-invite blocker.
 - **Sign out:** header **Account** (top right) → **Sign out** (merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)). Also on Admin and Help.
 - **Notification preferences:** header **Account** → **Notification preferences**. Each friend chooses which emails they want. Missing-pick texts use the same Missing pick reminder switch. Password-reset codes always send when requested.
-- **Pick backup:** header **Account** → **Pick backup**. Choose another pool member. If you still have no pick within 30 minutes of lock (Week 1: that pick’s kickoff), we copy theirs. Commissioners can set the same thing on **Admin → Roster**. JaJa copies Gams by default.
+- **Pick backup:** header **Account** → **Pick backup**. Off, copy from a member (30 min), or auto best remaining **2025 rank** team (~2 min). Commissioners can set the same on **Admin → Roster**. JaJa copies Gams by default.
 
 The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` (click-by-click in [DEPLOY.md](../DEPLOY.md) §3b), then Redeploy. Optional Twilio for texts. Do not claim codes are sending until those keys are set and you have tested once. Demo-mode practice seats stay on `demo1234` — friends in Real mode never see that password.
 
@@ -389,7 +389,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | League W-L from ESPN (no demo leak) | live-standings merge (`538be1f`) | Real-mode League syncs ESPN W-L. Demo `week2-standings` seed is not shown to Real-mode friends. |
 | Week 1 pick-change until kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Week 1: change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock.** |
 | Notification preferences | [#29](https://github.com/triwithms/survive-sunday/pull/29) | Account → Notification preferences. Types: missing pick, pick saved/changed, results, you’re out / mulligan, pool notes (default on); live scores, injury notes (default off). Email via Resend. Missing-pick SMS follows the same switch. |
-| JaJa seat + pick backup | [#37](https://github.com/triwithms/survive-sunday/pull/37) | **JaJa (Jacquie Gama)** is on Join as claimable (`jaja@survivesunday.demo`), Week 1 **KC** with Gams. **Account → Pick backup** / Admin → Roster: copy another member’s pick if you still have none within 30 minutes of lock (Week 1: that game’s kickoff). Server jobs at 12:30 p.m. ET and 7:45 p.m. ET, plus lock/score sync. |
+| JaJa seat + pick backup | [#37](https://github.com/triwithms/survive-sunday/pull/37) | **JaJa (Jacquie Gama)** is on Join as claimable, Week 1 **KC**. Pick backup: off / copy-from-member (30 min; JaJa → Gams) / auto best remaining **2025 rank** team (~2 min). Same ranking Pick shows as 2025 rank #N. |
 
 ### Open — not on `main` yet
 
@@ -710,7 +710,7 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Real mode** | Season mode on `main` (merged PR #10). Hides the practice picker. Week 1 is the current pick week. Week 2 stays on the schedule (merged PR #22). |
 | **Demo / practice picker** | Home-page list of BM Boys nicknames with built-in `demo1234`. Visible only while **Demo mode** is on. Real-mode Help never mentions this password. |
 | **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname (e.g. **Pauli**, **Go Giants**, **JaJa**, Gams), sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
-| **Pick backup** | Optional: copy another member’s pick if you still have none within 30 minutes of lock / that game’s kickoff. JaJa copies Gams by default. |
+| **Pick backup** | Off, copy from a member (30 min), or auto best remaining 2025-rank team (~2 min) if you still have no pick. JaJa copies Gams. |
 | **OTP** | One-time code (the 6-digit Forgot-password screen on `main`, merged PR #7). Not a code at every login. Codes send only after Resend keys are on Vercel. |
 | **One-and-done** | Planned commissioner rule (PR #8): no free mulligan from a chosen week. One loss = out. **Not live.** |
 | **Transfer commissioner** | Planned Admin tool (PR #8): give Admin to another existing member. **Not live.** |

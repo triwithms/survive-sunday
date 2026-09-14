@@ -121,6 +121,9 @@ async function main() {
     if (!(await columnExists(prisma, "Membership", "mirrorFromMembershipId"))) {
       fail("Membership.mirrorFromMembershipId was not added");
     }
+    if (!(await columnExists(prisma, "Membership", "pickBackup"))) {
+      fail("Membership.pickBackup was not added");
+    }
 
     const row = await prisma.otpChallenge.create({
       data: {

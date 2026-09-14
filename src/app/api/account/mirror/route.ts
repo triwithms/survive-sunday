@@ -2,7 +2,15 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getMembershipForUser } from "@/lib/session";
-import { setMembershipMirrorFrom } from "@/lib/pick-mirror-db";
+import {
+  isPickBackupMode,
+  setMembershipPickBackup,
+} from "@/lib/pick-mirror-db";
+import {
+  PICK_BACKUP_MIRROR,
+  PICK_BACKUP_OFF,
+  resolvePickBackupMode,
+} from "@/lib/pick-mirror";
 import { isPlayerSeat } from "@/lib/roles";
 import { formatSeatLabel } from "@/lib/claim-seat";
 
@@ -35,6 +43,7 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     membershipId: me.id,
+    pickBackup: resolvePickBackupMode(me.pickBackup, me.mirrorFromMembershipId),
     mirrorFromMembershipId: me.mirrorFromMembershipId,
     mirrorFromNickname: source?.nickname ?? null,
     options,
@@ -50,7 +59,7 @@ export async function PATCH(req: Request) {
   if (!me || !isPlayerSeat(me)) {
     return NextResponse.json({ error: "No player seat" }, { status: 403 });
   }
-  let body: { sourceMembershipId?: unknown };
+  let body: { mode?: unknown; sourceMembershipId?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -63,13 +72,18 @@ export async function PATCH(req: Request) {
       : typeof raw === "string"
         ? raw
         : null;
-  if (raw !== null && raw !== "" && raw !== undefined && !sourceMembershipId) {
+  let mode = isPickBackupMode(body.mode) ? body.mode : null;
+  if (!mode) {
+    mode = sourceMembershipId ? PICK_BACKUP_MIRROR : PICK_BACKUP_OFF;
+  }
+  if (mode === PICK_BACKUP_MIRROR && !sourceMembershipId) {
     return NextResponse.json({ error: "Choose a player to copy from" }, { status: 400 });
   }
   try {
-    const updated = await setMembershipMirrorFrom({
+    const updated = await setMembershipPickBackup({
       poolId: me.poolId,
       membershipId: me.id,
+      mode,
       sourceMembershipId,
       actorId: session.user.id,
     });

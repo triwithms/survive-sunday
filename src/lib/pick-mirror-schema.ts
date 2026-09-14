@@ -32,5 +32,15 @@ export async function ensurePickMirrorColumn(prisma: SchemaClient) {
         ON DELETE SET NULL ON UPDATE CASCADE
     `);
   }
-  console.log("[ensure-db] Membership.mirrorFromMembershipId ready");
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Membership"
+      ADD COLUMN IF NOT EXISTS "pickBackup" TEXT NOT NULL DEFAULT 'off'
+  `);
+  await prisma.$executeRawUnsafe(`
+    UPDATE "Membership"
+    SET "pickBackup" = 'mirror'
+    WHERE "mirrorFromMembershipId" IS NOT NULL
+      AND ("pickBackup" IS NULL OR "pickBackup" = 'off')
+  `);
+  console.log("[ensure-db] Membership.mirrorFromMembershipId + pickBackup ready");
 }

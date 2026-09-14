@@ -1,6 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import {
+  PICK_BACKUP_MIRROR,
+  PICK_BACKUP_OFF,
+  PICK_BACKUP_RANKED,
+  type PickBackupMode,
+} from "@/lib/pick-mirror";
 
 export type MirrorOption = {
   id: string;
@@ -10,23 +16,31 @@ export type MirrorOption = {
 
 export function MirrorPicksForm({
   membershipId,
+  initialMode,
   initialSourceId,
   options,
   saveAsAdmin,
 }: {
   membershipId: string;
+  initialMode: PickBackupMode;
   initialSourceId: string | null;
   options: MirrorOption[];
   saveAsAdmin?: boolean;
 }) {
+  const [mode, setMode] = useState<PickBackupMode>(initialMode);
   const [sourceId, setSourceId] = useState(initialSourceId ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
 
-  const dirty = sourceId !== (initialSourceId ?? "");
+  const dirty =
+    mode !== initialMode || sourceId !== (initialSourceId ?? "");
 
   async function save() {
+    if (mode === PICK_BACKUP_MIRROR && !sourceId) {
+      setError("Choose a player to copy from");
+      return;
+    }
     setBusy(true);
     setError("");
     setSaved(false);
@@ -40,9 +54,15 @@ export function MirrorPicksForm({
           saveAsAdmin
             ? {
                 membershipId,
-                sourceMembershipId: sourceId || null,
+                mode,
+                sourceMembershipId:
+                  mode === PICK_BACKUP_MIRROR ? sourceId || null : null,
               }
-            : { sourceMembershipId: sourceId || null }
+            : {
+                mode,
+                sourceMembershipId:
+                  mode === PICK_BACKUP_MIRROR ? sourceId || null : null,
+              }
         ),
       });
       const data = (await res.json()) as { error?: string };
@@ -60,37 +80,86 @@ export function MirrorPicksForm({
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm">
-        <span className="text-[var(--text-muted)]">
-          If no pick within 30 minutes of kickoff, copy from
-        </span>
-        <select
-          value={sourceId}
-          onChange={(e) => {
-            setSourceId(e.target.value);
-            setSaved(false);
-          }}
-          disabled={busy}
-          className="mt-1 w-full"
-          aria-label="Mirror picks from"
-          data-testid={
-            saveAsAdmin
-              ? `admin-mirror-${membershipId}`
-              : "account-mirror-from"
-          }
-        >
-          <option value="">Off — I’ll pick myself</option>
-          {options.map((opt) => (
-            <option key={opt.id} value={opt.id}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-      </label>
+      <fieldset className="space-y-2">
+        <legend className="text-sm text-[var(--text-muted)]">
+          If you still have no pick when time is almost up
+        </legend>
+        <label className="flex items-start gap-2 text-sm">
+          <input
+            type="radio"
+            name={`backup-${membershipId}`}
+            checked={mode === PICK_BACKUP_OFF}
+            onChange={() => {
+              setMode(PICK_BACKUP_OFF);
+              setSaved(false);
+            }}
+            disabled={busy}
+            data-testid={saveAsAdmin ? undefined : "backup-off"}
+          />
+          <span>Off — I’ll pick myself</span>
+        </label>
+        <label className="flex items-start gap-2 text-sm">
+          <input
+            type="radio"
+            name={`backup-${membershipId}`}
+            checked={mode === PICK_BACKUP_MIRROR}
+            onChange={() => {
+              setMode(PICK_BACKUP_MIRROR);
+              setSaved(false);
+            }}
+            disabled={busy}
+            data-testid={saveAsAdmin ? undefined : "backup-mirror"}
+          />
+          <span>Copy from a pool member if no pick within 30 minutes</span>
+        </label>
+        {mode === PICK_BACKUP_MIRROR && (
+          <select
+            value={sourceId}
+            onChange={(e) => {
+              setSourceId(e.target.value);
+              setSaved(false);
+            }}
+            disabled={busy}
+            className="ml-6 w-[calc(100%-1.5rem)]"
+            aria-label="Mirror picks from"
+            data-testid={
+              saveAsAdmin
+                ? `admin-mirror-${membershipId}`
+                : "account-mirror-from"
+            }
+          >
+            <option value="">Choose a player…</option>
+            {options.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        )}
+        <label className="flex items-start gap-2 text-sm">
+          <input
+            type="radio"
+            name={`backup-${membershipId}`}
+            checked={mode === PICK_BACKUP_RANKED}
+            onChange={() => {
+              setMode(PICK_BACKUP_RANKED);
+              setSaved(false);
+            }}
+            disabled={busy}
+            data-testid={saveAsAdmin ? undefined : "backup-ranked"}
+          />
+          <span>
+            Auto-pick the best remaining <strong>2025 rank</strong> team if no
+            pick within 2 minutes
+          </span>
+        </label>
+      </fieldset>
       <p className="text-xs text-[var(--text-muted)]">
-        Only copies when this seat still has no pick. It never overwrites a pick
-        you already made. The deadline is that week’s lock (first kickoff), or
-        in Week 1 the source pick’s game kickoff.
+        Never overwrites a pick you already made. Copy-from uses that member’s
+        team 30 minutes before lock (Week 1: that pick’s kickoff). Ranked uses
+        the same <strong>2025 rank #N</strong> list as Pick (1 = strongest),
+        skipping teams you’ve already used and bye weeks, starting 2 minutes
+        before week lock.
       </p>
       {error && (
         <p className="text-crimson-400 text-sm" role="alert">
@@ -99,8 +168,7 @@ export function MirrorPicksForm({
       )}
       {saved && (
         <p className="text-field-400 text-sm" data-testid="mirror-saved">
-          Saved. We’ll copy only if there’s still no pick in that 30-minute
-          window.
+          Saved.
         </p>
       )}
       <button

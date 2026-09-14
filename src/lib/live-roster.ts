@@ -207,9 +207,16 @@ async function ensureOneLiveSeat(
       if (!current) {
         await db.membership.update({
           where: { id: membership.id },
-          data: { mirrorFromMembershipId: source.id },
+          data: {
+            pickBackup: "mirror",
+            mirrorFromMembershipId: source.id,
+          },
         });
-        membership = { ...membership, mirrorFromMembershipId: source.id };
+        membership = {
+          ...membership,
+          pickBackup: "mirror",
+          mirrorFromMembershipId: source.id,
+        };
         result.mirrorSet = true;
       }
     }

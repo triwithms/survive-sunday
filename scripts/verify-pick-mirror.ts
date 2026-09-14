@@ -5,11 +5,16 @@
  */
 import assert from "node:assert/strict";
 import {
+  bestRemainingRankedTeam,
   decideMirrorCopy,
+  decideRankedAutoPick,
   hasOwnPick,
   isMirrorWindowOpen,
+  isRankedWindowOpen,
   MIRROR_LEAD_MS,
+  RANK_LEAD_MS,
   relevantMirrorDeadline,
+  resolvePickBackupMode,
 } from "../src/lib/pick-mirror";
 import {
   isPendingPracticeEmail,
@@ -154,6 +159,63 @@ assert.equal(
   isSeatClaimed("jaja@pending.survivesunday.local"),
   true,
   "pending.local falsely looks claimed — never use it for JaJa"
+);
+
+assert.equal(resolvePickBackupMode(null, null), "off");
+assert.equal(resolvePickBackupMode("off", "gams"), "mirror");
+assert.equal(resolvePickBackupMode("mirror", "gams"), "mirror");
+assert.equal(resolvePickBackupMode("ranked", null), "ranked");
+
+const t2lock = new Date(weekLock.getTime() - RANK_LEAD_MS);
+const t2early = new Date(weekLock.getTime() - RANK_LEAD_MS - 1);
+assert.equal(isRankedWindowOpen(weekLock, t2lock), true);
+assert.equal(isRankedWindowOpen(weekLock, t2early), false);
+
+const best = bestRemainingRankedTeam({
+  now: t2lock,
+  usedTeams: ["KC"],
+  ranks: [
+    { abbr: "KC", priorYearRank: 1 },
+    { abbr: "PHI", priorYearRank: 2 },
+    { abbr: "DET", priorYearRank: 5 },
+    { abbr: "LAC", priorYearRank: 8 },
+  ],
+  games: [
+    { awayAbbr: "KC", homeAbbr: "PHI", status: "scheduled" },
+    { awayAbbr: "DET", homeAbbr: "LAC", status: "scheduled" },
+  ],
+});
+assert.equal(best?.teamAbbr, "PHI", "skip used KC; PHI is next-best 2025 rank");
+
+assert.deepEqual(
+  decideRankedAutoPick({
+    now: t2lock,
+    weekLockAt: weekLock,
+    existingPick: null,
+    eliminated: false,
+    teamAbbr: "PHI",
+  }),
+  { action: "copy", teamAbbr: "PHI" }
+);
+assert.deepEqual(
+  decideRankedAutoPick({
+    now: t2early,
+    weekLockAt: weekLock,
+    existingPick: null,
+    eliminated: false,
+    teamAbbr: "PHI",
+  }),
+  { action: "skip", reason: "too_early" }
+);
+assert.deepEqual(
+  decideRankedAutoPick({
+    now: t2lock,
+    weekLockAt: weekLock,
+    existingPick: { source: "user", teamAbbr: "DET" },
+    eliminated: false,
+    teamAbbr: "PHI",
+  }),
+  { action: "skip", reason: "has_pick" }
 );
 
 console.log("verify-pick-mirror OK");

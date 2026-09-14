@@ -113,8 +113,10 @@ model Membership {
   losses            Int              @default(0)
   weeksSurvived     Int              @default(0)
   usedTeamsJson     String           @default("[]") // JSON string[] of abbrs
-  /// If set, copy that member’s pick when this seat still has none
-  /// within 30 minutes of the relevant kickoff / week lock.
+  /// off | mirror | ranked. Default off. JaJa uses mirror (Gams).
+  pickBackup        String           @default("off")
+  /// If pickBackup=mirror, copy that member’s pick when this seat still
+  /// has none within 30 minutes of the relevant kickoff / week lock.
   mirrorFromMembershipId String?
   createdAt         DateTime         @default(now())
   pool              Pool             @relation(fields: [poolId], references: [id], onDelete: Cascade)
