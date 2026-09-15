@@ -1,4 +1,8 @@
-import { sanitizeGameOdds } from "@/lib/odds";
+import {
+  formatSignedSpread,
+  formatSpreadPoints,
+  sanitizeGameOdds,
+} from "@/lib/odds";
 
 /** Shared helpers for prior-year rank, standings, and favourite display (en-CA). */
 
@@ -62,32 +66,31 @@ export function formatCurrentStanding(s: StandingBits | null | undefined): strin
   return place ? `${rec} · ${place}` : rec;
 }
 
+export const PICKEM_LABEL = "Even (pick'em)";
+
 export type FavouriteInfo = {
-  abbr: string;
+  /** Favoured team, or null when ESPN lists a pick'em. */
+  abbr: string | null;
   spread: number;
-  /** e.g. `KC favoured by 3.5` or `even` */
+  /** Compact line e.g. `KC -3.5` or `PK`. */
   line: string;
-  /** e.g. `KC favoured by 3.5` or `Even (pick'em)` */
+  /** Plain-language copy e.g. `KC favoured by 3.5` or `Even (pick'em)`. */
   label: string;
 };
 
-function formatMargin(spread: number): string {
-  const abs = Math.abs(Math.round(spread * 10) / 10);
-  return Number.isInteger(abs) ? String(abs) : abs.toFixed(1);
+function pickemInfo(): FavouriteInfo {
+  return { abbr: null, spread: 0, line: "PK", label: PICKEM_LABEL };
 }
 
-function favouriteCopy(abbr: string, signedSpread: number): FavouriteInfo {
-  const rounded = Math.round(signedSpread * 10) / 10;
-  if (rounded === 0) {
-    return {
-      abbr: "",
-      spread: 0,
-      line: "even",
-      label: "Even (pick'em)",
-    };
-  }
-  const phrase = `${abbr} favoured by ${formatMargin(rounded)}`;
-  return { abbr, spread: signedSpread, line: phrase, label: phrase };
+function favouredInfo(abbr: string, spread: number): FavouriteInfo {
+  if (spread === 0) return pickemInfo();
+  const signed = spread < 0 ? spread : -Math.abs(spread);
+  return {
+    abbr,
+    spread: signed,
+    line: `${abbr} ${formatSignedSpread(signed)}`,
+    label: `${abbr} favoured by ${formatSpreadPoints(signed)}`,
+  };
 }
 
 export function resolveFavourite(opts: {
@@ -102,20 +105,15 @@ export function resolveFavourite(opts: {
   const odds = sanitizeGameOdds(opts);
   const spreadHome = odds.spreadHome;
   const spreadAway = odds.spreadAway;
-  if (spreadHome != null && !Number.isNaN(Number(spreadHome)) && spreadHome < 0) {
-    return favouriteCopy(homeAbbr, spreadHome);
-  }
-  if (spreadAway != null && !Number.isNaN(Number(spreadAway)) && spreadAway < 0) {
-    return favouriteCopy(awayAbbr, spreadAway);
-  }
   if (spreadHome != null && !Number.isNaN(Number(spreadHome))) {
-    if (spreadHome === 0) return favouriteCopy("", 0);
-    if (spreadHome > 0) {
-      return favouriteCopy(awayAbbr, -spreadHome);
-    }
+    if (spreadHome === 0) return pickemInfo();
+    if (spreadHome < 0) return favouredInfo(homeAbbr, spreadHome);
+    return favouredInfo(awayAbbr, -spreadHome);
   }
-  if (spreadAway != null && !Number.isNaN(Number(spreadAway)) && spreadAway === 0) {
-    return favouriteCopy("", 0);
+  if (spreadAway != null && !Number.isNaN(Number(spreadAway))) {
+    if (spreadAway === 0) return pickemInfo();
+    if (spreadAway < 0) return favouredInfo(awayAbbr, spreadAway);
+    return favouredInfo(homeAbbr, -spreadAway);
   }
   return null;
 }

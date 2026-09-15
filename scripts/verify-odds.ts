@@ -6,10 +6,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { resolveFavourite } from "../src/lib/matchup-meta";
+import { PICKEM_LABEL, resolveFavourite } from "../src/lib/matchup-meta";
 import {
   formatSignedSpread,
   formatSpreadOrDash,
+  formatSpreadPoints,
   isPlaceholderOdds,
   lookupSeedOdds,
   parseEspnCompetitionOdds,
@@ -48,7 +49,7 @@ assert.equal(
     ...PLACEHOLDER_ODDS,
   }),
   null,
-  "placeholder must not render SEA favoured by 3"
+  "placeholder must not render a fake SEA favoured-by line"
 );
 
 const missing = resolveSeedOdds(undefined);
@@ -74,6 +75,9 @@ assert.equal(parseSignedNumber("PK"), 0);
 assert.equal(formatSignedSpread(-4.5), "-4.5");
 assert.equal(formatSignedSpread(-3), "-3");
 assert.equal(formatSignedSpread(3.5), "+3.5");
+assert.equal(formatSignedSpread(0), "PK");
+assert.equal(formatSpreadPoints(-4.5), "4.5");
+assert.equal(formatSpreadPoints(3), "3");
 assert.equal(formatSpreadOrDash(null), "—");
 
 assert.deepEqual(
@@ -186,7 +190,7 @@ const favBuf = resolveFavourite({
   ...bufAtDet!,
 });
 assert.equal(favBuf?.abbr, "BUF");
-assert.equal(favBuf?.line, "BUF favoured by 4.5");
+assert.equal(favBuf?.line, "BUF -4.5");
 assert.equal(favBuf?.label, "BUF favoured by 4.5");
 
 const seaClose = parseEspnSummaryOdds({
@@ -316,6 +320,35 @@ assert.equal(
   })?.label,
   "Even (pick'em)",
   "a real ESPN pick'em shows even, not a minus spread"
+);
+
+const pickem = resolveFavourite({
+  homeAbbr: "NYJ",
+  awayAbbr: "NYG",
+  spreadHome: 0,
+  spreadAway: 0,
+});
+assert.equal(pickem?.label, PICKEM_LABEL);
+assert.equal(pickem?.abbr, null);
+assert.equal(pickem?.line, "PK");
+
+const pickemAwayOnly = resolveFavourite({
+  homeAbbr: "NYJ",
+  awayAbbr: "NYG",
+  spreadHome: null,
+  spreadAway: 0,
+});
+assert.equal(pickemAwayOnly?.label, PICKEM_LABEL);
+
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "NYJ",
+    awayAbbr: "NYG",
+    spreadHome: null,
+    spreadAway: null,
+  }),
+  null,
+  "missing ESPN line stays hidden — never invent a favourite or pick'em"
 );
 
 console.log("verify-odds OK");
