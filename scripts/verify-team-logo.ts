@@ -85,7 +85,9 @@ const poolSrc = fs.readFileSync(
   "utf8"
 );
 assert.match(poolSrc, /TeamLogo/);
-assert.match(poolSrc, /TEAM_LOGO_SIZE\.featured/);
+assert.match(poolSrc, /TEAM_LOGO_SIZE\.hero/);
+assert.equal(poolSrc.includes("TEAM_LOGO_SIZE.compact"), false);
+assert.equal(poolSrc.includes("TEAM_LOGO_SIZE.row"), false);
 
 const scheduleSrc = fs.readFileSync(
   path.join(process.cwd(), "src/app/(app)/schedule/page.tsx"),

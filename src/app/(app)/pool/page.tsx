@@ -37,7 +37,8 @@ import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { HomeVideosTeaser } from "@/components/WeeklyVideosPanel";
 import { teamLogoUrl } from "@/lib/espn-teams";
-import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
+import { TeamLogo } from "@/components/TeamLogo";
+import { TEAM_LOGO_SIZE } from "@/lib/team-logo-size";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -271,11 +272,13 @@ export default async function PoolPage({
         {myPick ? (
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
-              <TeamLogo
-                abbr={myPick.teamAbbr}
-                logoUrl={teamLogoUrl(myPick.teamAbbr, myTeam?.logoUrl)}
-                size={TEAM_LOGO_SIZE.featured}
-              />
+              <div className="shrink-0">
+                <TeamLogo
+                  abbr={myPick.teamAbbr}
+                  logoUrl={teamLogoUrl(myPick.teamAbbr, myTeam?.logoUrl)}
+                  size={TEAM_LOGO_SIZE.hero}
+                />
+              </div>
               <div className="min-w-0">
                 <p className="text-xl font-semibold text-gold-400">
                   {myPick.teamAbbr}
