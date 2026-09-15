@@ -10,6 +10,7 @@ import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
 import { scheduleScoreUpdate } from "@/lib/notification-events";
 import { formatEspnSituation } from "@/lib/game-display";
 import { syncOddsFromEspnSnapshots } from "@/lib/espn-odds";
+import { parseEspnCompetitionOdds, type GameOdds } from "@/lib/odds";
 
 /** ESPN → app team abbreviation. */
 export function fromEspnAbbr(abbr: string): string {
@@ -28,6 +29,7 @@ export type EspnGameSnapshot = {
   timeoutsAway: number | null;
   timeoutsHome: number | null;
   detail: string | null;
+  odds: GameOdds | null;
 };
 
 type EspnCompetitor = {
@@ -51,6 +53,7 @@ type EspnEvent = {
   id?: string;
   competitions?: Array<{
     competitors?: EspnCompetitor[];
+    odds?: unknown;
     situation?: EspnSituation;
     status?: {
       displayClock?: string;
@@ -141,6 +144,8 @@ export async function fetchEspnWeekScoreboard(
     const away = by.get("away");
     const home = by.get("home");
     if (!away || !home) continue;
+    const awayAbbr = fromEspnAbbr(away.team.abbreviation);
+    const homeAbbr = fromEspnAbbr(home.team.abbreviation);
     const scoreAway =
       away.score != null && away.score !== "" ? Number(away.score) : null;
     const scoreHome =
@@ -155,8 +160,8 @@ export async function fetchEspnWeekScoreboard(
         : null;
     out.push({
       eventId: event.id ? String(event.id) : null,
-      awayAbbr: fromEspnAbbr(away.team.abbreviation),
-      homeAbbr: fromEspnAbbr(home.team.abbreviation),
+      awayAbbr,
+      homeAbbr,
       status,
       scoreAway: Number.isFinite(scoreAway as number) ? scoreAway : null,
       scoreHome: Number.isFinite(scoreHome as number) ? scoreHome : null,
@@ -171,6 +176,7 @@ export async function fetchEspnWeekScoreboard(
       timeoutsAway,
       timeoutsHome,
       detail: type?.detail || type?.shortDetail || null,
+      odds: parseEspnCompetitionOdds(comp?.odds, homeAbbr, awayAbbr),
     });
   }
   scoreboardCache = { key, at: now, data: out };

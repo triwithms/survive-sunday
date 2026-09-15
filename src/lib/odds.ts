@@ -27,8 +27,16 @@ export type SeedOddsInput = {
 };
 
 function finiteOrNull(n: unknown): number | null {
-  if (typeof n !== "number" || !Number.isFinite(n)) return null;
-  return n;
+  if (typeof n === "number") return Number.isFinite(n) ? n : null;
+  if (typeof n === "string") {
+    const v = Number(n.trim().replace(/^\+/, ""));
+    return Number.isFinite(v) ? v : null;
+  }
+  if (n != null && typeof n === "object") {
+    const coerced = Number(n);
+    if (Number.isFinite(coerced)) return coerced;
+  }
+  return null;
 }
 
 function finiteIntOrNull(n: unknown): number | null {
@@ -227,4 +235,70 @@ export function parseEspnSummaryOdds(
 ): GameOdds | null {
   if (!payload) return null;
   return parseEspnPickcenter(payload.pickcenter) ?? parseEspnPickcenter(payload.odds);
+}
+
+function oddsAbbr(abbr: string): string {
+  const u = abbr.trim().toUpperCase();
+  if (u === "WSH" || u === "WFT") return "WAS";
+  if (u === "JAC") return "JAX";
+  if (u === "LA") return "LAR";
+  return u;
+}
+
+/**
+ * ESPN `details` like `BUF -4.5` / `CAR -2.5` / `NE PK`.
+ * Maps onto home/away spreads — never guesses a line.
+ */
+export function parseEspnOddsDetails(
+  details: string | null | undefined,
+  homeAbbr: string,
+  awayAbbr: string
+): { spreadHome: number; spreadAway: number } | null {
+  if (!details) return null;
+  const m = details.trim().match(/^([A-Za-z]{2,3})\s+(\S+)$/);
+  if (!m) return null;
+  const spread = parseSignedNumber(m[2]);
+  if (spread == null) return null;
+  const favAbbr = oddsAbbr(m[1]);
+  const home = oddsAbbr(homeAbbr);
+  const away = oddsAbbr(awayAbbr);
+  if (favAbbr === home) return { spreadHome: spread, spreadAway: -spread };
+  if (favAbbr === away) return { spreadAway: spread, spreadHome: -spread };
+  return null;
+}
+
+export function hasUsableOdds(o: GameOdds | null | undefined): boolean {
+  if (!o) return false;
+  return (
+    o.spreadHome != null ||
+    o.spreadAway != null ||
+    o.mlHome != null ||
+    o.mlAway != null
+  );
+}
+
+/**
+ * Scoreboard `competitions[0].odds` (already on the week scoreboard).
+ * Prefer this over a per-game summary fetch so Schedule/Pick can show
+ * lines without 16 extra ESPN round-trips.
+ */
+export function parseEspnCompetitionOdds(
+  oddsItems: unknown,
+  homeAbbr: string,
+  awayAbbr: string
+): GameOdds | null {
+  const parsed = parseEspnPickcenter(oddsItems);
+  if (parsed && (parsed.spreadHome != null || parsed.spreadAway != null)) {
+    return parsed;
+  }
+  const list = Array.isArray(oddsItems) ? oddsItems : [];
+  const item = list[0] as { details?: string } | undefined;
+  const fromDetails = parseEspnOddsDetails(item?.details, homeAbbr, awayAbbr);
+  if (!fromDetails) return parsed;
+  return sanitizeGameOdds({
+    spreadHome: fromDetails.spreadHome,
+    spreadAway: fromDetails.spreadAway,
+    mlHome: parsed?.mlHome ?? null,
+    mlAway: parsed?.mlAway ?? null,
+  });
 }

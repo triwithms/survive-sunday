@@ -322,6 +322,22 @@ export function formatScoreLine(game: GameScoreBits): string | null {
   return game.note || "Final";
 }
 
+/**
+ * Schedule / Pick list line: kickoff (caller) or LIVE/Final score.
+ * No TV network, quarter, clock, or down-distance — those stay on Scores.
+ */
+export function formatMatchupListLine(game: GameScoreBits): string | null {
+  const live = isLiveGame(game.status);
+  const final = isFinalGame(game.status);
+  if (!live && !final) return null;
+  const scored =
+    game.scoreAway != null && game.scoreHome != null
+      ? `${game.scoreAway}–${game.scoreHome}`
+      : null;
+  if (live) return scored ? `LIVE ${scored}` : "LIVE";
+  return scored ? `Final ${scored}` : "Final";
+}
+
 export type InjuryCountBits = {
   out: number;
   doubtful: number;

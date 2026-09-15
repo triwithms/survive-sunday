@@ -3,6 +3,7 @@ import type { PrismaClient } from "@prisma/client";
 import { fetchEspnJson } from "@/lib/espn";
 import {
   emptyOdds,
+  hasUsableOdds,
   isPlaceholderOdds,
   parseEspnSummaryOdds,
   sanitizeGameOdds,
@@ -29,6 +30,8 @@ export type OddsSnapshot = {
   eventId: string | null;
   awayAbbr: string;
   homeAbbr: string;
+  /** Already parsed from the week scoreboard when ESPN included a line. */
+  odds?: GameOdds | null;
 };
 
 function matchKey(away: string, home: string) {
@@ -85,8 +88,33 @@ async function mapPool<T, R>(
   return out;
 }
 
+async function writeOdds(
+  db: PrismaClient,
+  game: OddsGameRow,
+  next: GameOdds
+): Promise<boolean> {
+  const odds = sanitizeGameOdds(next);
+  if (!hasUsableOdds(odds) || !oddsChanged(game, odds)) return false;
+  await db.game.update({
+    where: { id: game.id },
+    data: {
+      spreadHome: odds.spreadHome,
+      spreadAway: odds.spreadAway,
+      mlHome: odds.mlHome,
+      mlAway: odds.mlAway,
+    },
+  });
+  game.spreadHome = odds.spreadHome;
+  game.spreadAway = odds.spreadAway;
+  game.mlHome = odds.mlHome;
+  game.mlAway = odds.mlAway;
+  return true;
+}
+
 /**
- * Fill Game spread/ML from ESPN pickcenter when the scoreboard has an event id.
+ * Fill Game spread/ML from the ESPN week scoreboard when it already has a line.
+ * Per-game summary is only a fallback for still-blank rows (avoids 16 extra
+ * ESPN calls that often time out before Schedule/Pick can show favourites).
  * Placeholder fake -3 rows are cleared first. ESPN failures stay blank.
  */
 export async function syncOddsFromEspnSnapshots(
@@ -99,10 +127,10 @@ export async function syncOddsFromEspnSnapshots(
   );
 
   let updated = 0;
-  const cleared: OddsGameRow[] = [];
+  const working: OddsGameRow[] = [];
   for (const game of games) {
     if (!isPlaceholderOdds(game)) {
-      cleared.push(game);
+      working.push({ ...game });
       continue;
     }
     await db.game.update({
@@ -110,22 +138,23 @@ export async function syncOddsFromEspnSnapshots(
       data: emptyOdds(),
     });
     updated += 1;
-    cleared.push({
+    working.push({
       ...game,
       ...emptyOdds(),
     });
   }
 
-  const now = Date.now();
+  for (const game of working) {
+    const snap = byMatch.get(matchKey(game.awayAbbr, game.homeAbbr));
+    if (!snap?.odds) continue;
+    if (await writeOdds(db, game, snap.odds)) updated += 1;
+  }
+
   const jobs: Array<{ game: OddsGameRow; eventId: string }> = [];
-  for (const game of cleared) {
+  for (const game of working) {
+    if (game.spreadHome != null || game.spreadAway != null) continue;
     const snap = byMatch.get(matchKey(game.awayAbbr, game.homeAbbr));
     if (!snap?.eventId) continue;
-    const missing = game.spreadHome == null && game.spreadAway == null;
-    const upcoming = game.status === "scheduled";
-    const hit = oddsByEvent.get(snap.eventId);
-    const cacheFresh = Boolean(hit && now - hit.at < ODDS_TTL_MS);
-    if (!missing && (!upcoming || cacheFresh)) continue;
     jobs.push({ game, eventId: snap.eventId });
   }
   if (jobs.length === 0) return { updated, fetched: 0 };
@@ -137,26 +166,7 @@ export async function syncOddsFromEspnSnapshots(
 
   for (const row of fetched) {
     if (!row.odds) continue;
-    const next = sanitizeGameOdds(row.odds);
-    if (
-      next.spreadHome == null &&
-      next.spreadAway == null &&
-      next.mlHome == null &&
-      next.mlAway == null
-    ) {
-      continue;
-    }
-    if (!oddsChanged(row.game, next)) continue;
-    await db.game.update({
-      where: { id: row.game.id },
-      data: {
-        spreadHome: next.spreadHome,
-        spreadAway: next.spreadAway,
-        mlHome: next.mlHome,
-        mlAway: next.mlAway,
-      },
-    });
-    updated += 1;
+    if (await writeOdds(db, row.game, row.odds)) updated += 1;
   }
   return { updated, fetched: jobs.length };
 }

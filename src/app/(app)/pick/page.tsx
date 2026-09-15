@@ -192,7 +192,6 @@ export default async function PickPage({
         g.kickoff instanceof Date && !Number.isNaN(g.kickoff.getTime())
           ? g.kickoff.toISOString()
           : "",
-      network: g.network,
       status: g.status,
       scoreAway: g.scoreAway,
       scoreHome: g.scoreHome,

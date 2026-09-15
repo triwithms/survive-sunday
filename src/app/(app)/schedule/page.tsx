@@ -18,7 +18,7 @@ import {
   shouldPollLiveScores,
 } from "@/lib/live-scores";
 import { getInjuryCountsByTeam } from "@/lib/live-injuries";
-import { formatInjuryChip, formatScoreLine } from "@/lib/game-display";
+import { formatInjuryChip, formatMatchupListLine } from "@/lib/game-display";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 
 export const dynamic = "force-dynamic";
@@ -152,7 +152,7 @@ export default async function SchedulePage({
               const homeInj = injuryFeed.byTeam.get(g.homeAbbr);
               const awayChip = awayInj ? formatInjuryChip(awayInj) : null;
               const homeChip = homeInj ? formatInjuryChip(homeInj) : null;
-              const scoreLine = formatScoreLine(g);
+              const scoreLine = formatMatchupListLine(g);
               return (
                 <li key={g.id} className="card-glass p-3 min-w-0">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
@@ -173,11 +173,6 @@ export default async function SchedulePage({
                     </Link>
                     {g.status === "live" && (
                       <span className="chip chip-live text-[10px]">LIVE</span>
-                    )}
-                    {g.network && (
-                      <span className="chip chip-one-loss text-[10px]">
-                        {g.network}
-                      </span>
                     )}
                   </div>
                   <div className="mt-1 text-xs text-[var(--text-muted)] flex flex-wrap items-center gap-x-2 gap-y-1">

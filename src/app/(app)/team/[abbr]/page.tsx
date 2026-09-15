@@ -7,6 +7,7 @@ import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import {
   formatCurrentStanding,
   formatPriorYearRank,
+  resolveFavourite,
 } from "@/lib/matchup-meta";
 import {
   getTeamNews,
@@ -26,6 +27,7 @@ import { teamLogoUrl } from "@/lib/espn-teams";
 import { InjuryChip } from "@/components/InjuryChip";
 import { isDemoMode } from "@/lib/pool-mode";
 import { formatKickoff } from "@/lib/utils";
+import { formatMatchupListLine } from "@/lib/game-display";
 import { namesMatch } from "@/lib/nfl-player";
 import { KeyPlayerCards, NflPlayerRows, playerHref } from "@/components/NflPlayerRows";
 
@@ -268,6 +270,17 @@ export default async function TeamResearchPage({
       : game.awayAbbr
     : null;
   const atHome = game ? game.homeAbbr === abbr : false;
+  const thisWeekLine = game ? formatMatchupListLine(game) : null;
+  const thisWeekFav = game
+    ? resolveFavourite({
+        homeAbbr: game.homeAbbr,
+        awayAbbr: game.awayAbbr,
+        spreadHome: game.spreadHome,
+        spreadAway: game.spreadAway,
+        mlHome: game.mlHome,
+        mlAway: game.mlAway,
+      })
+    : null;
   const standing = {
     wins: team.wins,
     losses: team.losses,
@@ -369,6 +382,14 @@ export default async function TeamResearchPage({
             {formatKickoff(game.kickoff)}
             {game.network ? ` · ${game.network}` : ""}
           </p>
+          {thisWeekLine && (
+            <p className="text-sm text-[var(--text-muted)]">{thisWeekLine}</p>
+          )}
+          {thisWeekFav && (
+            <p className="text-sm font-mono text-[var(--text-primary)]">
+              {thisWeekFav.label}
+            </p>
+          )}
         </section>
       )}
 
