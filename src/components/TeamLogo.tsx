@@ -1,47 +1,50 @@
-import { teamBadge } from "@/lib/team-badges";
+"use client";
+
+import { useState } from "react";
+import { espnTeamLogoUrl } from "@/lib/espn-teams";
 import { TEAM_LOGO_SIZE } from "@/lib/team-logo-size";
 
 export { TEAM_LOGO_SIZE };
 
 export function TeamLogo({
   abbr,
+  logoUrl,
   size = TEAM_LOGO_SIZE.compact,
 }: {
   abbr: string;
   logoUrl?: string | null;
   size?: number;
 }) {
-  const badge = teamBadge(abbr);
-  const fontSize = badge.abbr.length > 2 ? 16 : 22;
+  const espn = espnTeamLogoUrl(abbr);
+  const preferred = logoUrl?.trim() || espn;
+  const [broken, setBroken] = useState<string | null>(null);
+  const src = broken === preferred && preferred !== espn ? espn : preferred;
+  const failed = !src || broken === src;
+
+  if (failed) {
+    return (
+      <div
+        className={`flex shrink-0 items-center justify-center rounded-md bg-[var(--stadium-700)] font-mono font-semibold text-gold-400 ${
+          size >= 48 ? "text-xs" : "text-[10px]"
+        }`}
+        style={{ width: size, height: size }}
+        aria-hidden
+      >
+        {abbr.slice(0, 3)}
+      </div>
+    );
+  }
+
   return (
-    <svg
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
       width={size}
       height={size}
-      viewBox="0 0 64 64"
-      className="shrink-0"
+      className="shrink-0 rounded-md object-contain bg-white"
       style={{ width: size, height: size }}
-      aria-hidden
-    >
-      <circle
-        cx="32"
-        cy="32"
-        r="30"
-        fill={badge.primary}
-        stroke={badge.secondary}
-        strokeWidth="4"
-      />
-      <text
-        x="32"
-        y="34"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fill={badge.letter}
-        fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
-        fontSize={fontSize}
-        fontWeight="700"
-      >
-        {badge.abbr}
-      </text>
-    </svg>
+      onError={() => setBroken(src)}
+    />
   );
 }

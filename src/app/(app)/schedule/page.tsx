@@ -18,6 +18,7 @@ import {
 } from "@/lib/live-scores";
 import { formatMatchupListLine } from "@/lib/game-display";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
+import { teamLogoUrl } from "@/lib/espn-teams";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 
 export const dynamic = "force-dynamic";
@@ -153,7 +154,11 @@ export default async function SchedulePage({
                       prefetch={false}
                       className="inline-flex items-center gap-1.5 min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
                     >
-                      <TeamLogo abbr={g.awayAbbr} size={TEAM_LOGO_SIZE.compact} />
+                      <TeamLogo
+                        abbr={g.awayAbbr}
+                        logoUrl={teamLogoUrl(g.awayAbbr)}
+                        size={TEAM_LOGO_SIZE.compact}
+                      />
                       {g.awayAbbr}
                     </Link>
                     <span className="text-[var(--text-muted)]">@</span>
@@ -162,7 +167,11 @@ export default async function SchedulePage({
                       prefetch={false}
                       className="inline-flex items-center gap-1.5 min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
                     >
-                      <TeamLogo abbr={g.homeAbbr} size={TEAM_LOGO_SIZE.compact} />
+                      <TeamLogo
+                        abbr={g.homeAbbr}
+                        logoUrl={teamLogoUrl(g.homeAbbr)}
+                        size={TEAM_LOGO_SIZE.compact}
+                      />
                       {g.homeAbbr}
                     </Link>
                     {g.status === "live" && (
