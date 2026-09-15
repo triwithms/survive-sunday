@@ -38,26 +38,9 @@ const ESPN_ID_TO_ABBR: Record<string, string> = Object.fromEntries(
   Object.entries(ESPN_TEAM_IDS).map(([abbr, id]) => [id, abbr])
 );
 
-const ABBR_ALIASES: Record<string, string> = {
-  WSH: "WAS",
-  WFT: "WAS",
-  JAC: "JAX",
-  LA: "LAR",
-  STL: "LAR",
-  SD: "LAC",
-  OAK: "LV",
-  LVR: "LV",
-  GNB: "GB",
-  KAN: "KC",
-  NWE: "NE",
-  NOR: "NO",
-  SFO: "SF",
-  TAM: "TB",
-};
-
 export function normAbbr(abbr: string): string {
   const u = abbr.trim().toUpperCase();
-  return ABBR_ALIASES[u] ?? u;
+  return u === "WSH" ? "WAS" : u;
 }
 
 /** App abbr (WAS) → ESPN site abbreviation (WSH). */
