@@ -121,7 +121,7 @@
     "division": "South",
     "primary_color": "#0085CA",
     "logo_urls": {
-      "espn": "https://a.espncdn.com/i/teamlogos/nfl/500/car.png",
+      "espn": "https://a.espncdn.com/i/teamlogos/nfl/500/29.png",
       "wikipedia": "https://upload.wikimedia.org/wikipedia/en/1/1c/Carolina_Panthers_logo.svg",
       "fallback": null
     },
@@ -131,7 +131,7 @@
       "https://teamcolorcodes.com/nfl-team-color-codes/",
       "https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams?limit=40",
       "https://raw.githubusercontent.com/nflverse/nflverse-pbp/master/teams_colors_logos.csv",
-      "https://a.espncdn.com/i/teamlogos/nfl/500/car.png",
+      "https://a.espncdn.com/i/teamlogos/nfl/500/29.png",
       "https://upload.wikimedia.org/wikipedia/en/1/1c/Carolina_Panthers_logo.svg"
     ],
     "logo_brittleness": [

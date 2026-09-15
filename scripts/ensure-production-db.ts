@@ -29,6 +29,7 @@ import { ensurePoolRulesColumns } from "../src/lib/pool-rules-schema";
 import { ensureCanonicalLiveSeats } from "../src/lib/live-roster";
 import { applyCannoliTempPasswordOneshot } from "../src/lib/oneshot-cannoli-password";
 import { clearPlaceholderOdds } from "../src/lib/odds-db";
+import { espnTeamLogoUrl } from "../src/lib/espn-teams";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
 
@@ -296,6 +297,28 @@ async function main() {
     });
     if (pool) {
       const users = await prisma.user.count();
+      try {
+        const wanted = espnTeamLogoUrl("CAR");
+        const car = await prisma.team.findUnique({
+          where: { abbr: "CAR" },
+          select: { logoUrl: true },
+        });
+        if (!car) {
+          console.log("[ensure-db] CAR team row missing — skip logo patch");
+        } else if (car.logoUrl === wanted) {
+          console.log("[ensure-db] CAR logoUrl already ESPN 29.png");
+        } else {
+          await prisma.team.update({
+            where: { abbr: "CAR" },
+            data: { logoUrl: wanted },
+          });
+          console.log(
+            `[ensure-db] CAR logoUrl ${car.logoUrl ?? "(empty)"} → ${wanted}`
+          );
+        }
+      } catch (error) {
+        console.warn("[ensure-db] CAR logoUrl patch skipped (build continues)", error);
+      }
       try {
         const result = await applyCanonicalRosterNames(prisma, pool.id);
         if (result.updated.length === 0) {

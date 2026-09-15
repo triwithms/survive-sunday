@@ -40,13 +40,23 @@ const ESPN_ID_TO_ABBR: Record<string, string> = Object.fromEntries(
 
 export function normAbbr(abbr: string): string {
   const u = abbr.trim().toUpperCase();
-  return u === "WSH" ? "WAS" : u;
+  if (u === "WSH") return "WAS";
+  if (u === "CAROLINA") return "CAR";
+  return u;
 }
 
 /** App abbr (WAS) → ESPN site abbreviation (WSH). */
 export function espnAbbr(abbr: string): string {
   const key = normAbbr(abbr);
   return key === "WAS" ? "WSH" : key;
+}
+
+/** ESPN CDN filename slug. CAR uses team id 29 — `car.png` renders blank. */
+function espnLogoSlug(abbr: string): string {
+  const key = normAbbr(abbr);
+  if (key === "CAR") return ESPN_TEAM_IDS.CAR;
+  if (key === "JAC") return "jax";
+  return espnAbbr(key).toLowerCase();
 }
 
 export function abbrFromEspnTeamId(
@@ -58,11 +68,12 @@ export function abbrFromEspnTeamId(
 
 /** ESPN CDN mark (same path as `data/teams.json` / Team.logoUrl). */
 export function espnTeamLogoUrl(abbr: string): string {
-  return `https://a.espncdn.com/i/teamlogos/nfl/500/${espnAbbr(abbr).toLowerCase()}.png`;
+  return `https://a.espncdn.com/i/teamlogos/nfl/500/${espnLogoSlug(abbr)}.png`;
 }
 
 /** Prefer stored Team.logoUrl; otherwise the ESPN CDN logo. Never invents art. */
 export function teamLogoUrl(abbr: string, stored?: string | null): string {
+  if (normAbbr(abbr) === "CAR") return espnTeamLogoUrl(abbr);
   const trimmed = stored?.trim();
   if (trimmed) return trimmed;
   return espnTeamLogoUrl(abbr);
