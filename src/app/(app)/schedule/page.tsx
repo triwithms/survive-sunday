@@ -169,7 +169,7 @@ export default async function SchedulePage({
                   <div className="mt-1 text-xs text-[var(--text-muted)] flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span>{scoreLine || formatKickoff(g.kickoff)}</span>
                     {fav && (
-                      <span className="font-mono text-[var(--text-primary)]">
+                      <span className="text-[var(--text-primary)]">
                         {fav.label}
                       </span>
                     )}

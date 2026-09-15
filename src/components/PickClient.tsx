@@ -364,7 +364,7 @@ export function PickClient({
                     {formatMatchupListLine(m) || formatKickoff(m.kickoff)}
                   </span>
                   {fav && (
-                    <span className="font-mono text-[var(--text-primary)]">
+                    <span className="text-[var(--text-primary)]">
                       {fav.label}
                     </span>
                   )}
@@ -443,7 +443,7 @@ export function PickClient({
             </p>
             <p className="text-sm">{formatKickoff(confirm.matchup.kickoff)}</p>
             {confirmFav ? (
-              <p className="text-xs font-mono text-[var(--text-primary)]">
+              <p className="text-xs text-[var(--text-primary)]">
                 {confirmFav.label}
               </p>
             ) : null}

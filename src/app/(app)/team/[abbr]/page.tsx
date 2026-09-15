@@ -386,7 +386,7 @@ export default async function TeamResearchPage({
             <p className="text-sm text-[var(--text-muted)]">{thisWeekLine}</p>
           )}
           {thisWeekFav && (
-            <p className="text-sm font-mono text-[var(--text-primary)]">
+            <p className="text-sm text-[var(--text-primary)]">
               {thisWeekFav.label}
             </p>
           )}
