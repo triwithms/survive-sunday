@@ -15,7 +15,7 @@ import {
 import { getTeamInjuries } from "@/lib/live-injuries";
 import { roleLabel, sideLabel } from "@/lib/nfl-player";
 import { formatKickoff } from "@/lib/utils";
-import { normAbbr, teamLogoUrl } from "@/lib/espn-teams";
+import { teamLogoUrl } from "@/lib/espn-teams";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -46,7 +46,7 @@ export default async function NflPlayerPage({
   if (!me) redirect("/join");
 
   const { abbr: rawAbbr, slug: rawSlug } = await params;
-  const abbr = normAbbr(rawAbbr);
+  const abbr = (rawAbbr === "WSH" ? "WAS" : rawAbbr).toUpperCase();
   const slug = decodeURIComponent(rawSlug || "");
   const team = await prisma.team.findUnique({ where: { abbr } });
   if (!team) notFound();

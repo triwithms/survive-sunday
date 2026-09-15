@@ -23,7 +23,7 @@ import {
 import { getTeamInjuries, type LiveInjury } from "@/lib/live-injuries";
 import { getTeamCoach } from "@/lib/team-coaches";
 import { formatWinPct } from "@/lib/standings-format";
-import { normAbbr, teamLogoUrl } from "@/lib/espn-teams";
+import { teamLogoUrl } from "@/lib/espn-teams";
 import { InjuryChip } from "@/components/InjuryChip";
 import { isDemoMode } from "@/lib/pool-mode";
 import { formatKickoff } from "@/lib/utils";
@@ -242,7 +242,7 @@ export default async function TeamResearchPage({
   if (!me) redirect("/join");
 
   const { abbr: raw } = await params;
-  const abbr = normAbbr(raw);
+  const abbr = (raw === "WSH" ? "WAS" : raw).toUpperCase();
   const team = await prisma.team.findUnique({ where: { abbr } });
   if (!team) notFound();
 
