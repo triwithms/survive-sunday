@@ -344,7 +344,7 @@ export type InjuryCountBits = {
   questionable: number;
 };
 
-/** Pick-adjacent chip: "2 Out · 1 Q". Omits IR/suspension (shown on team page). */
+/** Compact chip: "2 Out · 1 Q". Used on team pages and Home. Not on Schedule/Pick lists. */
 export function formatInjuryChip(counts: InjuryCountBits): string | null {
   const parts: string[] = [];
   if (counts.out > 0) parts.push(`${counts.out} Out`);

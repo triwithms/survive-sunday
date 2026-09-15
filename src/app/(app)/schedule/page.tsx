@@ -6,7 +6,6 @@ import { formatKickoff } from "@/lib/utils";
 import { resolveFavourite } from "@/lib/matchup-meta";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
-import { InjuryChip } from "@/components/InjuryChip";
 import {
   effectiveCurrentWeek,
   weeksForParticipants,
@@ -17,8 +16,7 @@ import {
   syncWeekScoresFromEspn,
   shouldPollLiveScores,
 } from "@/lib/live-scores";
-import { getInjuryCountsByTeam } from "@/lib/live-injuries";
-import { formatInjuryChip, formatMatchupListLine } from "@/lib/game-display";
+import { formatMatchupListLine } from "@/lib/game-display";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
 
 export const dynamic = "force-dynamic";
@@ -71,13 +69,10 @@ export default async function SchedulePage({
     );
   }
 
-  const [, injuryFeed] = await Promise.all([
-    syncWeekScoresFromEspn(week.id).catch((e) => {
-      console.error("schedule espn score sync skipped", e);
-      return null;
-    }),
-    getInjuryCountsByTeam(),
-  ]);
+  await syncWeekScoresFromEspn(week.id).catch((e) => {
+    console.error("schedule espn score sync skipped", e);
+    return null;
+  });
 
   const weekFresh = await prisma.week.findUniqueOrThrow({
     where: { id: week.id },
@@ -148,10 +143,6 @@ export default async function SchedulePage({
                 mlHome: g.mlHome,
                 mlAway: g.mlAway,
               });
-              const awayInj = injuryFeed.byTeam.get(g.awayAbbr);
-              const homeInj = injuryFeed.byTeam.get(g.homeAbbr);
-              const awayChip = awayInj ? formatInjuryChip(awayInj) : null;
-              const homeChip = homeInj ? formatInjuryChip(homeInj) : null;
               const scoreLine = formatMatchupListLine(g);
               return (
                 <li key={g.id} className="card-glass p-3 min-w-0">
@@ -183,30 +174,6 @@ export default async function SchedulePage({
                       </span>
                     )}
                   </div>
-                  {(awayChip || homeChip) && (
-                    <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-[var(--text-muted)]">
-                      {awayChip && awayInj && (
-                        <Link
-                          href={`/team/${g.awayAbbr}`}
-                          prefetch={false}
-                          className="inline-flex items-center gap-1"
-                        >
-                          <span className="font-mono">{g.awayAbbr}</span>
-                          <InjuryChip counts={awayInj} />
-                        </Link>
-                      )}
-                      {homeChip && homeInj && (
-                        <Link
-                          href={`/team/${g.homeAbbr}`}
-                          prefetch={false}
-                          className="inline-flex items-center gap-1"
-                        >
-                          <span className="font-mono">{g.homeAbbr}</span>
-                          <InjuryChip counts={homeInj} />
-                        </Link>
-                      )}
-                    </div>
-                  )}
                 </li>
               );
             })}

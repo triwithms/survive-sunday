@@ -14,7 +14,6 @@ import {
   syncWeekScoresFromEspn,
   shouldPollLiveScores,
 } from "@/lib/live-scores";
-import { getInjuryCountsByTeam } from "@/lib/live-injuries";
 import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
 import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
@@ -102,13 +101,10 @@ export default async function PickPage({
   } catch (e) {
     console.error("pick lock effects skipped", e);
   }
-  const [, injuryFeed] = await Promise.all([
-    syncWeekScoresFromEspn(weekRef.id).catch((e) => {
-      console.error("pick espn score sync skipped", e);
-      return null;
-    }),
-    getInjuryCountsByTeam(),
-  ]);
+  await syncWeekScoresFromEspn(weekRef.id).catch((e) => {
+    console.error("pick espn score sync skipped", e);
+    return null;
+  });
 
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: weekRef.id },
@@ -166,11 +162,6 @@ export default async function PickPage({
       logoUrl: teamLogoUrl(abbr, t?.logoUrl),
       alreadyUsed: used.includes(abbr),
       priorYearRank: t?.priorYearRank ?? null,
-      injuries: injuryFeed.byTeam.get(abbr) ?? {
-        out: 0,
-        doubtful: 0,
-        questionable: 0,
-      },
       standing: t
         ? {
             wins: t.wins,
