@@ -19,6 +19,7 @@ import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
 import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { sanitizeGameOdds } from "@/lib/odds";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -183,24 +184,27 @@ export default async function PickPage({
     };
   }
 
-  const games = week.games.map((g) => ({
-    id: g.id,
-    kickoff:
-      g.kickoff instanceof Date && !Number.isNaN(g.kickoff.getTime())
-        ? g.kickoff.toISOString()
-        : "",
-    network: g.network,
-    status: g.status,
-    scoreAway: g.scoreAway,
-    scoreHome: g.scoreHome,
-    note: g.note,
-    spreadHome: g.spreadHome,
-    spreadAway: g.spreadAway,
-    mlHome: g.mlHome,
-    mlAway: g.mlAway,
-    away: sidePayload(g.awayAbbr),
-    home: sidePayload(g.homeAbbr),
-  }));
+  const games = week.games.map((g) => {
+    const odds = sanitizeGameOdds(g);
+    return {
+      id: g.id,
+      kickoff:
+        g.kickoff instanceof Date && !Number.isNaN(g.kickoff.getTime())
+          ? g.kickoff.toISOString()
+          : "",
+      network: g.network,
+      status: g.status,
+      scoreAway: g.scoreAway,
+      scoreHome: g.scoreHome,
+      note: g.note,
+      spreadHome: odds.spreadHome,
+      spreadAway: odds.spreadAway,
+      mlHome: odds.mlHome,
+      mlAway: odds.mlAway,
+      away: sidePayload(g.awayAbbr),
+      home: sidePayload(g.homeAbbr),
+    };
+  });
 
   return (
     <>

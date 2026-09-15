@@ -266,7 +266,7 @@ The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY
 
 On `main`, Pick opens on **your** open week (Week 1 while your game is still upcoming; Week 2 as soon as that pick is locked, or if you never had a Week 1 pick path). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
 
-Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on the pick screen are **static seeded values** (example: “Favourite: KC -3.5”), not a live odds meter.
+Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on Pick / Schedule are **informational ESPN lines** when we have them (for example “Favourite: BUF -4.5”). If ESPN has no line, that field is hidden or shows **—** — we never invent a fake **-3** for every team.
 
 ### Lock
 

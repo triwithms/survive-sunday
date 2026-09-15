@@ -51,6 +51,7 @@
     "verify:share-export": "tsx scripts/verify-share-export.ts",
     "verify:team-coaches": "tsx scripts/verify-team-coaches.ts",
     "verify:youtube-videos": "tsx scripts/verify-youtube-videos.ts",
+    "verify:odds": "tsx scripts/verify-odds.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"
   },
   "dependencies": {

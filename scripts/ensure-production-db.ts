@@ -28,6 +28,7 @@ import { ensurePickMirrorColumn } from "../src/lib/pick-mirror-schema";
 import { ensurePoolRulesColumns } from "../src/lib/pool-rules-schema";
 import { ensureCanonicalLiveSeats } from "../src/lib/live-roster";
 import { applyCannoliTempPasswordOneshot } from "../src/lib/oneshot-cannoli-password";
+import { clearPlaceholderOdds } from "../src/lib/odds-db";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
 
@@ -393,6 +394,17 @@ async function main() {
       } catch (error) {
         console.warn(
           "[ensure-db] Week 2 slate / live week isolation skipped (build continues)",
+          error
+        );
+      }
+      try {
+        const cleared = await clearPlaceholderOdds(prisma);
+        console.log(
+          `[ensure-db] placeholder fake -3 odds ${cleared ? `cleared (${cleared} games)` : "none"}`
+        );
+      } catch (error) {
+        console.warn(
+          "[ensure-db] placeholder odds clear skipped (build continues)",
           error
         );
       }

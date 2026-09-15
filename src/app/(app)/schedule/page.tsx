@@ -145,6 +145,8 @@ export default async function SchedulePage({
                 awayAbbr: g.awayAbbr,
                 spreadHome: g.spreadHome,
                 spreadAway: g.spreadAway,
+                mlHome: g.mlHome,
+                mlAway: g.mlAway,
               });
               const awayInj = injuryFeed.byTeam.get(g.awayAbbr);
               const homeInj = injuryFeed.byTeam.get(g.homeAbbr);

@@ -1,3 +1,5 @@
+import { formatSignedSpread, sanitizeGameOdds } from "@/lib/odds";
+
 /** Shared helpers for prior-year rank, standings, and favourite display (en-CA). */
 
 export type StandingBits = {
@@ -74,22 +76,29 @@ export function resolveFavourite(opts: {
   awayAbbr: string;
   spreadHome: number | null;
   spreadAway: number | null;
+  mlHome?: number | null;
+  mlAway?: number | null;
 }): FavouriteInfo | null {
-  const { homeAbbr, awayAbbr, spreadHome, spreadAway } = opts;
+  const { homeAbbr, awayAbbr } = opts;
+  const odds = sanitizeGameOdds(opts);
+  const spreadHome = odds.spreadHome;
+  const spreadAway = odds.spreadAway;
   if (spreadHome != null && !Number.isNaN(Number(spreadHome)) && spreadHome < 0) {
+    const line = `${homeAbbr} ${formatSignedSpread(spreadHome)}`;
     return {
       abbr: homeAbbr,
       spread: spreadHome,
-      line: `${homeAbbr} ${spreadHome}`,
-      label: `Favourite: ${homeAbbr} ${spreadHome}`,
+      line,
+      label: `Favourite: ${line}`,
     };
   }
   if (spreadAway != null && !Number.isNaN(Number(spreadAway)) && spreadAway < 0) {
+    const line = `${awayAbbr} ${formatSignedSpread(spreadAway)}`;
     return {
       abbr: awayAbbr,
       spread: spreadAway,
-      line: `${awayAbbr} ${spreadAway}`,
-      label: `Favourite: ${awayAbbr} ${spreadAway}`,
+      line,
+      label: `Favourite: ${line}`,
     };
   }
   // Pick side closer to favourite via negative ML-style: smaller (more negative) home spread means home favoured
@@ -98,11 +107,12 @@ export function resolveFavourite(opts: {
     if (spreadHome > 0) {
       // home is underdog; away favoured by -spreadHome
       const spread = -spreadHome;
+      const line = `${awayAbbr} ${formatSignedSpread(spread)}`;
       return {
         abbr: awayAbbr,
         spread,
-        line: `${awayAbbr} ${spread}`,
-        label: `Favourite: ${awayAbbr} ${spread}`,
+        line,
+        label: `Favourite: ${line}`,
       };
     }
   }

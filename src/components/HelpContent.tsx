@@ -85,7 +85,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h2 className="text-lg font-semibold text-gold-400 mb-2">1. Welcome to Survive Sunday</h2>
         <p className="text-[var(--text-muted)] mb-2">Survive Sunday is a private, invite-only NFL survivor (elimination) pool for friends. Each week, every active player picks one team to win. Pick right and you keep going. Pick wrong and you burn your mulligan — or you’re out.</p>
         <p className="text-[var(--text-muted)] mb-2">This pool covers the **2026/27 NFL regular season** (weeks 1–18). Playoffs may come later; for now we’re all about surviving the grind.</p>
-        <p className="text-[var(--text-muted)] mb-2">**For entertainment among friends. Not a gambling service.** Spreads and moneylines you see in the app are informational only — you can’t place wagers here.</p>
+        <p className="text-[var(--text-muted)] mb-2">**For entertainment among friends. Not a gambling service.** Spreads and moneylines you see in the app are informational only — you can’t place wagers here. If ESPN does not have a line yet, we hide it (or show —) rather than invent a number.</p>
         <p className="text-[var(--text-muted)] mb-2">The app is written in **Canadian English** (`en-CA`): favourite, cancelled, colour, centre, and friendly date formats.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -246,10 +246,10 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
             : " **W-L** is this season from ESPN."}{" "}
           The **2025 rank** column is last season’s composite power rank by team (1 = strongest, 32 = weakest) — research only, not this year’s W-L.
         </p>
-        <p className="text-[var(--text-muted)] mb-2">**Schedule** lists this week’s games and future weeks (dropdown + arrows). Tap a team for research.</p>
+        <p className="text-[var(--text-muted)] mb-2">**Schedule** lists this week’s games and future weeks (dropdown + arrows). Tap a team for research. An informational favourite/spread shows when ESPN has a real line; if not, that field stays blank.</p>
         <p className="text-[var(--text-muted)] mb-2"><strong>Team pages</strong> start with the team&apos;s record, this week&apos;s game, head coach (name + ESPN / Wikipedia links), and style, then key NFL players, full roster, an ESPN injury report (Out / Doubtful / Questionable / IR / suspension), and news headlines. Tap a <strong>player name</strong> for college, depth role, and any ESPN injury note. Injury chips on Pick / Home / Schedule are a compact count — tap the team for names. This is ESPN&apos;s public list, not the official NFL club report.</p>
         <p className="text-[var(--text-muted)] mb-2">From <strong>This week&apos;s games</strong>, logos and names open research; <strong>Pick</strong> stays on its own button.</p>
-        <p className="text-[var(--text-muted)] mb-2">Spreads and favourites in the pick flow are informational only.</p>
+        <p className="text-[var(--text-muted)] mb-2">Spreads and favourites in the pick flow are informational only. Missing lines show as — or are hidden — we do not guess.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="11-install-the-app-pwa">
