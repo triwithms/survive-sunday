@@ -102,20 +102,3 @@ export async function getTeamInjuries(abbr: string): Promise<TeamInjuriesResult>
     ...urls,
   };
 }
-
-export async function getInjuryCountsByTeam(): Promise<{
-  byTeam: Map<string, InjuryCounts>;
-  failed: boolean;
-  fetchedAt: number | null;
-}> {
-  const cache = await loadInjuryCache();
-  const byTeam = new Map<string, InjuryCounts>();
-  for (const [abbr, rows] of cache.byTeam) {
-    byTeam.set(abbr, countInjuries(rows));
-  }
-  return {
-    byTeam,
-    failed: cache.failed,
-    fetchedAt: cache.fetchedAt,
-  };
-}

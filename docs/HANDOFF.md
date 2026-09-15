@@ -428,7 +428,8 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Videos: previews until kickoff, then highlights | [#54](https://github.com/triwithms/survive-sunday/pull/54) | Game previews only before kickoff. After a game is live or Final, that game’s previews come down and highlights show. Fixes missing DEN @ KC (MNF) previews. |
 | Scores: pick week + no future weeks | this wrap-up | Scores opens on **your** current pick week. You can look back. Future weeks stay on **Schedule**. |
 | Schedule fake -3 odds | [#57](https://github.com/triwithms/survive-sunday/pull/57) | Stopped inventing home **-3** when a line was missing. |
-| Schedule / Pick list: no TV or 2Q; real ESPN favourites | this PR | Schedule and Pick cards drop CBS/FOX/TSN and quarter / down-distance. Favourites come from the ESPN week scoreboard (for example BUF -4.5) when ESPN publishes a line. |
+| Schedule / Pick list: no TV or 2Q; real ESPN favourites | [#58](https://github.com/triwithms/survive-sunday/pull/58) | Schedule and Pick cards drop CBS/FOX/TSN and quarter / down-distance. Favourites come from the ESPN week scoreboard (for example BUF -4.5) when ESPN publishes a line. |
+| Schedule / Pick: no injury Q chips; Pick shows favourite | this PR | Schedule and Pick lists no longer show Out / Doubtful / **Q** injury count chips. Pick now shows the same **Favourite: BUF -4.5** line as Schedule. Injuries stay on team pages. Scores live strip is unchanged. |
 
 ### Open — not on `main` yet
 

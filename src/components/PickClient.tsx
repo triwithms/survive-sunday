@@ -17,10 +17,8 @@ import {
   type StandingBits,
 } from "@/lib/matchup-meta";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
-import { InjuryChip } from "@/components/InjuryChip";
 import { NextWeekOpenTip } from "@/components/NextWeekOpenTip";
-import { formatMatchupListLine, type InjuryCountBits } from "@/lib/game-display";
-import { formatSignedSpread, formatSpreadOrDash } from "@/lib/odds";
+import { formatMatchupListLine } from "@/lib/game-display";
 
 type Side = {
   abbr: string;
@@ -29,7 +27,6 @@ type Side = {
   alreadyUsed: boolean;
   priorYearRank: number | null;
   standing: StandingBits | null;
-  injuries?: InjuryCountBits;
 };
 
 type Matchup = {
@@ -164,6 +161,8 @@ export function PickClient({
   const activeListLine = activeMatchup
     ? formatMatchupListLine(activeMatchup)
     : null;
+  const activeFav = activeMatchup ? favouriteFor(activeMatchup) : null;
+  const confirmFav = confirm ? favouriteFor(confirm.matchup) : null;
 
   return (
     <div className="space-y-4">
@@ -216,10 +215,10 @@ export function PickClient({
                         : ""}
                   </p>
                 )}
-                {activeSide?.injuries && (
-                  <div className="mt-1">
-                    <InjuryChip counts={activeSide.injuries} />
-                  </div>
+                {activeFav && (
+                  <p className="text-xs font-mono text-[var(--text-primary)] mt-0.5">
+                    {activeFav.label}
+                  </p>
                 )}
                 {(activePrior || activeStanding) && (
                   <p className="text-xs text-[var(--text-muted)] mt-0.5">
@@ -355,20 +354,20 @@ export function PickClient({
       ) : (
       <ul className="space-y-3">
         {list.map((m) => {
-          const fav = resolveFavourite({
-            homeAbbr: m.home.abbr,
-            awayAbbr: m.away.abbr,
-            spreadHome: m.spreadHome,
-            spreadAway: m.spreadAway,
-            mlHome: m.mlHome,
-            mlAway: m.mlAway,
-          });
+          const fav = favouriteFor(m);
           const gameClosed = lockStartedGames && isGameStarted(m);
           return (
             <li key={m.id} className="card-glass overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[var(--stadium-border)] px-3 py-2 text-[11px] text-[var(--text-muted)]">
-                <span className="font-mono">
-                  {formatMatchupListLine(m) || formatKickoff(m.kickoff)}
+                <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="font-mono">
+                    {formatMatchupListLine(m) || formatKickoff(m.kickoff)}
+                  </span>
+                  {fav && (
+                    <span className="font-mono text-[var(--text-primary)]">
+                      {fav.label}
+                    </span>
+                  )}
                 </span>
                 <span className="flex items-center gap-2">
                   {m.status === "live" && (
@@ -389,9 +388,6 @@ export function PickClient({
                   readOnly={readOnly || gameClosed}
                   gameClosed={gameClosed}
                   align="away"
-                  favSpread={
-                    fav && fav.abbr === m.away.abbr ? fav.spread : null
-                  }
                   onPick={() => trySelect(m.away, m)}
                 />
                 <div className="flex flex-col items-center justify-center gap-1 px-1">
@@ -405,18 +401,9 @@ export function PickClient({
                   readOnly={readOnly || gameClosed}
                   gameClosed={gameClosed}
                   align="home"
-                  favSpread={
-                    fav && fav.abbr === m.home.abbr ? fav.spread : null
-                  }
                   onPick={() => trySelect(m.home, m)}
                 />
               </div>
-
-              {fav && (
-                <div className="border-t border-[var(--stadium-border)] px-3 py-1.5 text-center text-[11px] text-[var(--text-muted)]">
-                  <span className="font-mono">{fav.label}</span>
-                </div>
-              )}
             </li>
           );
         })}
@@ -449,38 +436,17 @@ export function PickClient({
                     .filter(Boolean)
                     .join(" · ")}
                 </p>
-                {confirm.side.injuries && (
-                  <div className="mt-1">
-                    <InjuryChip counts={confirm.side.injuries} />
-                  </div>
-                )}
               </div>
             </div>
             <p className="text-sm text-[var(--text-muted)]">
               {confirm.matchup.away.abbr} @ {confirm.matchup.home.abbr}
             </p>
             <p className="text-sm">{formatKickoff(confirm.matchup.kickoff)}</p>
-            {(() => {
-              const fav = resolveFavourite({
-                homeAbbr: confirm.matchup.home.abbr,
-                awayAbbr: confirm.matchup.away.abbr,
-                spreadHome: confirm.matchup.spreadHome,
-                spreadAway: confirm.matchup.spreadAway,
-                mlHome: confirm.matchup.mlHome,
-                mlAway: confirm.matchup.mlAway,
-              });
-              return fav ? (
-                <p className="text-xs font-mono text-[var(--text-muted)]">
-                  {fav.label}
-                </p>
-              ) : null;
-            })()}
-            <p className="text-xs font-mono text-[var(--text-muted)]">
-              Spread: home {formatSpreadOrDash(confirm.matchup.spreadHome)} / away{" "}
-              {formatSpreadOrDash(confirm.matchup.spreadAway)}
-              {confirm.matchup.mlHome != null &&
-                ` · ML ${confirm.matchup.mlHome} / ${confirm.matchup.mlAway ?? "—"}`}
-            </p>
+            {confirmFav ? (
+              <p className="text-xs font-mono text-[var(--text-primary)]">
+                {confirmFav.label}
+              </p>
+            ) : null}
             <p className="text-xs text-[var(--text-muted)]">
               Odds are informational only — not for wagering.
             </p>
@@ -508,13 +474,23 @@ export function PickClient({
   );
 }
 
+function favouriteFor(m: Matchup) {
+  return resolveFavourite({
+    homeAbbr: m.home.abbr,
+    awayAbbr: m.away.abbr,
+    spreadHome: m.spreadHome,
+    spreadAway: m.spreadAway,
+    mlHome: m.mlHome,
+    mlAway: m.mlAway,
+  });
+}
+
 function SideButton({
   side,
   selected,
   readOnly,
   gameClosed,
   align,
-  favSpread,
   onPick,
 }: {
   side: Side;
@@ -522,7 +498,6 @@ function SideButton({
   readOnly: boolean;
   gameClosed?: boolean;
   align: "away" | "home";
-  favSpread: number | null;
   onPick: () => void;
 }) {
   const disabled = readOnly || side.alreadyUsed || !!gameClosed;
@@ -552,20 +527,9 @@ function SideButton({
       >
         <TeamLogo abbr={side.abbr} logoUrl={side.logoUrl} size={TEAM_LOGO_SIZE.slate} />
         <div className="min-w-0">
-          <div
-            className={`flex items-center gap-1.5 flex-wrap ${
-              isAway ? "" : "justify-end"
-            }`}
-          >
-            <span className="font-mono text-sm font-semibold text-gold-400 underline underline-offset-2 decoration-gold-400/40">
-              {side.abbr}
-            </span>
-            {favSpread != null && (
-              <span className="rounded bg-gold-400/15 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-gold-400">
-                Fav {formatSignedSpread(favSpread)}
-              </span>
-            )}
-          </div>
+          <span className="font-mono text-sm font-semibold text-gold-400 underline underline-offset-2 decoration-gold-400/40">
+            {side.abbr}
+          </span>
           <div className="truncate text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-transparent hover:decoration-[var(--text-muted)]">
             {side.name}
           </div>
@@ -582,7 +546,6 @@ function SideButton({
           {current && <div>{current}</div>}
         </div>
       )}
-      {side.injuries && <InjuryChip counts={side.injuries} />}
 
       {side.alreadyUsed ? (
         <div className="text-[10px] font-medium text-crimson-400">Already used</div>
