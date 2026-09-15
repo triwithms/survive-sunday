@@ -266,7 +266,7 @@ The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY
 
 On `main`, Pick opens on **your** open week (Week 1 while your game is still upcoming; Week 2 as soon as that pick is locked, or if you never had a Week 1 pick path). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
 
-Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on Pick / Schedule are **informational ESPN lines** when we have them (for example “Favourite: BUF -4.5”). Those lists do **not** show TV channel or quarter / down-distance (that stays on **Scores**). If ESPN has no line, that field is hidden — we never invent a fake **-3** for every team.
+Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on Pick / Schedule / confirm / team This week / Home are **informational ESPN lines** in plain language when we have them (for example “BUF favoured by 4.5”; a pick'em is “Even (pick'em)”). Those lists do **not** show TV channel or quarter / down-distance (that stays on **Scores**). If ESPN has no line, that field is hidden — we never invent a fake **-3** for every team.
 
 ### Lock
 
@@ -429,7 +429,8 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Scores: pick week + no future weeks | this wrap-up | Scores opens on **your** current pick week. You can look back. Future weeks stay on **Schedule**. |
 | Schedule fake -3 odds | [#57](https://github.com/triwithms/survive-sunday/pull/57) | Stopped inventing home **-3** when a line was missing. |
 | Schedule / Pick list: no TV or 2Q; real ESPN favourites | [#58](https://github.com/triwithms/survive-sunday/pull/58) | Schedule and Pick cards drop CBS/FOX/TSN and quarter / down-distance. Favourites come from the ESPN week scoreboard (for example BUF -4.5) when ESPN publishes a line. |
-| Schedule / Pick: no injury Q chips; Pick shows favourite | this PR | Schedule and Pick lists no longer show Out / Doubtful / **Q** injury count chips. Pick now shows the same **Favourite: BUF -4.5** line as Schedule. Injuries stay on team pages. Scores live strip is unchanged. |
+| Schedule / Pick: no injury Q chips; Pick shows favourite | [#59](https://github.com/triwithms/survive-sunday/pull/59) | Schedule and Pick lists no longer show Out / Doubtful / **Q** injury count chips. Pick shows the same favourite line as Schedule. Injuries stay on team pages. Scores live strip is unchanged. |
+| Favourite copy: plain language, not minus spreads | this PR | Friends see **BUF favoured by 4.5** (or **Even (pick'em)**) instead of **Favourite: BUF -4.5**. Hidden when ESPN has no real line. |
 
 ### Open — not on `main` yet
 

@@ -1,4 +1,4 @@
-import { formatSignedSpread, sanitizeGameOdds } from "@/lib/odds";
+import { sanitizeGameOdds } from "@/lib/odds";
 
 /** Shared helpers for prior-year rank, standings, and favourite display (en-CA). */
 
@@ -65,11 +65,30 @@ export function formatCurrentStanding(s: StandingBits | null | undefined): strin
 export type FavouriteInfo = {
   abbr: string;
   spread: number;
-  /** e.g. `KC -3.5` */
+  /** e.g. `KC favoured by 3.5` or `even` */
   line: string;
-  /** e.g. `Favourite: KC -3.5` */
+  /** e.g. `KC favoured by 3.5` or `Even (pick'em)` */
   label: string;
 };
+
+function formatMargin(spread: number): string {
+  const abs = Math.abs(Math.round(spread * 10) / 10);
+  return Number.isInteger(abs) ? String(abs) : abs.toFixed(1);
+}
+
+function favouriteCopy(abbr: string, signedSpread: number): FavouriteInfo {
+  const rounded = Math.round(signedSpread * 10) / 10;
+  if (rounded === 0) {
+    return {
+      abbr: "",
+      spread: 0,
+      line: "even",
+      label: "Even (pick'em)",
+    };
+  }
+  const phrase = `${abbr} favoured by ${formatMargin(rounded)}`;
+  return { abbr, spread: signedSpread, line: phrase, label: phrase };
+}
 
 export function resolveFavourite(opts: {
   homeAbbr: string;
@@ -84,37 +103,19 @@ export function resolveFavourite(opts: {
   const spreadHome = odds.spreadHome;
   const spreadAway = odds.spreadAway;
   if (spreadHome != null && !Number.isNaN(Number(spreadHome)) && spreadHome < 0) {
-    const line = `${homeAbbr} ${formatSignedSpread(spreadHome)}`;
-    return {
-      abbr: homeAbbr,
-      spread: spreadHome,
-      line,
-      label: `Favourite: ${line}`,
-    };
+    return favouriteCopy(homeAbbr, spreadHome);
   }
   if (spreadAway != null && !Number.isNaN(Number(spreadAway)) && spreadAway < 0) {
-    const line = `${awayAbbr} ${formatSignedSpread(spreadAway)}`;
-    return {
-      abbr: awayAbbr,
-      spread: spreadAway,
-      line,
-      label: `Favourite: ${line}`,
-    };
+    return favouriteCopy(awayAbbr, spreadAway);
   }
-  // Pick side closer to favourite via negative ML-style: smaller (more negative) home spread means home favoured
   if (spreadHome != null && !Number.isNaN(Number(spreadHome))) {
-    if (spreadHome === 0) return null;
+    if (spreadHome === 0) return favouriteCopy("", 0);
     if (spreadHome > 0) {
-      // home is underdog; away favoured by -spreadHome
-      const spread = -spreadHome;
-      const line = `${awayAbbr} ${formatSignedSpread(spread)}`;
-      return {
-        abbr: awayAbbr,
-        spread,
-        line,
-        label: `Favourite: ${line}`,
-      };
+      return favouriteCopy(awayAbbr, -spreadHome);
     }
+  }
+  if (spreadAway != null && !Number.isNaN(Number(spreadAway)) && spreadAway === 0) {
+    return favouriteCopy("", 0);
   }
   return null;
 }

@@ -299,7 +299,7 @@ export default async function PoolPage({
                 </p>
               )}
               {myFav && (
-                <p className="text-xs font-mono text-[var(--text-muted)] mt-0.5">
+                <p className="text-xs text-[var(--text-muted)] mt-0.5">
                   {myFav.label}
                 </p>
               )}

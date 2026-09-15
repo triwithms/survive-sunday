@@ -48,7 +48,7 @@ assert.equal(
     ...PLACEHOLDER_ODDS,
   }),
   null,
-  "placeholder must not render Favourite: SEA -3"
+  "placeholder must not render SEA favoured by 3"
 );
 
 const missing = resolveSeedOdds(undefined);
@@ -129,7 +129,7 @@ assert.equal(
     awayAbbr: "DET",
     ...scoreboardBuf!,
   })?.label,
-  "Favourite: BUF -4.5"
+  "BUF favoured by 4.5"
 );
 
 const scoreboardCar = parseEspnCompetitionOdds(
@@ -153,7 +153,7 @@ assert.equal(
     awayAbbr: "CAR",
     ...scoreboardCar!,
   })?.label,
-  "Favourite: CAR -2.5"
+  "CAR favoured by 2.5"
 );
 
 assert.equal(parseEspnCompetitionOdds(undefined, "BUF", "DET"), null);
@@ -186,8 +186,8 @@ const favBuf = resolveFavourite({
   ...bufAtDet!,
 });
 assert.equal(favBuf?.abbr, "BUF");
-assert.equal(favBuf?.line, "BUF -4.5");
-assert.equal(favBuf?.label, "Favourite: BUF -4.5");
+assert.equal(favBuf?.line, "BUF favoured by 4.5");
+assert.equal(favBuf?.label, "BUF favoured by 4.5");
 
 const seaClose = parseEspnSummaryOdds({
   pickcenter: [
@@ -211,7 +211,7 @@ const favSea = resolveFavourite({
   awayAbbr: "NE",
   ...seaClose!,
 });
-assert.equal(favSea?.label, "Favourite: SEA -3");
+assert.equal(favSea?.label, "SEA favoured by 3");
 
 const season = loadNormalizedSeason();
 const week1 = season.find((w) => w.week === 1);
@@ -251,7 +251,7 @@ const w1Favs = week1!.games.map((g, i) =>
     ...w1[i],
   })
 );
-const fakeMinus3 = w1Favs.filter((f) => f?.line.endsWith(" -3"));
+const fakeMinus3 = w1Favs.filter((f) => f?.label.endsWith(" favoured by 3"));
 assert.ok(
   fakeMinus3.length < week1!.games.length,
   `week 1 must not show -3 on every favourite (got ${fakeMinus3.length}/${week1!.games.length})`
@@ -302,7 +302,20 @@ assert.equal(
     awayAbbr: "BAL",
     ...balAtInd!,
   })?.label,
-  "Favourite: BAL -3"
+  "BAL favoured by 3"
+);
+
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "NYG",
+    awayAbbr: "DAL",
+    spreadHome: 0,
+    spreadAway: 0,
+    mlHome: -110,
+    mlAway: -110,
+  })?.label,
+  "Even (pick'em)",
+  "a real ESPN pick'em shows even, not a minus spread"
 );
 
 console.log("verify-odds OK");
