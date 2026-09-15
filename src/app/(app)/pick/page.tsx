@@ -16,7 +16,7 @@ import {
 } from "@/lib/live-scores";
 import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
 import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
-import { teamLogoUrl } from "@/lib/espn-teams";
+import { normAbbr, teamLogoUrl } from "@/lib/espn-teams";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { sanitizeGameOdds } from "@/lib/odds";
 
@@ -155,7 +155,7 @@ export default async function PickPage({
   const poll = shouldPollLiveScores(week.games);
 
   function sidePayload(abbr: string) {
-    const t = teamByAbbr.get(abbr);
+    const t = teamByAbbr.get(normAbbr(abbr)) ?? teamByAbbr.get(abbr);
     return {
       abbr,
       name: t?.name ?? abbr,
