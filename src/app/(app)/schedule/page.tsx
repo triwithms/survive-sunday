@@ -18,7 +18,6 @@ import {
 } from "@/lib/live-scores";
 import { formatMatchupListLine } from "@/lib/game-display";
 import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
-import { lookupStoredLogo, teamLogoUrl } from "@/lib/espn-teams";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 
 export const dynamic = "force-dynamic";
@@ -82,10 +81,6 @@ export default async function SchedulePage({
   });
   const games = weekFresh.games;
   const poll = shouldPollLiveScores(games);
-  const logoRows = await prisma.team.findMany({
-    select: { abbr: true, logoUrl: true },
-  });
-  const logoByAbbr = new Map(logoRows.map((t) => [t.abbr, t.logoUrl]));
 
   const weekOptions = weeks.map((candidate) => ({
     number: candidate.number,
@@ -158,14 +153,7 @@ export default async function SchedulePage({
                       prefetch={false}
                       className="inline-flex items-center gap-1.5 min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
                     >
-                      <TeamLogo
-                        abbr={g.awayAbbr}
-                        logoUrl={teamLogoUrl(
-                          g.awayAbbr,
-                          lookupStoredLogo(logoByAbbr, g.awayAbbr)
-                        )}
-                        size={TEAM_LOGO_SIZE.compact}
-                      />
+                      <TeamLogo abbr={g.awayAbbr} size={TEAM_LOGO_SIZE.compact} />
                       {g.awayAbbr}
                     </Link>
                     <span className="text-[var(--text-muted)]">@</span>
@@ -174,14 +162,7 @@ export default async function SchedulePage({
                       prefetch={false}
                       className="inline-flex items-center gap-1.5 min-h-11 px-1 font-semibold text-gold-400 hover:underline underline-offset-2"
                     >
-                      <TeamLogo
-                        abbr={g.homeAbbr}
-                        logoUrl={teamLogoUrl(
-                          g.homeAbbr,
-                          lookupStoredLogo(logoByAbbr, g.homeAbbr)
-                        )}
-                        size={TEAM_LOGO_SIZE.compact}
-                      />
+                      <TeamLogo abbr={g.homeAbbr} size={TEAM_LOGO_SIZE.compact} />
                       {g.homeAbbr}
                     </Link>
                     {g.status === "live" && (

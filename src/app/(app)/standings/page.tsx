@@ -26,7 +26,7 @@ import {
   pickHrefForWeek,
   resolvePlayerPickWeek,
 } from "@/lib/next-week-picks";
-import { lookupStoredLogo, teamLogoUrl } from "@/lib/espn-teams";
+import { teamLogoUrl } from "@/lib/espn-teams";
 import { isPoolParticipant, isSingleEliminationWeek } from "@/lib/pool-rules";
 
 export const dynamic = "force-dynamic";
@@ -293,7 +293,7 @@ export default async function StandingsPage() {
                         abbr={pick.teamAbbr}
                         logoUrl={teamLogoUrl(
                           pick.teamAbbr,
-                          lookupStoredLogo(logoByAbbr, pick.teamAbbr)
+                          logoByAbbr.get(pick.teamAbbr)
                         )}
                         size={TEAM_LOGO_SIZE.row}
                       />

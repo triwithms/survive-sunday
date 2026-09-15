@@ -17,7 +17,7 @@ import { AutoPickStamps } from "@/components/AutoPickStamps";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
-import { lookupStoredLogo, teamLogoUrl } from "@/lib/espn-teams";
+import { teamLogoUrl } from "@/lib/espn-teams";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { ShareExport } from "@/components/ShareExport";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
@@ -248,14 +248,8 @@ export default async function ScoresPage({
                 note: g.note,
                 kickoff: g.kickoff,
                 network: g.network,
-                awayLogoUrl: teamLogoUrl(
-                  g.awayAbbr,
-                  lookupStoredLogo(logoByAbbr, g.awayAbbr)
-                ),
-                homeLogoUrl: teamLogoUrl(
-                  g.homeAbbr,
-                  lookupStoredLogo(logoByAbbr, g.homeAbbr)
-                ),
+                awayLogoUrl: teamLogoUrl(g.awayAbbr, logoByAbbr.get(g.awayAbbr)),
+                homeLogoUrl: teamLogoUrl(g.homeAbbr, logoByAbbr.get(g.homeAbbr)),
               }}
             />
           ))}
@@ -319,7 +313,7 @@ export default async function ScoresPage({
                               abbr={pick.teamAbbr}
                               logoUrl={teamLogoUrl(
                                 pick.teamAbbr,
-                                lookupStoredLogo(logoByAbbr, pick.teamAbbr)
+                                logoByAbbr.get(pick.teamAbbr)
                               )}
                               size={TEAM_LOGO_SIZE.compact}
                             />

@@ -1,36 +1,37 @@
 /**
- * Team logo URL helper (no network).
+ * Team badge helper (no network).
  *
  *   npx tsx scripts/verify-team-logo.ts
  */
 import assert from "node:assert/strict";
-import {
-  ESPN_TEAM_IDS,
-  espnTeamLogoUrl,
-  lookupStoredLogo,
-  teamLogoUrl,
-} from "../src/lib/espn-teams";
+import fs from "node:fs";
+import path from "node:path";
+import { ESPN_TEAM_IDS } from "../src/lib/espn-teams";
+import { TEAM_BADGES, badgeAbbr, teamBadge, teamBadgeSvg } from "../src/lib/team-badges";
 import { TEAM_LOGO_SIZE } from "../src/lib/team-logo-size";
 
-assert.equal(
-  espnTeamLogoUrl("KC"),
-  "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
-);
-assert.equal(
-  espnTeamLogoUrl("WAS"),
-  "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"
-);
-assert.equal(
-  espnTeamLogoUrl("wsh"),
-  "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"
-);
-assert.equal(
-  teamLogoUrl("KC", "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"),
-  "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
-);
-assert.equal(teamLogoUrl("GB", null), espnTeamLogoUrl("GB"));
-assert.equal(teamLogoUrl("LAR", "  "), espnTeamLogoUrl("LAR"));
-assert.equal(teamLogoUrl("NYJ"), espnTeamLogoUrl("NYJ"));
+assert.equal(Object.keys(TEAM_BADGES).length, 32);
+assert.equal(Object.keys(TEAM_BADGES).sort().join(","), Object.keys(ESPN_TEAM_IDS).sort().join(","));
+
+for (const abbr of Object.keys(TEAM_BADGES)) {
+  const b = teamBadge(abbr);
+  assert.equal(b.abbr, abbr);
+  assert.match(b.primary, /^#[0-9A-Fa-f]{6}$/, `${abbr} primary`);
+  assert.match(b.secondary, /^#[0-9A-Fa-f]{6}$/, `${abbr} secondary`);
+  const svg = teamBadgeSvg(abbr);
+  assert.match(svg, /<circle/);
+  assert.ok(svg.includes(b.abbr));
+  assert.ok(!svg.includes("espncdn"));
+}
+
+assert.equal(badgeAbbr("WSH"), "WAS");
+assert.equal(badgeAbbr("JAC"), "JAX");
+assert.equal(teamBadge("BUF").abbr, "BUF");
+assert.equal(teamBadge("DET").primary, "#0076B6");
+assert.equal(teamBadge("KC").primary, "#E31837");
+assert.equal(teamBadge("WAS").abbr, "WAS");
+assert.equal(teamBadge("wsh").abbr, "WAS");
+assert.equal(teamBadge("JAC").abbr, "JAX");
 
 assert.equal(TEAM_LOGO_SIZE.compact, 44);
 assert.equal(TEAM_LOGO_SIZE.row, 48);
@@ -38,63 +39,13 @@ assert.equal(TEAM_LOGO_SIZE.slate, 66);
 assert.equal(TEAM_LOGO_SIZE.featured, 84);
 assert.equal(TEAM_LOGO_SIZE.hero, 96);
 
-const ALIASES: Array<[string, string]> = [
-  ["WSH", "WAS"],
-  ["WFT", "WAS"],
-  ["JAC", "JAX"],
-  ["LA", "LAR"],
-  ["STL", "LAR"],
-  ["SD", "LAC"],
-  ["OAK", "LV"],
-  ["LVR", "LV"],
-  ["GNB", "GB"],
-  ["KAN", "KC"],
-  ["NWE", "NE"],
-  ["NOR", "NO"],
-  ["SFO", "SF"],
-  ["TAM", "TB"],
-];
-
-const logos = new Set<string>();
-for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
-  const url = espnTeamLogoUrl(abbr);
-  assert.match(
-    url,
-    /^https:\/\/a\.espncdn\.com\/i\/teamlogos\/nfl\/500\/[a-z]{2,3}\.png$/,
-    `${abbr} logo url`
-  );
-  assert.notEqual(url, "https://a.espncdn.com/i/teamlogos/nfl/500/.png");
-  assert.equal(teamLogoUrl(abbr, null), url);
-  assert.equal(teamLogoUrl(abbr.toLowerCase(), "  "), url);
-  logos.add(url);
+const badgeDir = path.join(process.cwd(), "public/team-badges");
+for (const abbr of Object.keys(TEAM_BADGES)) {
+  const file = path.join(badgeDir, `${abbr.toLowerCase()}.svg`);
+  assert.equal(fs.existsSync(file), true, file);
+  const body = fs.readFileSync(file, "utf8");
+  assert.match(body, /<svg/);
+  assert.ok(body.includes(abbr));
 }
-assert.equal(logos.size, 32, "32 distinct ESPN logo URLs");
-
-for (const [alias, canonical] of ALIASES) {
-  assert.equal(
-    espnTeamLogoUrl(alias),
-    espnTeamLogoUrl(canonical),
-    `${alias} → ${canonical} logo`
-  );
-  assert.equal(teamLogoUrl(alias, null), espnTeamLogoUrl(canonical));
-}
-
-const stored = new Map<string, string | null>([
-  ["WAS", "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"],
-  ["JAX", "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png"],
-]);
-assert.equal(
-  lookupStoredLogo(stored, "WFT"),
-  "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"
-);
-assert.equal(
-  lookupStoredLogo(stored, "JAC"),
-  "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png"
-);
-assert.equal(lookupStoredLogo(stored, "KC"), null);
-assert.equal(
-  teamLogoUrl("WFT", lookupStoredLogo(stored, "WFT")),
-  espnTeamLogoUrl("WAS")
-);
 
 console.log("verify-team-logo: ok");

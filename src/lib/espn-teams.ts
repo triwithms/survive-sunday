@@ -38,27 +38,9 @@ const ESPN_ID_TO_ABBR: Record<string, string> = Object.fromEntries(
   Object.entries(ESPN_TEAM_IDS).map(([abbr, id]) => [id, abbr])
 );
 
-/** Feed / historical aliases → app abbr used by Team rows and logo URLs. */
-const ABBR_ALIASES: Record<string, string> = {
-  WSH: "WAS",
-  WFT: "WAS",
-  JAC: "JAX",
-  LA: "LAR",
-  STL: "LAR",
-  SD: "LAC",
-  OAK: "LV",
-  LVR: "LV",
-  GNB: "GB",
-  KAN: "KC",
-  NWE: "NE",
-  NOR: "NO",
-  SFO: "SF",
-  TAM: "TB",
-};
-
 export function normAbbr(abbr: string): string {
   const u = abbr.trim().toUpperCase();
-  return ABBR_ALIASES[u] ?? u;
+  return u === "WSH" ? "WAS" : u;
 }
 
 /** App abbr (WAS) → ESPN site abbreviation (WSH). */
@@ -84,13 +66,4 @@ export function teamLogoUrl(abbr: string, stored?: string | null): string {
   const trimmed = stored?.trim();
   if (trimmed) return trimmed;
   return espnTeamLogoUrl(abbr);
-}
-
-/** Stored Team.logoUrl for an abbr or any known alias of that team. */
-export function lookupStoredLogo(
-  byAbbr: Map<string, string | null>,
-  abbr: string
-): string | null {
-  const key = normAbbr(abbr);
-  return byAbbr.get(key) ?? byAbbr.get(abbr) ?? byAbbr.get(espnAbbr(key)) ?? null;
 }
