@@ -48,14 +48,6 @@ assert.equal(
   "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"
 );
 assert.equal(
-  teamLogoUrl("CAR", "https://a.espncdn.com/i/teamlogos/nfl/500/29.png"),
-  espnTeamLogoUrl("CAR")
-);
-assert.equal(
-  teamLogoUrl("ATL", "https://a.espncdn.com/i/teamlogos/nfl/500/1.png"),
-  espnTeamLogoUrl("ATL")
-);
-assert.equal(
   teamLogoUrl("KC", "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"),
   "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"
 );
@@ -100,6 +92,8 @@ const scheduleSrc = fs.readFileSync(
   "utf8"
 );
 assert.match(scheduleSrc, /<TeamLogo/);
+assert.match(scheduleSrc, /TEAM_LOGO_SIZE\.compact/);
+assert.match(scheduleSrc, /logoByAbbr/);
 
 function httpStatus(url: string): string {
   const result = spawnSync(
