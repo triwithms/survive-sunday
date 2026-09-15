@@ -61,9 +61,14 @@ export function espnTeamLogoUrl(abbr: string): string {
   return `https://a.espncdn.com/i/teamlogos/nfl/500/${espnAbbr(abbr).toLowerCase()}.png`;
 }
 
+/** Numeric `/500/29.png` leftovers from a reverted CAR oneshot — not the ESPN abbr slug. */
+function isEspnNumericFilename(url: string): boolean {
+  return /\/i\/teamlogos\/nfl\/500\/\d+\.png(?:[?#]|$)/i.test(url);
+}
+
 /** Prefer stored Team.logoUrl; otherwise the ESPN CDN logo. Never invents art. */
 export function teamLogoUrl(abbr: string, stored?: string | null): string {
   const trimmed = stored?.trim();
-  if (trimmed) return trimmed;
+  if (trimmed && !isEspnNumericFilename(trimmed)) return trimmed;
   return espnTeamLogoUrl(abbr);
 }

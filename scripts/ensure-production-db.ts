@@ -29,6 +29,7 @@ import { ensurePoolRulesColumns } from "../src/lib/pool-rules-schema";
 import { ensureCanonicalLiveSeats } from "../src/lib/live-roster";
 import { applyCannoliTempPasswordOneshot } from "../src/lib/oneshot-cannoli-password";
 import { clearPlaceholderOdds } from "../src/lib/odds-db";
+import { espnTeamLogoUrl } from "../src/lib/espn-teams";
 
 const ABANDONED_TABLES = ["TwoFactorChallenge"];
 
@@ -296,6 +297,28 @@ async function main() {
     });
     if (pool) {
       const users = await prisma.user.count();
+      try {
+        const rows = await prisma.team.findMany({
+          select: { abbr: true, logoUrl: true },
+        });
+        let patched = 0;
+        for (const row of rows) {
+          const wanted = espnTeamLogoUrl(row.abbr);
+          if (row.logoUrl === wanted) continue;
+          await prisma.team.update({
+            where: { abbr: row.abbr },
+            data: { logoUrl: wanted },
+          });
+          patched += 1;
+        }
+        console.log(
+          patched
+            ? `[ensure-db] ESPN logoUrl restored (${patched} teams)`
+            : "[ensure-db] ESPN logoUrl already canonical"
+        );
+      } catch (error) {
+        console.warn("[ensure-db] ESPN logoUrl restore skipped (build continues)", error);
+      }
       try {
         const result = await applyCanonicalRosterNames(prisma, pool.id);
         if (result.updated.length === 0) {
