@@ -33,7 +33,7 @@ import {
   effectiveCurrentWeek,
   weeksForParticipants,
 } from "@/lib/pool-mode";
-import { parseWeekParam, resolveSelectedWeekNumber } from "@/lib/weeks";
+import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { HomeVideosTeaser } from "@/components/WeeklyVideosPanel";
 
@@ -74,14 +74,39 @@ export default async function PoolPage({
       },
     })
   );
-  const selectedNumber = resolveSelectedWeekNumber({
+  const currentWeekRow = weeks.find((row) => row.number === currentWeek);
+  const myCurrentWeekPick = currentWeekRow
+    ? await prisma.pick.findUnique({
+        where: {
+          membershipId_weekId: {
+            membershipId: me.id,
+            weekId: currentWeekRow.id,
+          },
+        },
+      })
+    : null;
+  const decision = resolvePlayerPickWeekFromLoaded({
+    poolCurrentWeek: currentWeek,
+    weeks: weeks.map((row) => ({
+      number: row.number,
+      locked: isWeekLocked(row),
+      games: row.games,
+    })),
+    currentPick: myCurrentWeekPick,
+    playingFromWeek: me.playingFromWeek,
+  });
+  const focusWeek = decision.actionWeek;
+  const selectedNumber = resolvePageWeekNumber({
     requested: parseWeekParam(params?.week),
     weekNumbers: weeks.map((candidate) => candidate.number),
-    currentWeek,
+    basePath: "/pool",
+    poolCurrentWeek: currentWeek,
+    pickActionWeek: focusWeek,
+    allowFuture: false,
   });
   const selectedRef =
     weeks.find((candidate) => candidate.number === selectedNumber) ??
-    weeks.find((candidate) => candidate.number === currentWeek) ??
+    weeks.find((candidate) => candidate.number === focusWeek) ??
     weeks[0];
 
   if (!selectedRef) {
@@ -145,29 +170,6 @@ export default async function PoolPage({
       existingPick: myPickRaw ?? null,
       existingGame: gameForPick(myPickRaw, week.games) ?? myPick?.game ?? null,
     });
-  const currentWeekRef = weeks.find((row) => row.number === currentWeek);
-  const currentPickForDecision = isCurrentWeek
-    ? myPickRaw ?? null
-    : currentWeekRef
-      ? await prisma.pick.findUnique({
-          where: {
-            membershipId_weekId: {
-              membershipId: self.id,
-              weekId: currentWeekRef.id,
-            },
-          },
-        })
-      : null;
-  const decision = resolvePlayerPickWeekFromLoaded({
-    poolCurrentWeek: currentWeek,
-    weeks: weeks.map((row) => ({
-      number: row.number,
-      locked: isWeekLocked(row),
-      games: row.games,
-    })),
-    currentPick: currentPickForDecision,
-    playingFromWeek: self.playingFromWeek,
-  });
   const emptyPick = homeEmptyPickCopy(decision);
   const nextWeekRef = weeks.find((row) => row.number === decision.nextWeek);
   const nextWeekPick =
@@ -254,7 +256,7 @@ export default async function PoolPage({
       <WeekSwitcher
         weeks={weekOptions}
         selectedWeek={week.number}
-        currentWeek={currentWeek}
+        currentWeek={focusWeek}
         basePath="/pool"
       />
 
