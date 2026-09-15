@@ -126,14 +126,19 @@ export function parseSignedNumber(raw: unknown): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-/** ` -3.5` / `+3` / `PK` for chips and favourite labels. */
+/** Absolute points, no sign — `4.5` / `3`. */
+export function formatSpreadPoints(n: number): string {
+  if (!Number.isFinite(n)) return "";
+  const abs = Math.abs(Math.round(n * 10) / 10);
+  return Number.isInteger(abs) ? String(abs) : abs.toFixed(1);
+}
+
+/** `-3.5` / `+3` / `PK` for compact betting-line storage. */
 export function formatSignedSpread(n: number): string {
   if (!Number.isFinite(n)) return "";
   const rounded = Math.round(n * 10) / 10;
   if (rounded === 0) return "PK";
-  const abs = Math.abs(rounded);
-  const body = Number.isInteger(abs) ? String(abs) : abs.toFixed(1);
-  return `${rounded < 0 ? "-" : "+"}${body}`;
+  return `${rounded < 0 ? "-" : "+"}${formatSpreadPoints(rounded)}`;
 }
 
 export function formatSpreadOrDash(n: number | null | undefined): string {

@@ -216,7 +216,7 @@ export function PickClient({
                   </p>
                 )}
                 {activeFav && (
-                  <p className="text-xs font-mono text-[var(--text-primary)] mt-0.5">
+                  <p className="text-xs text-[var(--text-primary)] mt-0.5">
                     {activeFav.label}
                   </p>
                 )}

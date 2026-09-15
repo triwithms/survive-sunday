@@ -430,7 +430,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Schedule fake -3 odds | [#57](https://github.com/triwithms/survive-sunday/pull/57) | Stopped inventing home **-3** when a line was missing. |
 | Schedule / Pick list: no TV or 2Q; real ESPN favourites | [#58](https://github.com/triwithms/survive-sunday/pull/58) | Schedule and Pick cards drop CBS/FOX/TSN and quarter / down-distance. Favourites come from the ESPN week scoreboard (for example BUF -4.5) when ESPN publishes a line. |
 | Schedule / Pick: no injury Q chips; Pick shows favourite | [#59](https://github.com/triwithms/survive-sunday/pull/59) | Schedule and Pick lists no longer show Out / Doubtful / **Q** injury count chips. Pick shows the same favourite line as Schedule. Injuries stay on team pages. Scores live strip is unchanged. |
-| Favourite copy: plain language, not minus spreads | this PR | Friends see **BUF favoured by 4.5** (or **Even (pick'em)**) instead of **Favourite: BUF -4.5**. Hidden when ESPN has no real line. |
+| Spread copy: favoured by N | this PR | Plain-language favourite: **BUF favoured by 4.5** (not Favourite: BUF -4.5 / Fav -4.5). Pick’em shows **Even (pick’em)**. Still hidden when ESPN has no line. |
 
 ### Open — not on `main` yet
 
