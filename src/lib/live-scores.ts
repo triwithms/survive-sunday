@@ -9,6 +9,7 @@ import { fetchEspnJson, normAbbr } from "@/lib/espn";
 import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
 import { scheduleScoreUpdate } from "@/lib/notification-events";
 import { formatEspnSituation } from "@/lib/game-display";
+import { syncOddsFromEspnSnapshots } from "@/lib/espn-odds";
 
 /** ESPN → app team abbreviation. */
 export function fromEspnAbbr(abbr: string): string {
@@ -282,6 +283,12 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
         });
       }
     }
+  }
+
+  try {
+    await syncOddsFromEspnSnapshots(prisma, week.games, snapshots);
+  } catch (e) {
+    console.error("espn odds sync skipped", e);
   }
 
   // Ungrade picks whose game is no longer final (e.g. premature demo finals).

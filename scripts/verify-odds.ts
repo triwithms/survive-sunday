@@ -1,0 +1,220 @@
+/**
+ * Odds sanitizer + ESPN pickcenter parse (no database).
+ *
+ *   npx tsx scripts/verify-odds.ts
+ */
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { resolveFavourite } from "../src/lib/matchup-meta";
+import {
+  formatSignedSpread,
+  formatSpreadOrDash,
+  isPlaceholderOdds,
+  lookupSeedOdds,
+  parseEspnPickcenter,
+  parseEspnSummaryOdds,
+  parseSignedNumber,
+  PLACEHOLDER_ODDS,
+  resolveSeedOdds,
+  sanitizeGameOdds,
+  type SeedOddsInput,
+} from "../src/lib/odds";
+import { loadNormalizedSeason } from "../src/lib/season-schedule";
+
+assert.equal(isPlaceholderOdds(PLACEHOLDER_ODDS), true);
+assert.equal(
+  isPlaceholderOdds({
+    spreadHome: -3,
+    spreadAway: 3,
+    mlHome: -170,
+    mlAway: 142,
+  }),
+  false,
+  "real SEA -3 closing line is not the seed placeholder"
+);
+assert.deepEqual(sanitizeGameOdds(PLACEHOLDER_ODDS), {
+  spreadHome: null,
+  spreadAway: null,
+  mlHome: null,
+  mlAway: null,
+});
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "SEA",
+    awayAbbr: "NE",
+    ...PLACEHOLDER_ODDS,
+  }),
+  null,
+  "placeholder must not render Favourite: SEA -3"
+);
+
+const missing = resolveSeedOdds(undefined);
+assert.equal(missing.spreadHome, null);
+assert.equal(missing.spreadAway, null);
+assert.equal(missing.mlHome, null);
+assert.equal(missing.mlAway, null);
+
+const fromFile = resolveSeedOdds({
+  away: "BUF",
+  home: "HOU",
+  spread: { home: 1.5, away: -1.5 },
+  moneyline: { home: 105, away: -125 },
+});
+assert.equal(fromFile.spreadHome, 1.5);
+assert.equal(fromFile.spreadAway, -1.5);
+assert.equal(fromFile.mlHome, 105);
+assert.equal(fromFile.mlAway, -125);
+
+assert.equal(parseSignedNumber("-4.5"), -4.5);
+assert.equal(parseSignedNumber("+4.5"), 4.5);
+assert.equal(parseSignedNumber("PK"), 0);
+assert.equal(formatSignedSpread(-4.5), "-4.5");
+assert.equal(formatSignedSpread(-3), "-3");
+assert.equal(formatSignedSpread(3.5), "+3.5");
+assert.equal(formatSpreadOrDash(null), "—");
+
+const bufAtDet = parseEspnPickcenter([
+  {
+    details: "BUF -4.5",
+    spread: -4.5,
+    homeTeamOdds: { favorite: true, moneyLine: -218 },
+    awayTeamOdds: { favorite: false, moneyLine: 180 },
+    pointSpread: {
+      home: { close: { line: "-4.5" } },
+      away: { close: { line: "+4.5" } },
+    },
+  },
+]);
+assert.ok(bufAtDet);
+assert.equal(bufAtDet!.spreadHome, -4.5);
+assert.equal(bufAtDet!.spreadAway, 4.5);
+assert.equal(bufAtDet!.mlHome, -218);
+assert.equal(bufAtDet!.mlAway, 180);
+
+const favBuf = resolveFavourite({
+  homeAbbr: "BUF",
+  awayAbbr: "DET",
+  ...bufAtDet!,
+});
+assert.equal(favBuf?.abbr, "BUF");
+assert.equal(favBuf?.line, "BUF -4.5");
+assert.equal(favBuf?.label, "Favourite: BUF -4.5");
+
+const seaClose = parseEspnSummaryOdds({
+  pickcenter: [
+    {
+      details: "SEA -3",
+      spread: -3,
+      homeTeamOdds: { favorite: true, moneyLine: -170 },
+      awayTeamOdds: { favorite: false, moneyLine: 142 },
+      pointSpread: {
+        home: { close: { line: "-3" } },
+        away: { close: { line: "+3" } },
+      },
+    },
+  ],
+});
+assert.ok(seaClose);
+assert.equal(seaClose!.spreadHome, -3);
+assert.equal(isPlaceholderOdds(seaClose), false);
+const favSea = resolveFavourite({
+  homeAbbr: "SEA",
+  awayAbbr: "NE",
+  ...seaClose!,
+});
+assert.equal(favSea?.label, "Favourite: SEA -3");
+
+const season = loadNormalizedSeason();
+const week1 = season.find((w) => w.week === 1);
+const week2 = season.find((w) => w.week === 2);
+assert.ok(week1 && week1.games.length >= 16, "week 1 slate");
+assert.ok(week2 && week2.games.length >= 16, "week 2 slate");
+
+const dataDir = path.resolve(process.cwd(), "data");
+const week1Odds = JSON.parse(
+  readFileSync(path.join(dataDir, "week1-games.json"), "utf8")
+) as { games: SeedOddsInput[] };
+const week2Odds = JSON.parse(
+  readFileSync(path.join(dataDir, "week2-odds.json"), "utf8")
+) as { games: SeedOddsInput[] };
+
+function linesForWeek(games: { awayAbbr: string; homeAbbr: string }[], odds: SeedOddsInput[]) {
+  return games.map((g) => lookupSeedOdds(odds, g.awayAbbr, g.homeAbbr));
+}
+
+const w1 = linesForWeek(week1!.games, week1Odds.games);
+const w2 = linesForWeek(week2!.games, week2Odds.games);
+assert.equal(
+  w1.filter((o) => isPlaceholderOdds(o)).length,
+  0,
+  "week 1 seed lookup must not stamp fake -3"
+);
+assert.equal(
+  w2.filter((o) => isPlaceholderOdds(o)).length,
+  0,
+  "week 2 seed lookup must not stamp fake -3"
+);
+
+const w1Favs = week1!.games.map((g, i) =>
+  resolveFavourite({
+    homeAbbr: g.homeAbbr,
+    awayAbbr: g.awayAbbr,
+    ...w1[i],
+  })
+);
+const fakeMinus3 = w1Favs.filter((f) => f?.line.endsWith(" -3"));
+assert.ok(
+  fakeMinus3.length < week1!.games.length,
+  `week 1 must not show -3 on every favourite (got ${fakeMinus3.length}/${week1!.games.length})`
+);
+
+const w2WithFileOdds = w2.filter((o) => o.spreadHome != null);
+assert.ok(
+  w2WithFileOdds.length < week2!.games.length,
+  "stale week2-odds.json should not match every official 2026 pairing — missing games stay blank, not -3"
+);
+
+const awayFav = parseEspnPickcenter([
+  {
+    details: "KC -2.5",
+    spread: -2.5,
+    homeTeamOdds: { favorite: false, moneyLine: 120 },
+    awayTeamOdds: { favorite: true, moneyLine: -140 },
+  },
+]);
+assert.equal(awayFav?.spreadAway, -2.5);
+assert.equal(awayFav?.spreadHome, 2.5);
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "PHI",
+    awayAbbr: "KC",
+    ...awayFav!,
+  })?.abbr,
+  "KC"
+);
+
+const balAtInd = parseEspnPickcenter([
+  {
+    details: "BAL -3",
+    spread: 3,
+    homeTeamOdds: { favorite: false, moneyLine: 130 },
+    awayTeamOdds: { favorite: true, moneyLine: -155 },
+    pointSpread: {
+      home: { close: { line: "+3" } },
+      away: { close: { line: "-3" } },
+    },
+  },
+]);
+assert.equal(balAtInd?.spreadHome, 3);
+assert.equal(balAtInd?.spreadAway, -3);
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "IND",
+    awayAbbr: "BAL",
+    ...balAtInd!,
+  })?.label,
+  "Favourite: BAL -3"
+);
+
+console.log("verify-odds OK");

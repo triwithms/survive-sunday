@@ -20,6 +20,7 @@ import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { InjuryChip } from "@/components/InjuryChip";
 import { NextWeekOpenTip } from "@/components/NextWeekOpenTip";
 import { formatScoreLine, type InjuryCountBits } from "@/lib/game-display";
+import { formatSignedSpread, formatSpreadOrDash } from "@/lib/odds";
 
 type Side = {
   abbr: string;
@@ -359,6 +360,8 @@ export function PickClient({
             awayAbbr: m.away.abbr,
             spreadHome: m.spreadHome,
             spreadAway: m.spreadAway,
+            mlHome: m.mlHome,
+            mlAway: m.mlAway,
           });
           const gameClosed = lockStartedGames && isGameStarted(m);
           return (
@@ -466,6 +469,8 @@ export function PickClient({
                 awayAbbr: confirm.matchup.away.abbr,
                 spreadHome: confirm.matchup.spreadHome,
                 spreadAway: confirm.matchup.spreadAway,
+                mlHome: confirm.matchup.mlHome,
+                mlAway: confirm.matchup.mlAway,
               });
               return fav ? (
                 <p className="text-xs font-mono text-[var(--text-muted)]">
@@ -474,8 +479,8 @@ export function PickClient({
               ) : null;
             })()}
             <p className="text-xs font-mono text-[var(--text-muted)]">
-              Spread: home {confirm.matchup.spreadHome ?? "—"} / away{" "}
-              {confirm.matchup.spreadAway ?? "—"}
+              Spread: home {formatSpreadOrDash(confirm.matchup.spreadHome)} / away{" "}
+              {formatSpreadOrDash(confirm.matchup.spreadAway)}
               {confirm.matchup.mlHome != null &&
                 ` · ML ${confirm.matchup.mlHome} / ${confirm.matchup.mlAway ?? "—"}`}
             </p>
@@ -560,7 +565,7 @@ function SideButton({
             </span>
             {favSpread != null && (
               <span className="rounded bg-gold-400/15 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-gold-400">
-                Fav {favSpread}
+                Fav {formatSignedSpread(favSpread)}
               </span>
             )}
           </div>

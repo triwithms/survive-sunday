@@ -198,6 +198,8 @@ export default async function PoolPage({
           awayAbbr: myPick.game.awayAbbr,
           spreadHome: myPick.game.spreadHome,
           spreadAway: myPick.game.spreadAway,
+          mlHome: myPick.game.mlHome,
+          mlAway: myPick.game.mlAway,
         })
       : null;
   const myInjuries = myPick

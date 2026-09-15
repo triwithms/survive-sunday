@@ -10,6 +10,7 @@ import {
   type NormalizedWeek,
 } from "../src/lib/season-schedule";
 import { backfillPoolAccessRoles } from "../src/lib/roles-db";
+import { lookupSeedOdds } from "../src/lib/odds";
 
 const prisma = new PrismaClient();
 
@@ -272,21 +273,6 @@ async function main() {
   const week2 = weekRows[1];
   if (!week1 || !week2) throw new Error("Failed to create weeks 1–2");
 
-  function oddsLookup(list: OddsGame[], away: string, home: string) {
-    return list.find((o) => o.away === away && o.home === home);
-  }
-
-  function resolveOdds(o: OddsGame | undefined) {
-    if (!o) {
-      return { spreadHome: -3, spreadAway: 3, mlHome: -150, mlAway: 130 };
-    }
-    const spreadHome = o.spreadHome ?? o.spread?.home ?? -3;
-    const spreadAway = o.spreadAway ?? o.spread?.away ?? -spreadHome;
-    const mlHome = o.mlHome ?? o.moneyline?.home ?? -150;
-    const mlAway = o.mlAway ?? o.moneyline?.away ?? 130;
-    return { spreadHome, spreadAway, mlHome, mlAway };
-  }
-
   async function seedGames(
     weekId: string,
     schedule: SlateGame[],
@@ -304,7 +290,7 @@ async function main() {
       }
       const status =
         g.status === "final" ? "final" : g.status === "live" ? "live" : "scheduled";
-      const odds = resolveOdds(oddsLookup(oddsList, awayAbbr, homeAbbr));
+      const odds = lookupSeedOdds(oddsList, awayAbbr, homeAbbr);
       await prisma.game.create({
         data: {
           id: `${idPrefix}-${String(gi).padStart(2, "0")}`,
@@ -361,7 +347,7 @@ async function main() {
           : overlay?.status === "live"
             ? "live"
             : "scheduled";
-      const odds = resolveOdds(oddsLookup(oddsList, g.awayAbbr, g.homeAbbr));
+      const odds = lookupSeedOdds(oddsList, g.awayAbbr, g.homeAbbr);
       await prisma.game.create({
         data: {
           id: gameIdFor(weekNumber, gi),
@@ -386,7 +372,12 @@ async function main() {
 
   if (seasonWeeks) {
     for (const row of weekRows) {
-      const oddsList = row.number === 1 ? week1Odds.games : week2Odds.games;
+      const oddsList =
+        row.number === 1
+          ? week1Odds.games
+          : row.number === 2
+            ? week2Odds.games
+            : [];
       const n = await seedOfficialWeek(row.id, row.number, oddsList);
       if (n > 0) {
         const lock = lockForWeek(row.number);
