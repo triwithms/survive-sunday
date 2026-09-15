@@ -36,6 +36,8 @@ import {
 import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { HomeVideosTeaser } from "@/components/WeeklyVideosPanel";
+import { teamLogoUrl } from "@/lib/espn-teams";
+import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -268,46 +270,53 @@ export default async function PoolPage({
         </p>
         {myPick ? (
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div>
-              <p className="text-xl font-semibold text-gold-400">
-                {myPick.teamAbbr}
-              </p>
-              {(myPrior || myStanding) && (
-                <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                  {[myPrior, myStanding].filter(Boolean).join(" · ")}
+            <div className="flex items-center gap-3 min-w-0">
+              <TeamLogo
+                abbr={myPick.teamAbbr}
+                logoUrl={teamLogoUrl(myPick.teamAbbr, myTeam?.logoUrl)}
+                size={TEAM_LOGO_SIZE.featured}
+              />
+              <div className="min-w-0">
+                <p className="text-xl font-semibold text-gold-400">
+                  {myPick.teamAbbr}
                 </p>
-              )}
-              {myPick.game && (
-                <p className="text-sm text-[var(--text-muted)]">
-                  {myPick.game.awayAbbr} @ {myPick.game.homeAbbr}
-                  {formatScoreLine(myPick.game)
-                    ? ` · ${formatScoreLine(myPick.game)}`
-                    : ""}
-                </p>
-              )}
-              {myInjuries && !myInjuries.failed && (
-                <p className="mt-1">
-                  <Link
-                    href={`/team/${myPick.teamAbbr}`}
-                    prefetch={false}
-                    className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-gold-400/30 hover:text-gold-400"
-                  >
-                    {formatInjuryChip(myInjuries.counts) ? (
-                      <InjuryChip counts={myInjuries.counts} />
-                    ) : (
-                      "Injury report"
-                    )}
-                  </Link>
-                </p>
-              )}
-              {myFav && (
-                <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                  {myFav.label}
-                </p>
-              )}
-              {myPick.source === "imported" && (
-                <span className="chip chip-live mt-1">Imported</span>
-              )}
+                {(myPrior || myStanding) && (
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                    {[myPrior, myStanding].filter(Boolean).join(" · ")}
+                  </p>
+                )}
+                {myPick.game && (
+                  <p className="text-sm text-[var(--text-muted)]">
+                    {myPick.game.awayAbbr} @ {myPick.game.homeAbbr}
+                    {formatScoreLine(myPick.game)
+                      ? ` · ${formatScoreLine(myPick.game)}`
+                      : ""}
+                  </p>
+                )}
+                {myInjuries && !myInjuries.failed && (
+                  <p className="mt-1">
+                    <Link
+                      href={`/team/${myPick.teamAbbr}`}
+                      prefetch={false}
+                      className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-gold-400/30 hover:text-gold-400"
+                    >
+                      {formatInjuryChip(myInjuries.counts) ? (
+                        <InjuryChip counts={myInjuries.counts} />
+                      ) : (
+                        "Injury report"
+                      )}
+                    </Link>
+                  </p>
+                )}
+                {myFav && (
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                    {myFav.label}
+                  </p>
+                )}
+                {myPick.source === "imported" && (
+                  <span className="chip chip-live mt-1">Imported</span>
+                )}
+              </div>
             </div>
             <div className="text-right">
               <StatusChip status={self.status} />
