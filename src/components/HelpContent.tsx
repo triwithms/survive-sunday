@@ -170,15 +170,15 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       </section>
       <section id="4-seeing-others-picks">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">4. Seeing others’ picks</h2>
-        <p className="text-[var(--text-muted)] mb-2">**Before lock:** you only see your own pick (or an empty “still deciding” state). Everyone else shows as hidden — think silhouettes and “reveals after kickoff.” The Board, Home, and Scores still list people by **same pick** (team abbreviation; no pick last), then **same game** (earlier kickoff first), then nickname **A–Z**. Status chips stay on each row — they do **not** split a pick group.</p>
-        <p className="text-[var(--text-muted)] mb-2">**After lock:** all picks for the week are revealed. Home shows **Picks by game**; Scores lists **Participants’ picks**. Both use the **same board order** as Standings:</p>
+        <p className="text-[var(--text-muted)] mb-2">**Before lock:** you only see your own pick (or an empty “still deciding” state). Everyone else shows as hidden — think silhouettes and “reveals after kickoff.” The Board, Home, and Scores still list people **undefeated first**, then **one-loss** (still alive with a mulligan), then **eliminated**. Within each of those groups: **same pick** (team abbreviation; no pick last), then **same game** (earlier kickoff first), then nickname **A–Z**.</p>
+        <p className="text-[var(--text-muted)] mb-2">**After lock:** all picks for the week are revealed. Home shows **Picks by game**; Scores lists **Participants’ picks**. Board and Scores use the **same order**:</p>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
-          <li>Games ordered by **kickoff** (earliest first)  </li>
-          <li>Under each game — **same-pick clusters**: away-side pickers, then home-side pickers  </li>
-          <li>Within each cluster (and on Scores / Missed / no pick) — nickname **A–Z**, with status chips (and graded result when available). Same pick stays together even if one friend is undefeated and another has a loss.  </li>
-          <li>At the bottom — a **Missed / no pick** group for anyone who missed lock or never picked</li>
+          <li>**Undefeated**, then **one-loss**, then **eliminated** (more losses further down)  </li>
+          <li>**Same pick** together (team abbreviation; no pick last in that group)  </li>
+          <li>**Same game** together (earlier kickoff first)  </li>
+          <li>Nickname **A–Z**  </li>
         </ol>
-        <p className="text-[var(--text-muted)] mb-2">That way you can see who stacked the same team, without undefeated / one-loss splitting a pick group.</p>
+        <p className="text-[var(--text-muted)] mb-2">Home’s **Picks by game** still groups the page by kickoff, then away-side pickers and home-side pickers. Inside each of those pick clusters (and Missed / no pick), the same undefeated → one-loss → eliminated → A–Z order applies.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
       <section id="5-status-badges">
@@ -367,7 +367,7 @@ Imported picks are real pool data. They affect:</h3>
           <li className="text-[var(--text-primary)]">**Grading** — wins and losses update status the same way live weeks do.</li>
           <li className="text-[var(--text-primary)]">**Mulligan** — a first wrong (or missed) imported pick still auto-burns the mulligan → **one loss**.</li>
           <li className="text-[var(--text-primary)]">**Team reuse** — imported teams are struck from that player’s list for the rest of the season.</li>
-          <li className="text-[var(--text-primary)]">**Standings** — the board sorts **same pick** (no pick last), then **same game** (earlier kickoff first), then nickname A–Z, using the imported history. Status chips still show; they do not split a pick group.</li>
+          <li className="text-[var(--text-primary)]">**Standings** — the board sorts **undefeated**, then **one-loss**, then **eliminated**, then **same pick** (no pick last in that group), then **same game** (earlier kickoff first), then nickname A–Z, using the imported history.</li>
         </ul>
         <h3 className="font-semibold mt-3 mb-1">How commissioners do it
 1. Open the admin **Import prior picks** flow (CSV upload or on-screen form).
@@ -385,7 +385,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **Pick deadline** | Header countdown to lock — first kickoff of the week. After that, everyone’s picks reveal. **Your next week opens when your own pick is locked** (your game started), not after Monday Night Football. |
 | **Lock** | Same moment as the pick deadline for the group board. Week 1 only: you can still change an existing pick until that team’s kickoff. When that game starts, next week’s picks open for you. |
 | **This week’s games** | The list of matchups you pick from on the Pick screen (not “slate”). |
-| **Board** | Pool board: same pick (team abbr; no pick last), then same game (earlier kickoff), then nickname A–Z. Status chips show on each row but do not split a pick group. After lock, Home still groups by kickoff-ordered games then away/home clusters; each cluster (and Scores’ pick list) uses that same order. |
+| **Board** | Pool board: undefeated, then one-loss, then eliminated. Within each group: same pick (team abbr; no pick last), then same game (earlier kickoff), then nickname A–Z. After lock, Home still groups by kickoff-ordered games then away/home clusters; each cluster (and Scores’ pick list) uses that same status-then-pick order. |
 | **Share (picture)** | Board or Scores: press and hold the title, or triple-tap the week label. No Share button on the screen. Full long picture is always offered. |
 | **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock), unless the commissioner turns it off. |

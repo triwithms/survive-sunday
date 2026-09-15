@@ -186,9 +186,9 @@ export default async function StandingsPage() {
               : "Current week unavailable"}
           </p>
           <p className="text-sm text-[var(--text-muted)]">
-            Sorted by same pick (no pick last), then same game (earlier
-            kickoff first), then nickname A–Z. Status chips stay on each
-            row — they do not split a pick group.
+            Sorted by undefeated, then one-loss, then eliminated. Within
+            each group: same pick (no pick last), then same game (earlier
+            kickoff first), then nickname A–Z.
             {!revealAllPicks
               ? " Others' picks stay hidden until the deadline."
               : ""}
