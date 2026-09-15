@@ -112,23 +112,37 @@ export function boardPickFields(
   };
 }
 
+const BOARD_STATUS_RANK: Record<string, number> = {
+  undefeated: 0,
+  one_loss: 1,
+  eliminated: 2,
+};
+
+function boardStatusRank(member: BoardMember): number {
+  return BOARD_STATUS_RANK[member.status] ?? 9;
+}
+
 /**
  * Player-facing board / week pick-list order — reuse anywhere a week’s
  * participant picks are listed (Board, Home/Pool, Scores, week picks API):
- * 1. Same pick (team abbr; no-pick / missed last)
- * 2. Same game (earlier kickoff, then game id)
- * 3. Nickname A–Z
- * Status does not split a pick group. Weeks survived is only a last-resort
- * tiebreak when pick, game, and nickname are identical.
+ * 1. Status / losses: undefeated → one-loss (still alive) → eliminated
+ *    (more losses further down)
+ * 2. Same pick (team abbr; no-pick / missed last within that status band)
+ * 3. Same game (earlier kickoff / schedule order, then game id)
+ * 4. Nickname A–Z
+ * Weeks survived is not a board-list key.
  */
 export function sortParticipants<T extends BoardMember>(members: T[]): T[] {
   return [...members].sort((a, b) => {
+    const sa = boardStatusRank(a);
+    const sb = boardStatusRank(b);
+    if (sa !== sb) return sa - sb;
+    if (a.losses !== b.losses) return a.losses - b.losses;
+
     const teamA = boardPickTeam(a);
     const teamB = boardPickTeam(b);
-    if (teamA !== teamB) {
-      if (!teamA) return 1;
-      if (!teamB) return -1;
-      return teamA.localeCompare(teamB, "en-CA");
+    if (!teamA || !teamB) {
+      if (teamA !== teamB) return teamA ? -1 : 1;
     }
 
     const ka = boardKickoffMs(a);
@@ -143,9 +157,13 @@ export function sortParticipants<T extends BoardMember>(members: T[]): T[] {
       return idA.localeCompare(idB, "en-CA");
     }
 
-    const byName = a.nickname.localeCompare(b.nickname, "en-CA");
-    if (byName !== 0) return byName;
-    return b.weeksSurvived - a.weeksSurvived;
+    if (teamA !== teamB) {
+      if (!teamA) return 1;
+      if (!teamB) return -1;
+      return teamA.localeCompare(teamB, "en-CA");
+    }
+
+    return a.nickname.localeCompare(b.nickname, "en-CA");
   });
 }
 
