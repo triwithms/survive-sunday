@@ -10,6 +10,7 @@ import {
   formatEspnSituation,
   formatKickoffForScores,
   formatLiveScorebug,
+  formatMatchupListLine,
   formatScorebugPeriodLine,
   formatScoreLine,
   formatScoresStatus,
@@ -199,6 +200,42 @@ assert.equal(
     note: "Q3 4:21 · ESPN",
   }),
     "17–14 · Q3 4:21"
+);
+assert.equal(
+  formatMatchupListLine({
+    status: "live",
+    scoreAway: 17,
+    scoreHome: 14,
+    note: "2Q 8:32 · BUF ball · 2nd & 7 · BUF 26 · ESPN",
+  }),
+  "LIVE 17–14"
+);
+assert.equal(
+  formatMatchupListLine({
+    status: "final",
+    scoreAway: 24,
+    scoreHome: 10,
+    note: "Final · ESPN",
+  }),
+  "Final 24–10"
+);
+assert.equal(
+  formatMatchupListLine({
+    status: "scheduled",
+    scoreAway: null,
+    scoreHome: null,
+    note: "9/17 - 8:15 PM EDT · ESPN",
+  }),
+  null
+);
+assert.doesNotMatch(
+  formatMatchupListLine({
+    status: "live",
+    scoreAway: 3,
+    scoreHome: 0,
+    note: "Q2 3:12 · DET ball · 1st & 10 · DET 25 · ESPN",
+  }) ?? "",
+  /Q2|1st|DET ball/
 );
 assert.equal(
   shouldPollLiveScores([{ status: "live", kickoff: new Date() }]),

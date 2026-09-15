@@ -266,7 +266,7 @@ The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY
 
 On `main`, Pick opens on **your** open week (Week 1 while your game is still upcoming; Week 2 as soon as that pick is locked, or if you never had a Week 1 pick path). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
 
-Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on Pick / Schedule are **informational ESPN lines** when we have them (for example “Favourite: BUF -4.5”). If ESPN has no line, that field is hidden or shows **—** — we never invent a fake **-3** for every team.
+Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on Pick / Schedule are **informational ESPN lines** when we have them (for example “Favourite: BUF -4.5”). Those lists do **not** show TV channel or quarter / down-distance (that stays on **Scores**). If ESPN has no line, that field is hidden — we never invent a fake **-3** for every team.
 
 ### Lock
 
@@ -427,6 +427,8 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Videos: Watch on YouTube (no in-app player) | [#53](https://github.com/triwithms/survive-sunday/pull/53), then this wrap-up | Thumbnail + title + **Watch on YouTube**. Never an in-app iframe (that was the “Video unavailable” + raw HTML). Same for previews and highlights. |
 | Videos: previews until kickoff, then highlights | [#54](https://github.com/triwithms/survive-sunday/pull/54) | Game previews only before kickoff. After a game is live or Final, that game’s previews come down and highlights show. Fixes missing DEN @ KC (MNF) previews. |
 | Scores: pick week + no future weeks | this wrap-up | Scores opens on **your** current pick week. You can look back. Future weeks stay on **Schedule**. |
+| Schedule fake -3 odds | [#57](https://github.com/triwithms/survive-sunday/pull/57) | Stopped inventing home **-3** when a line was missing. |
+| Schedule / Pick list: no TV or 2Q; real ESPN favourites | this PR | Schedule and Pick cards drop CBS/FOX/TSN and quarter / down-distance. Favourites come from the ESPN week scoreboard (for example BUF -4.5) when ESPN publishes a line. |
 
 ### Open — not on `main` yet
 

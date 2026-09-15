@@ -19,7 +19,7 @@ import {
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { InjuryChip } from "@/components/InjuryChip";
 import { NextWeekOpenTip } from "@/components/NextWeekOpenTip";
-import { formatScoreLine, type InjuryCountBits } from "@/lib/game-display";
+import { formatMatchupListLine, type InjuryCountBits } from "@/lib/game-display";
 import { formatSignedSpread, formatSpreadOrDash } from "@/lib/odds";
 
 type Side = {
@@ -35,7 +35,6 @@ type Side = {
 type Matchup = {
   id: string;
   kickoff: string;
-  network: string | null;
   status: string;
   scoreAway: number | null;
   scoreHome: number | null;
@@ -162,6 +161,9 @@ export function PickClient({
   const activeStanding = activeSide?.standing
     ? formatCurrentStanding(activeSide.standing)
     : null;
+  const activeListLine = activeMatchup
+    ? formatMatchupListLine(activeMatchup)
+    : null;
 
   return (
     <div className="space-y-4">
@@ -207,13 +209,11 @@ export function PickClient({
                 {activeOpp && (
                   <p className="text-xs text-[var(--text-muted)] mt-0.5">
                     vs {activeOpp.abbr}
-                    {activeMatchup
-                      ? formatScoreLine(activeMatchup)
-                        ? ` · ${formatScoreLine(activeMatchup)}`
-                        : activeMatchup.kickoff
-                          ? ` · ${formatKickoff(activeMatchup.kickoff)}`
-                          : ""
-                      : ""}
+                    {activeListLine
+                      ? ` · ${activeListLine}`
+                      : activeMatchup?.kickoff
+                        ? ` · ${formatKickoff(activeMatchup.kickoff)}`
+                        : ""}
                   </p>
                 )}
                 {activeSide?.injuries && (
@@ -368,7 +368,7 @@ export function PickClient({
             <li key={m.id} className="card-glass overflow-hidden">
               <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[var(--stadium-border)] px-3 py-2 text-[11px] text-[var(--text-muted)]">
                 <span className="font-mono">
-                  {formatScoreLine(m) || formatKickoff(m.kickoff)}
+                  {formatMatchupListLine(m) || formatKickoff(m.kickoff)}
                 </span>
                 <span className="flex items-center gap-2">
                   {m.status === "live" && (
@@ -378,9 +378,6 @@ export function PickClient({
                     <span className="text-[10px] uppercase tracking-wide">
                       Started
                     </span>
-                  )}
-                  {m.network && (
-                    <span className="uppercase tracking-wide">{m.network}</span>
                   )}
                 </span>
               </div>

@@ -12,6 +12,8 @@ import {
   formatSpreadOrDash,
   isPlaceholderOdds,
   lookupSeedOdds,
+  parseEspnCompetitionOdds,
+  parseEspnOddsDetails,
   parseEspnPickcenter,
   parseEspnSummaryOdds,
   parseSignedNumber,
@@ -73,6 +75,92 @@ assert.equal(formatSignedSpread(-4.5), "-4.5");
 assert.equal(formatSignedSpread(-3), "-3");
 assert.equal(formatSignedSpread(3.5), "+3.5");
 assert.equal(formatSpreadOrDash(null), "—");
+
+assert.deepEqual(
+  sanitizeGameOdds({
+    spreadHome: "-4.5",
+    spreadAway: "4.5",
+    mlHome: "-218",
+    mlAway: "180",
+  } as never),
+  { spreadHome: -4.5, spreadAway: 4.5, mlHome: -218, mlAway: 180 },
+  "Prisma/JSON string numbers must still show as a favourite"
+);
+
+const fromDetails = parseEspnOddsDetails("BUF -4.5", "BUF", "DET");
+assert.deepEqual(fromDetails, { spreadHome: -4.5, spreadAway: 4.5 });
+assert.deepEqual(parseEspnOddsDetails("CAR -2.5", "ATL", "CAR"), {
+  spreadHome: 2.5,
+  spreadAway: -2.5,
+});
+assert.deepEqual(parseEspnOddsDetails("WSH -3.5", "WAS", "NYG"), {
+  spreadHome: -3.5,
+  spreadAway: 3.5,
+});
+
+const scoreboardBuf = parseEspnCompetitionOdds(
+  [
+    {
+      details: "BUF -4.5",
+      spread: -4.5,
+      homeTeamOdds: { favorite: true },
+      awayTeamOdds: { favorite: false },
+      pointSpread: {
+        home: { close: { line: "-4.5" }, open: { line: "-3" } },
+        away: { close: { line: "+4.5" } },
+      },
+      moneyline: {
+        home: { close: { odds: "-218" } },
+        away: { close: { odds: "+180" } },
+      },
+    },
+  ],
+  "BUF",
+  "DET"
+);
+assert.ok(scoreboardBuf);
+assert.equal(scoreboardBuf!.spreadHome, -4.5);
+assert.equal(scoreboardBuf!.spreadAway, 4.5);
+assert.equal(scoreboardBuf!.mlHome, -218);
+assert.equal(scoreboardBuf!.mlAway, 180);
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "BUF",
+    awayAbbr: "DET",
+    ...scoreboardBuf!,
+  })?.label,
+  "Favourite: BUF -4.5"
+);
+
+const scoreboardCar = parseEspnCompetitionOdds(
+  [
+    {
+      details: "CAR -2.5",
+      spread: 2.5,
+      homeTeamOdds: { favorite: false },
+      awayTeamOdds: { favorite: true },
+    },
+  ],
+  "ATL",
+  "CAR"
+);
+assert.ok(scoreboardCar);
+assert.equal(scoreboardCar!.spreadAway, -2.5);
+assert.equal(scoreboardCar!.spreadHome, 2.5);
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "ATL",
+    awayAbbr: "CAR",
+    ...scoreboardCar!,
+  })?.label,
+  "Favourite: CAR -2.5"
+);
+
+assert.equal(parseEspnCompetitionOdds(undefined, "BUF", "DET"), null);
+assert.equal(
+  parseEspnCompetitionOdds([{ details: "??" }], "BUF", "DET"),
+  null
+);
 
 const bufAtDet = parseEspnPickcenter([
   {
