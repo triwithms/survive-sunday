@@ -82,6 +82,16 @@ export default async function SchedulePage({
   });
   const games = weekFresh.games;
   const poll = shouldPollLiveScores(games);
+  const teamAbbrs = [
+    ...new Set(games.flatMap((g) => [g.awayAbbr, g.homeAbbr])),
+  ];
+  const logoRows = teamAbbrs.length
+    ? await prisma.team.findMany({
+        where: { abbr: { in: teamAbbrs } },
+        select: { abbr: true, logoUrl: true },
+      })
+    : [];
+  const logoByAbbr = new Map(logoRows.map((t) => [t.abbr, t.logoUrl]));
 
   const weekOptions = weeks.map((candidate) => ({
     number: candidate.number,
@@ -156,7 +166,10 @@ export default async function SchedulePage({
                     >
                       <TeamLogo
                         abbr={g.awayAbbr}
-                        logoUrl={teamLogoUrl(g.awayAbbr)}
+                        logoUrl={teamLogoUrl(
+                          g.awayAbbr,
+                          logoByAbbr.get(g.awayAbbr)
+                        )}
                         size={TEAM_LOGO_SIZE.compact}
                       />
                       {g.awayAbbr}
@@ -169,7 +182,10 @@ export default async function SchedulePage({
                     >
                       <TeamLogo
                         abbr={g.homeAbbr}
-                        logoUrl={teamLogoUrl(g.homeAbbr)}
+                        logoUrl={teamLogoUrl(
+                          g.homeAbbr,
+                          logoByAbbr.get(g.homeAbbr)
+                        )}
                         size={TEAM_LOGO_SIZE.compact}
                       />
                       {g.homeAbbr}
