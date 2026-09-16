@@ -12,7 +12,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 **Never paste secrets** (passwords, `AUTH_SECRET`, `DATABASE_URL`, API keys) into a chat, a screenshot, or a commit.
 
-**Snapshot (14 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Live tonight:
+**Snapshot (15 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Live tonight:
 
 - **Cannoli Stuffer (Mike Frigo) has Joined.** Email codes are failing. This merge writes a one-shot temporary password **`Cannoli1!`** on the Production deploy (Neon), and adds **Admin → Set a temporary password** for anyone else. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login) → **Use password instead**. His sign-in email is on **Admin → Roster**. He should change the password after he is in.
 
