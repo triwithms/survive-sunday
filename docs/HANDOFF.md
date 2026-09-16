@@ -501,6 +501,8 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 
 ## 12. Maintaining with free or basic Grok (not Grok Bot)
 
+**HANDOFF / usage rule:** Do not rewrite this file or Help on every small PR. Update docs at most once per day or at the end of a batch. Coding agents: do not read the whole HANDOFF or `data/*.json` unless the owner says to. Touch only named files. Reply short: files touched, 5-line summary, how to verify. No Wave 2, no extra branches for docs.
+
 ### What basic Grok can vs cannot do well
 
 **Good for**
@@ -508,7 +510,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 - Explaining a Vercel / browser error in plain English (en-CA)
 - Drafting a **small** code patch as “open this PR / change these files”
 - Click-by-click Vercel and GitHub steps (env vars, Redeploy, Merge)
-- Updating **this file** when something ships
+- Updating **this file** at most once a day when a batch ships (not each tiny fix)
 - Reordering copy, Help text, or a CSV the owner will paste
 - Diagnosing `AUTH_SECRET` / `AUTH_URL` / `AUTH_TRUST_HOST` / `NoSession` / `CallbackRouteError` from a **redacted** log snippet
 
