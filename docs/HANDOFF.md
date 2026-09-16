@@ -501,7 +501,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 
 ## 12. Maintaining with free or basic Grok (not Grok Bot)
 
-**HANDOFF / usage rule:** Do not rewrite this file or Help on every small PR. Update docs at most once per day or at the end of a batch. Coding agents: do not read the whole HANDOFF or `data/*.json` unless the owner says to. Touch only named files. Reply short: files touched, 5-line summary, how to verify. No Wave 2, no extra branches for docs.
+**HANDOFF / usage rule:** Do not rewrite this file or Help on every small PR. Update docs at most once per day or at the end of a batch. Coding agents: do not read the whole HANDOFF or `data/*.json` unless the owner says to. Touch only named files. Reply short: files touched, 5-line summary, how to verify. No Wave 2, no extra branches for docs.x
 
 ### What basic Grok can vs cannot do well
 
