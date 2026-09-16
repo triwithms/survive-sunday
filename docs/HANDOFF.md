@@ -4,6 +4,8 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 **Intended tool:** **free Grok** or a **basic paid Grok / xAI chat** (topic-split chats; paste prompts from **section 12**).
 
+**HANDOFF / Help update rule:** Do **not** rewrite this file (or Help) on every small code PR. Update the snapshot at most **once per day** or at the **end of a batch**. Tiny logo/spread/sort fixes do not get a HANDOFF pass. Prefer GitHub pencil + free Grok for docs. Coding agents: do not read or rewrite `docs/HANDOFF.md` unless the owner’s prompt says “update HANDOFF”.
+
 **Not the intended tool:** paid **Grok Bot**, Cursor desktop agents, or other expensive coding bots. Those are optional later if a change is too big for a basic chat — not the default path.
 
 **Human path that stays the same:** you merge GitHub **pull requests** yourself, then click through **Vercel** (env vars, Redeploy) when this file says to. A chat can tell you which buttons to press. It cannot press them for you.
@@ -755,4 +757,4 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 
 ---
 
-*If you update the app, update this file in the same PR so the next free or basic Grok chat stays accurate.*
+*If you update the app, do not automatically rewrite this file. Batch HANDOFF/Help at most once a day.*
