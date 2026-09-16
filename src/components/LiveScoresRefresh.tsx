@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 export function LiveScoresRefresh({
   weekNumber,
   poll,
-  intervalMs = 45000,
+  intervalMs = 300000, // 5 min (was 45000 = 45 s) to save Vercel server calls
 }: {
   weekNumber: number;
   poll: boolean;
@@ -48,7 +48,7 @@ export function LiveScoresRefresh({
 
   return (
     <p className="text-[10px] text-[var(--text-muted)] px-0.5">
-      Live window — refreshing from ESPN about every {Math.round(intervalMs / 1000)}s.
+      Live window — refreshing from ESPN about every {Math.round(intervalMs / 60000)} min. 
     </p>
   );
 }
