@@ -15,15 +15,20 @@ export const WEEK_NAV_PATHS = {
 
 export type WeekNavPath = keyof typeof WEEK_NAV_PATHS;
 
-/** Home, Pick, and Scores open on that friend’s current pick week. */
+/** Home, Pick, Scores, and Videos open on that friend’s current pick week. */
 export function usesPlayerPickWeekDefault(basePath: string): boolean {
-  return basePath === "/pick" || basePath === "/scores" || basePath === "/pool";
+  return (
+    basePath === "/pick" ||
+    basePath === "/scores" ||
+    basePath === "/pool" ||
+    basePath === "/videos"
+  );
 }
 
 /**
  * Default week when the URL has no `?week=`.
- * Home / Pick / Scores: the signed-in user’s current pick week.
- * Schedule / Videos: the pool’s current board week.
+ * Home / Pick / Scores / Videos: the signed-in user’s current pick week.
+ * Schedule: the pool’s current board week.
  */
 export function defaultWeekForPath({
   basePath,

@@ -1,5 +1,5 @@
 /**
- * Default week selection for Home / Pick / Scores / Schedule (no database).
+ * Default week selection for Home / Pick / Scores / Schedule / Videos (no database).
  *
  *   npx tsx scripts/verify-weeks.ts
  */
@@ -29,13 +29,14 @@ assert.equal(parseWeekParam("nope"), null);
 assert.equal(usesPlayerPickWeekDefault("/pick"), true);
 assert.equal(usesPlayerPickWeekDefault("/scores"), true);
 assert.equal(usesPlayerPickWeekDefault("/pool"), true);
+assert.equal(usesPlayerPickWeekDefault("/videos"), true);
 assert.equal(usesPlayerPickWeekDefault("/schedule"), false);
-assert.equal(usesPlayerPickWeekDefault("/videos"), false);
 
 assert.equal(WEEK_NAV_PATHS["/scores"].allowFuture, false);
 assert.equal(WEEK_NAV_PATHS["/pool"].allowFuture, false);
 assert.equal(WEEK_NAV_PATHS["/schedule"].allowFuture, true);
 assert.equal(WEEK_NAV_PATHS["/pick"].allowFuture, true);
+assert.equal(WEEK_NAV_PATHS["/videos"].allowFuture, true);
 
 assert.equal(
   resolveSelectedWeekNumber({
@@ -284,6 +285,58 @@ assert.equal(
   "Robert still on Week 1 → Home defaults to Week 1"
 );
 
+assert.equal(
+  defaultWeekForPath({
+    basePath: "/videos",
+    poolCurrentWeek: 1,
+    pickActionWeek: unlocked.actionWeek,
+  }),
+  2,
+  "Week 2 pickers → Videos defaults to Week 2"
+);
+assert.equal(
+  defaultWeekForPath({
+    basePath: "/videos",
+    poolCurrentWeek: 1,
+    pickActionWeek: robert.actionWeek,
+  }),
+  1,
+  "Robert still on Week 1 → Videos defaults to Week 1"
+);
+assert.equal(
+  resolvePageWeekNumber({
+    requested: null,
+    weekNumbers,
+    basePath: "/videos",
+    poolCurrentWeek: 1,
+    pickActionWeek: unlocked.actionWeek,
+    allowFuture: true,
+  }),
+  2,
+  "Videos with no ?week= opens the current pick week"
+);
+assert.equal(
+  resolvePageWeekNumber({
+    requested: 1,
+    weekNumbers,
+    basePath: "/videos",
+    poolCurrentWeek: 1,
+    pickActionWeek: unlocked.actionWeek,
+    allowFuture: true,
+  }),
+  1,
+  "Videos ?week=1 still browses a past week"
+);
+assert.notEqual(
+  defaultWeekForPath({
+    basePath: "/videos",
+    poolCurrentWeek: 1,
+    pickActionWeek: unlocked.actionWeek,
+  }),
+  1,
+  "do not label live Week 1 as current on Videos for Week 2 pickers"
+);
+
 function mustInclude(path: string, needles: string[]) {
   const src = readFileSync(path, "utf8");
   for (const needle of needles) {
@@ -319,6 +372,14 @@ mustInclude("src/components/features/home/load-home.ts", [
   'basePath: "/pool"',
   "actionWeek: decision.actionWeek",
   "allowFuture: false",
+]);
+mustInclude("src/components/features/videos/load-videos.ts", [
+  'basePath: "/videos"',
+  "actionWeek: decision.actionWeek",
+  "allowFuture: true",
+]);
+mustInclude("src/components/features/videos/VideosScreen.tsx", [
+  "currentWeek={props.focusWeek}",
 ]);
 mustNotMatch(
   "src/components/features/home/HomeScreen.tsx",
