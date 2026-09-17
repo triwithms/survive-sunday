@@ -7,13 +7,13 @@ export const DEMO_EMAIL_SUFFIX = "@survivesunday.demo";
 export const PENDING_EMAIL_SUFFIX = "@pending.survivesunday.local";
 export const LOCAL_PLACEHOLDER_HOST = "survivesunday.local";
 
-/** Real NFL week right now. Live mode always uses this as the current pick week. */
+/** Real NFL week right now. The live pool always uses this as the current pick week. */
 export const REAL_CURRENT_WEEK = 1;
-/** Demo mode default current week. Week 2 is a real NFL week in both modes. */
+/** Leftover Week 2 sandbox constant. Week 2 is a real NFL week. */
 export const DEMO_SANDBOX_WEEK = 2;
 
 export function normalizePoolMode(mode: string | null | undefined): PoolMode {
-  return mode === POOL_MODE_LIVE ? POOL_MODE_LIVE : POOL_MODE_DEMO;
+  return mode === POOL_MODE_DEMO ? POOL_MODE_DEMO : POOL_MODE_LIVE;
 }
 
 export function isDemoMode(mode: string | null | undefined): boolean {
@@ -70,20 +70,17 @@ export function practiceEmailFromPlaceholder(
   return `${local}${DEMO_EMAIL_SUFFIX}`;
 }
 
+/** Live-only: the group board always sits on this NFL week. */
 export function effectiveCurrentWeek(
   mode: string | null | undefined,
   storedWeek: number | null | undefined
 ): number {
-  if (isLiveMode(mode)) return REAL_CURRENT_WEEK;
-  return typeof storedWeek === "number" && storedWeek > 0
-    ? storedWeek
-    : DEMO_SANDBOX_WEEK;
+  void mode;
+  void storedWeek;
+  return REAL_CURRENT_WEEK;
 }
 
-/**
- * Week 2 is a real NFL week. Demo isolation is picks/practice UX only —
- * never hide the Week 2 slate from players in Real/live mode.
- */
+/** Week 2 is a real NFL week — never hide that slate. */
 export function isSandboxWeekHidden(
   mode: string | null | undefined,
   weekNumber: number
