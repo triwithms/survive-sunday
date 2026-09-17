@@ -17,16 +17,16 @@ function assertUsesSharedSort(path: string, extra: string[]) {
   }
 }
 
-assertUsesSharedSort("src/app/(app)/standings/page.tsx", []);
-assertUsesSharedSort("src/app/(app)/pool/page.tsx", [
-  "sorted.filter",
+assertUsesSharedSort("src/components/features/board/load-board.ts", []);
+assertUsesSharedSort("src/components/features/home/load-home.ts", [
+  "buildHomeRows(sorted)",
 ]);
 assert.doesNotMatch(
-  readFileSync("src/app/(app)/pool/page.tsx", "utf8"),
+  readFileSync("src/components/features/home/load-home.ts", "utf8"),
   /byNickname/,
   "Home/Pool must not keep a nickname-only pick-list sort"
 );
-assertUsesSharedSort("src/app/(app)/scores/page.tsx", ["boardPickFields"]);
+assertUsesSharedSort("src/components/features/scores/load-scores.ts", ["boardPickFields"]);
 assertUsesSharedSort("src/app/api/picks/route.ts", ["boardPickFields"]);
 
 type Row = {

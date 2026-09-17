@@ -296,34 +296,32 @@ function mustNotMatch(path: string, pattern: RegExp, message: string) {
   assert.doesNotMatch(src, pattern, message);
 }
 
-mustInclude("src/app/(app)/scores/page.tsx", [
+mustInclude("src/lib/page-week.ts", [
   "resolvePlayerPickWeekFromLoaded",
   "resolvePageWeekNumber",
+  "pickActionWeek: opts.actionWeek",
+]);
+mustInclude("src/components/features/scores/load-scores.ts", [
   'basePath: "/scores"',
-  "pickActionWeek: focusWeek",
-  "decision.actionWeek",
+  "actionWeek: decision.actionWeek",
   "allowFuture: false",
 ]);
 mustNotMatch(
-  "src/app/(app)/scores/page.tsx",
+  "src/components/features/scores/ScoresScreen.tsx",
   /allowFuture\s*$/m,
   "Scores WeekSwitcher must not pass allowFuture (future weeks stay on Schedule)"
 );
-mustInclude("src/app/(app)/pick/page.tsx", [
-  "resolvePageWeekNumber",
+mustInclude("src/components/features/pick/load-pick.ts", [
   'basePath: "/pick"',
-  "pickActionWeek: decision.actionWeek",
+  "actionWeek: decision.actionWeek",
 ]);
-mustInclude("src/app/(app)/pool/page.tsx", [
-  "resolvePlayerPickWeekFromLoaded",
-  "resolvePageWeekNumber",
+mustInclude("src/components/features/home/load-home.ts", [
   'basePath: "/pool"',
-  "pickActionWeek: focusWeek",
-  "decision.actionWeek",
+  "actionWeek: decision.actionWeek",
   "allowFuture: false",
 ]);
 mustNotMatch(
-  "src/app/(app)/pool/page.tsx",
+  "src/components/features/home/HomeScreen.tsx",
   /allowFuture\s*$/m,
   "Home WeekSwitcher must not pass allowFuture (future weeks stay on Schedule)"
 );
@@ -342,7 +340,7 @@ mustInclude("docs/HANDOFF.md", [
 ]);
 
 mustNotMatch(
-  "src/app/(app)/scores/page.tsx",
+  "src/components/features/scores/load-scores.ts",
   /livePrior|showLivePrior|prior week on Scores/i,
   "Scores must not special-case live prior week for Week 2 pickers"
 );
