@@ -14,11 +14,11 @@ const MESSAGES: Record<string, string> = {
     "Sign-in hit a server problem. Wait a moment and try again.",
   AccessDenied: "That account is not allowed to sign in right now.",
   OAuthAccountNotLinked:
-    "Use the email and password you Joined with, or ask for a sign-in code.",
+    "Use the email and password you Joined with, or tap Forgot password.",
   OAuthCallbackError:
-    "Sign-in did not finish. Use your email, then a sign-in code or your password.",
+    "Sign-in did not finish. Use your email and password, or tap Forgot password.",
   OAuthSignInError:
-    "Sign-in did not finish. Use your email, then a sign-in code or your password.",
+    "Sign-in did not finish. Use your email and password, or tap Forgot password.",
   Verification: "That sign-in link expired. Try signing in again.",
   CSRF: "Sign-in hiccup. Refresh this page and try again.",
   MissingCSRF: "Sign-in hiccup. Refresh this page and try again.",

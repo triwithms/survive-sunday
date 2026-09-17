@@ -127,10 +127,10 @@ export function SetMemberPasswordForm({
       <div>
         <h2 className="font-semibold">Set a temporary password</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Use this when a friend already Joined but cannot get a sign-in or
-          reset code. You text them the password. We do <strong>not</strong>{" "}
-          email it (that is the broken path). This is written to the database
-          and the audit log — the password itself is never stored in the log.
+          Use this when a friend already Joined but cannot get a reset code.
+          You text them the password. We do <strong>not</strong> email it
+          (that is the broken path). This is written to the database and the
+          audit log — the password itself is never stored in the log.
         </p>
       </div>
 
@@ -144,9 +144,8 @@ export function SetMemberPasswordForm({
         <div className="space-y-3">
           <p className="text-sm text-field-400" role="status">
             Saved for <strong>{saved.nickname}</strong> ({saved.emailMasked}).
-            Text them this password, then they open Sign in →{" "}
-            <strong>Use password instead</strong>. They can change it later
-            with Forgot password once email works.
+            Text them this password, then they open Sign in. They can change
+            it later with Forgot password once email works.
           </p>
           <p className="font-mono text-lg text-gold-400 break-all card-glass p-3">
             {saved.password}

@@ -69,6 +69,7 @@ function emailText(code: string, kind: OtpCopyKind): string {
     `Your Survive Sunday ${noun} is ${code}.`,
     "",
     "It expires in 10 minutes.",
+    "If you do not see this, check spam/junk — codes may be filtered.",
     ignore,
   ].join("\n");
 }
@@ -86,6 +87,7 @@ function emailHtml(code: string, kind: OtpCopyKind): string {
     <p style="color:#e8c547;font-size:20px;letter-spacing:0.08em;margin:0 0 16px;">SURVIVE SUNDAY</p>
     <p style="margin:0 0 12px;">${heading}</p>
     <p style="font-size:32px;letter-spacing:0.28em;margin:0 0 16px;font-family:ui-monospace,monospace;">${code}</p>
+    <p style="color:#9aa5b5;font-size:14px;margin:0 0 8px;">If you do not see this in your inbox, check spam/junk — codes may be filtered.</p>
     <p style="color:#9aa5b5;font-size:14px;margin:0;">${ignore}</p>
   </body>
 </html>`;

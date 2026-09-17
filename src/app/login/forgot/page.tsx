@@ -1,4 +1,4 @@
-import { ForgotPasswordForm } from "@/components/ForgotPasswordForm";
+import { ForgotPasswordForm } from "@/components/features/login";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

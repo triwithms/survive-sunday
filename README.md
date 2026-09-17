@@ -76,7 +76,7 @@ Demo credentials work without Google keys.
 
 Friends stay signed in on their phone / Home Screen app. We do **not** ask for a code at every login.
 
-If they forget the password: **Sign in → Forgot password** → 6-digit code by email (or SMS if a cell is saved) → new password → signed back in.
+If they forget the password: **Sign in → Forgot password** → 6-digit code by email (check inbox and spam/junk; optional SMS if a cell is saved) → new password → signed back in.
 
 - Demo `@survivesunday.demo` seats always use **demo1234** (no reset).
 - Production minimum: **`RESEND_API_KEY`** and **`RESEND_FROM_EMAIL`** (see `DEPLOY.md` §3b). Optional Twilio for texts.

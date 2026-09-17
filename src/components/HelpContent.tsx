@@ -2,7 +2,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
       <aside className="card-glass border border-gold-400/30 p-4 space-y-2" aria-label="Feature availability">
-        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, <strong>weekly YouTube videos</strong> (header <strong>Videos</strong>), game highlights on Scores → Details, prior-pick import, commissioner admin, PWA install, <strong>personal Join links</strong>, joining, sign-in that stays on your phone, sign-in codes, forgot-password codes, cell-number collection, <strong>notification preferences</strong> (<strong>Account → Notification preferences</strong>), and a quiet way to share Board or Scores as a picture (including a full long screenshot).</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, <strong>weekly YouTube videos</strong> (header <strong>Videos</strong>), game highlights on Scores → Details, prior-pick import, commissioner admin, PWA install, <strong>personal Join links</strong>, joining, email-and-password Sign in that stays on your phone, forgot-password codes, cell-number collection, <strong>notification preferences</strong> (<strong>Account → Notification preferences</strong>), and a quiet way to share Board or Scores as a picture (including a full long screenshot).</p>
         <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, WhatsApp, weekly digests, and close-game alerts.</p>
       </aside>
       <section id="onboarding-first-run">
@@ -12,7 +12,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Pick one team each week** to win. You can’t reuse a team you’ve already picked, and bye-week teams are off the board.</li>
           <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). After lock, everyone’s picks go public. **Week 1 only:** you can still change an existing pick until that team’s kickoff if the new game has not started. **Once your pick’s game has started, next week’s picks open for you right away** — you don’t wait for Monday Night Football. New friends who join after that week’s deadline go straight to the next week’s pick.</li>
           <li className="text-[var(--text-primary)]">**You get one mulligan** unless the commissioner turns it off. Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you. If the commissioner switches to one-and-done, the app shows **From Week X: no mulligan / one-and-done.**</li>
-          <li className="text-[var(--text-primary)]"><strong>Personal Join link</strong> from the commissioner. Join <strong>once</strong> with your own email and password so your Week 1 picks stay. On that phone you stay signed in. Next time, Sign in with a <strong>sign-in code</strong> (or your password). If that name is already claimed, tap <strong>Sign in</strong>. Don’t use Forgot password before you Join. Returning BM Boys: <strong>Account → Change nickname</strong>. New joiners not on the list can join as a new player.</li>
+          <li className="text-[var(--text-primary)]"><strong>Personal Join link</strong> from the commissioner. Join <strong>once</strong> with your own email and password so your Week 1 picks stay. On that phone you stay signed in. Next time, Sign in with that <strong>email and password</strong>. If that name is already claimed, tap <strong>Sign in</strong>. Don’t use Forgot password before you Join. Returning BM Boys: <strong>Account → Change nickname</strong>. New joiners not on the list can join as a new player.</li>
           <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for SMS missing-pick reminders. You can add or change it later from Account or the header. Choose what we send under <strong>Account → Notification preferences</strong>. Wave 2 social features are marked below as coming soon.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">---</p>
@@ -73,11 +73,10 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 
         <h3 className="font-semibold mt-3 mb-1">D. Sign in later (same email)</h3>
         <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
-          <li className="text-[var(--text-primary)]">Join <strong>once</strong> first. Codes only work after that.</li>
+          <li className="text-[var(--text-primary)]">Join <strong>once</strong> first. Forgot password only works after that.</li>
           <li className="text-[var(--text-primary)]">On this phone you stay signed in. Open the Home Screen icon to land in the pool.</li>
-          <li className="text-[var(--text-primary)]">If you need Sign in: enter the <strong>same email</strong> you Joined with, then tap <strong>Email me a sign-in code</strong>. If sending fails, the page says why (it will not pretend a code went out).</li>
-          <li className="text-[var(--text-primary)]">Know your password? Tap <strong>Use password instead</strong>.</li>
-          <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> is a small link on the password screen — only after you Joined.</li>
+          <li className="text-[var(--text-primary)]">If you need Sign in: enter the <strong>same email</strong> you Joined with, your password, then tap <strong>Sign in</strong>.</li>
+          <li className="text-[var(--text-primary)]"><strong>Forgot password?</strong> is the small link under Sign in — only after you Joined. Check inbox <strong>and spam/junk</strong> for the code.</li>
         </ol>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -107,7 +106,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <p className="text-[var(--text-muted)] mb-4">A visual tour of the main screens you&apos;ll use each week.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 space-y-0">
           {[
-            { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: 'Sign in (email me a code, or password)' },
+            { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: 'Sign in (email and password)' },
             { src: '/help-preview/02-pool-home.png', alt: 'Pool home / Board entry', caption: 'Pool home / Board entry' },
             { src: '/help-preview/03-pick-this-weeks-games.png', alt: 'Pick — This week’s games', caption: 'Pick — This week’s games' },
             { src: '/help-preview/04-team-research.png', alt: 'Team research', caption: 'Team research' },
@@ -266,20 +265,20 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       </section>
       <section id="12-privacy-accounts">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">12. Privacy &amp; accounts</h2>
-        <p className="text-[var(--text-muted)] mb-2">Pools are <strong>private and invite-only</strong>. Join with a <strong>personal Join link</strong>, then Sign in with a <strong>sign-in code</strong> (or your password).</p>
+        <p className="text-[var(--text-muted)] mb-2">Pools are <strong>private and invite-only</strong>. Join with a <strong>personal Join link</strong>, then Sign in with your <strong>email and password</strong>.</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; tap **Account** in the header, then **Change nickname**. New members create a nickname when they join.</li>
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
           <li className="text-[var(--text-primary)]">**Cell number:** add your cell for SMS missing-pick reminders and for password-reset texts. You can add or edit it later from Account. Missing-pick texts follow your Notification preferences; password-reset codes do not.</li>
           <li className="text-[var(--text-primary)]">**Notification preferences:** <strong>Account → Notification preferences</strong>. Save the toggles you want. Defaults are safe for friends (core on, noisy off).</li>
           <li className="text-[var(--text-primary)]">
-            <strong>Sign-in code:</strong> Sign in starts here. Enter the email you Joined with, then tap <strong>Email me a sign-in code</strong>. Know your password? Tap <strong>Use password instead</strong>. We do <strong>not</strong> ask for a code every time you open the app.
+            <strong>Sign in:</strong> email + password, then Sign in. We do <strong>not</strong> ask for a code every time you open the app.
             {showDemoCopy
               ? " Demo seats (@survivesunday.demo) always use password demo1234."
               : ""}
           </li>
           <li className="text-[var(--text-primary)]">
-            <strong>Forgot password:</strong> only after you have Joined. On Sign in, tap <strong>Use password instead</strong>, then the small <strong>Forgot password?</strong> link.
+            <strong>Forgot password:</strong> only after you have Joined. On Sign in, tap <strong>Forgot password?</strong>. Check inbox and spam/junk — codes may be filtered. If you saved a cell, you can ask for a text instead on that screen.
             {showDemoCopy
               ? " Demo seats (@survivesunday.demo) always use password demo1234 — no reset needed."
               : " Don’t use Forgot password before Join — there is no account yet."}
@@ -298,9 +297,9 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Missed SMS or emails | Account → Notification preferences — confirm that type is on. Add or update your cell under Account. Forgot-password codes always send when you request one (needs Resend keys). |
 | Personal Join link says already claimed | That friend already Joined. They should Sign in with the email they used — not Join again. |
 | Forgot password before Join | Don’t. Join first with your email + password. Forgot password only works after that same email has Joined. |
-| Sign-in code did not arrive | Sign in → Email me a sign-in code. Use the Join email. The page now shows the real Resend reason if keys are missing or the From address is still onboarding@resend.dev. Commissioner: Admin shows Sign-in and reset emails status. |
-| Forgot password | Sign in → Use password instead → Forgot password?${showDemoCopy ? " Demo seats use demo1234." : ""} If sending fails, read the red text — do not assume the code is in spam until the page said it was sent. |
-| Friend stuck (no code) | Commissioner: Admin → Set a temporary password (claimed seats only). Text them that password. They Sign in → Use password instead. If they have not Joined, send their personal Join link instead. |
+| Reset code did not arrive | Sign in → Forgot password?. Use the Join email. Check inbox and spam/junk — codes may be filtered. The page shows the real Resend reason if keys are missing. Commissioner: Admin shows reset email status. |
+| Forgot password | Sign in → Forgot password?${showDemoCopy ? " Demo seats use demo1234." : ""} After the page says the code was sent, check inbox and spam/junk. If sending fails, read the red text. |
+| Friend stuck (no code) | Commissioner: Admin → Set a temporary password (claimed seats only). Text them that password. They Sign in with email + that password. If they have not Joined, send their personal Join link instead. |
 | Home Screen prompt keeps asking | Tap Yes if you already added the icon. Opening from the icon should not nag. |
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
 | Want to switch account | Header → Account → Sign out (also on Admin and Help). Then Sign in. |
@@ -330,7 +329,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Pool notes & missing-pick nudge:** Admin → send a short note (only friends who left Pool notes on) or nudge anyone still without a pick (only if they left Missing pick reminder on).</li>
           <li className="text-[var(--text-primary)]"><strong>Coming later:</strong> weekly digests. Late-pick reminders already respect Notification preferences.</li>
           <li className="text-[var(--text-primary)]"><strong>Set a temporary password:</strong> Admin → pick a friend who already Joined → type their nickname → save a password → text it to them. Audit-logged. Does <strong>not</strong> email the password. If they have not Joined, send their personal Join link instead.</li>
-          <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> and <strong>sign-in codes</strong> use the same Resend keys (owner sets them on Vercel Production). Admin shows whether those keys look set. Optional Twilio for texts if a cell is saved. <strong>Wave 2 — Coming soon:</strong> WhatsApp group stub.</li>
+          <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> uses Resend keys (owner sets them on Vercel Production). Admin shows whether those keys look set. Optional Twilio for texts if a cell is saved. <strong>Wave 2 — Coming soon:</strong> WhatsApp group stub.</li>
           {showDemoCopy && (
             <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> mark demo-mode team data so “demo” labels stay honest.</li>
           )}
@@ -341,13 +340,13 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h3 className="font-semibold mt-3 mb-1">Hand the pool to someone else</h3>
         <p className="text-[var(--text-muted)] mb-2">Open **Admin → Hand the pool to someone else**. Pick a person who is already a member, type their nickname, tick the confirmation box, and confirm. You stay in the pool as a player and lose Admin. They keep their picks and get the Admin screen. This is different from **Make administrator**, which lets both of you keep Admin tools. If nobody else is in the pool yet, the app will not let you transfer — that would lock everyone out.</p>
         <h3 className="font-semibold mt-3 mb-1">Set a temporary password (stuck friend)</h3>
-        <p className="text-[var(--text-muted)] mb-2">When a friend already Joined but cannot get a sign-in or reset code (codes need Resend keys), open **Admin → Set a temporary password**.</p>
+        <p className="text-[var(--text-muted)] mb-2">When a friend already Joined but cannot get a reset code (codes need Resend keys), open **Admin → Set a temporary password**.</p>
         <ol className="list-decimal pl-5 space-y-1 mb-2 text-[var(--text-muted)]">
           <li className="text-[var(--text-primary)]">Pick their nickname (example: <strong>Cannoli Stuffer</strong> / Mike Frigo). Only people who already Joined appear.</li>
           <li className="text-[var(--text-primary)]">Type that nickname again to confirm.</li>
           <li className="text-[var(--text-primary)]">Tap <strong>Suggest a password I can text</strong>, or type one (at least 6 characters).</li>
           <li className="text-[var(--text-primary)]">Save. Copy it. <strong>Text it to them yourself</strong> — the app does not email it.</li>
-          <li className="text-[var(--text-primary)]">They open Sign in → <strong>Use password instead</strong> → that password.</li>
+          <li className="text-[var(--text-primary)]">They open Sign in → that email and password.</li>
         </ol>
         <p className="text-[var(--text-muted)] mb-2">If the name is greyed out or missing, they have <strong>not Joined</strong> yet. Copy their personal Join link instead of a password. This change is audit-logged (nickname only — never the password).</p>
         <p className="text-[var(--text-muted)] mb-2">**Important:** you cannot silently edit another player’s pick. Any such change must leave an **audit log** entry visible to the pool.</p>
@@ -399,7 +398,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **en-CA** | Canadian English locale for copy, dates, and A–Z sorting. |
 | **Import (prior picks)** | Commissioner backfill of earlier weeks so mulligan, reuse, and standings stay honest. |
 | **Personal Join link** | A per-person URL from Admin that opens Join with that seat already picked. If the seat is claimed, it points to Sign in. |
-| **Sign-in code** | 6-digit email/text code on Sign in. Not a code at every login. Join first. Password is under Use password instead. |
+| **Forgot password** | Sign in → Forgot password? → 6-digit email code (text if a cell is saved). Check spam/junk. Not a code at every login. Join first. |
 | **Undefeated / one loss / eliminated** | Your survival status for the season. |</pre>
         <p className="text-[var(--text-muted)] mb-2">---</p>
         <p className="text-[var(--text-muted)] mb-2">*Help updated with the current app — Survive Sunday 2026/27 (en-CA)*</p>

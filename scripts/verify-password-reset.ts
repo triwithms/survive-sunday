@@ -20,6 +20,8 @@ import {
   secretsMatch,
 } from "../src/lib/otp";
 import { requestPasswordReset, resetPasswordWithCode } from "../src/lib/password-reset";
+import { resetPreferredChannel } from "../src/lib/password-reset-channel";
+import { sentCodeCopy } from "../src/components/features/login/forgot-copy";
 
 function assert(cond: unknown, msg: string): asserts cond {
   if (!cond) throw new Error(msg);
@@ -43,6 +45,10 @@ async function main() {
   assert(isValidOtpShape("123456") && !isValidOtpShape("12345"), "shape");
   assert(preferredChannel(true, null) === "sms", "prefer sms");
   assert(preferredChannel(false, "sms") === "email", "no phone → email");
+  assert(resetPreferredChannel(true, null) === "email", "reset defaults to email");
+  assert(resetPreferredChannel(true, "sms") === "sms", "reset SMS only if asked");
+  assert(resetPreferredChannel(false, "sms") === "email", "reset no phone → email");
+  assert(sentCodeCopy("email").toLowerCase().includes("spam"), "spam guidance");
   assert(parseChannel("nope") === null, "parse junk");
   assert(maskEmail("pat@example.com") === "p•••@example.com", "mask email");
   assert(maskPhone("+14169514262") === "+1 •••-•••-4262", "mask phone");

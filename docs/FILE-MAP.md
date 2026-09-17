@@ -17,6 +17,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | What you see | Point the chat here |
 |--------------|---------------------|
 | **Home** (pool) — big pick logo, this week’s games | `src/components/features/home/` — especially `HomePickHero.tsx` (big pick logo), `HomeScreen.tsx`, `load-home.ts`. Also `HomeEmptyPick.tsx`, `HomeGameCluster.tsx`, `build-home.ts`. |
+| **Sign in / Forgot password** | `src/components/features/login/` — `LoginForm.tsx` (email + password + Forgot password only), `ForgotPasswordForm.tsx`. |
 | **Pick** | `src/components/features/pick/` — `PickScreen.tsx`, `load-pick.ts`, `PickMatchupCard.tsx` |
 | **Scores** | `src/components/features/scores/` — `ScoresScreen.tsx`, `load-scores.ts`, `ScoreGameCard.tsx` |
 | **Board** (standings) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `BoardParticipantRow.tsx` |
@@ -46,6 +47,8 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | League (NFL) | `src/app/(app)/nfl/page.tsx` |
 
 Also exist (same thin-page pattern): Account, Admin, Schedule, Team, Videos.
+
+Also: Sign in `src/app/login/page.tsx`, Forgot password `src/app/login/forgot/page.tsx`.
 
 ## CRITICAL — never run these from a Vercel build
 

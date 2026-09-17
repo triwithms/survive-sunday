@@ -18,7 +18,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 - **CRITICAL — production data:** A Vercel Production build is `npm run build` → `next build` only. It does **not** run `ensure-production-db`, `prisma db push`, or seeds. Scheduled jobs (missing-pick reminders, ensure-week) do **not** wipe or reseed the pool. Never reattach those scripts to the build. Details: [DEPLOY.md](../DEPLOY.md) section 4.
 
-- **Cannoli Stuffer (Mike Frigo) has Joined.** Email codes were failing. A one-shot temporary password **`Cannoli1!`** was already written on Neon, and **Admin → Set a temporary password** is live for anyone else. A Redeploy does **not** rewrite passwords. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login) → **Use password instead**. His sign-in email is on **Admin → Roster**. He should change the password after he is in.
+- **Cannoli Stuffer (Mike Frigo) has Joined.** Email codes were failing. A one-shot temporary password **`Cannoli1!`** was already written on Neon, and **Admin → Set a temporary password** is live for anyone else. A Redeploy does **not** rewrite passwords. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login) with his email and password. His sign-in email is on **Admin → Roster**. He should change the password after he is in.
 
 - **Who are you? Join** + **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** in **Account** — merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
@@ -29,7 +29,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **DAL** (Dallas — not Gams’ KC). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
 - **Pick backup:** Off by default. Optional copy-from-member within **30 minutes** of lock (no 💩). Optional ranked leftover (~**2 minutes** before lock) stamps 💩 and that player cannot be the official winner. Server jobs apply this — opening the app is not required. Keep Help general; do not name a specific friend.
 - **Week 1 pick-change until kickoff** — merged [PR #25](https://github.com/triwithms/survive-sunday/pull/25). Week 1: you can still change an existing pick until **that team’s** kickoff if the new game has not started. **Weeks 2+ keep the normal week lock** (first kickoff).
-- Forgot password **and sign-in codes** are on `main` after this merge; emails will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**
+- Forgot password is on `main`; emails will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**. Sign in is **email + password** (not a sign-in code first).
 - **Personal Join links** — Admin → **Personal Join links** → one **Copy** per friend who has not Joined (`/join?who=cannoli-stuffer` when the nickname is unique; otherwise `/join?seat=…`). Opens Join with that seat already picked. Invite code `SUNDAY26` is filled in. If the seat is already claimed, the friend sees Sign in — not a broken form. Send one link per friend; do not blast one link to the group chat. Roster has the same Copy button, without extra wording. **Help → Getting started**.
 - **Home Screen prompt** — after Join or first Sign in on a phone browser (not already the Home Screen icon), we ask if they already added the app. Yes = don’t ask again on that phone. Show me how = iPhone Safari / Android Chrome steps. Not now = skip for a while. Already installed = no nag (optional one-time “You’re good”).
 - **Share Board / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). No Share button on the screen. On Board or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
@@ -41,7 +41,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 The Real-mode playbook is [`docs/REAL-MODE.md`](./REAL-MODE.md). Earlier handoff refreshes ([PR #13](https://github.com/triwithms/survive-sunday/pull/13), [PR #15](https://github.com/triwithms/survive-sunday/pull/15)) are **superseded by this file**.
 
-**Friends:** do **not** hold forever. The board, Who are you?, roles, Week 2 slate, and Week 1 imports are live. **Do not send personal Join links** until Resend keys are set and you have tested **Forgot password** once (you should receive a 6-digit code). Without those keys, friends who forget their password (or ask for a sign-in code) are stuck. After that, copy one Admin link per friend — do not send one blast to the whole group chat.
+**Friends:** do **not** hold forever. The board, Who are you?, roles, Week 2 slate, and Week 1 imports are live. **Do not send personal Join links** until Resend keys are set and you have tested **Forgot password** once (you should receive a 6-digit code; check spam/junk). Without those keys, friends who forget their password are stuck. After that, copy one Admin link per friend — do not send one blast to the whole group chat.
 
 ---
 
@@ -147,7 +147,7 @@ Forgot password is **on `main`** (merged [PR #7](https://github.com/triwithms/su
 5. Add `RESEND_API_KEY` = that `re_…` key. Environment: **Production**.
 6. Add `RESEND_FROM_EMAIL` = a From address on the verified domain, e.g. `Survive Sunday <noreply@yourdomain.com>`. Environment: **Production**.
 7. Vercel → **Deployments** → ⋮ on the latest Production row → **Redeploy**. Do not tick “use existing build cache.”
-8. On the live site: **Sign in → Use password instead → Forgot password?** → enter your real email. You should get a 6-digit code. If the page says we couldn’t send a code, the keys are still missing or the From address is not verified.
+8. On the live site: **Sign in → Forgot password?** → enter your real email. You should get a 6-digit code (check inbox and spam/junk). If the page says we couldn’t send a code, the keys are still missing or the From address is not verified.
 
 Same steps are in [DEPLOY.md](../DEPLOY.md) section **3b**. `onboarding@resend.dev` only delivers to *your* Resend login email, not friends — do not use it for the group.
 
@@ -262,9 +262,9 @@ Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is 
 
 ### Real login / join
 
-- **Sign in** (`/login`): **Email me a sign-in code** is the main path (same Resend / Twilio as Forgot password). **Use password instead** is a quieter second path (Safari still POSTs `/api/login`). **Forgot password?** is a small link on the password screen — only after Join. **Continue with Google is hidden** (it was flaky). This is **not** a code at every login. Stay signed in on this phone.
+- **Sign in** (`/login`): **email + password + Sign in**, plus a **Forgot password?** link. Safari still POSTs `/api/login`. Google is not on this screen (it was flaky). This is **not** a code at every login. Stay signed in on this phone.
 - **Join** (`/join`): personal link from Admin, then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. Invite code **`SUNDAY26`** is filled in. If the seat already has a real email, the page says it is claimed and links to Sign in. Practice `@survivesunday.demo` seats (and leftover `@pending.survivesunday.local` placeholders) are claimable. **One user, more than one role** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)): there is **no special admin account**. The same email can be **Player + Administrator**. Switch **Playing as …** / **Admin tools** from **Account** (top right) — not on League or other main screens. Commissioner email can claim a player seat (Gams). People not on the list can still join as a new player.
-- **Forgot password?** is a small link on the password screen: we email (or text) a 6-digit code → new password → signed back in. Only after that friend has Joined with that email. This is **not** a code at every login. **Codes do not send until Resend keys are on Vercel** (section 4). That is still the group-invite blocker.
+- **Forgot password?** is the small link on Sign in: we email a 6-digit code (check inbox and spam/junk) → new password → signed back in. Optional text if a cell is saved, only on that screen. Only after that friend has Joined with that email. This is **not** a code at every login. **Codes do not send until Resend keys are on Vercel** (section 4). That is still the group-invite blocker.
 - **Sign out:** header **Account** (top right) → **Sign out** (merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)). Also on Admin and Help.
 - **Notification preferences:** header **Account** → **Notification preferences**. Each friend chooses which emails they want. Missing-pick texts use the same Missing pick reminder switch. Password-reset codes always send when requested.
 - **Pick backup:** header **Account** → **Pick backup**. Off, copy from a member (30 min), or auto best remaining **2025 rank** team (~2 min). Commissioners can set the same on **Admin → Roster**. JaJa copies Gams by default.
@@ -379,7 +379,7 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 | Turn off the free mulligan (one-and-done from a week) | **Shipped.** Admin → **Pool rules — mulligan**. Already-scored weeks stay. Players see a gold banner. |
 | No “demo” labels / `demo1234` practice picker in real season mode | **Shipped** (merged [PR #10](https://github.com/triwithms/survive-sunday/pull/10)). Admin → **Real mode**. Real = Week 1 current. Week 2 stays viewable ([PR #22](https://github.com/triwithms/survive-sunday/pull/22)). Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
 | Friends pick themselves from the live roster and claim that seat | **Shipped** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)). Join + logged-out Home show **Who are you?** from the live Admin roster. Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch from **Account** with **Playing as …** / **Admin tools**. Admin can promote another existing member. Commissioner copies **personal Join links** from Admin / Roster. |
-| Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in → **Use password instead** → **Forgot password?** → 6-digit code is on `main`. **Email me a sign-in code** is the primary Sign in path (same keys; not every-login 2FA). Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Optional Twilio for texts. |
+| Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in is **email + password**; **Forgot password?** → 6-digit code is on `main`. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Check spam/junk. Optional Twilio for texts. |
 | Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** After Join / first Sign in on a phone browser, a gentle prompt (Yes / Show me how / Not now). Already-installed Home Screen icon does not nag. Cookie is ~**90 days**. |
 | Each friend chooses which notification types they want | **Shipped.** Account → **Notification preferences**. Per-user row in the database. Core on, noisy off. Gates pick-confirm, results, elimination/mulligan, pool notes, missing-pick email/SMS. Password reset is never gated. |
 
@@ -611,7 +611,7 @@ Honest status:
 - Stay-logged-in on the phone is ~90 days on main.
 - Who are you? claim + Player/Administrator roles + role switcher are **on main** (merged PR #19). Do not start a second copy.
 - Safari sign-in + Account Sign out are **on main** (merged PR #18).
-- Personal Join links, Home Screen prompt, and optional Email me a sign-in code ship in the Join / Home Screen UX pack. Do not start a second copy. Password form POST to `/api/login` must stay (Safari cookies).
+- Personal Join links and Home Screen prompt ship in the Join / Home Screen UX pack. Do not start a second copy. Sign in is email + password + Forgot password. Password form POST to `/api/login` must stay (Safari cookies).
 
 My problem: [describe login / session / forgot-password issue]
 ```
@@ -768,7 +768,7 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname (e.g. **Pauli**, **Go Giants**, **JaJa**, Gams), sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
 | **Personal Join link** | Per-person URL from Admin (`/join?who=cannoli-stuffer` when unique). Opens Join with that seat picked. Claimed seats → Sign in. |
 | **Pick backup** | Off, copy from a member (30 min), or auto best remaining 2025-rank team (~2 min) if you still have no pick. JaJa copies Gams. |
-| **OTP / sign-in code** | One-time 6-digit code. Primary Sign in path (**Email me a sign-in code**). Forgot password is a small link on the password screen. Not a code at every login. Codes send only after Resend keys are on Vercel. |
+| **OTP / reset code** | One-time 6-digit code on **Forgot password?** (email first; optional text if a cell is saved). Sign in itself is email + password. Not a code at every login. Codes send only after Resend keys are on Vercel. Check spam/junk. |
 | **One-and-done** | Commissioner rule: no free mulligan from a chosen week. One loss = out. Banner: “From Week X: no mulligan / one-and-done.” |
 | **Transfer commissioner** | Admin → **Hand the pool to someone else**. Give Admin to another existing member. You stay as a player and lose Admin. They keep playing. Different from **Make administrator**. |
 | **Free / basic Grok** | grok.com or xAI chat. The intended maintenance tool. **Not** paid Grok Bot. |
