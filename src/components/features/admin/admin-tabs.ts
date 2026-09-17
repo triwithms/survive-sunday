@@ -11,7 +11,7 @@ export const ADMIN_TABS: AdminTab[] = [
     href: "/admin/users",
     label: "Users",
     name: "Users",
-    blurb: "Roster, temporary passwords, administrators, and remove player.",
+    blurb: "Roster, a password you can text, administrators, and remove player.",
     match: (path) =>
       path === "/admin/users" || path.startsWith("/admin/roster"),
   },

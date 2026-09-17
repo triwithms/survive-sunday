@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { SetPasswordMember } from "./password-members";
+import type { PasswordKind, SetPasswordMember } from "./password-members";
 
 export async function postTempPassword(
   membershipId: string,
@@ -17,14 +17,26 @@ export async function postTempPassword(
     error?: string;
     nickname?: string;
     emailMasked?: string;
+    email?: string;
   };
-  if (!res.ok) return { ok: false as const, error: data.error || "Could not save that password." };
+  if (!res.ok) {
+    return { ok: false as const, error: data.error || "Could not save that password." };
+  }
   return {
     ok: true as const,
     nickname: data.nickname,
     emailMasked: data.emailMasked,
+    email: data.email,
   };
 }
+
+export type SavedPassword = {
+  nickname: string;
+  email: string;
+  emailMasked: string;
+  password: string;
+  kind: PasswordKind;
+};
 
 export function usePasswordForm(members: SetPasswordMember[]) {
   const claimed = members.filter((m) => m.claimed);
@@ -33,17 +45,14 @@ export function usePasswordForm(members: SetPasswordMember[]) {
   const [confirmNickname, setConfirmNickname] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [kind, setKind] = useState<PasswordKind>("temporary");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const [saved, setSaved] = useState<{
-    nickname: string;
-    emailMasked: string;
-    password: string;
-  } | null>(null);
+  const [saved, setSaved] = useState<SavedPassword | null>(null);
   return {
     claimed, unclaimed, membershipId, setMembershipId, confirmNickname,
-    setConfirmNickname, password, setPassword, confirm, setConfirm, busy,
-    setBusy, err, setErr, saved, setSaved,
+    setConfirmNickname, password, setPassword, confirm, setConfirm, kind,
+    setKind, busy, setBusy, err, setErr, saved, setSaved,
     selected: members.find((m) => m.id === membershipId),
   };
 }

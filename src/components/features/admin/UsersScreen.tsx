@@ -9,7 +9,7 @@ export function UsersScreen(props: UsersScreenProps) {
   return (
     <div className="space-y-6">
       <AdminHeading title="Users">
-        Roster, who has Joined, temporary passwords, and who can open Admin.
+        Roster, who has Joined, a password you can text, and who can open Admin.
         Pick backup is on each roster card.
       </AdminHeading>
       <SetMemberPasswordForm members={props.passwordMembers} />

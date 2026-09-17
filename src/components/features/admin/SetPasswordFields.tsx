@@ -1,9 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui";
+import { SetPasswordKind } from "./SetPasswordKind";
 import {
   passwordMemberLabel,
   suggestTempPassword,
+  type PasswordKind,
   type SetPasswordMember,
 } from "./password-members";
 
@@ -15,16 +17,20 @@ type Props = {
   confirmNickname: string;
   password: string;
   confirm: string;
+  kind: PasswordKind;
   busy: boolean;
   err: string;
   onMembership: (id: string) => void;
   onConfirmNickname: (value: string) => void;
   onPassword: (value: string) => void;
   onConfirm: (value: string) => void;
+  onKind: (kind: PasswordKind) => void;
   onSubmit: (e: React.FormEvent) => void;
 };
 
 export function SetPasswordFields(p: Props) {
+  const saveLabel =
+    p.kind === "permanent" ? "Save permanent password" : "Save temporary password";
   return (
     <form onSubmit={p.onSubmit} className="space-y-3">
       <label className="block text-sm space-y-1">
@@ -41,9 +47,11 @@ export function SetPasswordFields(p: Props) {
       </label>
       {p.unclaimed.length > 0 ? (
         <p className="text-xs text-[var(--text-muted)]">
-          Not Joined yet: {p.unclaimed.map((m) => m.nickname).join(", ")}.
+          Not Joined yet — send a Join link, not a password:{" "}
+          {p.unclaimed.map((m) => m.nickname).join(", ")}.
         </p>
       ) : null}
+      <SetPasswordKind kind={p.kind} onKind={p.onKind} />
       <label className="block text-sm space-y-1">
         <span className="text-[var(--text-muted)]">
           Type {p.selected?.nickname ?? "their nickname"} to confirm
@@ -58,7 +66,7 @@ export function SetPasswordFields(p: Props) {
         />
       </label>
       <label className="block text-sm">
-        <span className="text-[var(--text-muted)]">Temporary password</span>
+        <span className="text-[var(--text-muted)]">Password</span>
         <input
           type="text" required minLength={6} maxLength={72}
           value={p.password} onChange={(e) => p.onPassword(e.target.value)}
@@ -82,7 +90,7 @@ export function SetPasswordFields(p: Props) {
       </Button>
       {p.err ? <p className="text-sm text-crimson-400" role="alert">{p.err}</p> : null}
       <Button type="submit" className="w-full" disabled={p.busy}>
-        {p.busy ? "Saving…" : "Save temporary password"}
+        {p.busy ? "Saving…" : saveLabel}
       </Button>
     </form>
   );

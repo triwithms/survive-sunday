@@ -36,8 +36,10 @@ export function SetMemberPasswordForm({ members }: { members: SetPasswordMember[
     }
     f.setSaved({
       nickname: data.nickname || f.selected.nickname,
+      email: data.email || f.selected.email || "",
       emailMasked: data.emailMasked || f.selected.emailMasked || "",
       password: f.password,
+      kind: f.kind,
     });
     f.setConfirmNickname("");
   }
@@ -45,7 +47,7 @@ export function SetMemberPasswordForm({ members }: { members: SetPasswordMember[
   if (!members.length) {
     return (
       <Card as="section" className="p-4 space-y-2">
-        <h2 className="font-semibold">Set a temporary password</h2>
+        <h2 className="font-semibold">Set a password</h2>
         <p className="text-sm text-[var(--text-muted)]">There are no player seats yet.</p>
       </Card>
     );
@@ -54,10 +56,10 @@ export function SetMemberPasswordForm({ members }: { members: SetPasswordMember[
   return (
     <Card as="section" className="p-4 space-y-3">
       <div>
-        <h2 className="font-semibold">Set a temporary password</h2>
+        <h2 className="font-semibold">Set a password</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          For a friend who already Joined but cannot get a code. You text the
-          password. We do not email it.
+          Temporary or permanent, for a friend who already Joined. Copy the
+          text (email, password, Sign in link) and send it. We do not email it.
         </p>
       </div>
       {!f.claimed.length ? (
@@ -65,11 +67,11 @@ export function SetMemberPasswordForm({ members }: { members: SetPasswordMember[
           Nobody has Joined with a real email yet. Send a personal Join link instead.
         </p>
       ) : f.saved ? (
-        <SetPasswordSaved
-          {...f.saved}
-          onCopy={() => { void navigator.clipboard.writeText(f.saved!.password).catch(() => {}); }}
-          onAnother={() => { f.setSaved(null); f.setPassword(""); f.setConfirm(""); }}
-        />
+        <SetPasswordSaved {...f.saved} onAnother={() => {
+          f.setSaved(null);
+          f.setPassword("");
+          f.setConfirm("");
+        }} />
       ) : (
         <SetPasswordFields
           claimed={f.claimed}
@@ -79,12 +81,14 @@ export function SetMemberPasswordForm({ members }: { members: SetPasswordMember[
           confirmNickname={f.confirmNickname}
           password={f.password}
           confirm={f.confirm}
+          kind={f.kind}
           busy={f.busy}
           err={f.err}
           onMembership={(id) => { f.setMembershipId(id); f.setConfirmNickname(""); f.setSaved(null); }}
           onConfirmNickname={f.setConfirmNickname}
           onPassword={f.setPassword}
           onConfirm={f.setConfirm}
+          onKind={f.setKind}
           onSubmit={(e) => void save(e)}
         />
       )}
