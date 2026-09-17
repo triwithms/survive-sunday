@@ -101,7 +101,7 @@ Short names you will see in chats. One-line meaning only:
 
 Local laptop work can use any Postgres URL. **Production always uses Neon**, not a file on someone’s computer.
 
-Bottom nav on the live app: **Home** · **Pick** · **Scores** · **League** · **Board** · **Help**. Commissioners also see **Admin**.
+Bottom nav on the live app: **Home** · **Pick** · **Scores** · **League** · **Board** · **Help**. Commissioners also see **Admin**. What those screens do (and why Home is `/pool`, Board is `/standings`, League is `/nfl`): [`docs/HOW-SCREENS-WORK.md`](HOW-SCREENS-WORK.md). File paths stay in [docs/FILE-MAP.md](FILE-MAP.md).
 
 ---
 
