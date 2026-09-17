@@ -81,7 +81,7 @@ assert.equal(teamLogoSrc.includes("TEAM_BADGES"), false);
 assert.equal(teamLogoSrc.includes("29.png"), false);
 
 const poolSrc = fs.readFileSync(
-  path.join(process.cwd(), "src/app/(app)/pool/page.tsx"),
+  path.join(process.cwd(), "src/components/features/home/HomePickHero.tsx"),
   "utf8"
 );
 assert.match(poolSrc, /TeamLogo/);

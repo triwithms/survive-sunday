@@ -146,13 +146,17 @@ function mustInclude(path: string, needles: string[]) {
   }
 }
 
-mustInclude("src/app/(app)/standings/page.tsx", [
+mustInclude("src/components/features/board/BoardHeading.tsx", [
   "ShareExport",
+]);
+mustInclude("src/components/features/board/BoardScreen.tsx", [
   'data-share-root="board"',
   "share-board",
 ]);
-mustInclude("src/app/(app)/scores/page.tsx", [
+mustInclude("src/components/features/scores/ScoresHeading.tsx", [
   "ShareExport",
+]);
+mustInclude("src/components/features/scores/ScoresScreen.tsx", [
   'data-share-root="scores"',
   "share-scores",
 ]);
@@ -184,8 +188,8 @@ mustInclude("docs/HANDOFF.md", [
   "full long picture",
 ]);
 
-const boardPage = readFileSync("src/app/(app)/standings/page.tsx", "utf8");
-const scoresPage = readFileSync("src/app/(app)/scores/page.tsx", "utf8");
+const boardPage = readFileSync("src/components/features/board/BoardScreen.tsx", "utf8");
+const scoresPage = readFileSync("src/components/features/scores/ScoresScreen.tsx", "utf8");
 assert.doesNotMatch(
   boardPage,
   />Share<\/|ShareExportButton/,
