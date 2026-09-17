@@ -1,7 +1,6 @@
 import { prisma } from "./db";
 import { INVITE_CODE } from "./constants";
-import { uniqueAdminUserIds } from "./roles";
-import { collectAdminEmails } from "./password-reset-notify";
+import { collectAdminEmails, resetAdminUserIds } from "./password-reset-notify";
 
 export async function loadResetNotifyContext(
   userId: string,
@@ -21,7 +20,7 @@ export async function loadResetNotifyContext(
     where: { poolId: pool.id },
     select: { userId: true, role: true },
   });
-  const adminIds = uniqueAdminUserIds(members, grants);
+  const adminIds = resetAdminUserIds(members, grants);
   const who =
     members.find((m) => m.userId === userId)?.nickname?.trim() || email;
   if (adminIds.length === 0) return { who, adminEmails: [] };

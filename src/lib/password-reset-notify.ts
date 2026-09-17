@@ -1,4 +1,5 @@
 import { isDemoEmail, normalizeEmail } from "./otp";
+import { isAdministrator, POOL_ROLES } from "./roles";
 
 /** Nickname or email. Never include a code or password. */
 export function resetAdminNotifyCopy(who: string): {
@@ -17,6 +18,23 @@ export function resetAdminNotifyCopy(who: string): {
 
 export function adminNotifyLooksSafe(text: string): boolean {
   return !/\b\d{6}\b/.test(text) && !/password\s*[:=]/i.test(text);
+}
+
+/** Union of PoolAccessRole administrator, membership.isAdmin, and role=admin. */
+export function resetAdminUserIds(
+  members: Array<{ userId: string; role: string; isAdmin?: boolean | null }>,
+  grants: Array<{ userId: string; role: string }>
+): string[] {
+  const ids = new Set<string>();
+  for (const grant of grants) {
+    if (grant.role === POOL_ROLES.administrator && grant.userId) {
+      ids.add(grant.userId);
+    }
+  }
+  for (const member of members) {
+    if (isAdministrator(member) && member.userId) ids.add(member.userId);
+  }
+  return [...ids];
 }
 
 export function collectAdminEmails(

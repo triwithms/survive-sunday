@@ -25,6 +25,7 @@ import {
   adminNotifyLooksSafe,
   collectAdminEmails,
   resetAdminNotifyCopy,
+  resetAdminUserIds,
 } from "../src/lib/password-reset-notify";
 import { sentCodeCopy } from "../src/components/features/login/forgot-copy";
 
@@ -66,6 +67,18 @@ async function main() {
     ]).join(",") === "robertgama@gmail.com",
     "admin emails skip demo and dedupe"
   );
+  const union = resetAdminUserIds(
+    [
+      { userId: "is-admin", role: "member", isAdmin: true },
+      { userId: "seat-admin", role: "admin", isAdmin: false },
+    ],
+    [{ userId: "grant-admin", role: "administrator" }]
+  ).sort();
+  assert(
+    union.join(",") === "grant-admin,is-admin,seat-admin",
+    `union all admin signals ${union}`
+  );
+  assert(resetAdminUserIds([], []).length === 0, "no admins → skip");
   assert(parseChannel("nope") === null, "parse junk");
   assert(maskEmail("pat@example.com") === "p•••@example.com", "mask email");
   assert(maskPhone("+14169514262") === "+1 •••-•••-4262", "mask phone");
