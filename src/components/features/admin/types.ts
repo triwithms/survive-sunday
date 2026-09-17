@@ -1,3 +1,4 @@
+import type { PickCensus } from "./pick-census";
 import type { AdminRoleRow } from "./admin-role-types";
 import type { RosterMember, RosterMirrorOption } from "./roster-types";
 import type { SetPasswordMember } from "./password-members";
@@ -61,5 +62,6 @@ export type SystemScreenProps = {
   isPracticeLogin: boolean;
   weekNumber: number;
   games: { id: string; label: string; status: string }[];
+  census: PickCensus;
   logs: AuditLogRow[];
 };

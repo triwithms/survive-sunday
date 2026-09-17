@@ -36,6 +36,7 @@
     "verify:claim-attach": "tsx scripts/verify-claim-attach.ts",
     "verify:roles": "tsx scripts/verify-roles.ts",
     "verify:pool-rules": "tsx scripts/verify-pool-rules.ts",
+    "verify:pick-census": "tsx scripts/verify-pick-census.ts",
     "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
     "verify:login-error": "tsx scripts/verify-login-error.ts",
     "verify:login-screen": "tsx scripts/verify-login-screen.ts",

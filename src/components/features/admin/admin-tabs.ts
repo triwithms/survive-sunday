@@ -33,7 +33,7 @@ export const ADMIN_TABS: AdminTab[] = [
     href: "/admin/system",
     label: "System",
     name: "System",
-    blurb: "Login, reset, lock, import, audit log. No database push here.",
+    blurb: "Pick census, login, reset, lock, import, audit. No database push.",
     match: (path) =>
       path.startsWith("/admin/system") || path.startsWith("/admin/import"),
   },
