@@ -446,7 +446,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Spread copy: favoured by N | this PR | Plain-language favourite: **BUF favoured by 4.5** (not Favourite: BUF -4.5 / Fav -4.5). Pick’em shows **Even (pick’em)**. Still hidden when ESPN has no line. |
 | App Router layout (ui / features / actions) | Phase 1–4 on `main` ([#75](https://github.com/triwithms/survive-sunday/pull/75), [#74](https://github.com/triwithms/survive-sunday/pull/74)) | Shared UI in `src/components/ui/`. Home / Pick / Scores / Board / League in `src/components/features/`. Server actions in `src/app/actions/`. Pages under `src/app/` stay thin. |
 | Invite / API tokens | [#78](https://github.com/triwithms/survive-sunday/pull/78) | Modules under `src/lib/`: `invite-token.ts`, `invite-token-db.ts`, `invite-token-schema.ts`, `invite-link.ts`, `api-token.ts`, `token-crypto.ts`. Hashed invite `?t=` is wired on Join; Admin Personal Join links still copy `?who=` / `?seat=`. No extra token Admin tab. |
-| Production build does not touch Neon | Safety P0 (`3820ba4`) | `npm run build` is `next build` only. `postinstall` is `prisma generate` only. Seed/setup refuse Production. Do **not** reattach `ensure-production-db` / db push / seed to the Vercel build. Crons do not wipe or reseed. |
+| Production build does not touch Neon | Safety P0 (`3820ba4`) | `npm run build` is `next build` only. `postinstall` is `prisma generate` only. Seed/setup/`db:push` refuse Production. Do **not** reattach `ensure-production-db` / db push / seed to the Vercel build. Crons do not wipe or reseed. |
 
 ### Open — not on `main` yet
 
@@ -679,7 +679,7 @@ You are helping maintain Survive Sunday. Read docs/HANDOFF.md first, then only:
 - .env.example
 - next.config.ts
 - package.json (scripts.build must stay `next build`)
-- scripts/ensure-production-db.ts
+- scripts/_dangerous/ensure-production-db.ts
 - scripts/assert-not-production.ts
 - src/lib/prisma-url.ts
 - src/lib/auth.ts
