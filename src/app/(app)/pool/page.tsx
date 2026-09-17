@@ -11,6 +11,7 @@ import {
   resolvePlayerPickWeekFromLoaded,
 } from "@/lib/next-week-picks";
 import { StatusChip } from "@/components/StatusChip";
+import { HomePickHero } from "@/components/features/home";
 import { AutoPickStamps } from "@/components/AutoPickStamps";
 import { formatKickoff } from "@/lib/utils";
 import {
@@ -22,13 +23,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
-import { InjuryChip } from "@/components/InjuryChip";
 import {
   syncWeekScoresFromEspn,
   shouldPollLiveScores,
 } from "@/lib/live-scores";
 import { getTeamInjuries } from "@/lib/live-injuries";
-import { formatInjuryChip, formatScoreLine } from "@/lib/game-display";
+import { formatScoreLine } from "@/lib/game-display";
 import {
   effectiveCurrentWeek,
   weeksForParticipants,
@@ -37,8 +37,6 @@ import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { HomeVideosTeaser } from "@/components/WeeklyVideosPanel";
 import { teamLogoUrl } from "@/lib/espn-teams";
-import { TeamLogo } from "@/components/TeamLogo";
-import { TEAM_LOGO_SIZE } from "@/lib/team-logo-size";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -265,153 +263,105 @@ export default async function PoolPage({
 
       <LiveScoresRefresh weekNumber={week.number} poll={poll} />
 
-      <section className="card-glass p-4">
-        <p className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">
-          Your pick
-        </p>
-        {myPick ? (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="shrink-0">
-                <TeamLogo
-                  abbr={myPick.teamAbbr}
-                  logoUrl={teamLogoUrl(myPick.teamAbbr, myTeam?.logoUrl)}
-                  size={TEAM_LOGO_SIZE.hero}
-                />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xl font-semibold text-gold-400">
-                  {myPick.teamAbbr}
-                </p>
-                {(myPrior || myStanding) && (
-                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                    {[myPrior, myStanding].filter(Boolean).join(" · ")}
-                  </p>
-                )}
-                {myPick.game && (
-                  <p className="text-sm text-[var(--text-muted)]">
-                    {myPick.game.awayAbbr} @ {myPick.game.homeAbbr}
-                    {formatScoreLine(myPick.game)
-                      ? ` · ${formatScoreLine(myPick.game)}`
-                      : ""}
-                  </p>
-                )}
-                {myInjuries && !myInjuries.failed && (
-                  <p className="mt-1">
-                    <Link
-                      href={`/team/${myPick.teamAbbr}`}
-                      prefetch={false}
-                      className="inline-flex items-center gap-1.5 text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-gold-400/30 hover:text-gold-400"
-                    >
-                      {formatInjuryChip(myInjuries.counts) ? (
-                        <InjuryChip counts={myInjuries.counts} />
-                      ) : (
-                        "Injury report"
-                      )}
-                    </Link>
-                  </p>
-                )}
-                {myFav && (
-                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                    {myFav.label}
-                  </p>
-                )}
-                {myPick.source === "imported" && (
-                  <span className="chip chip-live mt-1">Imported</span>
-                )}
-              </div>
+      {myPick ? (
+        <HomePickHero
+          teamAbbr={myPick.teamAbbr}
+          logoUrl={teamLogoUrl(myPick.teamAbbr, myTeam?.logoUrl)}
+          priorStanding={[myPrior, myStanding].filter(Boolean).join(" · ") || null}
+          gameLine={
+            myPick.game
+              ? `${myPick.game.awayAbbr} @ ${myPick.game.homeAbbr}${
+                  formatScoreLine(myPick.game)
+                    ? ` · ${formatScoreLine(myPick.game)}`
+                    : ""
+                }`
+              : null
+          }
+          injuryCounts={
+            myInjuries && !myInjuries.failed ? myInjuries.counts : null
+          }
+          favouriteLabel={myFav?.label ?? null}
+          imported={myPick.source === "imported"}
+          status={
+            self.status === "one_loss" || self.status === "eliminated"
+              ? self.status
+              : "undefeated"
+          }
+          result={myPick.result}
+          actionHref={
+            canChangePick
+              ? pickHrefForWeek(week.number)
+              : isCurrentWeek &&
+                  (decision.nextWeekOpen || decision.reason === "slate_not_ready")
+                ? pickHrefForWeek(decision.nextWeek)
+                : null
+          }
+          actionLabel={
+            canChangePick
+              ? "Change pick"
+              : isCurrentWeek &&
+                  (decision.nextWeekOpen || decision.reason === "slate_not_ready")
+                ? hasNextPick
+                  ? `Change Week ${decision.nextWeek} pick`
+                  : nextWeekOpenHeadline(decision.nextWeek, decision.slateReady)
+                : null
+          }
+        />
+      ) : (
+        <section className="card-glass p-4">
+          <p className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">
+            Your pick
+          </p>
+          {self.status === "eliminated" ? (
+            <p className="text-[var(--text-muted)]">You&apos;re eliminated — still welcome to hang out.</p>
+          ) : self.role === "admin" || !isPoolParticipant(self) ? (
+            <div className="space-y-2">
+              <p className="text-[var(--text-muted)]">
+                Commissioner view — you&apos;re not required to pick.
+              </p>
+              <p className="text-sm text-[var(--text-muted)]">
+                Also a player?{" "}
+                <Link href="/join" className="text-gold-400 underline-offset-2 hover:underline">
+                  Claim your name on Join
+                </Link>{" "}
+                with this same email so your picks stay with that seat.
+              </p>
             </div>
-            <div className="text-right">
-              <StatusChip status={self.status} />
-              {myPick.result && (
-                <p
-                  className={`text-sm mt-1 font-medium ${
-                    myPick.result === "win"
-                      ? "text-field-400"
-                      : myPick.result === "loss"
-                        ? "text-crimson-400"
-                        : "text-[var(--text-muted)]"
-                  }`}
-                >
-                  {myPick.result}
-                </p>
-              )}
-            </div>
-            {canChangePick && (
-              <Link
-                href={pickHrefForWeek(week.number)}
-                prefetch={false}
-                className="btn-primary text-center text-sm shrink-0 sm:ml-auto"
+          ) : locked || !isCurrentWeek ? (
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <p
+                className={
+                  emptyPick.missed
+                    ? "text-crimson-400"
+                    : "text-[var(--text-muted)]"
+                }
               >
-                Change pick
-              </Link>
-            )}
-            {!canChangePick &&
-              isCurrentWeek &&
-              (decision.nextWeekOpen || decision.reason === "slate_not_ready") && (
+                {emptyPick.message}
+              </p>
+              {emptyPick.href && emptyPick.ctaLabel && (
                 <Link
-                  href={pickHrefForWeek(decision.nextWeek)}
+                  href={emptyPick.href}
                   prefetch={false}
-                  className="btn-primary text-center text-sm shrink-0 sm:ml-auto"
+                  className="btn-primary text-sm shrink-0"
                 >
-                  {hasNextPick
-                    ? `Change Week ${decision.nextWeek} pick`
-                    : nextWeekOpenHeadline(
-                        decision.nextWeek,
-                        decision.slateReady
-                      )}
+                  {emptyPick.ctaLabel}
                 </Link>
               )}
-          </div>
-        ) : self.status === "eliminated" ? (
-          <p className="text-[var(--text-muted)]">You&apos;re eliminated — still welcome to hang out.</p>
-        ) : self.role === "admin" || !isPoolParticipant(self) ? (
-          <div className="space-y-2">
-            <p className="text-[var(--text-muted)]">
-              Commissioner view — you&apos;re not required to pick.
-            </p>
-            <p className="text-sm text-[var(--text-muted)]">
-              Also a player?{" "}
-              <Link href="/join" className="text-gold-400 underline-offset-2 hover:underline">
-                Claim your name on Join
-              </Link>{" "}
-              with this same email so your picks stay with that seat.
-            </p>
-          </div>
-        ) : locked || !isCurrentWeek ? (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <p
-              className={
-                emptyPick.missed
-                  ? "text-crimson-400"
-                  : "text-[var(--text-muted)]"
-              }
-            >
-              {emptyPick.message}
-            </p>
-            {emptyPick.href && emptyPick.ctaLabel && (
-              <Link
-                href={emptyPick.href}
-                prefetch={false}
-                className="btn-primary text-sm shrink-0"
-              >
-                {emptyPick.ctaLabel}
+            </div>
+          ) : isCurrentWeek ? (
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-[var(--text-muted)]">
+                Make your pick before kickoff—don&apos;t leave your mates hanging.
+              </p>
+              <Link href="/pick" prefetch={false} className="btn-primary text-sm shrink-0">
+                Pick now
               </Link>
-            )}
-          </div>
-        ) : isCurrentWeek ? (
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[var(--text-muted)]">
-              Make your pick before kickoff—don&apos;t leave your mates hanging.
-            </p>
-            <Link href="/pick" prefetch={false} className="btn-primary text-sm shrink-0">
-              Pick now
-            </Link>
-          </div>
-        ) : (
-          <p className="text-[var(--text-muted)]">No pick recorded for this week.</p>
-        )}
-      </section>
+            </div>
+          ) : (
+            <p className="text-[var(--text-muted)]">No pick recorded for this week.</p>
+          )}
+        </section>
+      )}
 
       <HomeVideosTeaser week={week.number} />
 

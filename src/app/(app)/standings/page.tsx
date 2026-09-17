@@ -13,8 +13,7 @@ import {
   boardPickFields,
   isAlive,
 } from "@/lib/tiebreak";
-import { AutoPickStamps } from "@/components/AutoPickStamps";
-import { StatusChip } from "@/components/StatusChip";
+import { BoardParticipantRow } from "@/components/features/board";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { ShareExport } from "@/components/ShareExport";
 import { formatKickoff } from "@/lib/utils";
@@ -245,109 +244,88 @@ export default async function StandingsPage() {
             isSelf && canChangePick && m.status !== "eliminated";
 
           return (
-            <li
+            <BoardParticipantRow
               key={m.id}
-              data-share-chunk=""
-              data-share-row=""
-              data-status={m.status}
-              className={`card-glass p-3 flex items-center gap-2 sm:gap-3 min-w-0 ${
-                m.status === "eliminated" ? "opacity-60" : ""
+              rank={i + 1}
+              nickname={m.nickname}
+              autoPickStamps={m.autoPickStamps}
+              isSelf={isSelf}
+              realName={m.realName}
+              status={m.status}
+              meta={`Losses: ${m.losses} · Weeks survived: ${m.weeksSurvived}${
+                !m.mulliganRemaining
+                  ? " · Mulligan used"
+                  : oneAndDone
+                    ? " · One-and-done"
+                    : ""
               }`}
             >
-              <span className="text-[var(--text-muted)] w-5 sm:w-6 text-sm font-mono shrink-0">
-                {i + 1}
-              </span>
-              <div className="flex-1 min-w-0 overflow-hidden">
-                <div className="font-medium truncate">
-                  {m.nickname}
-                  <AutoPickStamps count={m.autoPickStamps} />
-                  {isSelf ? " (you)" : ""}
-                  {m.realName ? (
-                    <span className="text-xs font-normal text-[var(--text-muted)]">
-                      {" "}
-                      ({m.realName})
+              {showPick && pick ? (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/team/${pick.teamAbbr}`}
+                    prefetch={false}
+                    aria-label={`${m.nickname}'s pick: ${pick.teamAbbr}`}
+                    className="flex items-center gap-1.5 rounded-md px-1.5 py-1 min-h-11 hover:bg-gold-400/5 active:bg-gold-400/10"
+                  >
+                    <TeamLogo
+                      abbr={pick.teamAbbr}
+                      logoUrl={teamLogoUrl(
+                        pick.teamAbbr,
+                        logoByAbbr.get(pick.teamAbbr)
+                      )}
+                      size={TEAM_LOGO_SIZE.row}
+                    />
+                    <span className="font-mono text-base sm:text-lg font-semibold text-gold-400">
+                      {pick.teamAbbr}
                     </span>
+                    {pick.result ? (
+                      <span
+                        className={`text-[10px] uppercase font-semibold ${
+                          pick.result === "win"
+                            ? "text-field-400"
+                            : pick.result === "loss"
+                              ? "text-crimson-400"
+                              : "text-[var(--text-muted)]"
+                        }`}
+                      >
+                        {pick.result}
+                      </span>
+                    ) : null}
+                  </Link>
+                  {canEditThisRow ? (
+                    <Link
+                      href="/pick"
+                      prefetch={false}
+                      data-share-chrome=""
+                      className="btn-primary text-xs px-2.5 py-2 min-h-11"
+                    >
+                      Change
+                    </Link>
                   ) : null}
                 </div>
-                <div className="text-xs text-[var(--text-muted)] truncate">
-                  Losses: {m.losses} · Weeks survived: {m.weeksSurvived}
-                  {!m.mulliganRemaining
-                    ? " · Mulligan used"
-                    : oneAndDone
-                      ? " · One-and-done"
-                      : ""}
-                </div>
-              </div>
-
-              <div className="shrink-0 flex flex-col items-end gap-1.5">
-                <StatusChip status={m.status} />
-                {showPick && pick ? (
-                  <div className="flex items-center gap-2">
-                    <Link
-                      href={`/team/${pick.teamAbbr}`}
-                      prefetch={false}
-                      aria-label={`${m.nickname}'s pick: ${pick.teamAbbr}`}
-                      className="flex items-center gap-1.5 rounded-md px-1.5 py-1 min-h-11 hover:bg-gold-400/5 active:bg-gold-400/10"
-                    >
-                      <TeamLogo
-                        abbr={pick.teamAbbr}
-                        logoUrl={teamLogoUrl(
-                          pick.teamAbbr,
-                          logoByAbbr.get(pick.teamAbbr)
-                        )}
-                        size={TEAM_LOGO_SIZE.row}
-                      />
-                      <span className="font-mono text-base sm:text-lg font-semibold text-gold-400">
-                        {pick.teamAbbr}
-                      </span>
-                      {pick.result ? (
-                        <span
-                          className={`text-[10px] uppercase font-semibold ${
-                            pick.result === "win"
-                              ? "text-field-400"
-                              : pick.result === "loss"
-                                ? "text-crimson-400"
-                                : "text-[var(--text-muted)]"
-                          }`}
-                        >
-                          {pick.result}
-                        </span>
-                      ) : null}
-                    </Link>
-                    {canEditThisRow ? (
-                      <Link
-                        href="/pick"
-                        prefetch={false}
-                        data-share-chrome=""
-                        className="btn-primary text-xs px-2.5 py-2 min-h-11"
-                      >
-                        Change
-                      </Link>
-                    ) : null}
-                  </div>
-                ) : showPick ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-crimson-400 font-medium px-1">
-                      No pick
-                    </span>
-                    {canEditThisRow ? (
-                      <Link
-                        href="/pick"
-                        prefetch={false}
-                        data-share-chrome=""
-                        className="btn-primary text-xs px-2.5 py-2 min-h-11"
-                      >
-                        Pick
-                      </Link>
-                    ) : null}
-                  </div>
-                ) : (
-                  <span className="text-xs text-[var(--text-muted)] italic px-1">
-                    Hidden
+              ) : showPick ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-crimson-400 font-medium px-1">
+                    No pick
                   </span>
-                )}
-              </div>
-            </li>
+                  {canEditThisRow ? (
+                    <Link
+                      href="/pick"
+                      prefetch={false}
+                      data-share-chrome=""
+                      className="btn-primary text-xs px-2.5 py-2 min-h-11"
+                    >
+                      Pick
+                    </Link>
+                  ) : null}
+                </div>
+              ) : (
+                <span className="text-xs text-[var(--text-muted)] italic px-1">
+                  Hidden
+                </span>
+              )}
+            </BoardParticipantRow>
           );
         })}
       </ul>

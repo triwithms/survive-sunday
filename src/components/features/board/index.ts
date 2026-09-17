@@ -1,0 +1,1 @@
+export { BoardParticipantRow } from "./BoardParticipantRow";

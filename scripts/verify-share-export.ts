@@ -167,7 +167,7 @@ mustInclude("src/components/HeaderWeekNav.tsx", [
 ]);
 mustInclude("src/app/(app)/layout.tsx", ['data-share-chrome=""']);
 mustInclude("src/components/BottomNav.tsx", ['data-share-chrome=""']);
-mustInclude("src/components/ScoreGameCard.tsx", [
+mustInclude("src/components/features/scores/GameDetailsHint.tsx", [
   "GameDetailsHint",
   'data-share-chrome=""',
 ]);
