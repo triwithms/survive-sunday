@@ -5,7 +5,7 @@ import type { ForgotCodeStepProps } from "./forgot-code-props";
 
 export function ForgotCodeStep({
   email, view, code, setCode, password, setPassword, confirm, setConfirm,
-  info, err, busy, cooldown, onReset, onResend, otherChannel,
+  info, err, busy, cooldown, onReset, onResend,
 }: ForgotCodeStepProps) {
   return (
     <form onSubmit={onReset} className="space-y-4 card-glass p-5">
@@ -62,9 +62,7 @@ export function ForgotCodeStep({
         busy={busy}
         codeLen={code.length}
         cooldown={cooldown}
-        onResend={() => onResend(view?.channel)}
-        otherChannel={otherChannel}
-        onOther={() => otherChannel && onResend(otherChannel)}
+        onResend={onResend}
       />
     </form>
   );

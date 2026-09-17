@@ -1,4 +1,3 @@
-import type { OtpChannel } from "@/lib/otp";
 import { challengeFrom, postForgot, postReset } from "./forgot-api";
 import type { ChallengeView } from "./forgot-types";
 
@@ -8,10 +7,9 @@ export type SendForgotResult =
   | { kind: "sent"; status: ChallengeView | null };
 
 export async function sendForgotCode(
-  email: string,
-  channel?: OtpChannel
+  email: string
 ): Promise<SendForgotResult> {
-  const { res, data } = await postForgot(email, channel);
+  const { res, data } = await postForgot(email);
   if (data?.demo === true) {
     return {
       kind: "demo",

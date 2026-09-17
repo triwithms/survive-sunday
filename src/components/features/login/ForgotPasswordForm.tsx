@@ -43,8 +43,7 @@ export function ForgotPasswordForm() {
           busy={f.busy}
           cooldown={f.cooldown}
           onReset={f.onReset}
-          onResend={f.sendCode}
-          otherChannel={f.otherChannel}
+          onResend={() => void f.sendCode()}
         />
       )}
 

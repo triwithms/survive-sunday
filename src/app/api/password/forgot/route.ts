@@ -6,16 +6,14 @@ export const revalidate = 0;
 
 export async function POST(req: Request) {
   let email = "";
-  let channel: unknown;
   try {
-    const body = (await req.json()) as { email?: unknown; channel?: unknown };
+    const body = (await req.json()) as { email?: unknown };
     email = typeof body.email === "string" ? body.email : "";
-    channel = body.channel;
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const result = await requestPasswordReset(email, channel);
+  const result = await requestPasswordReset(email);
   if (!result.ok) {
     const status = /too many/i.test(result.error) ? 429 : 400;
     return NextResponse.json(

@@ -1,5 +1,4 @@
 import type { FormEvent } from "react";
-import type { OtpChannel } from "@/lib/otp";
 import type { ChallengeView } from "./forgot-types";
 
 export type ForgotCodeStepProps = {
@@ -16,6 +15,5 @@ export type ForgotCodeStepProps = {
   busy: boolean;
   cooldown: number;
   onReset: (e: FormEvent) => void;
-  onResend: (channel?: OtpChannel) => void;
-  otherChannel: OtpChannel | null;
+  onResend: () => void;
 };

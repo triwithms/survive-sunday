@@ -20,7 +20,12 @@ import {
   secretsMatch,
 } from "../src/lib/otp";
 import { requestPasswordReset, resetPasswordWithCode } from "../src/lib/password-reset";
-import { resetPreferredChannel } from "../src/lib/password-reset-channel";
+import { resetChannels } from "../src/lib/password-reset-channel";
+import {
+  adminNotifyLooksSafe,
+  collectAdminEmails,
+  resetAdminNotifyCopy,
+} from "../src/lib/password-reset-notify";
 import { sentCodeCopy } from "../src/components/features/login/forgot-copy";
 
 function assert(cond: unknown, msg: string): asserts cond {
@@ -45,10 +50,22 @@ async function main() {
   assert(isValidOtpShape("123456") && !isValidOtpShape("12345"), "shape");
   assert(preferredChannel(true, null) === "sms", "prefer sms");
   assert(preferredChannel(false, "sms") === "email", "no phone → email");
-  assert(resetPreferredChannel(true, null) === "email", "reset defaults to email");
-  assert(resetPreferredChannel(true, "sms") === "sms", "reset SMS only if asked");
-  assert(resetPreferredChannel(false, "sms") === "email", "reset no phone → email");
-  assert(sentCodeCopy("email").toLowerCase().includes("spam"), "spam guidance");
+  assert(resetChannels(false).join(",") === "email", "email always");
+  assert(resetChannels(true).join(",") === "email,sms", "SMS when phone on file");
+  assert(sentCodeCopy(false).toLowerCase().includes("spam"), "spam guidance");
+  assert(sentCodeCopy(true).toLowerCase().includes("texted"), "SMS mentioned");
+  const notify = resetAdminNotifyCopy("JimmyC");
+  assert(notify.text.includes("JimmyC"), "notify names the friend");
+  assert(adminNotifyLooksSafe(notify.text), "notify has no OTP");
+  assert(adminNotifyLooksSafe(notify.subject), "subject has no OTP");
+  assert(
+    collectAdminEmails([
+      { email: "robertgama@gmail.com" },
+      { email: "admin@survivesunday.demo" },
+      { email: "robertgama@gmail.com" },
+    ]).join(",") === "robertgama@gmail.com",
+    "admin emails skip demo and dedupe"
+  );
   assert(parseChannel("nope") === null, "parse junk");
   assert(maskEmail("pat@example.com") === "p•••@example.com", "mask email");
   assert(maskPhone("+14169514262") === "+1 •••-•••-4262", "mask phone");

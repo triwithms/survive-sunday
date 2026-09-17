@@ -31,9 +31,9 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 
 Friends stay signed in. We do **not** ask for a code at every sign-in.
 
-If they forget the password: Sign in → **Forgot password?** → 6-digit code by email → new password → back in the pool.
+If they forget the password: Sign in → **Forgot password?** → 6-digit code by email (and SMS if a cell is saved) → new password → back in the pool.
 
-If they already Joined: Sign in is **email + password**. **Forgot password?** emails a 6-digit code. Optional **Send to my phone instead** only on that screen if a cell is saved. This is not a code at every login.
+If they already Joined: Sign in is **email + password**. **Forgot password?** emails a 6-digit code (and texts it if a cell is saved). This is not a code at every login.
 
 Demo seats (`@survivesunday.demo`) always use **demo1234**. No reset.
 

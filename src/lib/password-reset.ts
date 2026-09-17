@@ -1,11 +1,11 @@
-import { isDemoEmail, normalizeEmail, parseChannel } from "./otp";
+import { isDemoEmail, normalizeEmail } from "./otp";
 import { lookupResetUser } from "./password-reset-lookup";
 import { sendResetCode } from "./password-reset-send";
 import type { ResetStatus } from "./password-reset-types";
 
 export type { ResetStatus } from "./password-reset-types";
 export { resetPasswordWithCode } from "./password-reset-complete";
-export { resetPreferredChannel } from "./password-reset-channel";
+export { resetChannels } from "./password-reset-channel";
 
 const sendLocks = new Map<string, Promise<unknown>>();
 
@@ -26,8 +26,7 @@ async function withSendLock<T>(key: string, fn: () => Promise<T>): Promise<T> {
 }
 
 export async function requestPasswordReset(
-  emailRaw: string,
-  requestedChannel?: unknown
+  emailRaw: string
 ): Promise<
   | { ok: true; demo?: boolean; message?: string; status?: ResetStatus }
   | { ok: false; error: string; status?: ResetStatus }
@@ -55,9 +54,7 @@ export async function requestPasswordReset(
       };
     }
 
-    return withSendLock(user.id, () =>
-      sendResetCode(user, parseChannel(requestedChannel))
-    );
+    return withSendLock(user.id, () => sendResetCode(user));
   } catch (error) {
     console.error("[password-reset] request failed", error);
     return { ok: false, error: "Could not send a code. Try again." };

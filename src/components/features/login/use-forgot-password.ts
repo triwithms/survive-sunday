@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { submitCredentialsLogin } from "@/lib/client-auth";
-import type { OtpChannel } from "@/lib/otp";
 import { finishReset, sendForgotCode } from "./forgot-send";
 import { sentCodeCopy } from "./forgot-copy";
 import type { ChallengeView } from "./forgot-types";
@@ -24,14 +23,16 @@ export function useForgotPassword() {
     if (cooldown <= 0) return;
     const t = window.setTimeout(() => setCooldown((n) => Math.max(0, n - 1)), 1000);
     return () => window.clearTimeout(t);
-  }, [cooldown]);  async function sendCode(channel?: OtpChannel) {
+  }, [cooldown]);
+
+  async function sendCode() {
     if (sending.current) return;
     sending.current = true;
     setBusy(true);
     setErr("");
     setInfo("");
     try {
-      const result = await sendForgotCode(email, channel);
+      const result = await sendForgotCode(email);
       if (result.kind === "demo") {
         setInfo(result.message);
         setStep("email");
@@ -49,7 +50,7 @@ export function useForgotPassword() {
         return;
       }
       setStep("code");
-      setInfo(sentCodeCopy(result.status?.channel));
+      setInfo(sentCodeCopy(Boolean(result.status?.canSms)));
     } catch {
       setErr("Could not send a code. Check your connection and try again.");
     } finally {
@@ -85,16 +86,9 @@ export function useForgotPassword() {
     }
   }
 
-  const otherChannel: OtpChannel | null =
-    view?.channel === "sms" && view.canEmail
-      ? "email"
-      : view?.channel === "email" && view.canSms
-        ? "sms"
-        : null;
-
   return {
     step, email, setEmail, code, setCode, password, setPassword,
     confirm, setConfirm, view, err, info, busy, cooldown,
-    sendCode, onEmail, onReset, otherChannel,
+    sendCode, onEmail, onReset,
   };
 }

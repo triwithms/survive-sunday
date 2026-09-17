@@ -76,7 +76,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">Join <strong>once</strong> first. Forgot password only works after that.</li>
           <li className="text-[var(--text-primary)]">On this phone you stay signed in. Open the Home Screen icon to land in the pool.</li>
           <li className="text-[var(--text-primary)]">If you need Sign in: enter the <strong>same email</strong> you Joined with, your password, then tap <strong>Sign in</strong>.</li>
-          <li className="text-[var(--text-primary)]"><strong>Forgot password?</strong> is the small link under Sign in — only after you Joined. Check inbox <strong>and spam/junk</strong> for the code.</li>
+          <li className="text-[var(--text-primary)]"><strong>Forgot password?</strong> is the small link under Sign in — only after you Joined. Check inbox <strong>and spam/junk</strong> for the code. If you saved a cell, we text it too.</li>
         </ol>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -278,7 +278,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
               : ""}
           </li>
           <li className="text-[var(--text-primary)]">
-            <strong>Forgot password:</strong> only after you have Joined. On Sign in, tap <strong>Forgot password?</strong>. Check inbox and spam/junk — codes may be filtered. If you saved a cell, you can ask for a text instead on that screen.
+            <strong>Forgot password:</strong> only after you have Joined. On Sign in, tap <strong>Forgot password?</strong>. We email a code (and text it if you saved a cell). Check inbox and spam/junk — codes may be filtered.
             {showDemoCopy
               ? " Demo seats (@survivesunday.demo) always use password demo1234 — no reset needed."
               : " Don’t use Forgot password before Join — there is no account yet."}
@@ -329,7 +329,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">**Pool notes & missing-pick nudge:** Admin → send a short note (only friends who left Pool notes on) or nudge anyone still without a pick (only if they left Missing pick reminder on).</li>
           <li className="text-[var(--text-primary)]"><strong>Coming later:</strong> weekly digests. Late-pick reminders already respect Notification preferences.</li>
           <li className="text-[var(--text-primary)]"><strong>Set a temporary password:</strong> Admin → pick a friend who already Joined → type their nickname → save a password → text it to them. Audit-logged. Does <strong>not</strong> email the password. If they have not Joined, send their personal Join link instead.</li>
-          <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> uses Resend keys (owner sets them on Vercel Production). Admin shows whether those keys look set. Optional Twilio for texts if a cell is saved. <strong>Wave 2 — Coming soon:</strong> WhatsApp group stub.</li>
+          <li className="text-[var(--text-primary)]"><strong>Forgot password</strong> uses Resend keys (owner sets them on Vercel Production). Admin shows whether those keys look set. Optional Twilio for texts if a cell is saved. Administrators get a notify when someone asks for a reset (no code in that email). <strong>Wave 2 — Coming soon:</strong> WhatsApp group stub.</li>
           {showDemoCopy && (
             <li className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> mark demo-mode team data so “demo” labels stay honest.</li>
           )}

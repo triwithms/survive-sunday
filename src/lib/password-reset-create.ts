@@ -4,9 +4,10 @@ import {
   OTP_PURPOSE_PASSWORD_RESET,
   generateOtpCode,
   hashSecret,
-  type OtpChannel,
 } from "./otp";
-import { canRevealDevCode, deliverOtp } from "./otp-delivery";
+import { canRevealDevCode } from "./otp-delivery";
+import { notifyAdminsOfResetRequest } from "./password-reset-alert";
+import { deliverResetCode } from "./password-reset-deliver";
 import {
   statusFrom,
   type ResetStatus,
@@ -18,16 +19,13 @@ function hourAgo(): Date {
 }
 
 export async function createAndSendReset(
-  user: ResetUser,
-  channel: OtpChannel,
-  destination: string,
-  canEmail: boolean,
-  canSms: boolean
+  user: ResetUser
 ): Promise<
   | { ok: true; status: ResetStatus }
   | { ok: false; error: string; status?: ResetStatus }
 > {
   const purpose = OTP_PURPOSE_PASSWORD_RESET;
+  const canEmail = Boolean(user.email);
   const sends = await prisma.otpChallenge.count({
     where: { userId: user.id, purpose, createdAt: { gte: hourAgo() } },
   });
@@ -49,16 +47,7 @@ export async function createAndSendReset(
   }
 
   const code = generateOtpCode();
-  let delivered = await deliverOtp(channel, destination, code, purpose);
-  let usedChannel = channel;
-  let usedDestination = destination;
-  if (!delivered.ok && channel === "sms" && canEmail) {
-    delivered = await deliverOtp("email", user.email, code, purpose);
-    if (delivered.ok) {
-      usedChannel = "email";
-      usedDestination = user.email;
-    }
-  }
+  const delivered = await deliverResetCode(user, code);
   if (!delivered.ok) return { ok: false, error: delivered.error };
 
   await prisma.otpChallenge.updateMany({
@@ -72,25 +61,20 @@ export async function createAndSendReset(
       email: user.email,
       purpose,
       codeHash: hashSecret(code, "otp"),
-      channel: usedChannel,
-      destination: usedDestination,
+      channel: "email",
+      destination: user.email,
       expiresAt: new Date(now.getTime() + OTP.expiryMs),
       lastSentAt: now,
     },
   });
+  notifyAdminsOfResetRequest(user.id, user.email);
   return {
     ok: true,
-    status: statusFrom(
-      usedChannel,
-      usedDestination,
-      row.expiresAt,
-      row.lastSentAt,
-      {
-        stubbed: delivered.stubbed,
-        canEmail,
-        canSms,
-        devCode: canRevealDevCode() ? code : undefined,
-      }
-    ),
+    status: statusFrom("email", user.email, row.expiresAt, row.lastSentAt, {
+      stubbed: delivered.stubbed,
+      canEmail,
+      canSms: delivered.smsSent,
+      devCode: canRevealDevCode() ? code : undefined,
+    }),
   };
 }

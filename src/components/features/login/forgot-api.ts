@@ -1,13 +1,12 @@
-import type { OtpChannel } from "@/lib/otp";
 import type { ChallengeView } from "./forgot-types";
 import { readJson } from "./otp-json";
 
-export async function postForgot(email: string, channel?: OtpChannel) {
+export async function postForgot(email: string) {
   const res = await fetch("/api/password/forgot", {
     method: "POST",
     credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, ...(channel ? { channel } : {}) }),
+    body: JSON.stringify({ email }),
   });
   return { res, data: await readJson(res) };
 }
