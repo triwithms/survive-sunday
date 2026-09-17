@@ -27,8 +27,8 @@ export function SetPasswordSaved({
       </p>
       <textarea
         readOnly
-        rows={8}
-        className="w-full font-mono text-sm"
+        rows={12}
+        className="w-full font-mono text-sm min-h-[12rem]"
         value={text}
         aria-label="Text to send"
       />

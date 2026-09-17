@@ -15,7 +15,7 @@ export function SetPasswordKind({
       <label className="flex items-start gap-3 text-sm min-h-11">
         <input
           type="radio"
-          className="mt-1"
+          className="mt-1 !h-4 !w-4 !min-h-0 !p-0 shrink-0"
           name="password-kind"
           checked={kind === "temporary"}
           onChange={() => onKind("temporary")}
@@ -25,7 +25,7 @@ export function SetPasswordKind({
       <label className="flex items-start gap-3 text-sm min-h-11">
         <input
           type="radio"
-          className="mt-1"
+          className="mt-1 !h-4 !w-4 !min-h-0 !p-0 shrink-0"
           name="password-kind"
           checked={kind === "permanent"}
           onChange={() => onKind("permanent")}
