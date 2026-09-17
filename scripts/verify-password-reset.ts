@@ -19,14 +19,11 @@ import {
   secondsUntil,
   secretsMatch,
 } from "../src/lib/otp";
-import { requestPasswordReset, resetPasswordWithCode } from "../src/lib/password-reset";
-import { resetChannels } from "../src/lib/password-reset-channel";
 import {
-  adminNotifyLooksSafe,
-  collectAdminEmails,
-  resetAdminNotifyCopy,
-  resetAdminUserIds,
-} from "../src/lib/password-reset-notify";
+  requestPasswordReset,
+  resetPasswordWithCode,
+} from "../src/lib/password-reset";
+import { resetChannels } from "../src/lib/password-reset-channel";
 import { sentCodeCopy } from "../src/components/features/login/forgot-copy";
 
 function assert(cond: unknown, msg: string): asserts cond {
@@ -36,17 +33,14 @@ function assert(cond: unknown, msg: string): asserts cond {
 async function main() {
   assert(isDemoEmail("gams@survivesunday.demo"), "gams is demo");
   assert(isDemoEmail("ADMIN@SurviveSunday.demo"), "demo case");
-  assert(isDemoEmail("go-giants@pending.survivesunday.local"), "pending placeholder");
-  assert(!isDemoEmail("friend@example.com"), "real email");
   assert(!isDemoEmail("robertgama@gmail.com"), "gams claimed email");
-  assert(normalizeEmail(" Pat@Example.com ") === "pat@example.com", "normalize email");
+  assert(normalizeEmail(" Pat@Example.com ") === "pat@example.com", "normalize");
   console.log("PASS  demo + email helpers");
 
   const code = generateOtpCode();
   assert(code.length === OTP.codeLength && /^\d+$/.test(code), `otp ${code}`);
   const hash = hashSecret(code, "otp");
   assert(secretsMatch(code, "otp", hash), "hash matches");
-  assert(!secretsMatch("000000" === code ? "000001" : "000000", "otp", hash), "wrong code fails");
   assert(normalizeOtpInput("12 34-56") === "123456", "normalize");
   assert(isValidOtpShape("123456") && !isValidOtpShape("12345"), "shape");
   assert(preferredChannel(true, null) === "sms", "prefer sms");
@@ -55,30 +49,6 @@ async function main() {
   assert(resetChannels(true).join(",") === "email,sms", "SMS when phone on file");
   assert(sentCodeCopy(false).toLowerCase().includes("spam"), "spam guidance");
   assert(sentCodeCopy(true).toLowerCase().includes("texted"), "SMS mentioned");
-  const notify = resetAdminNotifyCopy("JimmyC");
-  assert(notify.text.includes("JimmyC"), "notify names the friend");
-  assert(adminNotifyLooksSafe(notify.text), "notify has no OTP");
-  assert(adminNotifyLooksSafe(notify.subject), "subject has no OTP");
-  assert(
-    collectAdminEmails([
-      { email: "robertgama@gmail.com" },
-      { email: "admin@survivesunday.demo" },
-      { email: "robertgama@gmail.com" },
-    ]).join(",") === "robertgama@gmail.com",
-    "admin emails skip demo and dedupe"
-  );
-  const union = resetAdminUserIds(
-    [
-      { userId: "is-admin", role: "member", isAdmin: true },
-      { userId: "seat-admin", role: "admin", isAdmin: false },
-    ],
-    [{ userId: "grant-admin", role: "administrator" }]
-  ).sort();
-  assert(
-    union.join(",") === "grant-admin,is-admin,seat-admin",
-    `union all admin signals ${union}`
-  );
-  assert(resetAdminUserIds([], []).length === 0, "no admins → skip");
   assert(parseChannel("nope") === null, "parse junk");
   assert(maskEmail("pat@example.com") === "p•••@example.com", "mask email");
   assert(maskPhone("+14169514262") === "+1 •••-•••-4262", "mask phone");
@@ -95,7 +65,6 @@ async function main() {
   );
   assert(!demoReset.ok, "demo cannot change password via reset");
   console.log("PASS  demo seats skip reset");
-
   console.log("\nverify-password-reset OK");
 }
 

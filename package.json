@@ -18,6 +18,7 @@
     "verify:demo-enter": "node scripts/verify-demo-enter.mjs",
     "verify:credentials-authorize": "tsx scripts/verify-credentials-authorize.ts",
     "verify:password-reset": "tsx scripts/verify-password-reset.ts",
+    "verify:reset-admins": "tsx scripts/verify-reset-admins.ts",
     "verify:delivery": "tsx scripts/verify-delivery.ts",
     "verify:admin-set-password": "tsx scripts/verify-admin-set-password.ts",
     "verify:invite-links": "tsx scripts/verify-invite-links.ts",
