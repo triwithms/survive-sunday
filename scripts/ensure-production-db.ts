@@ -24,6 +24,7 @@ import { isLiveMode } from "../src/lib/pool-mode";
 import { backfillPoolAccessRoles } from "../src/lib/roles-db";
 import { ensureDualMembershipIndex } from "../src/lib/membership-schema";
 import { ensureNotificationTables } from "../src/lib/notification-schema";
+import { ensureInviteTokenTable } from "../src/lib/invite-token-schema";
 import { ensurePickMirrorColumn } from "../src/lib/pick-mirror-schema";
 import { ensurePoolRulesColumns } from "../src/lib/pool-rules-schema";
 import { ensureCanonicalLiveSeats } from "../src/lib/live-roster";
@@ -207,6 +208,7 @@ async function assertRequiredSchema(prisma: PrismaClient) {
   await prisma.otpChallenge.findFirst({ select: { id: true } });
   await prisma.poolAccessRole.findFirst({ select: { id: true } });
   await prisma.notificationPreference.findFirst({ select: { id: true } });
+  await prisma.inviteToken.findFirst({ select: { id: true } });
 }
 
 function pushSchema(env: NodeJS.ProcessEnv) {
@@ -254,6 +256,7 @@ async function main() {
     await ensurePoolRulesColumns(prisma);
     await ensurePoolAccessRoleTable(prisma);
     await ensureNotificationTables(prisma);
+    await ensureInviteTokenTable(prisma);
     await ensurePickMirrorColumn(prisma);
   });
 
@@ -276,6 +279,7 @@ async function main() {
       await ensurePoolAccessRoleTable(prisma);
       await ensureOtpChallengeTable(prisma);
       await ensureNotificationTables(prisma);
+      await ensureInviteTokenTable(prisma);
       await ensurePickMirrorColumn(prisma);
       await assertRequiredSchema(prisma);
     });
@@ -286,6 +290,7 @@ async function main() {
       await ensurePoolAccessRoleTable(prisma);
       await ensurePoolRulesColumns(prisma);
       await ensureNotificationTables(prisma);
+      await ensureInviteTokenTable(prisma);
       await ensurePickMirrorColumn(prisma);
       await assertRequiredSchema(prisma);
     });

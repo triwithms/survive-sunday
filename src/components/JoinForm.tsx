@@ -20,15 +20,20 @@ import {
 export function JoinForm({
   seats,
   signedIn,
+  tokenSeatId,
 }: {
   seats: ClaimableSeat[];
   signedIn?: { email: string; userId: string } | null;
+  tokenSeatId?: string | null;
 }) {
   const params = useSearchParams();
-  const seatParam = params.get("seat") ?? "";
-  const whoParam = params.get("who") ?? "";
+  const tokenParam = params.get("t") ?? "";
+  const seatParam = tokenSeatId || params.get("seat") || "";
+  const whoParam = tokenSeatId ? "" : params.get("who") ?? "";
   const invited = resolveSeatFromInvite(seats, { seat: seatParam, who: whoParam });
-  const viaPersonal = arrivedViaPersonalInvite({ seat: seatParam, who: whoParam });
+  const viaPersonal =
+    arrivedViaPersonalInvite({ seat: seatParam, who: whoParam }) ||
+    Boolean(tokenParam || tokenSeatId);
   const initialSeat = invited && !invited.claimed ? invited.membershipId : "";
 
   const [inviteCode, setInviteCode] = useState(INVITE_CODE);
@@ -95,6 +100,7 @@ export function JoinForm({
                 email: claimEmail,
                 password: claimPassword,
                 membershipId,
+                ...(tokenParam ? { inviteToken: tokenParam } : {}),
               }
         ),
       });

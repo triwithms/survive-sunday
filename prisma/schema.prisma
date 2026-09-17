@@ -82,6 +82,19 @@ model OtpChallenge {
   @@index([userId, purpose, createdAt])
 }
 
+/// One-time personal invite. Store HMAC hash + expiry only — never plaintext.
+model InviteToken {
+  id           String      @id @default(cuid())
+  tokenHash    String      @unique
+  membershipId String
+  membership   Membership  @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  consumedAt   DateTime?
+  createdAt    DateTime    @default(now())
+
+  @@index([membershipId])
+}
+
 model Pool {
   id          String       @id @default(cuid())
   name        String
@@ -131,6 +144,7 @@ model Membership {
   pool              Pool             @relation(fields: [poolId], references: [id], onDelete: Cascade)
   user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   picks             Pick[]
+  inviteTokens      InviteToken[]
   mirrorFrom        Membership?      @relation("PickMirror", fields: [mirrorFromMembershipId], references: [id], onDelete: SetNull)
   mirroredBy        Membership[]     @relation("PickMirror")
 
