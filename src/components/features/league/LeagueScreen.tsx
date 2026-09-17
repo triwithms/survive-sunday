@@ -2,7 +2,7 @@ import Link from "next/link";
 import { NflStandingsClient } from "@/components/NflStandingsClient";
 import type { LeaguePageData } from "./load-league";
 
-export function LeagueScreen({ demoMode, asOf, note, teams }: LeaguePageData) {
+export function LeagueScreen({ asOf, note, teams }: LeaguePageData) {
   return (
     <div className="space-y-5 min-w-0">
       <div>
@@ -10,9 +10,7 @@ export function LeagueScreen({ demoMode, asOf, note, teams }: LeaguePageData) {
           NFL standings
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          {demoMode
-            ? "Demo league table · tap a team for research · "
-            : "Live league table · tap a team for research · "}
+          Live league table · tap a team for research ·{" "}
           <Link
             href="/standings"
             prefetch={false}
@@ -23,7 +21,6 @@ export function LeagueScreen({ demoMode, asOf, note, teams }: LeaguePageData) {
         </p>
       </div>
       <NflStandingsClient
-        demoMode={demoMode}
         asOf={asOf}
         note={note}
         teams={teams}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Button, Card } from "@/components/ui";
@@ -47,6 +48,12 @@ export function PickCensusPanel({ census }: { census: PickCensus }) {
       ) : census.shouldPick > 0 ? (
         <p className="text-sm text-field-400">Everyone due has a pick.</p>
       ) : null}
+      <Link
+        href="#enter-pick"
+        className="btn-secondary inline-flex items-center justify-center w-full min-h-11"
+      >
+        Enter a friend’s pick
+      </Link>
     </Card>
   );
 }

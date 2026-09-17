@@ -6,6 +6,7 @@ import { AuditLogList } from "./AuditLogList";
 import { CommissionerAccountPanel } from "./CommissionerAccountPanel";
 import { CommissionerSignOut } from "./CommissionerSignOut";
 import { OpsPointers } from "./OpsPointers";
+import { EnterPickForm } from "./EnterPickForm";
 import { PickCensusPanel } from "./PickCensusPanel";
 import { ResetPoolPanel } from "./ResetPoolPanel";
 import type { SystemScreenProps } from "./types";
@@ -14,10 +15,11 @@ export function SystemScreen(props: SystemScreenProps) {
   return (
     <div className="space-y-6">
       <AdminHeading title="System">
-        Who still needs a pick this week, then login, reset, lock, import, and
-        the audit log.
+        Who still needs a pick this week, enter a friend’s pick, then login,
+        reset, lock, import, and the audit log.
       </AdminHeading>
       <PickCensusPanel census={props.census} />
+      <EnterPickForm data={props.enterPick} />
       <CommissionerSignOut />
       <CommissionerAccountPanel
         currentEmail={props.currentEmail}

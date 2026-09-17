@@ -144,7 +144,7 @@ export function AccountMenu({
           <SignOutButton next="/login" className="btn-danger w-full" />
           {(showAdmin ?? role === "admin") && (
             <Link
-              href="/admin#pool-mode"
+              href="/admin"
               prefetch={false}
               className={rowBtn}
               onClick={() => setMenuOpen(false)}

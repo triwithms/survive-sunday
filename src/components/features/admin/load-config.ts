@@ -1,9 +1,5 @@
 import "server-only";
-import {
-  effectiveCurrentWeek,
-  isDemoEmail,
-  normalizePoolMode,
-} from "@/lib/pool-mode";
+import { effectiveCurrentWeek } from "@/lib/pool-mode";
 import { loadAdminGate, loadPoolMembers } from "./load-admin";
 import { survivalCounts, toTransferMembers } from "./map-config";
 import type { ConfigScreenProps } from "./types";
@@ -13,15 +9,12 @@ export async function loadConfigPage(): Promise<
 > {
   const gate = await loadAdminGate();
   if (!gate.ok) return { ok: false, isDemo: gate.isDemo };
-  const { me, session } = gate;
+  const { me } = gate;
   const members = await loadPoolMembers(me.poolId);
-  const email = session.user.email ?? me.user.email ?? null;
   const counts = survivalCounts(members);
   return {
     ok: true,
     props: {
-      initialMode: normalizePoolMode(me.pool.mode),
-      isPracticeLogin: isDemoEmail(email),
       currentWeek: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
       singleEliminationFromWeek: me.pool.singleEliminationFromWeek,
       ...counts,

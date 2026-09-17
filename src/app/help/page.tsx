@@ -4,8 +4,6 @@ import { auth } from "@/lib/auth";
 import { getUserPoolContext } from "@/lib/session";
 import { ROLE_VIEW_COOKIE, resolveRoleView } from "@/lib/roles";
 import { HelpContent } from "@/components/HelpContent";
-import { isDemoMode } from "@/lib/pool-mode";
-import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { BottomNav } from "@/components/BottomNav";
 import { SignOutButton } from "@/components/SignOutButton";
@@ -25,9 +23,6 @@ export default async function HelpPage() {
     isAdmin: Boolean(ctx?.isAdmin),
     requested: cookieStore.get(ROLE_VIEW_COOKIE)?.value,
   });
-  const demoMode = membership
-    ? isDemoMode(membership.pool.mode)
-    : isDemoMode(await getPrimaryPoolMode());
 
   return (
     <div
@@ -64,7 +59,7 @@ export default async function HelpPage() {
             <SignOutButton next="/login" className="btn-danger w-full" />
           </div>
         )}
-        <HelpContent showDemoCopy={demoMode} />
+        <HelpContent showDemoCopy={false} />
       </main>
       <FooterDisclaimer />
       {membership && <BottomNav isAdmin={roleView === "admin"} />}

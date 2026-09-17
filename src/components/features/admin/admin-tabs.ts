@@ -19,7 +19,7 @@ export const ADMIN_TABS: AdminTab[] = [
     href: "/admin/config",
     label: "Pool",
     name: "Pool Config",
-    blurb: "Real or demo mode, mulligan, and who runs the pool.",
+    blurb: "Mulligan / pool rules, and who runs the pool.",
     match: (path) => path.startsWith("/admin/config"),
   },
   {
@@ -33,7 +33,7 @@ export const ADMIN_TABS: AdminTab[] = [
     href: "/admin/system",
     label: "System",
     name: "System",
-    blurb: "Pick census, login, reset, lock, import, audit. No database push.",
+    blurb: "Census, enter a pick, reset, lock, import, audit. No database push.",
     match: (path) =>
       path.startsWith("/admin/system") || path.startsWith("/admin/import"),
   },

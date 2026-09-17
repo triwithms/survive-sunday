@@ -5,7 +5,7 @@ import {
   loadAdminGate,
 } from "@/components/features/admin";
 import { Card } from "@/components/ui";
-import { effectiveCurrentWeek, isDemoMode } from "@/lib/pool-mode";
+import { effectiveCurrentWeek } from "@/lib/pool-mode";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -17,16 +17,13 @@ export default async function ImportPicksPage() {
     gate.me.pool.mode,
     gate.me.pool.currentWeek
   );
-  const demo = isDemoMode(gate.me.pool.mode);
   return (
     <div className="space-y-6">
       <AdminHeading title="Import week picks">
         Import picks made outside Survive Sunday. Source is marked{" "}
         <span className="font-mono">imported</span> and every change is audited.
-        {demo
-          ? " Week 1 may already have seeded practice picks. Reset the pool first if you want a clean import."
-          : " If the board still has old picks, use System → Reset pool first."}{" "}
-        After import, open Pool or Scores for that week.
+        If the board still has old picks, use System → Reset pool first. After
+        import, open Pool or Scores for that week.
       </AdminHeading>
       <ImportPicksForm defaultWeek={suggestedWeek} />
       <Card as="section" className="p-4 text-sm space-y-2">

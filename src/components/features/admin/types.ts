@@ -1,4 +1,5 @@
 import type { PickCensus } from "./pick-census";
+import type { EnterPickData } from "./enter-pick-types";
 import type { AdminRoleRow } from "./admin-role-types";
 import type { RosterMember, RosterMirrorOption } from "./roster-types";
 import type { SetPasswordMember } from "./password-members";
@@ -36,8 +37,6 @@ export type UsersScreenProps = {
 };
 
 export type ConfigScreenProps = {
-  initialMode: "demo" | "live";
-  isPracticeLogin: boolean;
   currentWeek: number;
   singleEliminationFromWeek: number | null;
   oneLossCount: number;
@@ -63,5 +62,6 @@ export type SystemScreenProps = {
   weekNumber: number;
   games: { id: string; label: string; status: string }[];
   census: PickCensus;
+  enterPick: EnterPickData;
   logs: AuditLogRow[];
 };

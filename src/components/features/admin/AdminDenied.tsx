@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui";
-import { CommissionerSwitch } from "@/components/CommissionerSwitch";
 
-export function AdminDenied({ isDemo }: { isDemo: boolean }) {
+export function AdminDenied({ isDemo }: { isDemo?: boolean }) {
+  void isDemo;
   return (
     <Card className="p-5 space-y-4">
       <div>
@@ -13,7 +13,6 @@ export function AdminDenied({ isDemo }: { isDemo: boolean }) {
           account to manage the roster, pool settings, and invites.
         </p>
       </div>
-      {isDemo && <CommissionerSwitch />}
     </Card>
   );
 }

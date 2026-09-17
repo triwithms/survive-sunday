@@ -1,5 +1,4 @@
 export { AdminDenied } from "./AdminDenied";
-export { AdminHashRedirect } from "./AdminHashRedirect";
 export { AdminHeading } from "./AdminHeading";
 export { AdminHub } from "./AdminHub";
 export { AdminNav } from "./AdminNav";

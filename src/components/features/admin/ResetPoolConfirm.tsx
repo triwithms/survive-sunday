@@ -5,18 +5,14 @@ import { RESET_POOL_CONFIRM } from "@/lib/constants";
 
 export function ResetPoolConfirm({
   typed,
-  switchToLive,
   busy,
   onTyped,
-  onSwitch,
   onReset,
   onCancel,
 }: {
   typed: string;
-  switchToLive: boolean;
   busy: boolean;
   onTyped: (value: string) => void;
-  onSwitch: (value: boolean) => void;
   onReset: () => void;
   onCancel: () => void;
 }) {
@@ -27,15 +23,6 @@ export function ResetPoolConfirm({
         <span className="font-mono font-semibold">{RESET_POOL_CONFIRM}</span>{" "}
         to continue.
       </p>
-      <label className="flex items-start gap-2 text-sm">
-        <input
-          type="checkbox"
-          className="mt-1"
-          checked={switchToLive}
-          onChange={(e) => onSwitch(e.target.checked)}
-        />
-        <span>Also switch to Real mode after reset (recommended)</span>
-      </label>
       <input
         value={typed}
         onChange={(e) => onTyped(e.target.value.toUpperCase())}

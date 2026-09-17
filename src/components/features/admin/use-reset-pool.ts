@@ -10,7 +10,6 @@ export function useResetPool() {
   const [preview, setPreview] = useState<ResetPreview | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [typed, setTyped] = useState("");
-  const [switchToLive, setSwitchToLive] = useState(true);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
@@ -48,7 +47,7 @@ export function useResetPool() {
       const res = await fetch("/api/admin/reset-pool", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ confirm: typed.trim(), switchToLive }),
+        body: JSON.stringify({ confirm: typed.trim(), switchToLive: true }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -71,7 +70,7 @@ export function useResetPool() {
   }
 
   return {
-    preview, showConfirm, setShowConfirm, typed, setTyped, switchToLive,
-    setSwitchToLive, busy, msg, err, setMsg, setErr, runReset,
+    preview, showConfirm, setShowConfirm, typed, setTyped,
+    busy, msg, err, setMsg, setErr, runReset,
   };
 }

@@ -35,10 +35,8 @@ export function ResetPoolPanel() {
       ) : (
         <ResetPoolConfirm
           typed={reset.typed}
-          switchToLive={reset.switchToLive}
           busy={reset.busy}
           onTyped={reset.setTyped}
-          onSwitch={reset.setSwitchToLive}
           onReset={() => void reset.runReset()}
           onCancel={() => {
             reset.setShowConfirm(false);

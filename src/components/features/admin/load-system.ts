@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { effectiveCurrentWeek, isDemoEmail } from "@/lib/pool-mode";
 import { loadAdminGate } from "./load-admin";
 import { toWeekGames } from "./map-config";
+import { loadEnterPick } from "./load-enter-pick";
 import { buildPickCensus } from "./pick-census";
 import type { SystemScreenProps } from "./types";
 
@@ -13,7 +14,7 @@ export async function loadSystemPage(): Promise<
   if (!gate.ok) return { ok: false, isDemo: gate.isDemo };
   const { me, session } = gate;
   const weekNumber = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
-  const [week, logs, members] = await Promise.all([
+  const [week, logs, members, enterPick] = await Promise.all([
     prisma.week.findUniqueOrThrow({
       where: { poolId_number: { poolId: me.poolId, number: weekNumber } },
       include: {
@@ -37,6 +38,7 @@ export async function loadSystemPage(): Promise<
         playingFromWeek: true,
       },
     }),
+    loadEnterPick(me.poolId, weekNumber),
   ]);
   const email = session.user.email ?? me.user.email ?? null;
   return {
@@ -47,6 +49,7 @@ export async function loadSystemPage(): Promise<
       weekNumber: week.number,
       games: toWeekGames(week.games),
       census: buildPickCensus(week.number, members, week.picks),
+      enterPick,
       logs: logs.map((row) => ({
         id: row.id,
         action: row.action,
