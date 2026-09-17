@@ -1,3 +1,5 @@
+import { assertNotProduction } from "../scripts/assert-not-production";
+assertNotProduction("seed.ts");
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import fs from "fs";
