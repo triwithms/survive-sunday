@@ -124,6 +124,9 @@ async function main() {
     if (!(await tableExists(prisma, "NotificationPreference"))) {
       fail("NotificationPreference table was not added");
     }
+    if (!(await tableExists(prisma, "InviteToken"))) {
+      fail("InviteToken table was not added");
+    }
     if (!(await columnExists(prisma, "Membership", "mirrorFromMembershipId"))) {
       fail("Membership.mirrorFromMembershipId was not added");
     }

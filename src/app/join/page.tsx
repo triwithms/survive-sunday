@@ -3,12 +3,26 @@ import { auth } from "@/lib/auth";
 import { listClaimableSeats } from "@/lib/claim-seat-db";
 import type { ClaimableSeat } from "@/lib/claim-seat";
 import { JoinForm } from "@/components/JoinForm";
+import { peekInviteToken } from "@/lib/invite-token-db";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function JoinPage() {
+type JoinSearch = { t?: string | string[] };
+
+export default async function JoinPage({
+  searchParams,
+}: {
+  searchParams?: Promise<JoinSearch>;
+}) {
   const session = await auth();
+  const params = searchParams ? await searchParams : undefined;
+  const raw = params?.t;
+  const token = Array.isArray(raw) ? raw[0] : raw;
+  const peeked = token
+    ? await peekInviteToken(token).catch(() => null)
+    : null;
+
   let seats: ClaimableSeat[] = [];
   try {
     seats = await listClaimableSeats();
@@ -27,7 +41,11 @@ export default async function JoinPage() {
         </main>
       }
     >
-      <JoinForm seats={seats} signedIn={signedIn} />
+      <JoinForm
+        seats={seats}
+        signedIn={signedIn}
+        tokenSeatId={peeked?.membershipId}
+      />
     </Suspense>
   );
 }
