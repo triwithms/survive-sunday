@@ -19,6 +19,7 @@ import {
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { NextWeekOpenTip } from "@/components/NextWeekOpenTip";
 import { formatMatchupListLine } from "@/lib/game-display";
+import { submitPick } from "@/app/actions/submit-pick";
 
 type Side = {
   abbr: string;
@@ -104,28 +105,32 @@ export function PickClient({
   async function submit(abbr: string) {
     setBusy(true);
     setMsg("");
-    const res = await fetch("/api/picks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ weekNumber, teamAbbr: abbr }),
-    });
-    const data = await res.json().catch(() => ({}));
-    setBusy(false);
-    if (!res.ok) {
-      if (res.status === 403 && (data.locked || /locked/i.test(data.error || ""))) {
-        setMsg(data.error || "Week is locked — picks cannot change");
-        router.refresh();
+    try {
+      const data = await submitPick(weekNumber, abbr);
+      if (!data.ok) {
+        if (data.locked || /locked/i.test(data.error || "")) {
+          setMsg(data.error || "Week is locked — picks cannot change");
+          router.refresh();
+          return;
+        }
+        setMsg(data.error || "Could not save pick");
         return;
       }
-      setMsg(data.error || "Could not save pick");
-      return;
+      setSelected(abbr);
+      setConfirm(null);
+      const updated = currentPick && currentPick !== abbr;
+      setMsg(
+        updated
+          ? "Pick updated — heading back to pool…"
+          : "Locked in — heading back to pool…"
+      );
+      setRedirectIn(2);
+      router.refresh();
+    } catch {
+      setMsg("Could not save pick");
+    } finally {
+      setBusy(false);
     }
-    setSelected(abbr);
-    setConfirm(null);
-    const updated = currentPick && currentPick !== abbr;
-    setMsg(updated ? "Pick updated — heading back to pool…" : "Locked in — heading back to pool…");
-    setRedirectIn(2);
-    router.refresh();
   }
 
   function trySelect(side: Side, matchup: Matchup) {

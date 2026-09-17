@@ -7,203 +7,21 @@ import {
   effectiveLockAt,
   isWeekLocked,
   ensureWeekLockedEffects,
-  rebuildUsedTeams,
-  parseUsedTeams,
-  MISSED_TEAM,
 } from "@/lib/grading";
-import {
-  evaluatePickChange,
-  gameForPick,
-  pickChangeErrorMessage,
-} from "@/lib/pick-change";
-import {
-  isPlayerPickWeek,
-  playerPickWeekError,
-  resolvePlayerPickWeekFromLoaded,
-} from "@/lib/next-week-picks";
-import { schedulePickConfirmed } from "@/lib/notification-events";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { submitPick } from "@/app/actions/submit-pick";
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  const membership = await getMembershipForUser(session.user.id);
-  if (!membership) {
-    return NextResponse.json({ error: "Not in a pool" }, { status: 403 });
-  }
-  if (membership.status === "eliminated") {
-    return NextResponse.json({ error: "Eliminated — no picks" }, { status: 403 });
-  }
-  if (!isPoolParticipant(membership)) {
-    return NextResponse.json(
-      { error: "Commissioner is not a participant — no pick required" },
-      { status: 403 }
-    );
-  }
-
   const { weekNumber, teamAbbr } = await req.json();
-  const currentWeek = effectiveCurrentWeek(
-    membership.pool.mode,
-    membership.pool.currentWeek
-  );
-  const relatedWeeks = await prisma.week.findMany({
-    where: {
-      poolId: membership.poolId,
-      number: { in: [currentWeek, currentWeek + 1, Number(weekNumber)] },
-    },
-    include: { games: true },
-  });
-  const currentWeekRow = relatedWeeks.find((row) => row.number === currentWeek);
-  const myCurrentWeekPick = currentWeekRow
-    ? await prisma.pick.findUnique({
-        where: {
-          membershipId_weekId: {
-            membershipId: membership.id,
-            weekId: currentWeekRow.id,
-          },
-        },
-      })
-    : null;
-  const decision = resolvePlayerPickWeekFromLoaded({
-    poolCurrentWeek: currentWeek,
-    weeks: relatedWeeks.map((row) => ({
-      number: row.number,
-      locked: isWeekLocked(row),
-      games: row.games,
-    })),
-    currentPick: myCurrentWeekPick,
-    playingFromWeek: membership.playingFromWeek,
-  });
-  if (!isPlayerPickWeek(decision, weekNumber)) {
+  const result = await submitPick(Number(weekNumber), String(teamAbbr ?? ""));
+  if (!result.ok) {
     return NextResponse.json(
-      { error: playerPickWeekError(decision, weekNumber) },
-      { status: 403 }
+      { error: result.error, locked: result.locked },
+      { status: result.status }
     );
   }
-  const week = await prisma.week.findUnique({
-    where: {
-      poolId_number: { poolId: membership.poolId, number: weekNumber },
-    },
-    include: { games: true },
-  });
-  if (!week) {
-    return NextResponse.json({ error: "Week not found" }, { status: 404 });
-  }
-
-  // Natural lock may have passed — apply missed-pick / grade effects
-  await ensureWeekLockedEffects(week.id);
-  const weekFresh = await prisma.week.findUniqueOrThrow({
-    where: { id: week.id },
-    include: { games: true },
-  });
-  const weekLocked = isWeekLocked(weekFresh);
-
-  const team = await prisma.team.findUnique({ where: { abbr: teamAbbr } });
-  if (!team) {
-    return NextResponse.json({ error: "Unknown team" }, { status: 400 });
-  }
-
-  const game = weekFresh.games.find(
-    (g) => g.awayAbbr === teamAbbr || g.homeAbbr === teamAbbr
-  );
-  if (!game) {
-    return NextResponse.json(
-      { error: "That team is on bye or not playing this week" },
-      { status: 400 }
-    );
-  }
-
-  const existing = await prisma.pick.findUnique({
-    where: {
-      membershipId_weekId: {
-        membershipId: membership.id,
-        weekId: week.id,
-      },
-    },
-  });
-
-  const existingGame = gameForPick(existing, weekFresh.games);
-  const change = evaluatePickChange({
-    weekNumber,
-    weekLocked,
-    existingPick: existing,
-    existingGame,
-    newGame: game,
-  });
-  if (!change.allowed) {
-    const hardLock =
-      change.reason === "week_locked" ||
-      change.reason === "current_game_started";
-    return NextResponse.json(
-      { error: pickChangeErrorMessage(change.reason), locked: hardLock },
-      { status: 403 }
-    );
-  }
-
-  const prior = await prisma.pick.findMany({
-    where: {
-      membershipId: membership.id,
-      weekId: { not: week.id },
-      source: { not: "missed" },
-    },
-  });
-  const seededUsed = parseUsedTeams(membership.usedTeamsJson);
-  // Free current week's existing pick from the used set for change-before-lock
-  const usedSet = new Set([
-    ...prior.map((p) => p.teamAbbr),
-    ...seededUsed.filter((t) => t !== existing?.teamAbbr && t !== MISSED_TEAM),
-  ]);
-  if (usedSet.has(teamAbbr)) {
-    return NextResponse.json(
-      { error: "You've already used that team this season" },
-      { status: 400 }
-    );
-  }
-
-  const freedTeam =
-    existing && existing.teamAbbr !== teamAbbr ? existing.teamAbbr : null;
-
-  const pick = await prisma.pick.upsert({
-    where: {
-      membershipId_weekId: {
-        membershipId: membership.id,
-        weekId: week.id,
-      },
-    },
-    create: {
-      membershipId: membership.id,
-      weekId: week.id,
-      teamAbbr,
-      gameId: game.id,
-      source: "user",
-      result: "pending",
-    },
-    update: {
-      teamAbbr,
-      gameId: game.id,
-      source: "user",
-      submittedAt: new Date(),
-      result: "pending",
-    },
-  });
-
-  await rebuildUsedTeams(membership.id, { freedTeam });
-
-  if (!existing || existing.teamAbbr !== teamAbbr) {
-    schedulePickConfirmed({
-      user: membership.user,
-      nickname: membership.nickname,
-      weekNumber,
-      weekId: week.id,
-      teamAbbr,
-      changed: Boolean(existing && existing.teamAbbr !== teamAbbr),
-    });
-  }
-
-  return NextResponse.json({ ok: true, pick, locked: false });
+  return NextResponse.json({ ok: true, pick: result.pick, locked: false });
 }
 
 export async function GET(req: Request) {
