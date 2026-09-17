@@ -47,3 +47,4 @@ prisma/dev.db-journal
 .env
 
 !.env.example
+.env*
