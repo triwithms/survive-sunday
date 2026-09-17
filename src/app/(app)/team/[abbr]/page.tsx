@@ -25,7 +25,6 @@ import { getTeamCoach } from "@/lib/team-coaches";
 import { formatWinPct } from "@/lib/standings-format";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import { InjuryChip } from "@/components/InjuryChip";
-import { isDemoMode } from "@/lib/pool-mode";
 import { formatKickoff } from "@/lib/utils";
 import { formatMatchupListLine } from "@/lib/game-display";
 import { namesMatch } from "@/lib/nfl-player";
@@ -359,7 +358,7 @@ export default async function TeamResearchPage({
           <p className="mt-2 text-sm text-[var(--text-muted)]">
             PF {team.pointsFor} · PA {team.pointsAgainst} ·{" "}
             <span className="text-gold-400">
-              {isDemoMode(me.pool.mode) ? "Demo standings" : "League standings"}
+              League standings
             </span>
           </p>
         </div>
@@ -541,11 +540,7 @@ export default async function TeamResearchPage({
             {roster?.fromFullFile
               ? `Full roster from ${roster.source || "team_rosters.json"}${
                   roster.asOf ? ` · as of ${roster.asOf}` : ""
-                }. Tap a player for details. ${
-                  isDemoMode(me.pool.mode)
-                    ? "Demo research only — not official NFL depth charts for wagering."
-                    : "Research only — not official NFL depth charts for wagering."
-                }`
+                }. Tap a player for details. Research only — not official NFL depth charts for wagering.`
               : "Seeded key players from team profiles — not a full depth chart. Tap a name for details."}
           </p>
           {roster?.sourceNote && (

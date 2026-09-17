@@ -7,7 +7,6 @@ import { Suspense } from "react";
 import { BottomNav } from "@/components/BottomNav";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { HeaderNav } from "@/components/HeaderNav";
-import { DemoLockToggle } from "@/components/DemoLockToggle";
 import {
   HeaderWeekBadge,
   HeaderWeekNav,
@@ -18,7 +17,6 @@ import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
 import { resolvePlayerPickWeekFromLoaded } from "@/lib/next-week-picks";
 import {
   effectiveCurrentWeek,
-  isDemoMode,
   weeksForParticipants,
 } from "@/lib/pool-mode";
 import Link from "next/link";
@@ -127,8 +125,6 @@ export default async function AppLayout({
     isPlayer &&
     membership.status !== "eliminated";
   const showMutedChangePick = !locked && isAdmin && !isPlayer;
-  const showDemoLockToggle =
-    isDemoMode(membership.pool.mode) && showAdminChrome;
 
   return (
     <div key={session.user.id} className="min-h-dvh flex flex-col pb-24 overflow-x-hidden max-w-full">
@@ -180,9 +176,6 @@ export default async function AppLayout({
           showMutedChangePick={showMutedChangePick}
           showMakePick={showMakePick}
         />
-        {showDemoLockToggle && week && (
-          <DemoLockToggle locked={locked} weekNumber={week.number} />
-        )}
         <PoolRulesBanner
           singleEliminationFromWeek={membership.pool.singleEliminationFromWeek}
           compact

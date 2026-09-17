@@ -1,0 +1,27 @@
+import { AdminHeading } from "./AdminHeading";
+import { AdminRemovePlayer } from "./AdminRemovePlayer";
+import { AdminRolesPanel } from "./AdminRolesPanel";
+import { RosterEditor } from "./RosterEditor";
+import { SetMemberPasswordForm } from "./SetMemberPasswordForm";
+import type { UsersScreenProps } from "./types";
+
+export function UsersScreen(props: UsersScreenProps) {
+  return (
+    <div className="space-y-6">
+      <AdminHeading title="Users">
+        Roster, who has Joined, a password you can text, and who can open Admin.
+        Pick backup is on each roster card.
+      </AdminHeading>
+      <SetMemberPasswordForm members={props.passwordMembers} />
+      <AdminRolesPanel
+        members={props.roleMembers}
+        canDemoteMembershipIds={props.canDemoteMembershipIds}
+      />
+      <RosterEditor
+        members={props.rosterMembers}
+        mirrorOptions={props.mirrorOptions}
+      />
+      <AdminRemovePlayer members={props.removeMembers} />
+    </div>
+  );
+}

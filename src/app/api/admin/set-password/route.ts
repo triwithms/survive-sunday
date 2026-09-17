@@ -37,6 +37,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     ok: true,
     nickname: result.nickname,
+    email: result.email,
     emailMasked: result.emailMasked,
   });
 }

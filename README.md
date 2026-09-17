@@ -29,37 +29,21 @@ Or one-shot: `npm run setup && npm run dev`
 npm install && npx prisma db push && npm run seed && npm run build
 ```
 
-## Real mode vs Demo mode (commissioner)
+## Live pool (no Demo vs Real toggle)
 
-The switch is on **Admin** (gold link, top-right) → **first card: Real mode vs Demo mode**. Two big buttons, phone-friendly.
-
-| Mode | Friends see |
-|------|-------------|
-| **Real** | Who are you? from the live roster, then Join (own email + password) or Sign in. No “demo” wording. No practice `demo1234` picker. |
-| **Demo** | Practice account picker and demo copy (for you to try the app). |
+The pool is **live-only**. There is no Demo↔Real switch on Admin. Friends see **Who are you?** from the live roster, then Join (own email + password) or Sign in. Unclaimed seats still use practice `@survivesunday.demo` emails for Join claiming — that is seat claiming, not a Demo mode.
 
 **First real commissioner login:** Admin → **Your commissioner login** → your email + password → sign out → Sign in with that email.
 
-**Go live for Week 1:** tap **Real mode** (pool becomes Week 1; Week 2 stays on the schedule) → save real login → later **Reset pool** if you want a clean board → **Roster** if names need fixing → **Import week picks**. Step-by-step: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
+Week 1 is the current board week. Week 2 stays on the schedule. Playbook: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
 
 Live roster names (Long Snapper → John Stilo, Steve → Steve Venerus) are patched on the production database at deploy — seed-only is not enough.
 
-## Demo login
-
-Shown only while the pool is in **Demo mode**. Hidden in Real mode.
-
-| Account | Email | Password |
-|---------|-------|----------|
-| Gams (default / Robert) | `gams@survivesunday.demo` | `demo1234` |
-| Black Cobra | `black-cobra@survivesunday.demo` | `demo1234` |
-| Cannoli Stuffer | `cannoli-stuffer@survivesunday.demo` | `demo1234` |
-| …other BM Boys (see DemoEnter) | `slug@survivesunday.demo` | `demo1234` |
-| Steve | `steve@survivesunday.demo` | `demo1234` |
-| **Commissioner** | `admin@survivesunday.demo` | `demo1234` |
+## Join / claim a seat
 
 - Invite code: **`SUNDAY26`**
-- Landing (Demo mode) → **Enter as selected** (account picker). Commissioner and invite-code join are secondary.
-- Landing (Real mode) → **Who are you?** from the Admin roster (nickname + real name). Friends then set their own email and password to claim that seat. Already-claimed seats point them to Sign in. This is **not** the `demo1234` picker.
+- Landing → **Who are you?** from the Admin roster (nickname + real name). Friends then set their own email and password to claim that seat. Already-claimed seats point them to Sign in.
+- Open seats keep a practice `@survivesunday.demo` address until claimed. That is not a Demo-mode picker.
 
 ## Google auth (optional)
 

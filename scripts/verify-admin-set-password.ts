@@ -4,6 +4,10 @@
  *   npx tsx scripts/verify-admin-set-password.ts
  */
 import {
+  LOGIN_SHARE_URL,
+  memberPasswordShareText,
+} from "../src/components/features/admin/password-members";
+import {
   ADMIN_SET_PASSWORD_AUDIT,
   checkSetMemberPassword,
   TEMP_PASSWORD_MIN,
@@ -92,6 +96,16 @@ function main() {
     CANNOLI_ONESHOT_AUDIT === "oneshot_cannoli_temp_password_20260914",
     "oneshot audit"
   );
+
+  const share = memberPasswordShareText({
+    email: "jim@example.com",
+    password: "Sunday-Jim1AB",
+    kind: "temporary",
+  });
+  assert(LOGIN_SHARE_URL === "https://survive-sunday.vercel.app/login", "login url");
+  assert(/Email: jim@example.com/.test(share), "share email");
+  assert(/Password: Sunday-Jim1AB/.test(share), "share password");
+  assert(share.includes(LOGIN_SHARE_URL), "share login");
 
   console.log("verify-admin-set-password OK");
 }

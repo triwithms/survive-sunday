@@ -1,4 +1,4 @@
-# Real mode, Demo mode, and Week 1 import
+# Live pool and Week 1 import
 
 Plain-English playbook for the commissioner. You do **not** need to code. Phone-friendly.
 
@@ -6,17 +6,11 @@ Invite code for friends: **`SUNDAY26`**.
 
 ---
 
-## Where the mode switch is (Admin)
+## Demo vs Real toggle was removed
 
-1. Sign in as commissioner.
-2. Tap **Admin** in the top-right of the header (gold link).
-3. The **first card** on that page is **Real mode vs Demo mode**.
-4. Two big buttons: **Real mode** | **Demo mode**. The gold one is the current mode. Tap the other to switch.
+The pool is **live-only**. There is no mode switch on Admin. Week 1 is the current board week. Week 2 is a real upcoming NFL week — friends can view the schedule. **A player’s Week 2 picks open as soon as their own Week 1 game has started** (or if they never had a Week 1 pick path). Do not wait for Monday Night Football.
 
-That switch is **live on `main`**.
-
-- **Real mode** = **Week 1** (this NFL week) for the group board. Practice picker is hidden. Week 2 is a real upcoming NFL week — friends can view the schedule. **A player’s Week 2 picks open as soon as their own Week 1 game has started** (or if they never had a Week 1 pick path). Do not wait for Monday Night Football. Demo isolation does **not** hide Week 2.
-- **Demo mode** = practice picker for you (commissioner). Same weeks, including Week 2.
+Home is **Who are you?** from the live roster, then Join or Sign in. Unclaimed seats still use `@survivesunday.demo` emails so Join can claim that nickname — that is seat claiming, not Demo mode.
 
 ---
 
@@ -24,7 +18,7 @@ That switch is **live on `main`**.
 
 The first real commissioner account is **not** `admin@survivesunday.demo`. You create it yourself on Admin:
 
-1. While Demo mode is still on (or using the practice commissioner), open **Admin**.
+1. Open **Admin → System**.
 2. Scroll to **Your commissioner login**.
 3. Enter **your real email** and a new password (at least 6 characters).
 4. Tap **Save real commissioner login**.
@@ -34,18 +28,13 @@ The first real commissioner account is **not** `admin@survivesunday.demo`. You c
 
 **After that, commissioner login is ready.** Tell yourself: use the real email, not `admin@survivesunday.demo`.
 
-If you turn on Real mode before you save a real email, you can still sign in once with the practice commissioner via **Sign in** (not the home-page picker) so you can finish this step. Friends never see that password.
+If you have not saved a real email yet, you can still sign in once with the practice commissioner via **Sign in** so you can finish this step. Friends never see that password.
 
 ---
 
-## What friends see after Real mode
+## What friends see
 
-| Mode | What friends see |
-|------|------------------|
-| **Real mode** | **Who are you?** from the live roster, then **Join** (own email + password) or **Sign in**. No practice passwords. The word “demo” is hidden. |
-| **Demo mode** | Practice account picker on the home and sign-in pages. |
-
-Practice emails (`…@survivesunday.demo`) cannot join or sign in as players in Real mode. `demo1234` is not shown.
+**Who are you?** from the live roster, then **Join** (own email + password) or **Sign in**. No practice passwords. Practice emails (`…@survivesunday.demo`) cannot sign in as players once a real commissioner exists. `demo1234` is not shown. Those practice emails **are** claimable on Join until the real person takes the seat.
 
 ### Who are you? (claim your existing seat)
 
@@ -77,12 +66,11 @@ Home page = **Who are you?** (live roster) + **Join** + **Sign in**.
 
 Real mode already uses Week 1. Use reset when you want a **clean** board before importing real Week 1 picks. You do **not** have to reset today.
 
-1. Admin → **Reset pool** (the red card under the mode switch).
+1. Admin → **System → Reset pool** (the red card).
 2. Read the preview.
 3. Tap **Start reset…**
-4. Leave **Also switch to Real mode after reset** ticked (recommended).
-5. Type **`RESET`**.
-6. Tap **Yes, reset the pool**.
+4. Type **`RESET`**.
+5. Tap **Yes, reset the pool**.
 
 ### What reset does
 
@@ -98,7 +86,7 @@ Real mode already uses Week 1. Use reset when you want a **clean** board before 
 - It does **not** remove your commissioner account.
 - It does **not** remove friends who joined with a real email.
 
-This cannot be undone. If you only wanted to hide the practice picker, tap **Real mode** and skip reset.
+This cannot be undone. Skipping reset keeps the live Week 1 board. There is no Demo-mode switch to hide the picker — Home is already Who are you? + Join.
 
 ---
 
@@ -132,9 +120,9 @@ Do **not** use `/examples/week1-picks-import.csv` — that file is leftover demo
 
 ## Suggested order for the real season
 
-Most of this is **already done** (evening 13 Sep 2026): Real mode is on, Week 1 picks are imported, Who are you? is live, Gams / Go Giants / Pauli seats are claimed.
+Most of this is **already done** (evening 13 Sep 2026): the pool is live, Week 1 picks are imported, Who are you? is live, Gams / Go Giants / Pauli seats are claimed.
 
-1. Confirm **Admin → Real mode** — friends land on **Week 1**, the practice picker is hidden, and Week 2 stays on the schedule.
+1. Friends land on **Week 1**. Week 2 stays on the schedule. There is no Demo vs Real toggle.
 2. You already have a **real commissioner login**. Sign in with that email. Same email can hold **Player + Administrator** — use **Playing as Gams** / **Admin tools**.
 3. Fix names on **Roster** only if needed (John Stilo / Steve Venerus / Pauli / Go Giants / JaJa should already be right). JaJa’s pick backup (copy from Gams) is on that same Roster card, or **Account → Pick backup**.
 4. **Do not Reset pool** unless you intend to wipe the imported Week 1 board.
@@ -146,8 +134,7 @@ Most of this is **already done** (evening 13 Sep 2026): Real mode is on, Week 1 
 
 ## If something looks wrong
 
-- Home still shows a player picker → open **Admin** and tap **Real mode**. Week 2 on Schedule is expected.
-- Mode buttons do nothing → refresh, then tap again. You must be signed in as commissioner.
+- Week 2 on Schedule is expected. Home should show **Who are you?** + Join, not a `demo1234` picker.
 - You cannot open Admin → sign in with your real commissioner email (or the practice commissioner via **Sign in** if you have not saved a real email yet).
 - Practice email/password fails after you saved a real login → that is intended. Use your real email.
 - A friend cannot join → they need invite code `SUNDAY26`. They should pick their existing name from the list (not invent a second “Gams”). If that seat is already claimed, they Sign in instead (or ask you).

@@ -23,6 +23,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Board** (standings) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `BoardParticipantRow.tsx` |
 | **League** (NFL) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
 | **Videos** | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Defaults to the same current pick week as Home/Scores. |
+| **Admin** | `src/components/features/admin/` — tab screens `UsersScreen`, `ConfigScreen`, `CommsScreen`, `SystemScreen`. Phone pick entry: `EnterPickForm.tsx`. Password: `SetMemberPasswordForm.tsx`. Census: `PickCensusPanel.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only: `src/lib/week-isolation.ts` forces `mode=live` and Week 1 with **no pick wipe**. Demo vs Real toggle is gone. Join still claims `@survivesunday.demo` seats. |
 
 ## Shared buttons and cards
 
@@ -47,10 +48,13 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | Scores | `src/app/(app)/scores/page.tsx` |
 | League (NFL) | `src/app/(app)/nfl/page.tsx` |
 | Videos | `src/app/(app)/videos/page.tsx` |
+| Admin hub | `src/app/(app)/admin/page.tsx` — Users `/admin/users`, Pool `/admin/config`, Comms `/admin/comms`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/import` stays. |
 
 Also exist (same thin-page pattern): Account, Admin, Schedule, Team.
 
 Also: Sign in `src/app/login/page.tsx`, Forgot password `src/app/login/forgot/page.tsx`.
+
+Help still gates leftover Demo copy with `showDemoCopy={false}` (`src/components/HelpContent.tsx`). Docs Sync if rewriting Help.
 
 ## CRITICAL — never run these from a Vercel build
 

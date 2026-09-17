@@ -30,10 +30,7 @@ export async function getPrimaryPoolMode(): Promise<PoolMode> {
     const pool = await getPrimaryPool();
     return normalizePoolMode(pool?.mode);
   } catch (error) {
-    // Production: hide practice UX if the database hiccups. Local/dev: keep picker.
-    const fallback =
-      process.env.NODE_ENV === "production" ? "live" : "demo";
-    console.error(`[pool-mode] lookup failed — defaulting to ${fallback}`, error);
-    return fallback;
+    console.error("[pool-mode] lookup failed — defaulting to live", error);
+    return "live";
   }
 }

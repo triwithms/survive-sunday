@@ -15,8 +15,8 @@ import {
 
 assert.equal(normalizePoolMode("live"), "live");
 assert.equal(normalizePoolMode("demo"), "demo");
-assert.equal(normalizePoolMode(undefined), "demo");
-assert.equal(normalizePoolMode("other"), "demo");
+assert.equal(normalizePoolMode(undefined), "live");
+assert.equal(normalizePoolMode("other"), "live");
 assert.equal(isLiveMode("live"), true);
 assert.equal(isDemoMode("live"), false);
 assert.equal(isDemoMode("demo"), true);

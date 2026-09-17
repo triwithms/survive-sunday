@@ -1,24 +1,18 @@
-import Link from "next/link";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
-import { CommissionerEnter, DemoEnter } from "@/components/DemoEnter";
 import { WhoAreYouCard } from "@/components/WhoAreYouCard";
-import { isDemoMode } from "@/lib/pool-mode";
-import { getPrimaryPoolMode } from "@/lib/pool-mode-db";
 import { listClaimableSeats } from "@/lib/claim-seat-db";
 import type { ClaimableSeat } from "@/lib/claim-seat";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function LandingPage() {
-  const demoMode = isDemoMode(await getPrimaryPoolMode());
   let seats: ClaimableSeat[] = [];
-  if (!demoMode) {
-    try {
-      seats = await listClaimableSeats();
-    } catch (error) {
-      console.error("[home] roster list failed", error);
-    }
+  try {
+    seats = await listClaimableSeats();
+  } catch (error) {
+    console.error("[home] roster list failed", error);
   }
 
   return (
@@ -35,21 +29,15 @@ export default async function LandingPage() {
           One mulligan. Last mates standing win the bragging rights.
         </p>
 
-        {demoMode ? (
-          <div className="mb-10">
-            <DemoEnter />
-          </div>
-        ) : (
-          <div className="mb-10 grid grid-cols-1 gap-3">
-            <WhoAreYouCard seats={seats} />
-            <Link href="/join" className="btn-primary inline-flex items-center justify-center w-full">
-              Join the pool
-            </Link>
-            <Link href="/login" className="btn-secondary inline-flex items-center justify-center w-full">
-              Sign in
-            </Link>
-          </div>
-        )}
+        <div className="mb-10 grid grid-cols-1 gap-3">
+          <WhoAreYouCard seats={seats} />
+          <Link href="/join" className="btn-primary inline-flex items-center justify-center w-full">
+            Join the pool
+          </Link>
+          <Link href="/login" className="btn-secondary inline-flex items-center justify-center w-full">
+            Sign in
+          </Link>
+        </div>
 
         <div className="card-glass p-4 space-y-2 text-sm text-[var(--text-muted)]">
           <p className="text-[var(--text-primary)] font-semibold">How it works</p>
@@ -60,26 +48,10 @@ export default async function LandingPage() {
             <li>Second loss → eliminated</li>
             <li>Bye-week teams are off the board</li>
           </ul>
-          {demoMode ? (
-            <p className="pt-2 text-xs">
-              Week 1 is locked history; the demo is on{" "}
-              <span className="text-[var(--text-primary)]">Week 2</span> with an
-              open lock — make your pick before Thursday night.
-            </p>
-          ) : (
-            <p className="pt-2 text-xs">
-              The week locks at the first kickoff (often Thursday night). Get
-              your pick in before then.
-            </p>
-          )}
-          {demoMode && (
-            <p className="text-xs">
-              Have an invite?{" "}
-              <Link href="/join" className="text-gold-400 hover:underline">
-                Join the pool
-              </Link>
-            </p>
-          )}
+          <p className="pt-2 text-xs">
+            The week locks at the first kickoff (often Thursday night). Get
+            your pick in before then.
+          </p>
           <p className="text-xs pt-2">
             On your phone: add this site to your Home Screen (Safari → Share →
             Add to Home Screen, or Chrome → Install). Join once with your email
@@ -91,19 +63,6 @@ export default async function LandingPage() {
             .
           </p>
         </div>
-
-        {demoMode && (
-          <div className="mt-8 flex flex-col items-start gap-2 text-sm">
-            <p className="text-xs text-[var(--text-muted)]">Managing the pool?</p>
-            <CommissionerEnter />
-            <Link
-              href="/login"
-              className="text-sm text-[var(--text-muted)] hover:text-gold-400"
-            >
-              Sign in
-            </Link>
-          </div>
-        )}
       </div>
       <FooterDisclaimer />
     </main>

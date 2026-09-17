@@ -245,20 +245,11 @@ JaJa,DAL
 
 ## 7. How friends use it
 
-The pool has two commissioner-controlled modes. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). **This is shipped on `main`** (merged PR #10). Do not describe Real mode as “open PR #10” or “not shipped.”
+The pool is **live-only**. The Demo vs Real toggle is gone (no practice picker). Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
-- **Real mode (use this for the season):** home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see the word “demo” or the `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Home, Scores and Pick open on that friend’s current pick week** (Week 1 until their game starts, then Week 2). Home and Scores will **not** open a future week — browse every week on **Schedule**. Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Demo isolation ≠ hide Week 2.
-- **Demo mode (commissioner / testing):** practice account picker is visible. Demo copy is allowed. Same NFL weeks, including Week 2. Practice-seat sandbox picks are what stay isolated — not the schedule.
+Home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see a `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Home, Scores and Pick open on that friend’s current pick week** (Week 1 until their game starts, then Week 2). Home and Scores will **not** open a future week — browse every week on **Schedule**. Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Week 2 stays on the schedule.
 
-A new empty database (only if someone **intentionally** seeds it locally or as a one-off — never via Vercel build) starts in **Demo mode**. After that, open **Admin** and tap **Real mode** if the home page still shows the practice picker. Do not seed Production.
-
-### Demo enter (Demo mode only)
-
-1. Open the live site while the pool is in **Demo mode**.
-2. Pick a BM Boys nickname → **Enter as selected**.
-3. You land on **Home** (`/pool`) as that person.
-
-Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is a small link, not the main button. In **Real mode** this picker is hidden and `/api/demo-enter` is blocked.
+Unclaimed seats still use practice `@survivesunday.demo` emails so Join can claim that nickname. That is seat claiming, not Demo mode. Do not seed Production.
 
 ### Real login / join
 
@@ -269,7 +260,7 @@ Demo password (built in): `demo1234`. Default seat is **Gams**. Commissioner is 
 - **Notification preferences:** header **Account** → **Notification preferences**. Each friend chooses which emails they want. Missing-pick texts use the same Missing pick reminder switch. Password-reset codes always send when requested.
 - **Pick backup:** header **Account** → **Pick backup**. Off, copy from a member (30 min), or auto best remaining **2025 rank** team (~2 min). Commissioners can set the same on **Admin → Roster**. JaJa copies Gams by default.
 
-The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` (click-by-click in [DEPLOY.md](../DEPLOY.md) §3b), then Redeploy. Optional Twilio for texts. Do not claim codes are sending until those keys are set and you have tested once. Demo-mode practice seats stay on `demo1234` — friends in Real mode never see that password.
+The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` (click-by-click in [DEPLOY.md](../DEPLOY.md) §3b), then Redeploy. Optional Twilio for texts. Do not claim codes are sending until those keys are set and you have tested once. Practice `@survivesunday.demo` seats are Join placeholders, not a Demo-mode login.
 
 ### Picks
 
@@ -334,20 +325,20 @@ Hold the **group invite** until Resend keys are set and Forgot password actually
 
 ## 8. Commissioner admin
 
-**Admin** is the gold link in the top-right of the header (also under **Account**). The **first card** is **Real mode vs Demo mode** — two big buttons. Tap **Real mode** for Week 1 (this NFL week). Week 2 stays on the schedule.
+**Admin** is the gold link in the top-right of the header (also under **Account**). Menus: **Users**, **Pool Config**, **Communications**, **System**. There is no Demo vs Real toggle — the pool is live-only (Week 1 current; Week 2 stays on the schedule).
 
-First real commissioner login: Admin → **Your commissioner login** → your real email + password → save → sign out → **Sign in** with that email. Do not keep using `admin@survivesunday.demo` after that. Same email can also **claim a player seat** (Gams) and switch **Playing as Gams** / **Admin tools** from **Account**. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
-
-While Demo mode is on you can still **Enter as commissioner** (`admin@survivesunday.demo` / `demo1234`) to reach Admin and set the real login.
+First real commissioner login: Admin → System → **Your commissioner login** → your real email + password → save → sign out → **Sign in** with that email. Same email can also **claim a player seat** (Gams) and switch **Playing as Gams** / **Admin tools** from **Account**. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
 | Tool | What it does |
 |------|----------------|
-| **Real mode vs Demo mode** | First card on Admin. Tap **Real mode** or **Demo mode**. Real = Week 1 current, no `demo1234` practice picker, **Week 2 slate still visible**. Friends pick their name from the live roster, then set their own email. Demo = practice picker; same weeks. **Shipped.** |
+| **Live-only pool** | Demo vs Real toggle was removed. The pool is forced live without wiping picks. Open seats still claim via `@survivesunday.demo` Join emails. |
 | **Your commissioner login** | Replace the practice commissioner email with a real email + password. Then sign out and sign in with that email. **Shipped.** |
 | **Reset pool** | Optional. Real mode is already Week 1. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Do not reset now** — Week 1 imports and the live roster (including JaJa) are already live. **Shipped.** |
 | **Personal Join links** | Admin card (same Copy on Roster, no extra copy). One URL per open seat (`?who=` when unique). Send that link only to that friend. |
 | **Roster** | See each nickname + real name (including Go Giants, Pauli, JaJa). Edit either when wrong. Copy that person’s Join link if they have not Joined yet. Set **If no pick within 30 min, copy from** (JaJa → Gams). Audit-logged. |
 | **Import week picks** | Paste or upload `nickname,team` (or `email,team`). This is how you **correct a player’s pick after the fact**. Week 1 is already imported. Changes are written to the **audit log**. There is no single-player “edit pick” button yet. |
+| **Pick census** | System tab. Read-only count of who should pick this week vs who still needs one. Refresh only — never mutates. |
+| **Enter a friend’s pick** | System tab. Nickname + week + unused team when they call or text. Saves through the same Import API. |
 | Lock controls | Reopen week, unlock (testing), lock now + missed picks, clear override. |
 | **Pool rules — mulligan** | Turn off the free mulligan from a chosen week (or immediately). One loss = out from that week. Already-scored weeks stay as they are. People who already used a mulligan stay in with one loss. Players see a banner. You can turn the mulligan back on. |
 | **Hand the pool to someone else** | Transfer Admin to another **existing** member. Type their nickname and confirm. You stay as a player and lose Admin. They keep their picks and stay on the board. Different from **Make administrator** (that keeps both of you as Admin). The app will not transfer if nobody else is in the pool. |
@@ -355,7 +346,7 @@ While Demo mode is on you can still **Enter as commissioner** (`admin@survivesun
 | Simulate scores | Fake remaining finals (testing). |
 | Force grade | Grade + apply missed picks now. |
 | Remove player | Drops a member from the pool. |
-| Demo lock toggle | Header **Before / After deadline** — commissioner only, and only in Demo mode. |
+| Demo lock toggle | Removed with Demo mode. Use **System → lock controls** for week lock / missed picks. |
 | **Administrators** | Grant Admin tools to an existing pool player (confirm). They stay on the board. Same login can be Player + Administrator; switch views. Remove Admin is allowed only if another administrator remains. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
 | **Pool notes & nudge** | Send a short email note to friends who left **Pool notes** on. **Nudge missing picks** emails/texts friends who still have no pick (and left that reminder on). Uses Resend / optional Twilio. |
 | **Share Board / Scores** | Not on Admin. Press and hold the Board or Scores title, or triple-tap the week label. No Share button. Full long picture always, or a shorter / split option. **Shipped** ([PR #45](https://github.com/triwithms/survive-sunday/pull/45)). |
@@ -377,7 +368,7 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 | Friends can use the app without picking every week | **Built.** They can browse without picking. A missed week still counts as a loss after lock. Changing that rule is a product decision — say so explicitly. |
 | Transfer ownership (hand Admin to another friend) | **Shipped.** Admin → **Hand the pool to someone else**. They keep playing; you stay as a player and lose Admin. Different from **Make administrator**. |
 | Turn off the free mulligan (one-and-done from a week) | **Shipped.** Admin → **Pool rules — mulligan**. Already-scored weeks stay. Players see a gold banner. |
-| No “demo” labels / `demo1234` practice picker in real season mode | **Shipped** (merged [PR #10](https://github.com/triwithms/survive-sunday/pull/10)). Admin → **Real mode**. Real = Week 1 current. Week 2 stays viewable ([PR #22](https://github.com/triwithms/survive-sunday/pull/22)). Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
+| No “demo” labels / `demo1234` practice picker | **Shipped.** Pool is live-only (Demo vs Real toggle removed). Week 1 current; Week 2 stays viewable. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
 | Friends pick themselves from the live roster and claim that seat | **Shipped** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)). Join + logged-out Home show **Who are you?** from the live Admin roster. Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch from **Account** with **Playing as …** / **Admin tools**. Admin can promote another existing member. Commissioner copies **personal Join links** from Admin / Roster. |
 | Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in is **email + password**; **Forgot password?** → 6-digit code is on `main`. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Check spam/junk. Optional Twilio for texts. |
 | Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** After Join / first Sign in on a phone browser, a gentle prompt (Yes / Show me how / Not now). Already-installed Home Screen icon does not nag. Cookie is ~**90 days**. |
@@ -413,7 +404,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | BM Boys real names + Roster editor | [#9](https://github.com/triwithms/survive-sunday/pull/9) | John Stilo / Steve Venerus / Tony Gyuro, plus Admin → Roster. Live roster also has **Go Giants** (Carson Gama) and **Pauli** (Paul Gama). |
 | Owner handoff (earlier passes) | [#13](https://github.com/triwithms/survive-sunday/pull/13), [#15](https://github.com/triwithms/survive-sunday/pull/15) | **Superseded by this file.** |
 | Live ESPN scores + injury report | [#12](https://github.com/triwithms/survive-sunday/pull/12) | Scores poll ESPN; team pages + chips use ESPN injuries. No paid key. |
-| Real vs Demo mode, Week 1 current week, reset, real commissioner login | [#10](https://github.com/triwithms/survive-sunday/pull/10) (squash-merged) | Admin first card. Real = Week 1 current, no practice picker. [`docs/REAL-MODE.md`](./REAL-MODE.md) is on `main`. |
+| Live pool (was Real vs Demo), Week 1 current week, reset, real commissioner login | [#10](https://github.com/triwithms/survive-sunday/pull/10); toggle removed on Admin tabs PR | Live-only. Week 1 current, no practice picker. [`docs/REAL-MODE.md`](./REAL-MODE.md). |
 | Forgot password + ~90 day stay-logged-in | [#7](https://github.com/triwithms/survive-sunday/pull/7) (squash-merged, `2df4645`) | Sign in → **Forgot password?** → 6-digit code → new password. **Merged / shipping.** Codes send only after Resend (optional Twilio) env vars are on Vercel + Redeploy. **Still the invite blocker.** |
 | Pick header previous / next week | [#14](https://github.com/triwithms/survive-sunday/pull/14) | Chevrons around the gold `W#` badge; `?week=` like Home / Scores. Past / future weeks read-only. |
 | Safari sign-in + Account Sign out | [#18](https://github.com/triwithms/survive-sunday/pull/18) | Login errors show on the page. Header **Account → Sign out**. |
@@ -648,12 +639,7 @@ My problem: [describe pick / lock / board issue]
 You are helping maintain Survive Sunday. Read docs/HANDOFF.md and docs/REAL-MODE.md first, then only:
 - src/app/(app)/admin/page.tsx
 - src/app/(app)/admin/import/page.tsx
-- src/components/AdminPanel.tsx
-- src/components/PoolModePanel.tsx
-- src/components/RosterEditor.tsx
-- src/components/CommissionerAccountPanel.tsx
-- src/app/(app)/admin/roster/page.tsx
-- src/components/ImportPicksForm.tsx
+- src/components/features/admin/
 - src/lib/pool-mode.ts
 - src/lib/reset-pool.ts
 - src/app/api/admin/
@@ -661,7 +647,7 @@ You are helping maintain Survive Sunday. Read docs/HANDOFF.md and docs/REAL-MODE
 You are free / basic Grok chat — not Grok Bot. Owner is not a coder. Click-by-click Admin / Vercel steps.
 
 MUST on main (already shipped):
-- Real vs Demo mode, reset pool, real commissioner login (merged PR #10). Do not open another Real-mode PR.
+- Live-only pool (Demo vs Real toggle removed). Reset pool and real commissioner login. Do not add a mode switch.
 - Who are you? claim + Player/Administrator roles + Make administrator (merged PR #19). Do not start a second copy.
 - Commissioner can change a participant pick after the fact (Import week picks, audit-logged). Week 1 is already imported — HANDOFF section 6b.
 - Roster real-name editor (including Go Giants, Pauli, JaJa). Pick backup (copy from another member within 30 min of kickoff) is on Account and Admin → Roster.
@@ -763,8 +749,8 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |
 | **Audit log** | A written record of commissioner changes (imports, removals, real-name edits, pool rules, transfer). |
-| **Real mode** | Season mode on `main` (merged PR #10). Hides the practice picker. Week 1 is the current board week. Week 2 stays on the schedule (merged PR #22). Each player’s Week 2 pick opens when their own Week 1 game has started. |
-| **Demo / practice picker** | Home-page list of BM Boys nicknames with built-in `demo1234`. Visible only while **Demo mode** is on. Real-mode Help never mentions this password. |
+| **Live pool** | The only pool mode. Week 1 is the current board week. Week 2 stays on the schedule. Each player’s Week 2 pick opens when their own Week 1 game has started. Demo vs Real toggle was removed. |
+| **Practice seat email** | `@survivesunday.demo` on an unclaimed Join seat. Seat claiming, not Demo mode. |
 | **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname (e.g. **Pauli**, **Go Giants**, **JaJa**, Gams), sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
 | **Personal Join link** | Per-person URL from Admin (`/join?who=cannoli-stuffer` when unique). Opens Join with that seat picked. Claimed seats → Sign in. |
 | **Pick backup** | Off, copy from a member (30 min), or auto best remaining 2025-rank team (~2 min) if you still have no pick. JaJa copies Gams. |

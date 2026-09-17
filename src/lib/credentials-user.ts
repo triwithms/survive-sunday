@@ -33,10 +33,10 @@ export async function lookupUserByEmail(email: string): Promise<CredentialRecord
  * Resolve a credentials login. Must not throw — Auth.js wraps authorize
  * exceptions as CallbackRouteError (HTTP path shows Configuration).
  *
- * In Real (live) mode:
+ * Live pool:
  * - Practice member emails cannot sign in.
  * - Practice commissioner may sign in only until a real commissioner email exists
- *   (so turning Demo off does not lock the owner out).
+ *   (so the owner is not locked out before saving a real login).
  */
 export async function userFromCredentials(
   email: string,
