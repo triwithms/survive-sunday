@@ -93,7 +93,7 @@ Short names you will see in chats. One-line meaning only:
 | **Prisma** | Talks to the database. Shape of the data: `prisma/schema.prisma`. |
 | **PWA** | “Add to Home Screen” so it feels like a phone app. `public/manifest.webmanifest`, `public/sw.js`. |
 
-**How the screens are laid out (live on `main`):** shared buttons and cards live in `src/components/ui/`. Each main screen (Home, Pick, Scores, Board, League) lives in `src/components/features/`. Server actions (submit a pick, issue an invite token) live in `src/app/actions/`. Pages under `src/app/` stay thin — they load data and render those feature screens.
+**How the screens are laid out (live on `main`):** shared buttons and cards live in `src/components/ui/`. Each main screen (Home, Pick, Scores, Board, League) lives in `src/components/features/`. Server actions (submit a pick, issue an invite token) live in `src/app/actions/`. Pages under `src/app/` stay thin — they load data and render those feature screens. Quick file map for targeted fixes: [docs/FILE-MAP.md](FILE-MAP.md).
 
 **Invite / API tokens (Phase 5, live under `src/lib/`):** hashed one-time invite tokens (`invite-token.ts`, `invite-token-db.ts`, `invite-token-schema.ts`), personal Join links (`invite-link.ts` — Admin still copies `?who=` / `?seat=`), signed API/cron tokens (`api-token.ts`), HMAC helpers using `AUTH_SECRET` (`token-crypto.ts`). Do not invent extra token screens or env vars. Admin **Personal Join links** have not switched to the hashed `?t=` token yet.
 
