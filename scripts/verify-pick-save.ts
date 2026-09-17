@@ -50,6 +50,7 @@ assert.doesNotMatch(button, /disabled=\{pending/);
 const hook = readFileSync("src/components/features/pick/use-pick-submit.ts", "utf8");
 assert.match(hook, /useOptimistic/);
 assert.match(hook, /setOptimisticPick\(abbr\)/);
+assert.match(hook, /setBusy\(true\)/);
 assert.match(hook, /startTransition/);
 
 const pkg = JSON.parse(readFileSync("package.json", "utf8")) as { scripts: { build: string } };

@@ -12,7 +12,8 @@ export function usePickSubmit(weekNumber: number, currentPick: string | null) {
   const [selected, setSelected] = useState(currentPick ?? null);
   const [optimisticPick, setOptimisticPick] = useOptimistic(selected);
   const [confirm, setConfirm] = useState<Confirm | null>(null);
-  const [busy, startTransition] = useTransition();
+  const [busy, setBusy] = useState(false);
+  const [, startTransition] = useTransition();
   const [msg, setMsg] = useState("");
   const [redirectIn, setRedirectIn] = useState<number | null>(null);
   const router = useRouter();
@@ -22,6 +23,7 @@ export function usePickSubmit(weekNumber: number, currentPick: string | null) {
     setConfirm(null);
     setMsg("");
     setRedirectIn(null);
+    setBusy(false);
   }, [weekNumber, currentPick]);
 
   useEffect(() => {
@@ -35,9 +37,10 @@ export function usePickSubmit(weekNumber: number, currentPick: string | null) {
   }, [redirectIn, router]);
 
   function submit(abbr: string) {
+    setBusy(true);
+    setMsg("");
     startTransition(async () => {
       setOptimisticPick(abbr);
-      setMsg("");
       try {
         const data = await submitPick(weekNumber, abbr);
         const outcome = applyPickSave(data, currentPick, abbr);
@@ -53,6 +56,8 @@ export function usePickSubmit(weekNumber: number, currentPick: string | null) {
         router.refresh();
       } catch {
         setMsg("Could not save pick");
+      } finally {
+        setBusy(false);
       }
     });
   }
