@@ -7,7 +7,7 @@ import {
   shouldPollLiveScores,
 } from "@/lib/live-scores";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
-import { ScoreGameCard } from "@/components/ScoreGameCard";
+import { ScoreGameCard } from "@/components/features/scores";
 import {
   effectiveCurrentWeek,
   weeksForParticipants,

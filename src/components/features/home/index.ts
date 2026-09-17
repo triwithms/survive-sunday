@@ -1,0 +1,1 @@
+export { HomePickHero } from "./HomePickHero";

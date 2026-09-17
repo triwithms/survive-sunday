@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { HTMLAttributes } from "react";
 
-type Tag = "div" | "section" | "article" | "aside" | "figure";
+type Tag = "div" | "section" | "article" | "aside" | "figure" | "li";
 
 type Props = HTMLAttributes<HTMLElement> & {
   as?: Tag;
