@@ -50,5 +50,5 @@ Also exist (same thin-page pattern): Account, Admin, Schedule, Team, Videos.
 | What | Fact |
 |------|------|
 | Production build | `package.json` → `scripts.build` is **`next build` only**. Never attach `db push`, seed, or `ensure-production-db`. |
-| Seed / setup refuse Production | `scripts/assert-not-production.ts` |
-| Dangerous one-off DB helper | `scripts/ensure-production-db.ts` (current path; it may move after a hardening PR). **Must never run from a Vercel build.** |
+| Seed / setup / db:push refuse Production | `scripts/assert-not-production.ts` — stops those commands from changing the live database. `db:push` / `setup` go through this guard. Emergency only: `ALLOW_PROD_DB_MUTATION=1`. **Vercel is always refused** (even with that break-glass). |
+| Dangerous one-off DB helper | Live helper: `scripts/_dangerous/ensure-production-db.ts`. Old `scripts/ensure-production-db.ts` prints “Moved…” and **exits 1**. **Must never run from a Vercel build.** |
