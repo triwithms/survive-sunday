@@ -14,9 +14,11 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 **Never paste secrets** (passwords, `AUTH_SECRET`, `DATABASE_URL`, API keys) into a chat, a screenshot, or a commit.
 
-**Snapshot (15 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Live tonight:
+**Snapshot (17 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Live tonight:
 
-- **Cannoli Stuffer (Mike Frigo) has Joined.** Email codes are failing. This merge writes a one-shot temporary password **`Cannoli1!`** on the Production deploy (Neon), and adds **Admin → Set a temporary password** for anyone else. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login) → **Use password instead**. His sign-in email is on **Admin → Roster**. He should change the password after he is in.
+- **CRITICAL — production data:** A Vercel Production build is `npm run build` → `next build` only. It does **not** run `ensure-production-db`, `prisma db push`, or seeds. Scheduled jobs (missing-pick reminders, ensure-week) do **not** wipe or reseed the pool. Never reattach those scripts to the build. Details: [DEPLOY.md](../DEPLOY.md) section 4.
+
+- **Cannoli Stuffer (Mike Frigo) has Joined.** Email codes were failing. A one-shot temporary password **`Cannoli1!`** was already written on Neon, and **Admin → Set a temporary password** is live for anyone else. A Redeploy does **not** rewrite passwords. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login) → **Use password instead**. His sign-in email is on **Admin → Roster**. He should change the password after he is in.
 
 - **Who are you? Join** + **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** in **Account** — merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
@@ -90,6 +92,12 @@ Short names you will see in chats. One-line meaning only:
 | **Auth.js** (also called NextAuth) | Sign-in / stay-logged-in. Files: `src/lib/auth.ts`, `src/app/api/auth/`. |
 | **Prisma** | Talks to the database. Shape of the data: `prisma/schema.prisma`. |
 | **PWA** | “Add to Home Screen” so it feels like a phone app. `public/manifest.webmanifest`, `public/sw.js`. |
+
+**How the screens are laid out (live on `main`):** shared buttons and cards live in `src/components/ui/`. Each main screen (Home, Pick, Scores, Board, League) lives in `src/components/features/`. Server actions (submit a pick, issue an invite token) live in `src/app/actions/`. Pages under `src/app/` stay thin — they load data and render those feature screens.
+
+**Invite / API tokens (Phase 5, live under `src/lib/`):** hashed one-time invite tokens (`invite-token.ts`, `invite-token-db.ts`, `invite-token-schema.ts`), personal Join links (`invite-link.ts` — Admin still copies `?who=` / `?seat=`), signed API/cron tokens (`api-token.ts`), HMAC helpers using `AUTH_SECRET` (`token-crypto.ts`). Do not invent extra token screens or env vars. Admin **Personal Join links** have not switched to the hashed `?t=` token yet.
+
+**CRITICAL — production data:** A Vercel Production build is `npm run build` → `next build` only. It does **not** run `ensure-production-db`, `prisma db push`, or seeds. Scheduled crons (missing-pick reminders, ensure-week) do **not** wipe or reseed the pool. Never reattach those scripts to the build. See [DEPLOY.md](../DEPLOY.md) section 4.
 
 Local laptop work can use any Postgres URL. **Production always uses Neon**, not a file on someone’s computer.
 
@@ -168,6 +176,8 @@ Normal path — no extra buttons:
 3. Wait until that deploy is **Ready**.
 4. Open [survive-sunday.vercel.app](https://survive-sunday.vercel.app) and try the flow that was broken.
 
+That Production deploy compiles the site (`next build`). It does **not** change the Neon database (no db push, no seed, no `ensure-production-db`).
+
 **If you only changed env vars** (no code): Redeploy as in section 4.
 
 ### How you merge a pull request (you do this; a chat does not)
@@ -178,9 +188,9 @@ Normal path — no extra buttons:
 4. When GitHub shows it can merge and you are happy: **Merge pull request**. Squash is fine (that is how Real mode landed).
 5. Wait for Vercel Production to go **Ready**.
 
-**First-time / empty database:** `npm run build` on Vercel also runs a schema sync and seeds the BM Boys demo pool if invite code `SUNDAY26` is missing. Do **not** re-run seed on purpose unless you want demo data refreshed.
+**First-time / empty database:** the live Neon database already has the BM Boys pool (`SUNDAY26`). A Vercel Production build is `next build` only — it does **not** push schema or seed. Redeploy will **not** create seats, rewrite names, or import Week 1 picks. If a brand-new empty database ever needed setup, that is an **intentional one-off** (see [DEPLOY.md](../DEPLOY.md) section 4), not a Redeploy. Do **not** re-run seed against the live pool.
 
-On each production build the helper also patches leftover short names in the live database if they are still stored as the old values: Long Snapper `J S` → **John Stilo**, Steve `Steve` → **Steve Venerus**. Changing seed files alone does not fix production. You can also edit any name on **Admin → Roster**. The same build converts leftover `@pending.survivesunday.local` placeholder logins (Go Giants / Pauli) back to claimable `@survivesunday.demo` practice emails and does **not** unclaim Gams (`robertgama@gmail.com`). If **JaJa** is missing, the same helper creates her Join-claimable seat (`jaja@survivesunday.demo`), imports Week 1 **DAL**, and sets pick backup from **Gams**. If she already has a leftover imported/mirrored **KC**, it is corrected to **DAL** (no 💩). It does **not** reset the pool or other Week 1 picks. If the pool is already in **Real mode**, the same build parks it on **Week 1** and **restores the Week 2 NFL slate**. It only clears leftover **practice-seat** (`@survivesunday.demo`) Week 2 picks — it does **not** delete Week 2 games or hide the slate from friends.
+A Redeploy also does **not** patch leftover short names or emails. Edit names on **Admin → Roster**. **Go Giants**, **Pauli**, and **JaJa** are already on the live roster (see section 6). Leftover `@pending.survivesunday.local` placeholders are treated as unclaimed practice seats (same as `@survivesunday.demo`) so they can Join; Gams stays claimed. If a leftover short name still shows, fix it on Roster — do not ask a chat to re-seed Production.
 
 ---
 
@@ -191,7 +201,7 @@ Nicknames stay as friends know them. Real names show in brackets on the board an
 | Nickname | Real name | On live Join |
 |----------|-----------|--------------|
 | Black Cobra | Justin John | Unclaimed |
-| Cannoli Stuffer | Michael Frigo | **Claimed** (codes failing — temp password on this deploy; see Admin → Roster for his email) |
+| Cannoli Stuffer | Michael Frigo | **Claimed** (codes failing — temp password already set; see Admin → Roster for his email) |
 | Colin | Colin Malone | Unclaimed |
 | Daddy Chill | Joachim Kuzel | Unclaimed |
 | Deep and Delicious | Kent Richmond | Unclaimed |
@@ -204,7 +214,7 @@ Nicknames stay as friends know them. Real names show in brackets on the board an
 | **JaJa** | **Jacquie Gama** | Unclaimed (Join-claimable) |
 | Steve | Steve Venerus | Unclaimed |
 
-**Go Giants**, **Pauli**, and **JaJa** were added on the live roster (not only in seed files). Pauli’s nickname is **Pauli**, not Paul. Leftover `@pending.survivesunday.local` placeholders are treated as unclaimed practice seats (same as `@survivesunday.demo`) so they can Join; Gams stays claimed. JaJa uses `jaja@survivesunday.demo` so Join does **not** say already claimed. You can edit any row on **Admin → Roster**. Production still patches leftover short names on deploy (Long Snapper `J S` → John Stilo, Steve → Steve Venerus, Gdogss → Tony Gyuro) and **creates JaJa + her DAL pick + Gams backup if she is missing**.
+**Go Giants**, **Pauli**, and **JaJa** were added on the live roster (not only in seed files). Pauli’s nickname is **Pauli**, not Paul. Leftover `@pending.survivesunday.local` placeholders are treated as unclaimed practice seats (same as `@survivesunday.demo`) so they can Join; Gams stays claimed. JaJa uses `jaja@survivesunday.demo` so Join does **not** say already claimed. You can edit any row on **Admin → Roster**. A Redeploy does **not** patch names or create missing seats — use Roster (and **Admin → Import week picks** for a wrong Week 1 team).
 
 ---
 
@@ -240,7 +250,7 @@ The pool has two commissioner-controlled modes. Full playbook: [`docs/REAL-MODE.
 - **Real mode (use this for the season):** home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see the word “demo” or the `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Home, Scores and Pick open on that friend’s current pick week** (Week 1 until their game starts, then Week 2). Home and Scores will **not** open a future week — browse every week on **Schedule**. Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Demo isolation ≠ hide Week 2.
 - **Demo mode (commissioner / testing):** practice account picker is visible. Demo copy is allowed. Same NFL weeks, including Week 2. Practice-seat sandbox picks are what stay isolated — not the schedule.
 
-A new empty database still **seeds in Demo mode**. After deploy, open **Admin** and tap **Real mode** if the home page still shows the practice picker.
+A new empty database (only if someone **intentionally** seeds it locally or as a one-off — never via Vercel build) starts in **Demo mode**. After that, open **Admin** and tap **Real mode** if the home page still shows the practice picker. Do not seed Production.
 
 ### Demo enter (Demo mode only)
 
@@ -391,7 +401,7 @@ Lowest priority. Do **not** start unless the owner asks. None of this is on `mai
 
 ---
 
-## 10. Shipped vs still open (14 September 2026)
+## 10. Shipped vs still open (17 September 2026)
 
 Re-checked against GitHub `main` and the live site. **Do not describe an open PR as live.** After you merge one, update this file in the same PR.
 
@@ -434,6 +444,9 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Schedule / Pick list: no TV or 2Q; real ESPN favourites | [#58](https://github.com/triwithms/survive-sunday/pull/58) | Schedule and Pick cards drop CBS/FOX/TSN and quarter / down-distance. Favourites come from the ESPN week scoreboard (for example BUF -4.5) when ESPN publishes a line. |
 | Schedule / Pick: no injury Q chips; Pick shows favourite | [#59](https://github.com/triwithms/survive-sunday/pull/59) | Schedule and Pick lists no longer show Out / Doubtful / **Q** injury count chips. Pick shows the same favourite line as Schedule. Injuries stay on team pages. Scores live strip is unchanged. |
 | Spread copy: favoured by N | this PR | Plain-language favourite: **BUF favoured by 4.5** (not Favourite: BUF -4.5 / Fav -4.5). Pick’em shows **Even (pick’em)**. Still hidden when ESPN has no line. |
+| App Router layout (ui / features / actions) | Phase 1–4 on `main` ([#75](https://github.com/triwithms/survive-sunday/pull/75), [#74](https://github.com/triwithms/survive-sunday/pull/74)) | Shared UI in `src/components/ui/`. Home / Pick / Scores / Board / League in `src/components/features/`. Server actions in `src/app/actions/`. Pages under `src/app/` stay thin. |
+| Invite / API tokens | [#78](https://github.com/triwithms/survive-sunday/pull/78) | Modules under `src/lib/`: `invite-token.ts`, `invite-token-db.ts`, `invite-token-schema.ts`, `invite-link.ts`, `api-token.ts`, `token-crypto.ts`. Hashed invite `?t=` is wired on Join; Admin Personal Join links still copy `?who=` / `?seat=`. No extra token Admin tab. |
+| Production build does not touch Neon | Safety P0 (`3820ba4`) | `npm run build` is `next build` only. `postinstall` is `prisma generate` only. Seed/setup refuse Production. Do **not** reattach `ensure-production-db` / db push / seed to the Vercel build. Crons do not wipe or reseed. |
 
 ### Open — not on `main` yet
 
@@ -479,9 +492,9 @@ Auth.js is running, but the **database lookup** threw. Common causes:
 
 - Neon / `DATABASE_URL` missing or not reachable.
 - Schema never pushed / demo pool never seeded (`SUNDAY26` missing).
-- Prisma query engine missing on Vercel (the repo already marks Prisma as a server package and syncs schema on build).
+- Prisma query engine missing on Vercel (the repo already marks Prisma as a server package). A Production **build does not** push schema or seed.
 
-Fix: Vercel env `DATABASE_URL` (Neon integration) → Redeploy so `prisma db push` + seed can run. Do not paste the URL into GitHub.
+Fix: confirm Vercel env `DATABASE_URL` (Neon integration). Redeploy compiles the site only — it will **not** run `prisma db push` or seed. If the database is empty or the schema was never applied, that is an **intentional one-off** (see [DEPLOY.md](../DEPLOY.md) section 4), not a Redeploy. Do not paste the URL into GitHub. Do not reattach `ensure-production-db` to the build.
 
 The credentials lookup now **catches** database errors and returns a normal “wrong email/password” style failure instead of `CallbackRouteError` when it can.
 
@@ -665,7 +678,9 @@ You are helping maintain Survive Sunday. Read docs/HANDOFF.md first, then only:
 - DEPLOY.md
 - .env.example
 - next.config.ts
+- package.json (scripts.build must stay `next build`)
 - scripts/ensure-production-db.ts
+- scripts/assert-not-production.ts
 - src/lib/prisma-url.ts
 - src/lib/auth.ts
 - src/lib/request-host.ts
@@ -676,6 +691,7 @@ Production site https://survive-sunday.vercel.app. Neon DATABASE_URL.
 Never commit secrets. Watch for AUTH_SECRET missing, AUTH_TRUST_HOST,
 and AUTH_URL set to example.com or localhost (app ignores those at runtime; still delete them).
 Forgot password is on main (merged PR #7). Codes send only after RESEND_API_KEY + RESEND_FROM_EMAIL (optional Twilio) are on Production, then Redeploy.
+CRITICAL: Production `npm run build` is `next build` only. It must never run ensure-production-db, prisma db push, or seed. Do not reattach those to the build script. Crons do not wipe or reseed. Schema/seed are optional one-offs (DEPLOY.md §4), not a Redeploy.
 Small PR only if code must change.
 My problem: [paste Type error / deploy log snippet / login error — no secrets]
 ```
@@ -741,7 +757,7 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Merge** | Accept the PR so Vercel can deploy. **You** click this. A basic chat does not. |
 | **Draft PR** | A pull request that is not ready to merge yet. None of the live-tonight work is draft. |
 | **Rebase** | Replay an open PR’s changes on top of the latest `main` after another PR merged. Ask a chat to continue **that** branch. |
-| **Redeploy** | Rebuild the same code with the latest env vars. |
+| **Redeploy** | Rebuild the same code with the latest env vars. Compiles only (`next build`). Does **not** push schema, seed, or rewrite live pool data. |
 | **Lock** | Pick deadline: first kickoff (unless overridden). **Week 1 exception** (merged PR #25): you can still change an existing pick until **that team’s** kickoff if the new game has not started. Once that game starts, **next week opens for you** (do not wait for MNF). Weeks 2+ freeze at first kickoff. |
 | **PWA** | Website you can pin to the phone home screen. |
 | **Neon** | The hosted database. |

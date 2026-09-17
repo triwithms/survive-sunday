@@ -72,25 +72,30 @@ Optional texts (only if a friend saved a cell). Skip for today if email is enoug
 
 Local `next dev` without keys: the code is printed in the terminal and shown on the page.
 
-## 4. Build / first schema + seed
+## 4. Build vs one-off schema / seed
 
-On first deploy (or via Vercel CLI / a one-off shell with prod `DATABASE_URL`):
+**Vercel / Production build is `next build` only.** `npm run build` compiles the website. It does **not** run `prisma db push`, `npm run seed`, or `scripts/ensure-production-db.ts`. Friends’ picks, names, and emails on Neon stay as they are.
+
+`postinstall` runs `prisma generate` only (Prisma client code — not schema, not seed).
+
+**Do not reattach** `ensure-production-db` (or db push / seed) to the `build` script. A Production deploy must never rewrite live pool data.
+
+Schema push and seed are **optional, intentional, one-off** operations. They are **not** part of a Vercel deploy. Use them locally, or in a one-off CLI / shell — never as “Redeploy so the database can catch up.”
 
 ```bash
-npm install
-npx prisma generate
-npx prisma db push
-npm run seed
+npm run db:push          # prisma db push (schema only)
+npm run seed             # BM Boys demo seed — refuses Production
+npm run setup            # generate + db push + seed — refuses Production
 ```
 
-- Prefer **`prisma db push`** for the first deploy — there is no `prisma/migrations` folder yet.
-- `postinstall` already runs `prisma generate`.
-- `npm run build` also runs `prisma db push` (when `DATABASE_URL` is set) and seeds the BM Boys demo pool if `SUNDAY26` is missing. That keeps Vercel from serving Auth.js `CallbackRouteError` on `/api/demo-enter` against an empty or un-migrated Neon database.
-- Re-run `npm run seed` only when you intentionally want demo/seed data refreshed.
+- Prefer **`prisma db push`** (`npm run db:push`) if you need a schema sync — there is no `prisma/migrations` folder yet.
+- `npm run seed` and `npm run setup` refuse the live production database (`assert-not-production`). Do not point them at Neon Production.
+- If a trusted person must run a **one-off** production schema helper, that is `tsx scripts/ensure-production-db.ts` with prod `DATABASE_URL` — **never** from the Vercel build, and **never** as a habit on every deploy.
+- The live BM Boys pool (`SUNDAY26`) already exists. Do **not** re-seed Production.
 
 ## 5. Verify
 
-- Hit the production URL, sign in / seed accounts as documented in README
+- Hit the production URL, sign in / Join as documented in README
 - Confirm picks and standings load against Neon
 
 ## Notes
