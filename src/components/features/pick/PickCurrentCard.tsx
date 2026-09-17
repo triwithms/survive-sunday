@@ -12,12 +12,14 @@ export function PickCurrentCard({
   readOnly,
   changeHint,
   emptyMessage,
+  saving,
 }: {
   games: PickMatchup[];
   selectedAbbr: string | null;
   readOnly: boolean;
   changeHint?: string | null;
   emptyMessage: string;
+  saving?: boolean;
 }) {
   const { matchup, side, opp } = selectedPick(games, selectedAbbr);
   const listLine = matchup ? formatMatchupListLine(matchup) : null;
@@ -31,7 +33,7 @@ export function PickCurrentCard({
       aria-label="Your current pick"
     >
       <p className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">
-        Your pick
+        Your pick{saving ? " · Saving…" : ""}
       </p>
       {side ? (
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">

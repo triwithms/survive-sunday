@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home,
@@ -43,20 +43,29 @@ export function BottomNav({ isAdmin }: { isAdmin?: boolean }) {
               <Link
                 href={href}
                 prefetch={false}
-                className={`flex flex-col items-center gap-0.5 px-0.5 sm:px-1 py-1 text-[9px] sm:text-[11px] min-w-0 ${
-                  active ? "text-gold-400" : "text-[var(--text-muted)]"
+                className={`flex flex-col items-center gap-0.5 px-0.5 sm:px-1 py-1 text-[9px] sm:text-[11px] min-w-0 touch-manipulation transition-transform duration-75 active:scale-95 ${
+                  active ? "text-gold-400" : "text-[var(--text-muted)] active:text-gold-400/80"
                 }`}
               >
                 <Icon size={18} strokeWidth={active ? 2.4 : 1.75} className="sm:w-5 sm:h-5" />
                 <span className="truncate max-w-full">{label}</span>
-                {active && (
-                  <span className="h-0.5 w-4 sm:w-6 rounded-full bg-gold-400" />
-                )}
+                <NavPulse active={active} />
               </Link>
             </li>
           );
         })}
       </ul>
     </nav>
+  );
+}
+
+function NavPulse({ active }: { active: boolean }) {
+  const { pending } = useLinkStatus();
+  if (active) {
+    return <span className="h-0.5 w-4 sm:w-6 rounded-full bg-gold-400" />;
+  }
+  if (!pending) return null;
+  return (
+    <span className="h-0.5 w-4 sm:w-6 rounded-full bg-gold-400/70 animate-pulse" />
   );
 }

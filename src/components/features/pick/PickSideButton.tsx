@@ -26,7 +26,7 @@ export function PickSideButton({
 
   return (
     <div
-      className={`flex min-h-[88px] min-w-0 flex-col gap-1.5 rounded-lg border p-2 transition sm:p-3 ${
+      className={`flex min-h-[88px] min-w-0 flex-col gap-1.5 rounded-lg border p-2 transition duration-75 sm:p-3 ${
         isAway ? "items-start text-left" : "items-end text-right"
       } ${
         selected
