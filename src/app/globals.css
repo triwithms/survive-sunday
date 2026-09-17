@@ -66,10 +66,17 @@ body {
   border-radius: 10px;
   padding: 0.625rem 1.25rem;
   min-height: 44px;
-  transition: background 150ms ease-out;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 150ms ease-out, transform 75ms ease-out, filter 75ms ease-out;
 }
 .btn-primary:hover {
   background: var(--gold-500);
+}
+.btn-primary:active:not(:disabled) {
+  background: var(--gold-500);
+  transform: scale(0.97);
+  filter: brightness(0.92);
 }
 .btn-primary:disabled {
   opacity: 0.45;
@@ -84,6 +91,13 @@ body {
   border-radius: 10px;
   padding: 0.625rem 1.25rem;
   min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 150ms ease-out, transform 75ms ease-out, filter 75ms ease-out;
+}
+.btn-secondary:active:not(:disabled) {
+  transform: scale(0.97);
+  filter: brightness(1.2);
 }
 
 .btn-danger {
@@ -94,6 +108,13 @@ body {
   border-radius: 10px;
   padding: 0.625rem 1.25rem;
   min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 150ms ease-out, transform 75ms ease-out, filter 75ms ease-out;
+}
+.btn-danger:active:not(:disabled) {
+  transform: scale(0.97);
+  background: rgba(232, 93, 93, 0.15);
 }
 
 .chip {

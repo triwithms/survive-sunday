@@ -58,6 +58,7 @@ export function PickScreen({
         readOnly={readOnly}
         changeHint={changeHint}
         emptyMessage={emptyMessage}
+        saving={busy}
       />
       <PickNotices
         spectator={spectator}
@@ -83,6 +84,7 @@ export function PickScreen({
           busy={busy}
           readOnly={readOnly}
           confirmLabel={busy ? "Saving…" : currentPick ? "Change pick" : "Lock in"}
+          error={busy ? "" : msg}
           onCancel={onCancel}
           onConfirm={onConfirm}
         />
