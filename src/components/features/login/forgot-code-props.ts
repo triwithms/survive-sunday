@@ -1,0 +1,19 @@
+import type { FormEvent } from "react";
+import type { ChallengeView } from "./forgot-types";
+
+export type ForgotCodeStepProps = {
+  email: string;
+  view: ChallengeView | null;
+  code: string;
+  setCode: (v: string) => void;
+  password: string;
+  setPassword: (v: string) => void;
+  confirm: string;
+  setConfirm: (v: string) => void;
+  info: string;
+  err: string;
+  busy: boolean;
+  cooldown: number;
+  onReset: (e: FormEvent) => void;
+  onResend: () => void;
+};

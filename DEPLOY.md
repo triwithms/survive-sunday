@@ -31,9 +31,9 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 
 Friends stay signed in. We do **not** ask for a code at every sign-in.
 
-If they forget the password: Sign in → **Forgot password?** → 6-digit code by email → new password → back in the pool.
+If they forget the password: Sign in → **Forgot password?** → 6-digit code by email (and SMS if a cell is saved) → new password → back in the pool.
 
-If they already Joined: Sign in starts with **Email me a sign-in code** (same keys). **Use password instead** if they know it. Optional **Text me a code** only if a cell is saved. This is not a code at every login.
+If they already Joined: Sign in is **email + password**. **Forgot password?** emails a 6-digit code (and texts it if a cell is saved). This is not a code at every login.
 
 Demo seats (`@survivesunday.demo`) always use **demo1234**. No reset.
 
@@ -54,13 +54,13 @@ Click-by-click (you do this; a chat cannot):
 6. Find `RESEND_FROM_EMAIL`. If it is missing or still `onboarding@resend.dev`, set it to `Survive Sunday <noreply@your-verified-domain>`. Tick **Production**. Save.
 7. Open the row again and confirm Production is ticked for **both** names. A key that only exists on Preview / Development will not send codes to friends on survive-sunday.vercel.app.
 8. If you added or changed a key: **Deployments** → ⋮ on the latest **Production** row → **Redeploy**. Do **not** tick “use existing build cache.”
-9. On the live site, **Sign in → Use password instead → Forgot password?** with **your** real email. You should get a 6-digit code. If sending fails, the page now says the real reason (missing key, test From address, unverified domain) instead of pretending it worked.
+9. On the live site, **Sign in → Forgot password?** with **your** real email. You should get a 6-digit code (check inbox and spam/junk). If sending fails, the page now says the real reason (missing key, test From address, unverified domain) instead of pretending it worked.
 
 `onboarding@resend.dev` only delivers to *your* Resend login email, not friends — do not use it for the group. That is the usual reason “it worked once for me, but Mike never gets a code.”
 
-Without those two Production keys, Forgot password and sign-in codes say we couldn’t send a code. The same two keys send pool emails (pick saved, results, missing-pick reminder, commissioner notes) to friends who left those types on under **Account → Notification preferences**.
+Without those two Production keys, Forgot password says we couldn’t send a code. The same two keys send pool emails (pick saved, results, missing-pick reminder, commissioner notes) to friends who left those types on under **Account → Notification preferences**.
 
-**Stuck friend (e.g. Cannoli Stuffer / Mike Frigo):** after this change is live, Admin → **Set a temporary password** → pick that nickname → type the nickname to confirm → save a password → **text it** to them. They Sign in → **Use password instead**. Do not ask a chat to invent a password. Raw SQL cannot hash a password correctly — use Admin, or `scripts/set-member-password.ts` with Neon `DATABASE_URL` if a coder is helping.
+**Stuck friend (e.g. Cannoli Stuffer / Mike Frigo):** after this change is live, Admin → **Set a temporary password** → pick that nickname → type the nickname to confirm → save a password → **text it** to them. They Sign in with that email and password. Do not ask a chat to invent a password. Raw SQL cannot hash a password correctly — use Admin, or `scripts/set-member-password.ts` with Neon `DATABASE_URL` if a coder is helping.
 
 Optional texts (only if a friend saved a cell). Skip for today if email is enough:
 
