@@ -76,7 +76,7 @@ Files: `src/components/features/league/` — [FILE-MAP](FILE-MAP.md).
 These are **header** items. Do not treat them as extra bottom-nav tabs.
 
 - **Schedule** (`/schedule`) — browse the slate by week. Use this when Scores is the wrong screen.
-- **Videos** (`/videos`) — this season’s YouTube previews / highlights.
+- **Videos** (`/videos`) — this season’s YouTube previews / highlights. Opens on **your current pick week** (same idea as Home / Scores). Past weeks stay browsable.
 - **Account** (top right) — sign out, notification preferences, pick backup.
 
 Do not invent Admin tabs or admin click-paths in this file. Commissioner tools are a separate topic (`HANDOFF` §8).

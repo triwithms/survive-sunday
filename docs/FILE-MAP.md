@@ -22,6 +22,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Scores** | `src/components/features/scores/` — `ScoresScreen.tsx`, `load-scores.ts`, `ScoreGameCard.tsx` |
 | **Board** (standings) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `BoardParticipantRow.tsx` |
 | **League** (NFL) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
+| **Videos** | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Defaults to the same current pick week as Home/Scores. |
 
 ## Shared buttons and cards
 
@@ -45,8 +46,9 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | Board (standings) | `src/app/(app)/standings/page.tsx` |
 | Scores | `src/app/(app)/scores/page.tsx` |
 | League (NFL) | `src/app/(app)/nfl/page.tsx` |
+| Videos | `src/app/(app)/videos/page.tsx` |
 
-Also exist (same thin-page pattern): Account, Admin, Schedule, Team, Videos.
+Also exist (same thin-page pattern): Account, Admin, Schedule, Team.
 
 Also: Sign in `src/app/login/page.tsx`, Forgot password `src/app/login/forgot/page.tsx`.
 
