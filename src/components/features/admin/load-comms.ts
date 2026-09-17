@@ -1,5 +1,6 @@
 import "server-only";
 import { listClaimableSeats } from "@/lib/claim-seat-db";
+import { readEmailDeliveryStatus } from "@/lib/delivery";
 import { loadAdminGate } from "./load-admin";
 import type { CommsScreenProps } from "./types";
 
@@ -14,5 +15,8 @@ export async function loadCommsPage(): Promise<
   } catch (error) {
     console.error("[admin] invite seats failed", error);
   }
-  return { ok: true, props: { seats } };
+  return {
+    ok: true,
+    props: { seats, delivery: readEmailDeliveryStatus() },
+  };
 }

@@ -25,7 +25,7 @@ export default async function ImportPicksPage() {
         <span className="font-mono">imported</span> and every change is audited.
         {demo
           ? " Week 1 may already have seeded practice picks. Reset the pool first if you want a clean import."
-          : " If the board still has old picks, use Pool Config → Reset pool first."}{" "}
+          : " If the board still has old picks, use System → Reset pool first."}{" "}
         After import, open Pool or Scores for that week.
       </AdminHeading>
       <ImportPicksForm defaultWeek={suggestedWeek} />

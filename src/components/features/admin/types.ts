@@ -1,6 +1,6 @@
-import type { AdminRoleRow } from "@/components/AdminRolesPanel";
-import type { RosterMember, RosterMirrorOption } from "@/components/RosterEditor";
-import type { SetPasswordMember } from "@/components/SetMemberPasswordForm";
+import type { AdminRoleRow } from "./admin-role-types";
+import type { RosterMember, RosterMirrorOption } from "./roster-types";
+import type { SetPasswordMember } from "./password-members";
 import type { ClaimableSeat } from "@/lib/claim-seat";
 import type { EmailDeliveryStatus } from "@/lib/delivery";
 
@@ -37,17 +37,17 @@ export type UsersScreenProps = {
 export type ConfigScreenProps = {
   initialMode: "demo" | "live";
   isPracticeLogin: boolean;
-  currentEmail: string | null;
   currentWeek: number;
   singleEliminationFromWeek: number | null;
   oneLossCount: number;
   undefeatedCount: number;
   transferMembers: { id: string; nickname: string; status: string }[];
-  weekNumber: number;
-  games: { id: string; label: string; status: string }[];
 };
 
-export type CommsScreenProps = { seats: ClaimableSeat[] };
+export type CommsScreenProps = {
+  seats: ClaimableSeat[];
+  delivery: EmailDeliveryStatus;
+};
 
 export type AuditLogRow = {
   id: string;
@@ -57,6 +57,9 @@ export type AuditLogRow = {
 };
 
 export type SystemScreenProps = {
-  delivery: EmailDeliveryStatus;
+  currentEmail: string | null;
+  isPracticeLogin: boolean;
+  weekNumber: number;
+  games: { id: string; label: string; status: string }[];
   logs: AuditLogRow[];
 };

@@ -1,29 +1,37 @@
-import { DeliveryStatusCard } from "@/components/DeliveryStatusCard";
-import { Card } from "@/components/ui";
+import Link from "next/link";
+import { AdminGradePanel } from "./AdminGradePanel";
 import { AdminHeading } from "./AdminHeading";
+import { AdminLockPanel } from "./AdminLockPanel";
+import { AuditLogList } from "./AuditLogList";
+import { CommissionerAccountPanel } from "./CommissionerAccountPanel";
+import { CommissionerSignOut } from "./CommissionerSignOut";
+import { OpsPointers } from "./OpsPointers";
+import { ResetPoolPanel } from "./ResetPoolPanel";
 import type { SystemScreenProps } from "./types";
 
-export function SystemScreen({ delivery, logs }: SystemScreenProps) {
+export function SystemScreen(props: SystemScreenProps) {
   return (
     <div className="space-y-6">
       <AdminHeading title="System">
-        Sign-in and reset email status, plus the audit log. Database repair
-        stays on the deploy path — not on this screen.
+        Commissioner login, reset, week lock, import, and the audit log.
       </AdminHeading>
-      <DeliveryStatusCard status={delivery} />
-      <section>
-        <h2 className="font-semibold mb-2">Audit log</h2>
-        <ul className="space-y-1 text-xs font-mono text-[var(--text-muted)] max-h-64 overflow-y-auto">
-          {logs.map((row) => (
-            <Card as="li" key={row.id} className="p-2">
-              <span className="text-gold-400">{row.action}</span> {row.createdAt}
-              {row.details ? (
-                <div className="truncate opacity-80">{row.details}</div>
-              ) : null}
-            </Card>
-          ))}
-        </ul>
-      </section>
+      <CommissionerSignOut />
+      <CommissionerAccountPanel
+        currentEmail={props.currentEmail}
+        isPracticeLogin={props.isPracticeLogin}
+      />
+      <ResetPoolPanel />
+      <AdminLockPanel weekNumber={props.weekNumber} />
+      <AdminGradePanel weekNumber={props.weekNumber} games={props.games} />
+      <Link
+        href="/admin/import"
+        prefetch={false}
+        className="btn-secondary inline-flex items-center justify-center w-full min-h-11"
+      >
+        Import week picks (CSV / paste)
+      </Link>
+      <AuditLogList logs={props.logs} />
+      <OpsPointers />
     </div>
   );
 }

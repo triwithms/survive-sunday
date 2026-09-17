@@ -1,8 +1,8 @@
-import { AdminRolesPanel } from "@/components/AdminRolesPanel";
-import { RosterEditor } from "@/components/RosterEditor";
-import { SetMemberPasswordForm } from "@/components/SetMemberPasswordForm";
 import { AdminHeading } from "./AdminHeading";
 import { AdminRemovePlayer } from "./AdminRemovePlayer";
+import { AdminRolesPanel } from "./AdminRolesPanel";
+import { RosterEditor } from "./RosterEditor";
+import { SetMemberPasswordForm } from "./SetMemberPasswordForm";
 import type { UsersScreenProps } from "./types";
 
 export function UsersScreen(props: UsersScreenProps) {

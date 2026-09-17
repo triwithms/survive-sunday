@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 
 import { useMemo, useState } from "react";
@@ -258,3 +259,9 @@ export function SetMemberPasswordForm({
     </section>
   );
 }
+=======
+export {
+  SetMemberPasswordForm,
+  type SetPasswordMember,
+} from "@/components/features/admin/SetMemberPasswordForm";
+>>>>>>> b24f51a (Align Admin tabs with audit inventory and split hotspots)
