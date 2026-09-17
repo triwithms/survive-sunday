@@ -2,13 +2,15 @@
 
 Point a chat at the **small folder**, not the whole app.
 
+What each screen is **for** (product behaviour, not files): [HOW-SCREENS-WORK.md](HOW-SCREENS-WORK.md).
+
 Bottom nav vs URLs (easy to mix up):
 
 - **Home** in the nav is the **pool** screen (`/pool`)
 - **Board** is standings (`/standings`)
 - **League** is NFL W-L (`/nfl`)
 
-Checked on `main` (`548fdafa`). Do not invent paths.
+Checked on `main` (`26e9d35`). Do not invent paths.
 
 ## Screens
 
