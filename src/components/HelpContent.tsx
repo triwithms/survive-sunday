@@ -306,7 +306,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Share picture failed | Press and hold the Board or Scores title (or triple-tap the week). Try a shorter option. Or take a regular screenshot. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
 | Deadline passed / empty Pick | That week’s first kickoff has gone. If **your** game has started (or you never had a pick path), open **Pick** — next week should already be available (**Week 2 is open — make your pick**). You do not wait for Monday Night Football. |
-| Can’t change my pick | Weeks 2+ freeze at week lock. Week 1: you can still change until your pick’s kickoff, but only onto a game that has not started. Once that game starts, make next week’s pick instead. |`}</pre>
+| Can’t change my pick | You can change until your pick’s kickoff, but only onto a game that has not started. Once that game starts, the pick is locked — make next week’s pick instead. |`}</pre>
         <p className="text-[var(--text-muted)] mb-2">Still stuck? Ask your commissioner or check the pool notice for schedule overrides.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>

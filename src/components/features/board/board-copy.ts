@@ -11,7 +11,7 @@ export function boardLockLine(
   if (!week) return "Current week unavailable";
   const suffix = locked
     ? canChangePick
-      ? " · Week 1: you can still change until your pick’s kickoff"
+      ? " · You can still change until your pick’s kickoff"
       : " · Picks locked"
     : " · Picks still open";
   return `Lock: ${formatKickoff(effectiveLockAt(week))}${suffix}`;

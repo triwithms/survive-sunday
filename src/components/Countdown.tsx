@@ -21,7 +21,7 @@ export function Countdown({
   }, []);
 
   const hint =
-    "Pick deadline — locks at this week's first kickoff. After that you can't change picks and everyone else's picks reveal.";
+    "Pick deadline — locks at this week's first kickoff. After that everyone’s picks reveal. You can still change yours until your own game starts.";
 
   const target = new Date(lockAt).getTime();
   if (!Number.isFinite(target)) {
