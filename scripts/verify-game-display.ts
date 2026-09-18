@@ -184,13 +184,12 @@ const scheduled = formatScoresStatus(
     scoreHome: null,
     note: null,
     kickoff: sundayAfternoon,
-    network: "CBS",
   },
   sundayEvening
 );
 assert.equal(scheduled.kind, "scheduled");
 assert.match(scheduled.primary, /^Today /);
-assert.equal(scheduled.secondary, "CBS");
+assert.equal(scheduled.secondary, null);
 
 assert.equal(
   formatScoreLine({

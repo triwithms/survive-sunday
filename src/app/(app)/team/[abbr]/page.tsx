@@ -24,7 +24,6 @@ import { getTeamInjuries, type LiveInjury } from "@/lib/live-injuries";
 import { getTeamCoach } from "@/lib/team-coaches";
 import { formatWinPct } from "@/lib/standings-format";
 import { teamLogoUrl } from "@/lib/espn-teams";
-import { InjuryChip } from "@/components/InjuryChip";
 import { formatKickoff } from "@/lib/utils";
 import { formatMatchupListLine } from "@/lib/game-display";
 import { namesMatch } from "@/lib/nfl-player";
@@ -379,7 +378,6 @@ export default async function TeamResearchPage({
           </p>
           <p className="text-sm text-[var(--text-muted)]">
             {formatKickoff(game.kickoff)}
-            {game.network ? ` · ${game.network}` : ""}
           </p>
           {thisWeekLine && (
             <p className="text-sm text-[var(--text-muted)]">{thisWeekLine}</p>
@@ -591,12 +589,11 @@ export default async function TeamResearchPage({
           {!injuries.failed && injuries.injuries.length > 0 && (
             <span className="chip chip-gold text-xs">ESPN report</span>
           )}
-          <InjuryChip counts={injuries.counts} />
         </div>
         <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-          Near-live ESPN public injury report (Out, Doubtful, Questionable, IR,
+          ESPN public injury report (Out, Doubtful, Questionable, IR,
           suspension). Not the official NFL club report and not medical advice.
-          Cached a few minutes; pull to refresh.
+          Refreshed at most once a day.
         </p>
         {injuries.failed ? (
           <div className="space-y-2 text-base text-[var(--text-muted)]">

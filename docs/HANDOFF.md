@@ -300,7 +300,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 - **Scores** opens on the signed-in friend’s **current pick week** (same week Pick is focused on). Past weeks are fine; **future weeks stay on Schedule** — Scores will not open them.
 - **Scores** (and Home / Pick / Schedule) refresh from ESPN while games are on. Finals auto-grade.
 - **Scores**, **Pick**, the **Board**, and **League** show ESPN team logos beside abbreviations (`Team.logoUrl` or the ESPN CDN). Marks are sized to read at a glance on a phone (second bump after [#43](https://github.com/triwithms/survive-sunday/pull/43), in [#49](https://github.com/triwithms/survive-sunday/pull/49)). Possession is a **🏈** plus a gold bar.
-- **Team pages** show ESPN’s public injury report (not official NFL). Compact Out / Doubtful / Q chips appear next to picks. Tap a **player name** on the roster or injury list for a detail page.
+- **Team pages** show ESPN’s public injury report as a **name list** (not official NFL). Home / Scores / Schedule / Pick do not show Out / Doubtful / Q chips or TV stations. Tap a **player name** on the roster or injury list for a detail page.
 - If ESPN is blocked or down, last saved scores stay; injury cards say the feed failed and link out.
 - `data/sample_injury_news.json` is schema-only and is **not** shown in the UI on `main`.
 

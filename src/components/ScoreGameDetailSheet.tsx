@@ -98,7 +98,6 @@ export function ScoreGameDetailSheet({
     scoreHome,
     note,
     kickoff: game.kickoff,
-    network: game.network,
   });
 
   return (
@@ -276,7 +275,6 @@ export function ScoreGameDetailSheet({
       {!live && header.kind === "scheduled" ? (
         <p className="text-[10px] text-[var(--text-muted)]">
           Kickoff {formatKickoffForScores(game.kickoff)}
-          {game.network ? ` · ${game.network}` : ""}
         </p>
       ) : null}
     </ModalDialog>

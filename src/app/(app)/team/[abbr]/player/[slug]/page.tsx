@@ -197,7 +197,6 @@ export default async function NflPlayerPage({
           </p>
           <p className="text-xs text-[var(--text-muted)]">
             {formatKickoff(game.kickoff)}
-            {game.network ? ` · ${game.network}` : ""}
           </p>
         </section>
       )}
