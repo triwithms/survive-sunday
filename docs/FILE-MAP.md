@@ -1,6 +1,6 @@
 # File map (targeted fixes)
 
-Before paid coding agents: free Grok + this map first (#1 cost rule). See [HANDOFF](HANDOFF.md).
+Before paid coding agents: free Grok, then free Claude, then free Gemini + this map first (#1 cost rule). See [HANDOFF](HANDOFF.md).
 
 Point a chat at the **small folder**, not the whole app.
 

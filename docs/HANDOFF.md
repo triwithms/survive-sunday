@@ -4,13 +4,20 @@
 
 **#1 cost rule:** Always try free Grok first for specs, FILE-MAP lookups, QA critic scoring, copy, and checklists. Only open paid Grok Bot / Cursor coding agents for the actual code PR/merge. Aim to save ~30–50% usage by keeping planning and critic loops off paid runs.
 
-Paste-ready brief: [`docs/FREE-GROK.md`](FREE-GROK.md).
+**Free tier order** before any paid Grok Bot / Cursor coding agents:
+1. free Grok
+2. then free Claude
+3. then free Gemini
+
+Only after those free options are exhausted (or unsuitable for the task) open paid agents for the actual code PR/merge.
+
+Paste-ready brief: [`docs/FREE-GROK.md`](FREE-GROK.md) (**free AI first**).
 
 This is the **keep-up guide** for the pool app. It is written for a **non-coder**. Use **click-by-click** steps here, then paste a starter prompt into a **new chat** when something breaks or you want a small change.
 
-**Intended tool:** **free Grok** or a **basic paid Grok / xAI chat** (topic-split chats; paste prompts from **section 12**).
+**Intended tool:** **free Grok**, then **free Claude**, then **free Gemini** (topic-split chats; paste prompts from **section 12**).
 
-**HANDOFF / Help update rule:** Do **not** rewrite this file (or Help) on every small code PR. Update the snapshot at most **once per day** or at the **end of a batch**. Tiny logo/spread/sort fixes do not get a HANDOFF pass. Prefer GitHub pencil + free Grok for docs. Coding agents: do not read or rewrite `docs/HANDOFF.md` unless the owner’s prompt says “update HANDOFF”.
+**HANDOFF / Help update rule:** Do **not** rewrite this file (or Help) on every small code PR. Update the snapshot at most **once per day** or at the **end of a batch**. Tiny logo/spread/sort fixes do not get a HANDOFF pass. Prefer GitHub pencil + **free Grok**, then **free Claude**, then **free Gemini** for docs. Coding agents: do not read or rewrite `docs/HANDOFF.md` unless the owner’s prompt says “update HANDOFF”.
 
 **Not the intended tool:** paid **Grok Bot**, Cursor desktop agents, or other expensive coding bots. Those are optional later if a change is too big for a basic chat — not the default path.
 
@@ -511,7 +518,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 
 ## 12. Maintaining with free or basic Grok (not Grok Bot)
 
-**#1 cost rule** (see top): always try **free Grok** first for specs, FILE-MAP lookups, QA critic scoring, copy, and checklists. Paid Grok Bot / Cursor coding agents are for the actual code PR/merge only. Short brief: [`docs/FREE-GROK.md`](FREE-GROK.md).
+**#1 cost rule** (see top): **free Grok**, then **free Claude**, then **free Gemini** for specs, FILE-MAP lookups, QA critic scoring, copy, and checklists. Paid Grok Bot / Cursor coding agents are for the actual code PR/merge only, after those free options are exhausted (or unsuitable). Short brief: [`docs/FREE-GROK.md`](FREE-GROK.md).
 
 **HANDOFF / usage rule:** Do not rewrite this file or Help on every small PR. Update docs at most once per day or at the end of a batch. Coding agents: do not read the whole HANDOFF or `data/*.json` unless the owner says to. Touch only named files. Reply short: files touched, 5-line summary, how to verify. No Wave 2, no extra branches for docs.
 
@@ -539,7 +546,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 2. **Continue** an existing open PR branch. Never reopen password reset (merged PR #7), Real mode (merged PR #10), Who are you? / roles (merged PR #19), Safari/Sign out (merged PR #18), Week 2 slate restore (merged PR #22), board sort (merged PRs #21 / #24), pick-week nav (merged PR #14), Week 1 pick-change-until-kickoff (merged PR #25), mulligan/transfer (merged PR #8), player-detail pages (merged PR #11), or head-coach / team-page order (merged PR #20).
 3. **Never invent features as “live.”** If it is not on `main` (section 10), say it is not shipped.
 4. Owner is **not a coder** — every answer needs click-by-click GitHub / Vercel / Admin steps, not “run this locally.”
-5. Do not use or recommend **paid Grok Bot**, Cursor desktop agents, or other expensive coding bots unless the owner explicitly asks after a basic chat hits a wall.
+5. Do not use or recommend **paid Grok Bot**, Cursor desktop agents, or other expensive coding bots unless **free Grok**, then **free Claude**, then **free Gemini** are exhausted (or unsuitable) and the owner asks.
 
 ### Habit
 
@@ -765,7 +772,7 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **OTP / reset code** | One-time 6-digit code on **Forgot password?** (email first; optional text if a cell is saved). Sign in itself is email + password. Not a code at every login. Codes send only after Resend keys are on Vercel. Check spam/junk. |
 | **One-and-done** | Commissioner rule: no free mulligan from a chosen week. One loss = out. Banner: “From Week X: no mulligan / one-and-done.” |
 | **Transfer commissioner** | Admin → **Hand the pool to someone else**. Give Admin to another existing member. You stay as a player and lose Admin. They keep playing. Different from **Make administrator**. |
-| **Free / basic Grok** | grok.com or xAI chat. The intended maintenance tool. **Not** paid Grok Bot. |
+| **Free / basic Grok** | grok.com or xAI chat. First in the **free AI first** order (#1 cost rule): free Grok, then free Claude, then free Gemini. **Not** paid Grok Bot. |
 
 ---
 

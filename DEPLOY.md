@@ -1,6 +1,6 @@
 # Deploy — Vercel Hobby + Neon Postgres
 
-Short checklist for the free Hobby path. No paid add-ons required. Agent cost: see HANDOFF **#1 cost rule** (free Grok first).
+Short checklist for the free Hobby path. No paid add-ons required. Agent cost: see HANDOFF **#1 cost rule** (free Grok, then free Claude, then free Gemini).
 
 ## 1. Import the repo
 
