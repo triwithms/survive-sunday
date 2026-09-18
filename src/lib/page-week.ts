@@ -69,7 +69,7 @@ export function playerPickDecision(
 export function selectPageWeek<T extends { number: number }>(opts: {
   weeks: T[];
   requested: string | string[] | undefined;
-  basePath: "/pool" | "/pick" | "/scores" | "/videos";
+  basePath: "/pool" | "/pick" | "/scores" | "/videos" | "/schedule";
   currentWeek: number;
   actionWeek: number;
   allowFuture: boolean;

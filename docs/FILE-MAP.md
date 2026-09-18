@@ -23,6 +23,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Board** (standings) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `BoardParticipantRow.tsx` |
 | **League** (NFL) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
 | **Videos** | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Defaults to the same current pick week as Home/Scores. |
+| **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as Home/Scores; future weeks stay browsable. |
 | **Admin** | `src/components/features/admin/` — tab screens `UsersScreen`, `ConfigScreen`, `CommsScreen`, `SystemScreen`. Phone pick entry: `EnterPickForm.tsx`. Password: `SetMemberPasswordForm.tsx`. Census: `PickCensusPanel.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only: `src/lib/week-isolation.ts` forces `mode=live` **without** snapping the pool week or wiping picks. Demo vs Real toggle is gone. Join still claims `@survivesunday.demo` seats. |
 
 ## Shared buttons and cards
@@ -48,9 +49,10 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | Scores | `src/app/(app)/scores/page.tsx` |
 | League (NFL) | `src/app/(app)/nfl/page.tsx` |
 | Videos | `src/app/(app)/videos/page.tsx` |
+| Schedule | `src/app/(app)/schedule/page.tsx` |
 | Admin hub | `src/app/(app)/admin/page.tsx` — Users `/admin/users`, Pool `/admin/config`, Comms `/admin/comms`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/import` stays. |
 
-Also exist (same thin-page pattern): Account, Admin, Schedule, Team.
+Also exist (same thin-page pattern): Account, Admin, Team.
 
 Also: Sign in `src/app/login/page.tsx`, Forgot password `src/app/login/forgot/page.tsx`.
 
