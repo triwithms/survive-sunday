@@ -4,7 +4,7 @@
 
 **#1 cost rule:** For specs, FILE-MAP lookups, QA critic scoring, copy, and checklists, use free tiers in order — **free Grok, then free Claude, then free Gemini** — before any paid Grok Bot / Cursor coding agents. Paid agents only for the actual code PR/merge. Aim to save ~30–50% usage by keeping planning and critic loops off paid runs.
 
-**Docs freshness:** Before free usage runs out on each free tier (Grok, then Claude, then Gemini), update documentation with the changes just made (HANDOFF, FREE-GROK.md, FILE-MAP pointers; Help only if a user/admin process changed). Do this while still on that free tier so the next free chat (or the next model in the cascade) starts from current docs — do not wait until free quota is gone.
+**Docs freshness:** When any free or included usage allotment is near empty (owner flags Usage low, or it is known to be low), refresh HANDOFF / FREE-GROK.md / FILE-MAP with shipped changes **before** starting more work — so the next session (next free tier, or next week’s included Grok Bot / Cursor usage) starts from current docs. Applies to free Grok → free Claude → free Gemini **and** to Grok Bot / Cursor included weekly usage. Help only if a user/admin process changed. Do not wait until quota is fully gone.
 
 Paste-ready brief: [`docs/FREE-GROK.md`](FREE-GROK.md) (**free AI first** — Grok → Claude → Gemini).
 
@@ -515,7 +515,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 
 **#1 cost rule:** For specs, FILE-MAP lookups, QA critic scoring, copy, and checklists, use free tiers in order — **free Grok, then free Claude, then free Gemini** — before any paid Grok Bot / Cursor coding agents. Paid agents only for the actual code PR/merge. Aim to save ~30–50% usage by keeping planning and critic loops off paid runs. Short brief: [`docs/FREE-GROK.md`](FREE-GROK.md).
 
-**Docs freshness:** Before free usage runs out on each free tier, update HANDOFF / FREE-GROK.md / FILE-MAP (Help only if a user/admin process changed) while still on that tier. Do not wait until quota is gone.
+**Docs freshness:** When any free or included usage allotment is near empty, refresh HANDOFF / FREE-GROK.md / FILE-MAP with shipped changes **before** starting more work — so the next session (next free tier, or next week’s included Grok Bot / Cursor usage) starts from current docs. Applies to free Grok → Claude → Gemini **and** to Grok Bot / Cursor included weekly usage. Help only if a user/admin process changed. Do not wait until quota is fully gone.
 
 **HANDOFF / usage rule:** Do not rewrite this file or Help on every small PR. Update docs at most once per day or at the end of a batch. Coding agents: do not read the whole HANDOFF or `data/*.json` unless the owner says to. Touch only named files. Reply short: files touched, 5-line summary, how to verify. No Wave 2, no extra branches for docs.
 
