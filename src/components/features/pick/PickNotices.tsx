@@ -42,7 +42,7 @@ export function PickNotices({
       )}
       {week1Change && (
         <Card role="status" className="border border-gold-400/40 p-3 text-sm space-y-1">
-          <p className="font-semibold text-gold-400">Week 1 pick changes</p>
+          <p className="font-semibold text-gold-400">Change your pick</p>
           <p className="text-[var(--text-muted)]">
             You can switch to any other team whose game has not started yet.
             Once your pick’s kickoff starts, that pick locks and next week

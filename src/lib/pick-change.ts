@@ -1,9 +1,6 @@
 /** Same sentinel as grading.MISSED_TEAM — kept local so this module stays DB-free. */
 const MISSED_TEAM = "MISS";
 
-/** Week-1-only reopen after the week lock (first kickoff). Weeks 2+ stay locked. */
-export const WEEK1_PICK_CHANGE_WEEK = 1;
-
 export type GameStartBits = {
   id?: string | null;
   status?: string | null;
@@ -21,7 +18,7 @@ export type ExistingPickBits = {
 
 export type PickChangeReason =
   | "week_open"
-  | "week1_reopen"
+  | "pending_reopen"
   | "week_locked"
   | "current_game_started"
   | "new_game_started";
@@ -30,10 +27,6 @@ export type PickChangeDecision = {
   allowed: boolean;
   reason: PickChangeReason;
 };
-
-export function week1PickChangeApplies(weekNumber: number): boolean {
-  return weekNumber === WEEK1_PICK_CHANGE_WEEK;
-}
 
 export function isUserPick(
   pick: ExistingPickBits | undefined
@@ -95,7 +88,7 @@ export function gameForPick<
 
 /**
  * Whether an existing pick may still be edited.
- * Before week lock: yes. After lock: Week 1 only, pending pick, game not started.
+ * Before week lock: yes. After lock: pending user pick whose game has not started.
  */
 export function canEditExistingPick(input: {
   weekNumber: number;
@@ -105,7 +98,6 @@ export function canEditExistingPick(input: {
   now?: Date;
 }): boolean {
   if (!input.weekLocked) return true;
-  if (!week1PickChangeApplies(input.weekNumber)) return false;
   if (!isPendingUserPick(input.existingPick)) return false;
   if (!input.existingGame) return false;
   return !isGameStarted(input.existingGame, input.now ?? new Date());
@@ -113,8 +105,8 @@ export function canEditExistingPick(input: {
 
 /**
  * Submit / change decision. Does not cover auth, used-teams, bye, or current-week.
- * First pick after lock stays blocked (missed-pick path). Week 1 only reopens
- * an existing pending pick when both games are still scheduled / not started.
+ * First pick after lock stays blocked (missed-pick path). Any week reopens an
+ * existing pending pick when both games are still scheduled / not started.
  */
 export function evaluatePickChange(input: {
   weekNumber: number;
@@ -130,10 +122,6 @@ export function evaluatePickChange(input: {
     return { allowed: true, reason: "week_open" };
   }
 
-  if (!week1PickChangeApplies(input.weekNumber)) {
-    return { allowed: false, reason: "week_locked" };
-  }
-
   if (!isPendingUserPick(input.existingPick)) {
     return { allowed: false, reason: "week_locked" };
   }
@@ -146,7 +134,7 @@ export function evaluatePickChange(input: {
     return { allowed: false, reason: "new_game_started" };
   }
 
-  return { allowed: true, reason: "week1_reopen" };
+  return { allowed: true, reason: "pending_reopen" };
 }
 
 export function pickChangeErrorMessage(reason: PickChangeReason): string {

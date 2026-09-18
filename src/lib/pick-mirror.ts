@@ -1,4 +1,4 @@
-import { isGameStarted, week1PickChangeApplies } from "./pick-change";
+import { isGameStarted } from "./pick-change";
 
 /** Copy a source member’s pick this far before the relevant deadline. */
 export const MIRROR_LEAD_MS = 30 * 60 * 1000;
@@ -70,7 +70,7 @@ export function relevantMirrorDeadline(input: {
 }): Date {
   const kick = input.sourceGameKickoff;
   if (!kick) return input.weekLockAt;
-  if (week1PickChangeApplies(input.weekNumber)) return kick;
+  if (input.weekNumber === 1) return kick;
   return input.weekLockAt.getTime() <= kick.getTime()
     ? input.weekLockAt
     : kick;

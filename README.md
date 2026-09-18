@@ -77,7 +77,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - **Notification preferences** (Account): each user chooses alert types. Core on, live scores / injury notes off. Email via Resend; missing-pick SMS follows the same switch. Password-reset codes are never gated.
 - Nickname + optional real name; pool membership; admin/member roles
 - Week 1 schedule from `data/week1-slate.json` (real 2026 slate + final scores where present)
-- Lock at first kickoff; countdown; hide others’ picks until lock. Week 1 only: change an existing pick until that team’s kickoff if the new game has not started.
+- Lock at first kickoff; countdown; hide others’ picks until lock. Change an existing pick until that team’s kickoff if the new game has not started.
 - One pick/week; no team reuse; bye teams disabled
 - Mulligan auto-burn → `one_loss`; second loss → `eliminated`
 - Participants list sorted undefeated, then one-loss, then eliminated; within each group same pick (no pick last), then same game (earlier kickoff first), then nickname A–Z

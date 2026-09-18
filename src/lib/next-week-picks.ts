@@ -236,13 +236,12 @@ export function pickScreenCopy(input: {
   const onActionWeek = weekNumber === decision.actionWeek;
   const onCurrent = weekNumber === decision.poolCurrentWeek;
   const onNext = weekNumber === decision.nextWeek;
-  const week1Pending =
+  const pendingOwnGame =
     onCurrent && decision.reason === "current_game_pending" && canChange;
 
-  if (week1Pending) {
+  if (pendingOwnGame) {
     return {
-      kicker:
-        "Week 1 only: you can change your pick until that team’s kickoff. After Week 1 this goes away.",
+      kicker: "You can change your pick until that team’s kickoff.",
       banner: null,
       showWeek1ChangeCard: true,
       showDismissibleTip: false,
