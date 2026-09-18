@@ -247,7 +247,7 @@ JaJa,DAL
 
 The pool is **live-only**. The Demo vs Real toggle is gone (no practice picker). Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
-Home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see a `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Home, Scores and Pick open on that friend’s current pick week** (Week 1 until their game starts, then Week 2). Home and Scores will **not** open a future week — browse every week on **Schedule**. Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Week 2 stays on the schedule.
+Home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see a `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Home, Scores, Pick, and Schedule open on that friend’s current pick week** (Week 1 until their game starts, then Week 2). Home and Scores will **not** open a future week — future weeks stay on **Schedule**, which still lets you browse every week. Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Week 2 stays on the schedule.
 
 Unclaimed seats still use practice `@survivesunday.demo` emails so Join can claim that nickname. That is seat claiming, not Demo mode. Do not seed Production.
 
