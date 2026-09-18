@@ -51,8 +51,12 @@ export function playerPickDecision(
   currentWeek: number
 ): PlayerPickWeek {
   const currentWeekRow = weeks.find((row) => row.number === currentWeek);
+  const nextWeekRow = weeks.find((row) => row.number === currentWeek + 1);
   const currentPick = currentWeekRow
     ? me.picks.find((p) => p.weekId === currentWeekRow.id) ?? null
+    : null;
+  const nextPick = nextWeekRow
+    ? me.picks.find((p) => p.weekId === nextWeekRow.id) ?? null
     : null;
   return resolvePlayerPickWeekFromLoaded({
     poolCurrentWeek: currentWeek,
@@ -62,6 +66,7 @@ export function playerPickDecision(
       games: row.games,
     })),
     currentPick,
+    nextPick,
     playingFromWeek: me.playingFromWeek,
   });
 }

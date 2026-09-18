@@ -40,7 +40,7 @@ Choose or **confirm one team to win** for the week. Tap a team, then confirm.
 
 - Opens on **your** open week (same idea as Home). Header arrows can flip weeks.
 - Used teams and bye-week teams are off the board.
-- You can still change until *that team’s* kickoff if the new game has not started.
+- You can still change until *that team’s* kickoff if the new game has not started — even after the week’s first kickoff, and even when the group board week still lags behind.
 - Files: `src/components/features/pick/` — [FILE-MAP](FILE-MAP.md).
 
 ---

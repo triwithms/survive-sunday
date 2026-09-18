@@ -58,7 +58,9 @@ export async function buildHomeHero(args: {
     : null;
   const nextOpen =
     args.isCurrentWeek &&
-    (decision.nextWeekOpen || decision.reason === "slate_not_ready");
+    (decision.nextWeekOpen ||
+      decision.reason === "slate_not_ready" ||
+      decision.reason === "next_game_pending");
   return {
     teamAbbr: myPick.teamAbbr,
     logoUrl: teamLogoUrl(myPick.teamAbbr, myTeam?.logoUrl),

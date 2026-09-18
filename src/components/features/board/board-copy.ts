@@ -35,6 +35,9 @@ export function boardCta(args: {
   if (args.canChangePick) {
     return { href: pickHrefForWeek(args.weekNumber), label: "Change pick" };
   }
+  if (args.decision.reason === "next_game_pending") {
+    return { href: pickHrefForWeek(args.decision.nextWeek), label: "Change pick" };
+  }
   if (args.showMakePick) {
     return {
       href: pickHrefForWeek(args.decision.nextWeek),

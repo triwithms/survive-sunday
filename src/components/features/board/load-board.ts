@@ -48,8 +48,10 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
     where: { poolId_number: { poolId: me.poolId, number: currentWeek + 1 } },
     include: {
       games: { select: { id: true, status: true, kickoff: true, awayAbbr: true, homeAbbr: true } },
+      picks: { where: { membershipId: me.id } },
     },
   });
+  const myNextPick = nextWeek?.picks[0] ?? null;
   const teamAbbrs = [...new Set((week?.picks ?? [])
     .filter((p) => p.source !== "missed" && p.teamAbbr !== MISSED_TEAM)
     .map((p) => p.teamAbbr))];
@@ -68,6 +70,8 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
       playingFromWeek: me.playingFromWeek,
       nextWeekHasGames: (nextWeek?.games.length ?? 0) > 0,
       nextWeekLocked: nextWeek ? isWeekLocked(nextWeek) : false,
+      existingNextPick: myNextPick,
+      existingNextGame: gameForPick(myNextPick, nextWeek?.games ?? []),
     }),
   });
 }

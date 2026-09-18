@@ -47,12 +47,23 @@ export async function loadEligibleWeek(
     include: { games: true },
   });
   const currentWeekRow = relatedWeeks.find((row) => row.number === currentWeek);
+  const nextWeekRow = relatedWeeks.find((row) => row.number === currentWeek + 1);
   const myCurrentWeekPick = currentWeekRow
     ? await prisma.pick.findUnique({
         where: {
           membershipId_weekId: {
             membershipId: membership.id,
             weekId: currentWeekRow.id,
+          },
+        },
+      })
+    : null;
+  const myNextWeekPick = nextWeekRow
+    ? await prisma.pick.findUnique({
+        where: {
+          membershipId_weekId: {
+            membershipId: membership.id,
+            weekId: nextWeekRow.id,
           },
         },
       })
@@ -65,6 +76,7 @@ export async function loadEligibleWeek(
       games: row.games,
     })),
     currentPick: myCurrentWeekPick,
+    nextPick: myNextWeekPick,
     playingFromWeek: membership.playingFromWeek,
   });
   if (!isPlayerPickWeek(decision, weekNumber)) {

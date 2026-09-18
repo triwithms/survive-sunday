@@ -72,6 +72,7 @@ export default async function AppLayout({
   );
   const week =
     weeks.find((row) => row.number === currentWeek) ?? weeks[0] ?? null;
+  const nextWeekPreview = weeks.find((row) => row.number === currentWeek + 1);
 
   const lockIso = week ? effectiveLockAt(week).toISOString() : null;
   const locked = week ? isWeekLocked(week) : true;
@@ -91,16 +92,16 @@ export default async function AppLayout({
         },
       })
     : null;
-  const canChangePick = week
-    ? playerCanChangeCurrentPick({
-        weekNumber: week.number,
-        weekLocked: locked,
-        eliminated: membership.status === "eliminated",
-        isPlayer,
-        existingPick: myPick,
-        existingGame: gameForPick(myPick, week.games),
+  const myNextPick = nextWeekPreview
+    ? await prisma.pick.findUnique({
+        where: {
+          membershipId_weekId: {
+            membershipId: membership.id,
+            weekId: nextWeekPreview.id,
+          },
+        },
       })
-    : false;
+    : null;
   const decision = resolvePlayerPickWeekFromLoaded({
     poolCurrentWeek: currentWeek,
     weeks: weeks.map((row) => ({
@@ -109,8 +110,27 @@ export default async function AppLayout({
       games: row.games,
     })),
     currentPick: myPick,
+    nextPick: myNextPick,
     playingFromWeek: membership.playingFromWeek,
   });
+  const actionWeekRow =
+    weeks.find((row) => row.number === decision.actionWeek) ?? week;
+  const actionPick =
+    actionWeekRow?.number === currentWeek
+      ? myPick
+      : actionWeekRow?.number === currentWeek + 1
+        ? myNextPick
+        : null;
+  const canChangePick = actionWeekRow
+    ? playerCanChangeCurrentPick({
+        weekNumber: actionWeekRow.number,
+        weekLocked: isWeekLocked(actionWeekRow),
+        eliminated: membership.status === "eliminated",
+        isPlayer,
+        existingPick: actionPick,
+        existingGame: gameForPick(actionPick, actionWeekRow.games),
+      })
+    : false;
   const nextWeekRow = weeks.find((row) => row.number === decision.nextWeek);
   const nextOpen =
     decision.nextWeekOpen && nextWeekRow

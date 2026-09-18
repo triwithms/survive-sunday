@@ -13,6 +13,7 @@ import {
   resolvePlayerPickWeek,
   resolvePlayerPickWeekFromLoaded,
 } from "../src/lib/next-week-picks";
+import { boardCta } from "../src/components/features/board/board-copy";
 
 const sunday = new Date("2026-09-13T16:00:00.000Z");
 const lacKickoff = new Date("2026-09-13T20:25:00.000Z");
@@ -155,6 +156,89 @@ assert.equal(nextLocked.actionWeek, 2, "TNF lock does not pin Home to Week 1");
 assert.equal(nextLocked.nextWeekOpen, false);
 assert.equal(nextLocked.reason, "next_week_locked");
 assert.equal(isPlayerPickWeek(nextLocked, 2), false);
+
+// Board week still 1 + Week 2 TNF locked + pending Sunday pick → still changeable.
+const sundayKick = new Date("2026-09-20T17:00:00.000Z");
+const friday = new Date("2026-09-18T23:30:00.000Z");
+const gamsWeek2 = resolvePlayerPickWeek({
+  poolCurrentWeek: 1,
+  currentWeekLocked: true,
+  existingCurrentPick: { source: "imported", teamAbbr: "KC", result: "win" },
+  existingCurrentGame: {
+    status: "final",
+    kickoff: new Date("2026-09-13T17:00:00.000Z"),
+  },
+  existingNextPick: { source: "user", teamAbbr: "DET", result: "pending" },
+  existingNextGame: { status: "scheduled", kickoff: sundayKick },
+  nextWeekHasGames: true,
+  nextWeekLocked: true,
+  now: friday,
+});
+assert.equal(gamsWeek2.actionWeek, 2, "Gams stays on Week 2 after TNF");
+assert.equal(gamsWeek2.nextWeekOpen, false, "first pick after lock stays closed");
+assert.equal(gamsWeek2.reason, "next_game_pending");
+assert.equal(isPlayerPickWeek(gamsWeek2, 2), true);
+assert.equal(isPlayerPickWeek(gamsWeek2, 1), false);
+const gamsCopy = pickScreenCopy({
+  weekNumber: 2,
+  decision: gamsWeek2,
+  locked: true,
+  canChange: true,
+  eliminated: false,
+  spectator: false,
+  hasCurrentPick: true,
+});
+assert.equal(gamsCopy.showWeek1ChangeCard, true);
+assert.match(gamsCopy.kicker, /until that team’s kickoff/);
+assert.equal(homeEmptyPickCopy(gamsWeek2).ctaLabel, "Change pick");
+
+const fromLoadedLockedNext = resolvePlayerPickWeekFromLoaded({
+  poolCurrentWeek: 1,
+  currentPick: { source: "imported", teamAbbr: "KC", result: "win" },
+  nextPick: { source: "user", teamAbbr: "DET", result: "pending" },
+  weeks: [
+    {
+      number: 1,
+      locked: true,
+      games: [
+        {
+          id: "kc",
+          status: "final",
+          kickoff: new Date("2026-09-13T17:00:00.000Z"),
+          awayAbbr: "LAC",
+          homeAbbr: "KC",
+        },
+      ],
+    },
+    {
+      number: 2,
+      locked: true,
+      games: [
+        {
+          id: "det",
+          status: "scheduled",
+          kickoff: sundayKick,
+          awayAbbr: "CHI",
+          homeAbbr: "DET",
+        },
+      ],
+    },
+  ],
+  now: friday,
+});
+assert.equal(fromLoadedLockedNext.reason, "next_game_pending");
+assert.equal(isPlayerPickWeek(fromLoadedLockedNext, 2), true);
+assert.deepEqual(
+  boardCta({
+    canChangePick: false,
+    showMakePick: false,
+    showMutedChange: false,
+    weekNumber: 1,
+    decision: gamsWeek2,
+    adminSpectator: false,
+  }),
+  { href: "/pick?week=2", label: "Change pick" }
+);
 
 // Final pick, week row not locked (lock override / lag) — still leave Week 1.
 const finalUnlocked = week1Open({
