@@ -1,6 +1,6 @@
 # How the main screens work
 
-Short product cheat sheet for a **non-coder** (or free / basic Grok). This is **what each screen is for**, not a file dump.
+Short product cheat sheet for a **non-coder** (or free AI first: Grok → Claude → Gemini). This is **what each screen is for**, not a file dump. Before paid coding agents: free tiers in order — **free Grok, then free Claude, then free Gemini** — + [FILE-MAP](FILE-MAP.md) first (#1 cost rule). See [HANDOFF](HANDOFF.md).
 
 File paths for a targeted fix: [`docs/FILE-MAP.md`](FILE-MAP.md). Keep-up / deploy: [`docs/HANDOFF.md`](HANDOFF.md).
 

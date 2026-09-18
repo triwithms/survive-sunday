@@ -1,5 +1,7 @@
 # File map (targeted fixes)
 
+Before paid coding agents: free tiers in order — **free Grok, then free Claude, then free Gemini** — + this map first (#1 cost rule). See [HANDOFF](HANDOFF.md).
+
 Point a chat at the **small folder**, not the whole app.
 
 What each screen is **for** (product behaviour, not files): [HOW-SCREENS-WORK.md](HOW-SCREENS-WORK.md).
