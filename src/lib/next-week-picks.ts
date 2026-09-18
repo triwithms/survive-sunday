@@ -9,6 +9,7 @@
 import {
   canEditExistingPick,
   gameForPick,
+  isGameStarted,
   isUserPick,
   type ExistingPickBits,
   type GameStartBits,
@@ -62,8 +63,10 @@ export function resolvePlayerPickWeek(input: {
     poolCurrentWeek
   );
 
+  const ownGameStarted = isGameStarted(input.existingCurrentGame, now);
   const canStillPlayCurrentWeek =
     eligibleNow &&
+    !ownGameStarted &&
     canEditExistingPick({
       weekNumber: poolCurrentWeek,
       weekLocked: input.currentWeekLocked,

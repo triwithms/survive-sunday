@@ -156,6 +156,19 @@ assert.equal(nextLocked.nextWeekOpen, false);
 assert.equal(nextLocked.reason, "next_week_locked");
 assert.equal(isPlayerPickWeek(nextLocked, 2), false);
 
+// Final pick, week row not locked (lock override / lag) — still leave Week 1.
+const finalUnlocked = week1Open({
+  currentWeekLocked: false,
+  existingCurrentPick: { source: "imported", teamAbbr: "KC", result: "win" },
+  existingCurrentGame: {
+    status: "final",
+    kickoff: new Date("2026-09-13T17:00:00.000Z"),
+  },
+  now: new Date("2026-09-18T16:00:00.000Z"),
+});
+assert.equal(finalUnlocked.actionWeek, 2, "own game final → Week 2 even if week unlocked");
+assert.equal(finalUnlocked.canStillPlayCurrentWeek, false);
+
 // Loaded-weeks helper: MNF still scheduled does not block Week 2.
 const fromLoaded = resolvePlayerPickWeekFromLoaded({
   poolCurrentWeek: 1,

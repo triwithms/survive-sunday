@@ -223,6 +223,36 @@ assert.equal(
   "Home defaults to Week 2 even when pool board week is still 1"
 );
 assert.equal(
+  defaultWeekForPath({
+    basePath: "/scores",
+    poolCurrentWeek: 1,
+    pickActionWeek: afterTnf.actionWeek,
+  }),
+  2,
+  "Scores defaults to Week 2 — not Week 1 scores"
+);
+assert.equal(
+  defaultWeekForPath({
+    basePath: "/pick",
+    poolCurrentWeek: 1,
+    pickActionWeek: afterTnf.actionWeek,
+  }),
+  2,
+  "Pick opens Week 2"
+);
+assert.equal(
+  resolvePageWeekNumber({
+    requested: null,
+    weekNumbers,
+    basePath: "/scores",
+    poolCurrentWeek: 1,
+    pickActionWeek: afterTnf.actionWeek,
+    allowFuture: false,
+  }),
+  2,
+  "Scores with no ?week= opens Week 2"
+);
+assert.equal(
   resolvePageWeekNumber({
     requested: 1,
     weekNumbers,
@@ -429,15 +459,25 @@ mustInclude("src/components/features/videos/load-videos.ts", [
 mustInclude("src/components/features/videos/VideosScreen.tsx", [
   "currentWeek={props.focusWeek}",
 ]);
+mustInclude("src/components/features/home/HomeScreen.tsx", [
+  "currentWeek={props.focusWeek}",
+]);
 mustNotMatch(
   "src/components/features/home/HomeScreen.tsx",
   /allowFuture\s*$/m,
   "Home WeekSwitcher must not pass allowFuture (future weeks stay on Schedule)"
 );
+mustInclude("src/components/features/scores/ScoresScreen.tsx", [
+  "currentWeek={props.focusWeek}",
+]);
 mustInclude("src/components/HeaderWeekNav.tsx", [
   "defaultWeekForPath",
   "resolvePageWeekNumber",
   "pickActionWeek",
+]);
+mustInclude("src/app/(app)/layout.tsx", [
+  "pickActionWeek={decision.actionWeek}",
+  "weekNumber={decision.actionWeek}",
 ]);
 mustInclude("src/components/HelpContent.tsx", [
   "your current pick week",
