@@ -23,7 +23,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Board** (standings) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `BoardParticipantRow.tsx` |
 | **League** (NFL) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
 | **Videos** | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Defaults to the same current pick week as Home/Scores. |
-| **Admin** | `src/components/features/admin/` — tab screens `UsersScreen`, `ConfigScreen`, `CommsScreen`, `SystemScreen`. Phone pick entry: `EnterPickForm.tsx`. Password: `SetMemberPasswordForm.tsx`. Census: `PickCensusPanel.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only: `src/lib/week-isolation.ts` forces `mode=live` and Week 1 with **no pick wipe**. Demo vs Real toggle is gone. Join still claims `@survivesunday.demo` seats. |
+| **Admin** | `src/components/features/admin/` — tab screens `UsersScreen`, `ConfigScreen`, `CommsScreen`, `SystemScreen`. Phone pick entry: `EnterPickForm.tsx`. Password: `SetMemberPasswordForm.tsx`. Census: `PickCensusPanel.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only: `src/lib/week-isolation.ts` forces `mode=live` **without** snapping the pool week or wiping picks. Demo vs Real toggle is gone. Join still claims `@survivesunday.demo` seats. |
 
 ## Shared buttons and cards
 

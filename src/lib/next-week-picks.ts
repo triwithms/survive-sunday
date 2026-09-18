@@ -1,7 +1,7 @@
 /**
  * Per-player next-week pick unlock.
  *
- * Pool current week (Real mode = Week 1) stays the group board week.
+ * Pool current week is the group board week (it may lag).
  * A player’s *next* week opens as soon as *their* current-week pick is
  * locked (that game has started) — not after Monday Night Football.
  * New joiners with no current-week pick path go straight to the next week.
@@ -9,6 +9,7 @@
 import {
   canEditExistingPick,
   gameForPick,
+  isGameStarted,
   isUserPick,
   type ExistingPickBits,
   type GameStartBits,
@@ -62,8 +63,10 @@ export function resolvePlayerPickWeek(input: {
     poolCurrentWeek
   );
 
+  const ownGameStarted = isGameStarted(input.existingCurrentGame, now);
   const canStillPlayCurrentWeek =
     eligibleNow &&
+    !ownGameStarted &&
     canEditExistingPick({
       weekNumber: poolCurrentWeek,
       weekLocked: input.currentWeekLocked,
@@ -100,7 +103,7 @@ export function resolvePlayerPickWeek(input: {
   if (input.nextWeekLocked) {
     return {
       ...base,
-      actionWeek: poolCurrentWeek,
+      actionWeek: nextWeek,
       nextWeekOpen: false,
       reason: "next_week_locked",
     };

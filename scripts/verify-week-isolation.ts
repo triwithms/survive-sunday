@@ -1,9 +1,10 @@
 /**
- * Guards for Real=Week 1 current / Week 2 still visible (no database).
+ * Live-only isolation must not pin the pool to Week 1 (no database).
  *
  *   npx tsx scripts/verify-week-isolation.ts
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   DEMO_SANDBOX_WEEK,
   REAL_CURRENT_WEEK,
@@ -11,26 +12,38 @@ import {
   isSandboxWeekHidden,
   weeksForParticipants,
 } from "../src/lib/pool-mode";
+import { liveIsolationPatch } from "../src/lib/week-isolation";
 import { loadWeek2Normalized } from "../src/lib/ensure-week-slate";
 
 assert.equal(REAL_CURRENT_WEEK, 1);
 assert.equal(DEMO_SANDBOX_WEEK, 2);
-assert.equal(effectiveCurrentWeek("live", 2), 1);
+assert.equal(effectiveCurrentWeek("live", 2), 2);
 assert.equal(effectiveCurrentWeek("live", 1), 1);
-assert.equal(effectiveCurrentWeek("demo", 2), 1);
-assert.equal(effectiveCurrentWeek("demo", 1), 1);
-assert.equal(effectiveCurrentWeek(undefined, 2), 1);
+assert.equal(effectiveCurrentWeek("demo", 3), 3);
+assert.equal(effectiveCurrentWeek(undefined, 2), 2);
+assert.equal(effectiveCurrentWeek("live", null), 1);
 assert.equal(isSandboxWeekHidden("live", 2), false);
-assert.equal(isSandboxWeekHidden("live", 1), false);
-assert.equal(isSandboxWeekHidden("demo", 2), false);
+
+const liveOnWeek2 = liveIsolationPatch({ mode: "live", currentWeek: 2 });
+assert.equal(liveOnWeek2.changed, false);
+assert.equal(liveOnWeek2.currentWeek, 2);
+assert.equal(liveOnWeek2.data, null);
+
+const demoOnWeek2 = liveIsolationPatch({ mode: "demo", currentWeek: 2 });
+assert.equal(demoOnWeek2.changed, true);
+assert.equal(demoOnWeek2.currentWeek, 2);
+assert.deepEqual(demoOnWeek2.data, { mode: "live" });
+
+const isolationSrc = readFileSync("src/lib/week-isolation.ts", "utf8");
+assert.doesNotMatch(
+  isolationSrc,
+  /currentWeek:\s*REAL_CURRENT_WEEK/,
+  "live isolation must not snap currentWeek to Week 1"
+);
 
 const weeks = [{ number: 1 }, { number: 2 }, { number: 3 }];
 assert.deepEqual(
   weeksForParticipants("live", weeks).map((w) => w.number),
-  [1, 2, 3]
-);
-assert.deepEqual(
-  weeksForParticipants("demo", weeks).map((w) => w.number),
   [1, 2, 3]
 );
 

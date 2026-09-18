@@ -143,7 +143,7 @@ export default async function AppLayout({
           <Suspense
             fallback={
               <HeaderWeekBadge
-                weekNumber={currentWeek}
+                weekNumber={decision.actionWeek}
                 lockAt={lockIso}
                 nextOpen={nextOpen}
               />
