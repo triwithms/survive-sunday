@@ -1,3 +1,7 @@
+import { localHelmetSrc, TEAM_HELMET_PLACEHOLDER } from "./team-helmets";
+
+export { localHelmetSrc, TEAM_HELMET_PLACEHOLDER };
+
 /** App abbr (WAS) → ESPN team id. Safe for parser tests (no server-only). */
 export const ESPN_TEAM_IDS: Record<string, string> = {
   ARI: "22",
@@ -80,15 +84,21 @@ export function teamLogoUrl(abbr: string, stored?: string | null): string {
   return trimmed;
 }
 
-/** Stored (or ESPN if empty), then ESPN once on error. Null → letter fallback. */
+/** Local helmet, then stored/ESPN. Never null — placeholder last, never letters. */
 export function resolveTeamLogoSrc(
   abbr: string,
   stored: string | null | undefined,
   broken: string | null
-): string | null {
+): string {
+  const local = localHelmetSrc(abbr);
   const espn = espnTeamLogoUrl(abbr);
   const preferred = teamLogoUrl(abbr, stored);
-  if (broken == null) return preferred;
-  if (broken === preferred && preferred !== espn) return espn;
-  return null;
+  const candidates: string[] = [];
+  for (const src of [local, preferred, espn, TEAM_HELMET_PLACEHOLDER]) {
+    if (!candidates.includes(src)) candidates.push(src);
+  }
+  if (broken == null) return candidates[0]!;
+  const i = candidates.indexOf(broken);
+  if (i >= 0 && i < candidates.length - 1) return candidates[i + 1]!;
+  return TEAM_HELMET_PLACEHOLDER;
 }
