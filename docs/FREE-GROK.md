@@ -29,5 +29,7 @@ Trust GitHub **`main`** for what friends see today. Never paste secrets.
 4. Owner is **not a coder** — click-by-click GitHub / Vercel / Admin steps, not “run this locally.”
 5. Do not rewrite HANDOFF or Help on every small PR. Update those at most once per day or at the end of a batch.
 6. Paid Grok Bot / Cursor coding agents: **actual code PR / merge only**, after free Grok, then free Claude, then free Gemini are exhausted (or unsuitable).
+7. Free AIs draft specs and critic. **Chief of Staff** / paid agents only for GitHub PRs.
+8. Specialists (Safety/DB, Docs Sync, Codebase Audit, QA) work **on assignment only** — not a discovery swarm.
 
 Starter prompts: HANDOFF section 12.
