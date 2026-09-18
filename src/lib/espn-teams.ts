@@ -61,9 +61,34 @@ export function espnTeamLogoUrl(abbr: string): string {
   return `https://a.espncdn.com/i/teamlogos/nfl/500/${espnAbbr(abbr).toLowerCase()}.png`;
 }
 
+/** Slug from an ESPN NFL mark URL, or null if it is not that CDN path. */
+function espnNflLogoSlug(url: string): string | null {
+  const m = url.match(
+    /\/i\/teamlogos\/nfl\/500(?:-dark)?\/([^/?#]+)\.png(?:[?#]|$)/i
+  );
+  return m ? m[1].toLowerCase() : null;
+}
+
 /** Prefer stored Team.logoUrl; otherwise the ESPN CDN logo. Never invents art. */
 export function teamLogoUrl(abbr: string, stored?: string | null): string {
+  const espn = espnTeamLogoUrl(abbr);
   const trimmed = stored?.trim();
-  if (trimmed) return trimmed;
-  return espnTeamLogoUrl(abbr);
+  if (!trimmed) return espn;
+  const slug = espnNflLogoSlug(trimmed);
+  // Wrong ESPN filename (numeric leftover, chicago.png, …) → canonical slug.
+  if (slug != null && slug !== espnAbbr(abbr).toLowerCase()) return espn;
+  return trimmed;
+}
+
+/** Stored (or ESPN if empty), then ESPN once on error. Null → letter fallback. */
+export function resolveTeamLogoSrc(
+  abbr: string,
+  stored: string | null | undefined,
+  broken: string | null
+): string | null {
+  const espn = espnTeamLogoUrl(abbr);
+  const preferred = teamLogoUrl(abbr, stored);
+  if (broken == null) return preferred;
+  if (broken === preferred && preferred !== espn) return espn;
+  return null;
 }
