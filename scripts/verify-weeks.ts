@@ -199,6 +199,54 @@ assert.equal(
   "Week 1 pickers cannot open Week 2 on Scores"
 );
 
+// Week 1 game done + Week 2 TNF already started → Home still opens Week 2.
+const afterTnf = resolvePlayerPickWeek({
+  poolCurrentWeek: 1,
+  currentWeekLocked: true,
+  existingCurrentPick: { source: "imported", teamAbbr: "KC", result: "win" },
+  existingCurrentGame: {
+    status: "final",
+    kickoff: new Date("2026-09-13T17:00:00.000Z"),
+  },
+  nextWeekHasGames: true,
+  nextWeekLocked: true,
+  now: new Date("2026-09-18T16:00:00.000Z"),
+});
+assert.equal(afterTnf.actionWeek, 2, "Gams after Week 1 final → Week 2");
+assert.equal(
+  defaultWeekForPath({
+    basePath: "/pool",
+    poolCurrentWeek: 1,
+    pickActionWeek: afterTnf.actionWeek,
+  }),
+  2,
+  "Home defaults to Week 2 even when pool board week is still 1"
+);
+assert.equal(
+  resolvePageWeekNumber({
+    requested: 1,
+    weekNumbers,
+    basePath: "/pool",
+    poolCurrentWeek: 1,
+    pickActionWeek: afterTnf.actionWeek,
+    allowFuture: false,
+  }),
+  1,
+  "Week 1 stays browsable as past on Home"
+);
+assert.equal(
+  resolvePageWeekNumber({
+    requested: 3,
+    weekNumbers,
+    basePath: "/pool",
+    poolCurrentWeek: 1,
+    pickActionWeek: afterTnf.actionWeek,
+    allowFuture: false,
+  }),
+  2,
+  "Home must not open a future week"
+);
+
 // Schedule stays on the pool board week. Home matches Scores (pick week, no future).
 assert.equal(
   defaultWeekForPath({

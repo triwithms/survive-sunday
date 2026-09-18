@@ -7,7 +7,7 @@ export const DEMO_EMAIL_SUFFIX = "@survivesunday.demo";
 export const PENDING_EMAIL_SUFFIX = "@pending.survivesunday.local";
 export const LOCAL_PLACEHOLDER_HOST = "survivesunday.local";
 
-/** Real NFL week right now. The live pool always uses this as the current pick week. */
+/** Fallback only if the pool has no stored current week. */
 export const REAL_CURRENT_WEEK = 1;
 /** Leftover Week 2 sandbox constant. Week 2 is a real NFL week. */
 export const DEMO_SANDBOX_WEEK = 2;
@@ -70,14 +70,13 @@ export function practiceEmailFromPlaceholder(
   return `${local}${DEMO_EMAIL_SUFFIX}`;
 }
 
-/** Live-only: the group board always sits on this NFL week. */
+/** Live-only: use the stored pool week. Do not pin to Week 1. */
 export function effectiveCurrentWeek(
   mode: string | null | undefined,
   storedWeek: number | null | undefined
 ): number {
   void mode;
-  void storedWeek;
-  return REAL_CURRENT_WEEK;
+  return storedWeek && storedWeek >= 1 ? storedWeek : REAL_CURRENT_WEEK;
 }
 
 /** Week 2 is a real NFL week — never hide that slate. */

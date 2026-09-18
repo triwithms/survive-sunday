@@ -146,11 +146,12 @@ assert.match(
   /aren’t listed yet/
 );
 
-// Next week already locked (TNF) — cannot pick it.
+// Next week already locked (TNF) — cannot pick it, but Home still focuses there.
 const nextLocked = week1Open({
   existingCurrentGame: lacLive,
   nextWeekLocked: true,
 });
+assert.equal(nextLocked.actionWeek, 2, "TNF lock does not pin Home to Week 1");
 assert.equal(nextLocked.nextWeekOpen, false);
 assert.equal(nextLocked.reason, "next_week_locked");
 assert.equal(isPlayerPickWeek(nextLocked, 2), false);
