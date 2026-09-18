@@ -245,7 +245,49 @@ const stillWeek1Copy = pickScreenCopy({
   hasCurrentPick: true,
 });
 assert.equal(stillWeek1Copy.showWeek1ChangeCard, true);
-assert.match(stillWeek1Copy.kicker, /Week 1 only/);
+assert.match(stillWeek1Copy.kicker, /until that team’s kickoff/);
+assert.doesNotMatch(stillWeek1Copy.kicker, /Week 1 only/);
+
+const week2Pending = resolvePlayerPickWeek({
+  poolCurrentWeek: 2,
+  currentWeekLocked: true,
+  existingCurrentPick: { source: "user", teamAbbr: "DET", result: "pending" },
+  existingCurrentGame: mnfScheduled,
+  nextWeekHasGames: true,
+  nextWeekLocked: false,
+  now: sunday,
+});
+assert.equal(week2Pending.actionWeek, 2, "pending Week 2 stays on Week 2");
+assert.equal(week2Pending.nextWeekOpen, false);
+assert.equal(week2Pending.canStillPlayCurrentWeek, true);
+assert.equal(week2Pending.reason, "current_game_pending");
+
+const stillWeek2Copy = pickScreenCopy({
+  weekNumber: 2,
+  decision: week2Pending,
+  locked: true,
+  canChange: true,
+  eliminated: false,
+  spectator: false,
+  hasCurrentPick: true,
+});
+assert.equal(stillWeek2Copy.showWeek1ChangeCard, true);
+assert.match(stillWeek2Copy.kicker, /until that team’s kickoff/);
+assert.doesNotMatch(stillWeek2Copy.kicker, /Week 1 only/);
+
+const week2Started = resolvePlayerPickWeek({
+  poolCurrentWeek: 2,
+  currentWeekLocked: true,
+  existingCurrentPick: { source: "user", teamAbbr: "DET", result: "pending" },
+  existingCurrentGame: { status: "live", kickoff: mnfKickoff },
+  nextWeekHasGames: true,
+  nextWeekLocked: false,
+  now: sunday,
+});
+assert.equal(week2Started.actionWeek, 3, "Week 2 game started → Week 3");
+assert.equal(week2Started.nextWeekOpen, true);
+assert.equal(week2Started.canStillPlayCurrentWeek, false);
+assert.equal(week2Started.reason, "current_pick_locked");
 
 const browsingEarly = pickScreenCopy({
   weekNumber: 2,

@@ -1,5 +1,5 @@
 /**
- * Week-1-only pick change after week lock (no database).
+ * Change a pending pick after week lock until that game’s kickoff (no database).
  *
  *   npx tsx scripts/verify-week1-pick-change.ts
  */
@@ -11,7 +11,6 @@ import {
   isPendingUserPick,
   pickChangeErrorMessage,
   playerCanChangeCurrentPick,
-  week1PickChangeApplies,
 } from "../src/lib/pick-change";
 
 const sunday = new Date("2026-09-13T16:00:00.000Z");
@@ -34,8 +33,6 @@ const lacPick = { source: "user", teamAbbr: "LAC", result: "pending" };
 const missedPick = { source: "missed", teamAbbr: "MISS", result: "loss" };
 const importedLac = { source: "imported", teamAbbr: "LAC", result: "pending" };
 
-assert.equal(week1PickChangeApplies(1), true);
-assert.equal(week1PickChangeApplies(2), false);
 assert.equal(isPendingUserPick(lacPick), true);
 assert.equal(isPendingUserPick(importedLac), true);
 assert.equal(isPendingUserPick(missedPick), false);
@@ -54,7 +51,7 @@ const week1Switch = evaluatePickChange({
   newGame: seaScheduled,
   now: sunday,
 });
-assert.deepEqual(week1Switch, { allowed: true, reason: "week1_reopen" });
+assert.deepEqual(week1Switch, { allowed: true, reason: "pending_reopen" });
 assert.equal(
   canEditExistingPick({
     weekNumber: 1,
@@ -144,18 +141,16 @@ assert.equal(
   "week_locked"
 );
 
-// Week 2+ uses the normal week lock even if both games are still scheduled.
-assert.deepEqual(
-  evaluatePickChange({
-    weekNumber: 2,
-    weekLocked: true,
-    existingPick: { source: "user", teamAbbr: "DET", result: "pending" },
-    existingGame: { status: "scheduled", kickoff: mnfKickoff },
-    newGame: mnfScheduled,
-    now: sunday,
-  }),
-  { allowed: false, reason: "week_locked" }
-);
+// Week 2+ also reopens a pending pick when both games are still scheduled.
+const week2Switch = evaluatePickChange({
+  weekNumber: 2,
+  weekLocked: true,
+  existingPick: { source: "user", teamAbbr: "DET", result: "pending" },
+  existingGame: { status: "scheduled", kickoff: mnfKickoff },
+  newGame: mnfScheduled,
+  now: sunday,
+});
+assert.deepEqual(week2Switch, { allowed: true, reason: "pending_reopen" });
 assert.equal(
   canEditExistingPick({
     weekNumber: 2,
@@ -164,7 +159,18 @@ assert.equal(
     existingGame: { status: "scheduled", kickoff: mnfKickoff },
     now: sunday,
   }),
-  false
+  true
+);
+assert.equal(
+  evaluatePickChange({
+    weekNumber: 3,
+    weekLocked: true,
+    existingPick: { source: "user", teamAbbr: "DET", result: "pending" },
+    existingGame: { status: "live", kickoff: mnfKickoff },
+    newGame: mnfScheduled,
+    now: sunday,
+  }).reason,
+  "current_game_started"
 );
 
 // Before week lock, any week stays open (existing week-open path).
