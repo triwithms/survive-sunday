@@ -11,6 +11,7 @@ import path from "node:path";
 import {
   ESPN_TEAM_IDS,
   espnTeamLogoUrl,
+  resolveTeamLogoSrc,
   teamLogoUrl,
 } from "../src/lib/espn-teams";
 import { TEAM_LOGO_SIZE } from "../src/lib/team-logo-size";
@@ -54,6 +55,32 @@ assert.equal(
 assert.equal(teamLogoUrl("GB", null), espnTeamLogoUrl("GB"));
 assert.equal(teamLogoUrl("LAR", "  "), espnTeamLogoUrl("LAR"));
 assert.equal(teamLogoUrl("NYJ"), espnTeamLogoUrl("NYJ"));
+assert.equal(
+  espnTeamLogoUrl("CHI"),
+  "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png"
+);
+assert.notEqual(
+  espnTeamLogoUrl("CHI"),
+  "https://a.espncdn.com/i/teamlogos/nfl/500/3.png"
+);
+assert.equal(
+  teamLogoUrl("CHI", "https://a.espncdn.com/i/teamlogos/nfl/500/3.png"),
+  espnTeamLogoUrl("CHI")
+);
+assert.equal(
+  teamLogoUrl("CHI", "https://a.espncdn.com/i/teamlogos/nfl/500/chicago.png"),
+  espnTeamLogoUrl("CHI")
+);
+assert.equal(teamLogoUrl("CHI", espnTeamLogoUrl("CHI")), espnTeamLogoUrl("CHI"));
+
+const stale = "https://example.com/stale-chi.png";
+assert.equal(resolveTeamLogoSrc("CHI", stale, null), stale);
+assert.equal(resolveTeamLogoSrc("CHI", stale, stale), espnTeamLogoUrl("CHI"));
+assert.equal(resolveTeamLogoSrc("CHI", null, null), espnTeamLogoUrl("CHI"));
+assert.equal(
+  resolveTeamLogoSrc("CHI", espnTeamLogoUrl("CHI"), espnTeamLogoUrl("CHI")),
+  null
+);
 
 for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
   const url = espnTeamLogoUrl(abbr);
@@ -75,6 +102,7 @@ const teamLogoSrc = fs.readFileSync(
   "utf8"
 );
 assert.match(teamLogoSrc, /<img/);
+assert.match(teamLogoSrc, /resolveTeamLogoSrc/);
 assert.equal(teamLogoSrc.includes("opacity-0"), false);
 assert.equal(teamLogoSrc.includes("teamBadge"), false);
 assert.equal(teamLogoSrc.includes("TEAM_BADGES"), false);
@@ -111,6 +139,7 @@ const SPOT: Array<[string, string]> = [
   ["ATL", espnTeamLogoUrl("ATL")],
   ["BUF", espnTeamLogoUrl("BUF")],
   ["CAR", espnTeamLogoUrl("CAR")],
+  ["CHI", espnTeamLogoUrl("CHI")],
   ["DET", espnTeamLogoUrl("DET")],
   ["KC", espnTeamLogoUrl("KC")],
 ];
