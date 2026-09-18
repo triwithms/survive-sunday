@@ -3,10 +3,9 @@
 import { useState } from "react";
 import {
   PICK_BACKUP_MIRROR,
-  PICK_BACKUP_OFF,
-  PICK_BACKUP_RANKED,
   type PickBackupMode,
 } from "@/lib/pick-mirror";
+import { MirrorBackupRadios } from "./MirrorBackupRadios";
 
 export type MirrorOption = {
   id: string;
@@ -32,9 +31,7 @@ export function MirrorPicksForm({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
-
-  const dirty =
-    mode !== initialMode || sourceId !== (initialSourceId ?? "");
+  const dirty = mode !== initialMode || sourceId !== (initialSourceId ?? "");
 
   async function save() {
     if (mode === PICK_BACKUP_MIRROR && !sourceId) {
@@ -79,100 +76,37 @@ export function MirrorPicksForm({
   }
 
   return (
-    <div className="space-y-3">
-      <fieldset className="space-y-2">
-        <legend className="text-sm text-[var(--text-muted)]">
-          If you still have no pick when time is almost up
-        </legend>
-        <label className="flex items-start gap-2 text-sm">
-          <input
-            type="radio"
-            name={`backup-${membershipId}`}
-            checked={mode === PICK_BACKUP_OFF}
-            onChange={() => {
-              setMode(PICK_BACKUP_OFF);
-              setSaved(false);
-            }}
-            disabled={busy}
-            data-testid={saveAsAdmin ? undefined : "backup-off"}
-          />
-          <span>Off — I’ll pick myself</span>
-        </label>
-        <label className="flex items-start gap-2 text-sm">
-          <input
-            type="radio"
-            name={`backup-${membershipId}`}
-            checked={mode === PICK_BACKUP_MIRROR}
-            onChange={() => {
-              setMode(PICK_BACKUP_MIRROR);
-              setSaved(false);
-            }}
-            disabled={busy}
-            data-testid={saveAsAdmin ? undefined : "backup-mirror"}
-          />
-          <span>Copy from a pool member if no pick within 30 minutes</span>
-        </label>
-        {mode === PICK_BACKUP_MIRROR && (
-          <select
-            value={sourceId}
-            onChange={(e) => {
-              setSourceId(e.target.value);
-              setSaved(false);
-            }}
-            disabled={busy}
-            className="ml-6 w-[calc(100%-1.5rem)]"
-            aria-label="Mirror picks from"
-            data-testid={
-              saveAsAdmin
-                ? `admin-mirror-${membershipId}`
-                : "account-mirror-from"
-            }
-          >
-            <option value="">Choose a player…</option>
-            {options.map((opt) => (
-              <option key={opt.id} value={opt.id}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        )}
-        <label className="flex items-start gap-2 text-sm">
-          <input
-            type="radio"
-            name={`backup-${membershipId}`}
-            checked={mode === PICK_BACKUP_RANKED}
-            onChange={() => {
-              setMode(PICK_BACKUP_RANKED);
-              setSaved(false);
-            }}
-            disabled={busy}
-            data-testid={saveAsAdmin ? undefined : "backup-ranked"}
-          />
-          <span>
-            Auto-pick the best remaining <strong>2025 rank</strong> team if no
-            pick within 2 minutes
-          </span>
-        </label>
-      </fieldset>
-      <p className="text-xs text-[var(--text-muted)]">
+    <div className="space-y-3 min-w-0 max-w-full">
+      <MirrorBackupRadios
+        membershipId={membershipId}
+        mode={mode}
+        sourceId={sourceId}
+        options={options}
+        busy={busy}
+        saveAsAdmin={saveAsAdmin}
+        onMode={(next) => {
+          setMode(next);
+          setSaved(false);
+        }}
+        onSource={(id) => {
+          setSourceId(id);
+          setSaved(false);
+        }}
+      />
+      <p className="text-xs text-[var(--text-muted)] break-words">
         Never overwrites a pick you already made. Copy-from uses that member’s
         team 30 minutes before lock (Week 1: that pick’s kickoff) and does{" "}
         <strong>not</strong> stamp 💩. Ranked uses the same{" "}
         <strong>2025 rank #N</strong> list as Pick (1 = strongest), skipping
-        teams you’ve already used and bye weeks, starting 2 minutes before
-        week lock — each use stamps 💩 and you cannot win the pool
-        officially.
+        used and bye teams, from 2 minutes before week lock — each use stamps 💩
+        and you cannot win the pool officially.
       </p>
-      {error && (
-        <p className="text-crimson-400 text-sm" role="alert">
-          {error}
-        </p>
-      )}
-      {saved && (
-        <p className="text-field-400 text-sm" data-testid="mirror-saved">
-          Saved.
-        </p>
-      )}
+      {error ? (
+        <p className="text-crimson-400 text-sm" role="alert">{error}</p>
+      ) : null}
+      {saved ? (
+        <p className="text-field-400 text-sm" data-testid="mirror-saved">Saved.</p>
+      ) : null}
       <button
         type="button"
         className="btn-primary w-full"

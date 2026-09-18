@@ -154,6 +154,22 @@ input, textarea, select {
   width: 100%;
   min-height: 44px;
 }
+/* Radios/checkboxes must not inherit full-width text-field chrome. */
+input[type="radio"],
+input[type="checkbox"] {
+  width: 1rem;
+  min-width: 1rem;
+  height: 1rem;
+  min-height: 1rem;
+  padding: 0;
+  flex-shrink: 0;
+  appearance: auto;
+  -webkit-appearance: auto;
+  accent-color: var(--sky-400);
+  border-radius: 0;
+  background: transparent;
+  border: none;
+}
 input:focus, textarea:focus, select:focus {
   outline: 2px solid var(--gold-400);
   outline-offset: 1px;
