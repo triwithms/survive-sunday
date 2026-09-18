@@ -11,7 +11,9 @@ import path from "node:path";
 import {
   ESPN_TEAM_IDS,
   espnTeamLogoUrl,
+  localHelmetSrc,
   resolveTeamLogoSrc,
+  TEAM_HELMET_PLACEHOLDER,
   teamLogoUrl,
 } from "../src/lib/espn-teams";
 import { TEAM_LOGO_SIZE } from "../src/lib/team-logo-size";
@@ -74,14 +76,29 @@ assert.equal(
 assert.equal(teamLogoUrl("CHI", espnTeamLogoUrl("CHI")), espnTeamLogoUrl("CHI"));
 
 const stale = "https://example.com/stale-chi.png";
-assert.equal(resolveTeamLogoSrc("CHI", stale, null), stale);
+const localChi = localHelmetSrc("CHI");
+assert.equal(localChi, "/helmets/chi.png");
+assert.equal(localHelmetSrc("wsh"), "/helmets/was.png");
+assert.equal(resolveTeamLogoSrc("CHI", stale, null), localChi);
+assert.equal(resolveTeamLogoSrc("CHI", stale, localChi), stale);
 assert.equal(resolveTeamLogoSrc("CHI", stale, stale), espnTeamLogoUrl("CHI"));
-assert.equal(resolveTeamLogoSrc("CHI", null, null), espnTeamLogoUrl("CHI"));
+assert.equal(resolveTeamLogoSrc("CHI", null, null), localChi);
+assert.equal(
+  resolveTeamLogoSrc("CHI", espnTeamLogoUrl("CHI"), localChi),
+  espnTeamLogoUrl("CHI")
+);
 assert.equal(
   resolveTeamLogoSrc("CHI", espnTeamLogoUrl("CHI"), espnTeamLogoUrl("CHI")),
-  null
+  TEAM_HELMET_PLACEHOLDER
 );
+assert.equal(
+  resolveTeamLogoSrc("CHI", null, TEAM_HELMET_PLACEHOLDER),
+  TEAM_HELMET_PLACEHOLDER
+);
+assert.notEqual(resolveTeamLogoSrc("CHI", null, "gone"), null);
 
+assert.equal(Object.keys(ESPN_TEAM_IDS).length, 32);
+const localHashes = new Set<string>();
 for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
   const url = espnTeamLogoUrl(abbr);
   assert.match(
@@ -89,7 +106,24 @@ for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
     /^https:\/\/a\.espncdn\.com\/i\/teamlogos\/nfl\/500\/[a-z]{2,3}\.png$/,
     `${abbr} logo url`
   );
+  const file = path.join(
+    process.cwd(),
+    "public/helmets",
+    `${abbr.toLowerCase()}.png`
+  );
+  assert.equal(fs.existsSync(file), true, `${abbr} local helmet`);
+  const bytes = fs.readFileSync(file);
+  assert.ok(bytes.length > 1000, `${abbr} local helmet has bytes`);
+  assert.equal(bytes[0], 0x89, `${abbr} is PNG`);
+  localHashes.add(createHash("sha256").update(bytes).digest("hex"));
 }
+assert.equal(localHashes.size, 32, "32 distinct local helmets");
+assert.equal(
+  fs.existsSync(path.join(process.cwd(), "public/helmets/_placeholder.svg")),
+  true,
+  "neutral placeholder helmet"
+);
+assert.equal(TEAM_HELMET_PLACEHOLDER, "/helmets/_placeholder.svg");
 
 assert.equal(TEAM_LOGO_SIZE.compact, 44);
 assert.equal(TEAM_LOGO_SIZE.row, 48);
@@ -107,6 +141,9 @@ assert.equal(teamLogoSrc.includes("opacity-0"), false);
 assert.equal(teamLogoSrc.includes("teamBadge"), false);
 assert.equal(teamLogoSrc.includes("TEAM_BADGES"), false);
 assert.equal(teamLogoSrc.includes("29.png"), false);
+assert.equal(teamLogoSrc.includes("abbr.slice"), false);
+assert.equal(teamLogoSrc.includes("letter"), false);
+assert.ok(teamLogoSrc.split("\n").length <= 100, "TeamLogo stays small");
 
 const poolSrc = fs.readFileSync(
   path.join(process.cwd(), "src/components/features/home/HomePickHero.tsx"),
@@ -118,12 +155,16 @@ assert.equal(poolSrc.includes("TEAM_LOGO_SIZE.compact"), false);
 assert.equal(poolSrc.includes("TEAM_LOGO_SIZE.row"), false);
 
 const scheduleSrc = fs.readFileSync(
-  path.join(process.cwd(), "src/app/(app)/schedule/page.tsx"),
+  path.join(process.cwd(), "src/components/features/schedule/ScheduleGameRow.tsx"),
   "utf8"
 );
 assert.match(scheduleSrc, /<TeamLogo/);
 assert.match(scheduleSrc, /TEAM_LOGO_SIZE\.compact/);
-assert.match(scheduleSrc, /logoByAbbr/);
+const scheduleLoadSrc = fs.readFileSync(
+  path.join(process.cwd(), "src/components/features/schedule/load-schedule.ts"),
+  "utf8"
+);
+assert.match(scheduleLoadSrc, /logoByAbbr/);
 
 function httpStatus(url: string): string {
   const result = spawnSync(

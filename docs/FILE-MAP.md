@@ -32,6 +32,8 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 
 `src/components/ui/` — `Button.tsx`, `Card.tsx`, `Chip.tsx`, `StatusBadge.tsx`, `index.ts`
 
+Team logos: `src/components/TeamLogo.tsx` + `src/lib/espn-teams.ts` / `src/lib/team-helmets.ts`. Local backups in `public/helmets/{abbr}.png` (app abbr, e.g. `was.png`). Never letter badges.
+
 ## Server actions (save a pick / issue an invite)
 
 | What | File |
