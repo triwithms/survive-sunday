@@ -635,7 +635,7 @@ You are free / basic Grok chat — not Grok Bot. One small PR. Continue existing
 
 Core MUST: submit pick, group board, in vs out — keep ~100% reliable.
 Real mode is already on main (merged PR #10): Week 1 is the real current board week. Week 2 is a real NFL week on the schedule (merged PR #22) — Demo isolation does not hide it.
-Once a player’s current-week game has started, next week’s picks open for them immediately (do not wait for MNF). New joiners after a locked week go to the next week. Keep the Week 1 change-until-kickoff path (merged PR #25) for anyone whose game has not started.
+Once a player’s current-week game has started, next week’s picks open for them immediately (do not wait for MNF). New joiners after a locked week go to the next week. Any week: a pending pick can still change until that player’s own kickoff if the new game has not started.
 Official REAL Week 1 picks (incl Go Giants, Pauli, JaJa → DAL) are already imported — see docs/HANDOFF.md section 6b. Not the demo CSV.
 Board / pick-list sort on main: undefeated → one-loss → eliminated, then same pick → same game → nickname A–Z (no-pick last within that status group). Do not sort these lists pick-first, and do not use weeks survived as a list key.
 Friends may open the app without picking every week; a missed week still counts as a loss after lock unless I ask to change that rule.
@@ -755,7 +755,7 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Draft PR** | A pull request that is not ready to merge yet. None of the live-tonight work is draft. |
 | **Rebase** | Replay an open PR’s changes on top of the latest `main` after another PR merged. Ask a chat to continue **that** branch. |
 | **Redeploy** | Rebuild the same code with the latest env vars. Compiles only (`next build`). Does **not** push schema, seed, or rewrite live pool data. |
-| **Lock** | Pick deadline: first kickoff (unless overridden). **Week 1 exception** (merged PR #25): you can still change an existing pick until **that team’s** kickoff if the new game has not started. Once that game starts, **next week opens for you** (do not wait for MNF). Weeks 2+ freeze at first kickoff. |
+| **Lock** | Pick deadline: first kickoff (unless overridden). After lock, you can still change an existing pick until **that team’s** kickoff if the new game has not started. Once that game starts, **next week opens for you** (do not wait for MNF). |
 | **PWA** | Website you can pin to the phone home screen. |
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |
