@@ -2,16 +2,9 @@
 
 ## Agent cost / how to work
 
-**#1 cost rule:** Always try free Grok first for specs, FILE-MAP lookups, QA critic scoring, copy, and checklists. Only open paid Grok Bot / Cursor coding agents for the actual code PR/merge. Aim to save ~30–50% usage by keeping planning and critic loops off paid runs.
+**#1 cost rule:** For specs, FILE-MAP lookups, QA critic scoring, copy, and checklists, use free tiers in order — **free Grok, then free Claude, then free Gemini** — before any paid Grok Bot / Cursor coding agents. Paid agents only for the actual code PR/merge. Aim to save ~30–50% usage by keeping planning and critic loops off paid runs.
 
-**Free tier order** before any paid Grok Bot / Cursor coding agents:
-1. free Grok
-2. then free Claude
-3. then free Gemini
-
-Only after those free options are exhausted (or unsuitable for the task) open paid agents for the actual code PR/merge.
-
-Paste-ready brief: [`docs/FREE-GROK.md`](FREE-GROK.md) (**free AI first**).
+Paste-ready brief: [`docs/FREE-GROK.md`](FREE-GROK.md) (**free AI first** — Grok → Claude → Gemini).
 
 This is the **keep-up guide** for the pool app. It is written for a **non-coder**. Use **click-by-click** steps here, then paste a starter prompt into a **new chat** when something breaks or you want a small change.
 
@@ -516,9 +509,9 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 
 ---
 
-## 12. Maintaining with free or basic Grok (not Grok Bot)
+## 12. Maintaining with free AI first (not paid Grok Bot)
 
-**#1 cost rule** (see top): **free Grok**, then **free Claude**, then **free Gemini** for specs, FILE-MAP lookups, QA critic scoring, copy, and checklists. Paid Grok Bot / Cursor coding agents are for the actual code PR/merge only, after those free options are exhausted (or unsuitable). Short brief: [`docs/FREE-GROK.md`](FREE-GROK.md).
+**#1 cost rule:** For specs, FILE-MAP lookups, QA critic scoring, copy, and checklists, use free tiers in order — **free Grok, then free Claude, then free Gemini** — before any paid Grok Bot / Cursor coding agents. Paid agents only for the actual code PR/merge. Aim to save ~30–50% usage by keeping planning and critic loops off paid runs. Short brief: [`docs/FREE-GROK.md`](FREE-GROK.md).
 
 **HANDOFF / usage rule:** Do not rewrite this file or Help on every small PR. Update docs at most once per day or at the end of a batch. Coding agents: do not read the whole HANDOFF or `data/*.json` unless the owner says to. Touch only named files. Reply short: files touched, 5-line summary, how to verify. No Wave 2, no extra branches for docs.
 
