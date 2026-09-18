@@ -257,14 +257,13 @@ export function formatKickoffForScores(
 
 export type ScoresStatusBits = GameScoreBits & {
   kickoff?: Date | string | null;
-  network?: string | null;
 };
 
 export type ScoresStatusView = {
   kind: "live" | "final" | "scheduled";
   /** Clock, Final, or kickoff — shown next to the score. */
   primary: string;
-  /** LIVE, network, or extra ESPN detail. */
+  /** LIVE or extra ESPN detail — never a TV station. */
   secondary: string | null;
   /** Possession / down / yard line for live games. */
   situation: string | null;
@@ -295,7 +294,7 @@ export function formatScoresStatus(
   return {
     kind: "scheduled",
     primary: kick || "Scheduled",
-    secondary: game.network?.trim() || null,
+    secondary: null,
     situation: null,
   };
 }
@@ -324,7 +323,7 @@ export function formatScoreLine(game: GameScoreBits): string | null {
 
 /**
  * Schedule / Pick list line: kickoff (caller) or LIVE/Final score.
- * No TV network, quarter, clock, or down-distance — those stay on Scores.
+ * No TV station, quarter, clock, or down-distance.
  */
 export function formatMatchupListLine(game: GameScoreBits): string | null {
   const live = isLiveGame(game.status);
@@ -336,23 +335,4 @@ export function formatMatchupListLine(game: GameScoreBits): string | null {
       : null;
   if (live) return scored ? `LIVE ${scored}` : "LIVE";
   return scored ? `Final ${scored}` : "Final";
-}
-
-export type InjuryCountBits = {
-  out: number;
-  doubtful: number;
-  questionable: number;
-};
-
-/** Compact chip: "2 Out · 1 Q". Used on team pages and Home. Not on Schedule/Pick lists. */
-export function formatInjuryChip(counts: InjuryCountBits): string | null {
-  const parts: string[] = [];
-  if (counts.out > 0) parts.push(`${counts.out} Out`);
-  if (counts.doubtful > 0) parts.push(`${counts.doubtful} Doubtful`);
-  if (counts.questionable > 0) {
-    parts.push(
-      `${counts.questionable} Q`
-    );
-  }
-  return parts.length ? parts.join(" · ") : null;
 }

@@ -7,11 +7,7 @@ import {
   type EspnInjuriesPayload,
 } from "../src/lib/injury-parse";
 import { normAbbr } from "../src/lib/espn-teams";
-import {
-  formatInjuryChip,
-  formatScoreLine,
-  shouldPollLiveScores,
-} from "../src/lib/game-display";
+import { formatScoreLine, shouldPollLiveScores } from "../src/lib/game-display";
 
 const ESPN_HEADERS = {
   Accept: "application/json",
@@ -60,10 +56,6 @@ assert(parsed[0].teamAbbr === "ARI", `team ${parsed[0].teamAbbr}`);
 assert(parsed[0].player === "Parser Fixture Player", "player name");
 assert(parsed[0].status === "Questionable", "status");
 assert(parsed[0].injury.includes("Ankle"), "injury type");
-assert(
-  formatInjuryChip({ out: 2, doubtful: 0, questionable: 1 }) === "2 Out · 1 Q",
-  "injury chip"
-);
 assert(
   formatScoreLine({
     status: "live",

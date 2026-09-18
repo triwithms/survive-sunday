@@ -1,4 +1,3 @@
-import type { InjuryCountBits } from "@/lib/game-display";
 import type { WeekNavOption } from "@/lib/weeks";
 import type { StatusBadgeStatus } from "@/components/ui";
 
@@ -36,7 +35,6 @@ export type HomeHeroProps = {
   logoUrl: string | null;
   priorStanding: string | null;
   gameLine: string | null;
-  injuryCounts: InjuryCountBits | null;
   favouriteLabel: string | null;
   imported: boolean;
   status: StatusBadgeStatus;

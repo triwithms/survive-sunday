@@ -25,7 +25,7 @@ export type TeamInjuriesResult = {
   nflInjuriesUrl: string;
 };
 
-const INJURY_TTL_MS = 12 * 60 * 1000;
+const INJURY_TTL_MS = 24 * 60 * 60 * 1000;
 const INJURY_FAIL_TTL_MS = 45 * 1000;
 
 type CacheEntry = {

@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db";
 import { formatScoreLine } from "@/lib/game-display";
-import { getTeamInjuries } from "@/lib/live-injuries";
 import {
   formatCurrentStanding,
   formatPriorYearRank,
@@ -45,7 +44,6 @@ export async function buildHomeHero(args: {
   const myTeam = await prisma.team.findUnique({
     where: { abbr: myPick.teamAbbr },
   });
-  const injuries = await getTeamInjuries(myPick.teamAbbr);
   const fav = myPick.game
     ? resolveFavourite({
         homeAbbr: myPick.game.homeAbbr,
@@ -80,7 +78,6 @@ export async function buildHomeHero(args: {
           formatScoreLine(myPick.game) ? ` · ${formatScoreLine(myPick.game)}` : ""
         }`
       : null,
-    injuryCounts: injuries && !injuries.failed ? injuries.counts : null,
     favouriteLabel: fav?.label ?? null,
     imported: myPick.source === "imported",
     status: args.status,

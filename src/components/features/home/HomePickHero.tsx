@@ -3,7 +3,6 @@ import { Card, StatusBadge, type StatusBadgeStatus } from "@/components/ui";
 import { TeamLogo } from "@/components/TeamLogo";
 import { TEAM_LOGO_SIZE } from "@/lib/team-logo-size";
 import { STATUS_LABELS } from "@/lib/constants";
-import type { InjuryCountBits } from "@/lib/game-display";
 import { HomePickHeroFacts } from "./HomePickHeroFacts";
 
 export function HomePickHero({
@@ -11,7 +10,6 @@ export function HomePickHero({
   logoUrl,
   priorStanding,
   gameLine,
-  injuryCounts,
   favouriteLabel,
   imported,
   status,
@@ -23,7 +21,6 @@ export function HomePickHero({
   logoUrl: string | null;
   priorStanding?: string | null;
   gameLine?: string | null;
-  injuryCounts?: InjuryCountBits | null;
   favouriteLabel?: string | null;
   imported?: boolean;
   status: StatusBadgeStatus;
@@ -56,7 +53,6 @@ export function HomePickHero({
             teamAbbr={teamAbbr}
             priorStanding={priorStanding}
             gameLine={gameLine}
-            injuryCounts={injuryCounts}
             favouriteLabel={favouriteLabel}
             imported={imported}
           />
