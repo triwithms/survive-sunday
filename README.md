@@ -5,6 +5,8 @@ Locale: **en-CA**. Stack: Next.js App Router, Prisma + **Neon Postgres** (produc
 
 ## Owner / keep-up
 
+**#1 cost rule:** Always try free Grok first for specs, FILE-MAP lookups, QA critic scoring, copy, and checklists. Only open paid Grok Bot / Cursor coding agents for the actual code PR/merge. Aim to save ~30–50% usage by keeping planning and critic loops off paid runs. Details: **[docs/HANDOFF.md](docs/HANDOFF.md)** (top) and **[docs/FREE-GROK.md](docs/FREE-GROK.md)**.
+
 Not a coder? Start with **[docs/HANDOFF.md](docs/HANDOFF.md)** — what is **live on `main`** vs still in an open PR, where the app lives (GitHub + Vercel + Neon), login / `AUTH_SECRET` / `AUTH_URL` pitfalls, BM Boys roster names, official Week 1 picks, and copy-paste prompts for **free Grok or a basic paid Grok / xAI chat**. That is **not** paid Grok Bot, Cursor desktop agents, or other expensive coding bots. You merge GitHub PRs and click through Vercel yourself.
 
 If a chat and the handoff disagree, trust the GitHub **`main`** branch.
