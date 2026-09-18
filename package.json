@@ -29,6 +29,7 @@
     "verify:db-guard": "tsx scripts/verify-db-mutation-guard.ts",
     "verify:pool-mode": "tsx scripts/verify-pool-mode.ts",
     "verify:roster-names": "tsx scripts/verify-roster-name-patch.ts",
+    "verify:admin-roster": "tsx scripts/verify-admin-roster-ux.ts",
     "verify:week-isolation": "tsx scripts/verify-week-isolation.ts",
     "verify:board-sort": "tsx scripts/verify-board-sort.ts",
     "verify:claim-seat": "tsx scripts/verify-claim-seat.ts",

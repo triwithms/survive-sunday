@@ -10,7 +10,7 @@ export function UsersScreen(props: UsersScreenProps) {
     <div className="space-y-6">
       <AdminHeading title="Users">
         Roster, who has Joined, a password you can text, and who can open Admin.
-        Pick backup is on each roster card.
+        Tap a person on the roster to edit name and pick backup.
       </AdminHeading>
       <SetMemberPasswordForm members={props.passwordMembers} />
       <AdminRolesPanel
