@@ -15,7 +15,7 @@ import {
   MISSED_TEAM,
 } from "@/lib/grading";
 import { canEditExistingPick, gameForPick } from "@/lib/pick-change";
-import { homeEmptyPickCopy } from "@/lib/next-week-picks";
+import { homeEmptyPickCopy, isPlayerPickWeek } from "@/lib/next-week-picks";
 import { shouldPollLiveScores, syncWeekScoresFromEspn } from "@/lib/live-scores";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { buildHomeHero } from "./build-home";
@@ -55,7 +55,9 @@ export async function loadHomePage(searchParams?: {
     myPickRaw && myPickRaw.source !== "missed" && myPickRaw.teamAbbr !== MISSED_TEAM
       ? myPickRaw : undefined;
   const canChangePick =
-    isCurrentWeek && self.status !== "eliminated" && self.role !== "admin" &&
+    isPlayerPickWeek(decision, week.number) &&
+    self.status !== "eliminated" &&
+    isPoolParticipant(self) &&
     canEditExistingPick({
       weekNumber: week.number, weekLocked: locked,
       existingPick: myPickRaw ?? null,
@@ -63,7 +65,9 @@ export async function loadHomePage(searchParams?: {
     });
   const nextWeekRef = weeks.find((row) => row.number === decision.nextWeek);
   const nextPick = nextWeekRef &&
-    (decision.nextWeekOpen || decision.reason === "slate_not_ready")
+    (decision.nextWeekOpen ||
+      decision.reason === "slate_not_ready" ||
+      decision.reason === "next_game_pending")
       ? me.picks.find((p) => p.weekId === nextWeekRef.id) ?? null : null;
   const hero = myPick ? await buildHomeHero({
     myPick, canChangePick, isCurrentWeek, decision, weekNumber: week.number,

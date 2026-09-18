@@ -22,7 +22,8 @@ export type PlayerPickWeekReason =
   | "current_week_closed"
   | "late_start"
   | "slate_not_ready"
-  | "next_week_locked";
+  | "next_week_locked"
+  | "next_game_pending";
 
 export type PlayerPickWeek = {
   poolCurrentWeek: number;
@@ -53,6 +54,8 @@ export function resolvePlayerPickWeek(input: {
   playingFromWeek?: number | null;
   nextWeekHasGames: boolean;
   nextWeekLocked: boolean;
+  existingNextPick?: ExistingPickBits;
+  existingNextGame?: GameStartBits | null;
   now?: Date;
 }): PlayerPickWeek {
   const now = input.now ?? new Date();
@@ -81,6 +84,15 @@ export function resolvePlayerPickWeek(input: {
     isUserPick(input.existingCurrentPick) &&
     !canStillPlayCurrentWeek;
   const lateStart = !eligibleNow;
+  const canChangeLockedNextWeek =
+    input.nextWeekLocked &&
+    canEditExistingPick({
+      weekNumber: nextWeek,
+      weekLocked: true,
+      existingPick: input.existingNextPick,
+      existingGame: input.existingNextGame,
+      now,
+    });
 
   const base = {
     poolCurrentWeek,
@@ -97,6 +109,15 @@ export function resolvePlayerPickWeek(input: {
       reason: input.currentWeekLocked
         ? "current_game_pending"
         : "current_week_open",
+    };
+  }
+
+  if (canChangeLockedNextWeek) {
+    return {
+      ...base,
+      actionWeek: nextWeek,
+      nextWeekOpen: false,
+      reason: "next_game_pending",
     };
   }
 
@@ -141,6 +162,12 @@ export function isPlayerPickWeek(
     return true;
   }
   if (weekNumber === decision.nextWeek && decision.nextWeekOpen) {
+    return true;
+  }
+  if (
+    weekNumber === decision.nextWeek &&
+    decision.reason === "next_game_pending"
+  ) {
     return true;
   }
   return false;
@@ -237,7 +264,10 @@ export function pickScreenCopy(input: {
   const onCurrent = weekNumber === decision.poolCurrentWeek;
   const onNext = weekNumber === decision.nextWeek;
   const pendingOwnGame =
-    onCurrent && decision.reason === "current_game_pending" && canChange;
+    onActionWeek &&
+    (decision.reason === "current_game_pending" ||
+      decision.reason === "next_game_pending") &&
+    canChange;
 
   if (pendingOwnGame) {
     return {
@@ -374,6 +404,14 @@ export function homeEmptyPickCopy(decision: PlayerPickWeek): {
       missed: false,
     };
   }
+  if (decision.reason === "next_game_pending") {
+    return {
+      message: "You can change your pick until that team’s kickoff.",
+      ctaLabel: "Change pick",
+      href: pickHrefForWeek(decision.nextWeek),
+      missed: false,
+    };
+  }
   if (decision.canStillPlayCurrentWeek) {
     return {
       message: "Make your pick before kickoff—don’t leave your mates hanging.",
@@ -401,12 +439,14 @@ export function resolvePlayerPickWeekFromLoaded(input: {
     >;
   }>;
   currentPick: ExistingPickBits;
+  nextPick?: ExistingPickBits;
   playingFromWeek?: number | null;
   now?: Date;
 }): PlayerPickWeek {
   const current = input.weeks.find((w) => w.number === input.poolCurrentWeek);
   const nextWeek = input.poolCurrentWeek + 1;
   const next = input.weeks.find((w) => w.number === nextWeek);
+  const nextPick = input.nextPick ?? null;
   return resolvePlayerPickWeek({
     poolCurrentWeek: input.poolCurrentWeek,
     currentWeekLocked: current?.locked ?? true,
@@ -415,6 +455,8 @@ export function resolvePlayerPickWeekFromLoaded(input: {
     playingFromWeek: input.playingFromWeek,
     nextWeekHasGames: (next?.games.length ?? 0) > 0,
     nextWeekLocked: next?.locked ?? false,
+    existingNextPick: nextPick,
+    existingNextGame: gameForPick(nextPick, next?.games ?? []),
     now: input.now,
   });
 }
