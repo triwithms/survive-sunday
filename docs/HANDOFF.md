@@ -8,6 +8,14 @@
 
 Paste-ready brief: [`docs/FREE-GROK.md`](FREE-GROK.md) (**free AI first** — Grok → Claude → Gemini).
 
+## Multi-bot control (Chief of Staff)
+
+**Chief of Staff (Grok Bot)** is the lead director. Specialists work **on assignment only** (not a discovery swarm): Safety/DB, Docs Sync, Codebase Audit, QA.
+
+Chief of Staff turns friend-language product asks into small ordered jobs, enforces the **#1 cost rule** (free Grok → free Claude → free Gemini → paid only for code PRs), and stops duplicate PRs / credit burn. Specialists critique or ship in their lane when asked or on a clear trigger.
+
+Free-AI drafting: [`docs/FREE-GROK.md`](FREE-GROK.md).
+
 This is the **keep-up guide** for the pool app. It is written for a **non-coder**. Use **click-by-click** steps here, then paste a starter prompt into a **new chat** when something breaks or you want a small change.
 
 **Intended tool:** **free Grok**, then **free Claude**, then **free Gemini** (topic-split chats; paste prompts from **section 12**).
