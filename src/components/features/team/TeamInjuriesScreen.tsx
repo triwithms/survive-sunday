@@ -32,11 +32,23 @@ export function TeamInjuriesScreen({ data }: { data: TeamPageData }) {
             current ESPN report for this team.
           </p>
         ) : (
-          <TeamInjuryList
-            rows={injuries.injuries}
-            teamAbbr={abbr}
-            players={players}
-          />
+          <>
+            <TeamInjuryList
+              rows={injuries.injuries}
+              teamAbbr={abbr}
+              players={players}
+            />
+            <p className="text-sm text-[var(--text-muted)] pt-1">
+              Full lists:{" "}
+              <a href={injuries.espnInjuriesUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-gold-400">
+                ESPN
+              </a>
+              {" · "}
+              <a href={injuries.nflInjuriesUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-gold-400">
+                NFL.com
+              </a>
+            </p>
+          </>
         )}
       </section>
     </div>

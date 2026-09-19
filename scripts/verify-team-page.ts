@@ -55,6 +55,19 @@ function main() {
   assert.match(toggle, /Starters only/);
   assert.match(toggle, /type="checkbox"/);
 
+  const unit = read(`${dir}/TeamUnitScreen.tsx`);
+  assert.match(unit, /TeamStartersToggle/);
+  assert.match(unit, /NflPlayerRows/);
+
+  const injuries = read(`${dir}/TeamInjuriesScreen.tsx`);
+  assert.match(injuries, />Injuries</);
+  assert.match(injuries, /TeamInjuryList/);
+
+  const news = read(`${dir}/TeamNewsScreen.tsx`);
+  assert.match(news, />News</);
+  assert.match(news, /TeamNewsList/);
+  assert.match(news, /No headlines for this team right now/);
+
   assert.equal(isTeamSection("offence"), true);
   assert.equal(isTeamSection("player"), false);
   assert.equal(isTeamUnit("special"), true);

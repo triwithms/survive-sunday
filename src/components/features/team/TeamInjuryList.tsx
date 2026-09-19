@@ -19,14 +19,16 @@ export function TeamInjuryList({
       {rows.map((row) => {
         const when = formatInjuryWhen(row.updated);
         const match = players.find((p) => namesMatch(p.name, row.player));
+        const linkClass =
+          "font-medium underline decoration-gold-400/40 underline-offset-2 hover:decoration-gold-400";
         const name = match ? (
-          <Link
-            href={playerHref(teamAbbr, match.slug)}
-            prefetch={false}
-            className="font-medium underline decoration-gold-400/40 underline-offset-2 hover:decoration-gold-400"
-          >
+          <Link href={playerHref(teamAbbr, match.slug)} prefetch={false} className={linkClass}>
             {row.player}
           </Link>
+        ) : row.playerUrl ? (
+          <a href={row.playerUrl} target="_blank" rel="noopener noreferrer" className={linkClass}>
+            {row.player}
+          </a>
         ) : (
           <span className="font-medium">{row.player}</span>
         );

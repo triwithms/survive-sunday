@@ -36,7 +36,19 @@ export function TeamNewsScreen({ data }: { data: TeamPageData }) {
             </ul>
           </div>
         ) : (
-          <TeamNewsList items={news.items} />
+          <>
+            <TeamNewsList items={news.items} />
+            <p className="text-sm text-[var(--text-muted)] pt-1">
+              More coverage:{" "}
+              <a href={news.espnTeamUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-gold-400">
+                ESPN
+              </a>
+              {" · "}
+              <a href={news.nflTeamUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-gold-400">
+                NFL.com
+              </a>
+            </p>
+          </>
         )}
       </section>
     </div>
