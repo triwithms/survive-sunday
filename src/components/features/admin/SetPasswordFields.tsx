@@ -55,34 +55,30 @@ export function SetPasswordFields(p: Props) {
         </p>
       ) : null}
       <SetPasswordKind kind={p.kind} onKind={p.onKind} />
-      <label className="block text-sm space-y-1">
-        <span className="text-[var(--text-muted)]">
-          Type {p.selected?.nickname ?? "their nickname"} to confirm
-        </span>
-        <input
-          type="text"
-          autoComplete="off"
-          className="w-full min-h-11 rounded-md bg-stadium-800 border border-stadium-border px-3"
-          value={p.confirmNickname}
-          onChange={(e) => p.onConfirmNickname(e.target.value)}
-          placeholder={p.selected?.nickname ?? "Nickname"}
-        />
-      </label>
+      {p.lockMember ? null : (
+        <label className="block text-sm space-y-1">
+          <span className="text-[var(--text-muted)]">
+            Type {p.selected?.nickname ?? "their nickname"} to confirm
+          </span>
+          <input
+            type="text"
+            autoComplete="off"
+            className="w-full min-h-11 rounded-md bg-stadium-800 border border-stadium-border px-3"
+            value={p.confirmNickname}
+            onChange={(e) => p.onConfirmNickname(e.target.value)}
+            placeholder={p.selected?.nickname ?? "Nickname"}
+          />
+        </label>
+      )}
       <label className="block text-sm">
         <span className="text-[var(--text-muted)]">Password</span>
-        <input
-          type="text" required minLength={6} maxLength={72}
-          value={p.password} onChange={(e) => p.onPassword(e.target.value)}
-          autoComplete="off" className="mt-1 font-mono"
-        />
+        <input type="text" required minLength={6} maxLength={72} value={p.password}
+          onChange={(e) => p.onPassword(e.target.value)} autoComplete="off" className="mt-1 font-mono" />
       </label>
       <label className="block text-sm">
         <span className="text-[var(--text-muted)]">Type it again</span>
-        <input
-          type="text" required minLength={6} maxLength={72}
-          value={p.confirm} onChange={(e) => p.onConfirm(e.target.value)}
-          autoComplete="off" className="mt-1 font-mono"
-        />
+        <input type="text" required minLength={6} maxLength={72} value={p.confirm}
+          onChange={(e) => p.onConfirm(e.target.value)} autoComplete="off" className="mt-1 font-mono" />
       </label>
       <Button variant="secondary" className="w-full min-h-11" onClick={() => {
         const next = suggestTempPassword();

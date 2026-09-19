@@ -4,7 +4,9 @@ import { MirrorPicksForm } from "@/components/MirrorPicksForm";
 import { Button } from "@/components/ui";
 import { isSeatClaimed } from "@/lib/claim-seat";
 import type { PickBackupMode } from "@/lib/pick-mirror";
+import { AdminDetails } from "./AdminDetails";
 import { rosterToPasswordMember } from "./password-members";
+import { RemoveSeatButton } from "./RemoveSeatButton";
 import { RosterCardFields } from "./RosterCardFields";
 import { SetMemberPasswordForm } from "./SetMemberPasswordForm";
 import type { RosterMember, RosterMirrorOption } from "./roster-types";
@@ -26,6 +28,7 @@ type Props = {
 export function UserEditPanel(p: Props) {
   const { member } = p;
   const claimed = isSeatClaimed(member.email);
+  const player = member.role !== "admin";
   return (
     <>
       {member.email ? (
@@ -41,13 +44,13 @@ export function UserEditPanel(p: Props) {
       <Button className="w-full min-h-11" disabled={p.disabled || !p.dirty} onClick={p.onSave}>
         {p.busy ? "Saving…" : "Save this person"}
       </Button>
-      {claimed && member.role !== "admin" ? (
+      {claimed && player ? (
         <SetMemberPasswordForm
           members={[rosterToPasswordMember(member)]}
           embedded
         />
       ) : null}
-      {member.role !== "admin" ? (
+      {player ? (
         <MirrorPicksForm
           membershipId={member.id}
           initialMode={p.initialMode}
@@ -55,6 +58,11 @@ export function UserEditPanel(p: Props) {
           options={p.mirrorOptions}
           saveAsAdmin
         />
+      ) : null}
+      {player ? (
+        <AdminDetails title={`Remove ${member.nickname}`} danger>
+          <RemoveSeatButton membershipId={member.id} nickname={member.nickname} />
+        </AdminDetails>
       ) : null}
     </>
   );

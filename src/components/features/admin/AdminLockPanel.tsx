@@ -35,9 +35,9 @@ export function AdminLockPanel({ weekNumber }: { weekNumber: number }) {
         Real/imported picks stay.
       </p>
       {msg ? (
-        <pre className="card-glass p-3 text-xs overflow-x-auto text-field-400">
+        <p className="text-sm text-field-400 break-words" role="status">
           {msg}
-        </pre>
+        </p>
       ) : null}
     </Card>
   );

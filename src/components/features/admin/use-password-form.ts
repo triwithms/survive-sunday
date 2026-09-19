@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { PasswordKind, SetPasswordMember } from "./password-members";
+import {
+  confirmNicknameForSave,
+  type PasswordKind,
+  type SetPasswordMember,
+} from "./password-members";
 
 export async function postTempPassword(
   membershipId: string,
@@ -14,35 +18,27 @@ export async function postTempPassword(
     body: JSON.stringify({ membershipId, confirmNickname, password }),
   });
   const data = (await res.json().catch(() => ({}))) as {
-    error?: string;
-    nickname?: string;
-    emailMasked?: string;
-    email?: string;
+    error?: string; nickname?: string; emailMasked?: string; email?: string;
   };
   if (!res.ok) {
     return { ok: false as const, error: data.error || "Could not save that password." };
   }
   return {
     ok: true as const,
-    nickname: data.nickname,
-    emailMasked: data.emailMasked,
-    email: data.email,
+    nickname: data.nickname, emailMasked: data.emailMasked, email: data.email,
   };
 }
 
 export type SavedPassword = {
-  nickname: string;
-  email: string;
-  emailMasked: string;
-  password: string;
-  kind: PasswordKind;
+  nickname: string; email: string; emailMasked: string;
+  password: string; kind: PasswordKind;
 };
 
-export function usePasswordForm(members: SetPasswordMember[]) {
+export function usePasswordForm(members: SetPasswordMember[], embedded = false) {
   const claimed = members.filter((m) => m.claimed);
   const unclaimed = members.filter((m) => !m.claimed);
   const [membershipId, setMembershipId] = useState(claimed[0]?.id ?? "");
-  const [confirmNickname, setConfirmNickname] = useState("");
+  const [confirmNickname, setConfirmNickname] = useState(claimed[0]?.nickname ?? "");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [kind, setKind] = useState<PasswordKind>("temporary");
@@ -68,7 +64,11 @@ export function usePasswordForm(members: SetPasswordMember[]) {
       return;
     }
     setBusy(true);
-    const data = await postTempPassword(selected.id, confirmNickname.trim(), password);
+    const data = await postTempPassword(
+      selected.id,
+      confirmNicknameForSave(embedded, confirmNickname, selected.nickname),
+      password
+    );
     setBusy(false);
     if (!data.ok) {
       setErr(data.error);
@@ -81,7 +81,7 @@ export function usePasswordForm(members: SetPasswordMember[]) {
       password,
       kind,
     });
-    setConfirmNickname("");
+    setConfirmNickname(embedded ? selected.nickname : "");
   }
 
   return {
