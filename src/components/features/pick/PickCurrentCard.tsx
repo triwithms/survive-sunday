@@ -32,7 +32,7 @@ export function PickCurrentCard({
       className="p-4 border border-gold-400/30"
       aria-label="Your current pick"
     >
-      <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)] mb-2">
+      <p className="text-lg font-semibold uppercase tracking-wide text-[var(--text-muted)] mb-2">
         Your pick{saving ? " · Saving…" : ""}
       </p>
       {side ? (
