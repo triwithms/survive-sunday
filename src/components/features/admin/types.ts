@@ -42,6 +42,8 @@ export type ConfigScreenProps = {
   oneLossCount: number;
   undefeatedCount: number;
   transferMembers: { id: string; nickname: string; status: string }[];
+  roleMembers: AdminRoleRow[];
+  canDemoteMembershipIds: string[];
 };
 
 export type CommsScreenProps = {

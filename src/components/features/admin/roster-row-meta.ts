@@ -45,3 +45,11 @@ export function rosterRowSubtitle(
 ): string {
   return `${claimShortLabel(member)} · ${backupShortLabel(member, sourceNickname)}`;
 }
+
+export function rosterMatches(member: RosterMember, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  return [member.nickname, member.realName, member.email]
+    .filter((v): v is string => Boolean(v && v.trim()))
+    .some((v) => v.toLowerCase().includes(q));
+}

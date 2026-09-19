@@ -54,15 +54,15 @@ export function CommissionerAccountPanel({
         <h2 className="font-semibold">Your administrator login</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           {isPracticeLogin
-            ? "This is still a practice login. Save your real email and password, sign out, then sign in with those."
-            : "Administrator login is ready. Sign in on the Sign in page with this email — not a practice address."}
+            ? "This login still needs your real email and password. Save, sign out, then sign in with those."
+            : "Administrator login is ready. Sign in with this email."}
         </p>
       </div>
       <p className="text-sm">
         Current login:{" "}
         <span className="font-mono break-all">{currentEmail || "unknown"}</span>
         <Chip className="ml-2">
-          {isPracticeLogin ? "Practice — replace this" : "Ready"}
+          {isPracticeLogin ? "Replace this login" : "Ready"}
         </Chip>
       </p>
       {doneEmail ? (

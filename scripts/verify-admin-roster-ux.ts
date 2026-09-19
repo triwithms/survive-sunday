@@ -60,6 +60,8 @@ function main() {
   assert.match(editor, /openId/);
   assert.match(editor, /id === m\.id \? null : m\.id/);
   assert.match(editor, /Tap a person/);
+  assert.match(editor, /roster-search/);
+  assert.match(editor, /Find a friend/);
 
   const radios = readFileSync("src/components/MirrorBackupRadios.tsx", "utf8");
   assert.match(radios, /Off — I’ll pick myself/);
@@ -81,8 +83,10 @@ function main() {
     "src/components/features/admin/UsersScreen.tsx",
     "utf8"
   );
-  assert.match(users, /Tap a person on the roster/);
-  assert.match(users, /Invite and Copy Join/);
+  assert.match(users, /Find a friend/);
+  assert.match(users, /set a password you can text/);
+  assert.doesNotMatch(users, /Who are you/);
+  assert.doesNotMatch(users, /AdminRolesPanel/);
   assert.doesNotMatch(users, /on each roster card/);
   assert.doesNotMatch(users, /SetMemberPasswordForm members=\{props.passwordMembers\}/);
 

@@ -39,7 +39,7 @@ export function RosterRow({
             {member.nickname}
           </span>
           <span className="block text-xs text-[var(--text-muted)] break-words whitespace-normal">
-            {rosterRowSubtitle(member, backupSourceNickname)}
+            {rosterRowSubtitle(member, backupSourceNickname).split(" · ")[0]}
           </span>
         </button>
         <button

@@ -20,8 +20,7 @@ export function SetMemberPasswordForm({
     <div>
       <h2 className="font-semibold">Set a password</h2>
       <p className="text-sm text-[var(--text-muted)] mt-1">
-        Temporary or permanent, for a friend who already Joined. Copy the
-        text (email, password, Sign in link) and send it. We do not email it.
+        Suggest one, save, then copy the text and send it. We do not email it.
       </p>
     </div>
   );
@@ -45,6 +44,7 @@ export function SetMemberPasswordForm({
           f.setSaved(null);
           f.setPassword("");
           f.setConfirm("");
+          f.setConfirmNickname(f.selected?.nickname ?? "");
         }}
       />
     );
@@ -64,7 +64,9 @@ export function SetMemberPasswordForm({
         lockMember={embedded}
         onMembership={(id) => {
           f.setMembershipId(id);
-          f.setConfirmNickname("");
+          f.setConfirmNickname(
+            members.find((m) => m.id === id)?.nickname ?? ""
+          );
           f.setSaved(null);
         }}
         onConfirmNickname={f.setConfirmNickname}

@@ -340,7 +340,7 @@ Hold the **group invite** until Resend keys are set and Forgot password actually
 
 ## 8. Admin
 
-**Admin** is the gold link in the top-right of the header (also under **Account**). Menus: **Users**, **Pool Config**, **Communications**, **System**. There is no Demo vs Real toggle — the pool is live-only (Week 1 current; Week 2 stays on the schedule).
+**Admin** is in the bottom bar for administrators (also under **Account**). Four phone tabs: **Users · Pool · Comms · System**. `/admin` opens Users. There is no Demo vs Real toggle — the pool is live-only (Week 1 current; Week 2 stays on the schedule).
 
 First real administrator login: Admin → System → **Your administrator login** → your real email + password → save → sign out → **Sign in** with that email. Same email can also **claim a player seat** (Gams) and switch **Playing as Gams** / **Admin tools** from **Account**. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
@@ -348,7 +348,7 @@ First real administrator login: Admin → System → **Your administrator login*
 |------|----------------|
 | **Live-only pool** | Demo vs Real toggle was removed. The pool is forced live without wiping picks. Open seats still claim via `@survivesunday.demo` Join emails. |
 | **Your administrator login** | Replace the practice administrator email with a real email + password. Then sign out and sign in with that email. **Shipped.** |
-| **Reset pool** | Optional. Real mode is already Week 1. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Do not reset now** — Week 1 imports and the live roster (including JaJa) are already live. **Shipped.** |
+| **Reset pool** | Admin → **System** → **Danger — reset the pool** (closed until you open it). Optional. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Do not reset now** — Week 1 imports and the live roster (including JaJa) are already live. **Shipped.** |
 | **Personal Join links** | Admin card (same Copy on Roster, no extra copy). One URL per open seat (`?who=` when unique). Send that link only to that friend. |
 | **Roster** | See each nickname + real name (including Go Giants, Pauli, JaJa). Edit either when wrong. Copy that person’s Join link if they have not Joined yet. Set **If no pick within 30 min, copy from** (JaJa → Gams). Audit-logged. |
 | **Import week picks** | Paste or upload `nickname,team` (or `email,team`). This is how you **correct a player’s pick after the fact**. Week 1 is already imported. Changes are written to the **audit log**. There is no single-player “edit pick” button yet. |
@@ -356,21 +356,22 @@ First real administrator login: Admin → System → **Your administrator login*
 | **Enter a friend’s pick** | System tab. Nickname + week + unused team when they call or text. Saves through the same Import API. |
 | Lock controls | Reopen week, unlock (testing), lock now + missed picks, clear override. |
 | **Pool rules — mulligan** | Turn off the free mulligan from a chosen week (or immediately). One loss = out from that week. Already-scored weeks stay as they are. People who already used a mulligan stay in with one loss. Players see a banner. You can turn the mulligan back on. |
-| **Hand the pool to someone else** | Transfer Admin to another **existing** member. Type their nickname and confirm. You stay as a player and lose Admin. They keep their picks and stay on the board. Different from **Make administrator** (that keeps both of you as Admin). The app will not transfer if nobody else is in the pool. |
-| **Set a temporary password** | Pick a friend who already Joined, type their nickname, save a password, **text it**. Audit-logged (password not stored in the log). If they have not Joined, send their personal Join link instead. **Shipped.** |
+| **Hand the pool to someone else** | Admin → **Pool**. Transfer Admin to another **existing** member. Type their nickname and confirm. You stay as a player and lose Admin. They keep their picks and stay on the board. Different from **Make administrator** (that keeps both of you as Admin). The app will not transfer if nobody else is in the pool. |
+| **Set a temporary password** | Admin → **Users** → find the friend → Edit → save a password → **copy the text**. Audit-logged (password not stored in the log). If they have not Joined, send their personal Join link instead. **Shipped.** |
 | Simulate scores | Fake remaining finals (testing). |
 | Force grade | Grade + apply missed picks now. |
 | Remove player | Drops a member from the pool. |
 | Demo lock toggle | Removed with Demo mode. Use **System → lock controls** for week lock / missed picks. |
-| **Administrators** | Grant Admin tools to an existing pool player (confirm). They stay on the board. Same login can be Player + Administrator; switch views. Remove Admin is allowed only if another administrator remains. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
+| **Administrators** | Admin → **Pool** → **Make administrator**. Grant Admin tools to an existing pool player (confirm). They stay on the board. Same login can be Player + Administrator; switch views. Remove Admin is allowed only if another administrator remains. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
+| **Home Screen install** | Admin → **Comms** → remind this phone or don’t ask on this phone. Same client card friends see after Join / Sign in. Account can bring it back. |
 | **Pool notes & nudge** | Send a short email note to friends who left **Pool notes** on. **Nudge missing picks** emails/texts friends who still have no pick (and left that reminder on). Uses Resend / optional Twilio. |
 | **Share Leaderboard / Scores** | Not on Admin. Press and hold the Leaderboard or Scores title, or triple-tap the week label. No Share button. Full long picture always, or a shorter / split option. **Shipped** ([PR #45](https://github.com/triwithms/survive-sunday/pull/45)). |
 
 ### Admin Users UX
 
-Admin → **Users** is a phone-first roster (~390px): one compact row per friend (nickname, Joined / Unclaimed, backup). Tap Edit to open that friend only — opening another closes the first. Unclaimed rows have **Invite** and **Copy Join** (44px; toast on copy). Joined friends get the password form inside Edit (suggest + copy-ready text; we do not email the password).
+Admin → **Users** is a phone-first roster (~390px): **Find a friend**, then one compact row (nickname + Joined / Unclaimed). Tap Edit to open that friend only — opening another closes the first. Unclaimed rows have **Invite** and **Copy Join** (44px; toast on copy). Joined friends get the password form inside Edit (suggest + copy-ready text; we do not email the password). Remove stays inside that person. **Make administrator** and **Hand the pool** live on **Pool**. No player Who-are-you list on Admin.
 
-**Not on Admin yet (other open PRs):** none at the moment. Player-detail pages and head coach on team pages ship with this merge.
+**Not on Admin yet (other open PRs):** login-only entry + A2HS card copy ([PR #105](https://github.com/triwithms/survive-sunday/pull/105)).
 
 ---
 

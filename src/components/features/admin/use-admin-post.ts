@@ -18,7 +18,13 @@ export function useAdminPost() {
         body: JSON.stringify(body),
       });
       const data = await res.json();
-      setMsg(!res.ok ? data.error || "Failed" : JSON.stringify(data));
+      setMsg(
+        !res.ok
+          ? data.error || "Couldn’t save."
+          : typeof data.summary === "string"
+            ? data.summary
+            : "Saved."
+      );
       if (res.ok) router.refresh();
     } catch {
       setMsg("Network error — try again.");

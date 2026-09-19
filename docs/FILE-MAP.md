@@ -28,7 +28,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Standings** (NFL W-L) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
 | **Videos** (deep link only) | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Not a bottom tab; clips also sit in Scores/Schedule Details. |
 | **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as My pick / Selections / Scores; future weeks stay browsable. |
-| **Admin** | `src/components/features/admin/` — tab screens `UsersScreen`, `ConfigScreen`, `CommsScreen`, `SystemScreen`. Users roster: `RosterEditor.tsx`, `RosterRow.tsx`, `UserEditPanel.tsx`, `InviteJoinButtons.tsx`, `copy-join.ts`. Password: `SetMemberPasswordForm.tsx`. Phone pick entry: `EnterPickForm.tsx`. Census: `PickCensusPanel.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only: `src/lib/week-isolation.ts` forces `mode=live` **without** snapping the pool week or wiping picks. Demo vs Real toggle is gone. Join still claims `@survivesunday.demo` seats. |
+| **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · Comms · System** (`AdminNav.tsx`). `/admin` opens Users. Users: find + expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — set password / copy text / Join; no Who-are-you list. Pool: mulligan, **Make administrator**, **Hand the pool**. Comms: Join links + `HomeScreenPanel` (remind / don’t ask). System: census + enter pick; week tools / login / reset stay closed; readable `AuditLogList`. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
 
 ## Shared buttons and cards
 
@@ -58,7 +58,7 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | Standings (NFL) | `src/app/(app)/nfl/page.tsx` |
 | Videos | `src/app/(app)/videos/page.tsx` |
 | Schedule | `src/app/(app)/schedule/page.tsx` |
-| Admin hub | `src/app/(app)/admin/page.tsx` — Users `/admin/users`, Pool `/admin/config`, Comms `/admin/comms`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/import` stays. |
+| Admin hub | `src/app/(app)/admin/page.tsx` redirects to Users. Tabs: Users `/admin/users`, Pool `/admin/config`, Comms `/admin/comms`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/import` stays. |
 
 Also exist (same thin-page pattern): Account, Admin, Team.
 

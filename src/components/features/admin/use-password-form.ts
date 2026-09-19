@@ -42,7 +42,9 @@ export function usePasswordForm(members: SetPasswordMember[]) {
   const claimed = members.filter((m) => m.claimed);
   const unclaimed = members.filter((m) => !m.claimed);
   const [membershipId, setMembershipId] = useState(claimed[0]?.id ?? "");
-  const [confirmNickname, setConfirmNickname] = useState("");
+  const [confirmNickname, setConfirmNickname] = useState(
+    claimed[0]?.nickname ?? ""
+  );
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [kind, setKind] = useState<PasswordKind>("temporary");

@@ -7,29 +7,25 @@ import { ADMIN_TABS } from "./admin-tabs";
 export function AdminNav() {
   const path = usePathname();
   return (
-    <nav aria-label="Admin menus" className="space-y-2">
-      <Link
-        href="/admin"
-        prefetch={false}
-        className="text-sm text-gold-400"
-      >
+    <nav aria-label="Admin tabs" className="space-y-2" data-testid="admin-tabs">
+      <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">
         Admin
-      </Link>
-      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      </p>
+      <div className="grid grid-cols-4 gap-1">
         {ADMIN_TABS.map((tab) => {
           const active = tab.match(path);
           const className = [
-            "shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] sm:text-xs font-medium border min-h-11 inline-flex items-center",
+            "min-h-11 px-1 text-xs font-semibold rounded-lg border inline-flex items-center justify-center text-center",
             active
               ? "border-gold-400 text-gold-400 bg-gold-400/10"
-              : "border-stadium-border text-[var(--text-muted)] hover:border-gold-400/60 hover:text-gold-400",
+              : "border-stadium-border text-[var(--text-muted)]",
           ].join(" ");
           return (
             <Link
               key={tab.href}
               href={tab.href}
               prefetch={false}
-              title={tab.name}
+              title={tab.blurb}
               aria-current={active ? "page" : undefined}
               className={className}
             >
