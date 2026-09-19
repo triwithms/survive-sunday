@@ -1,7 +1,7 @@
 import { randomInt } from "crypto";
 import { prisma } from "./db";
 import { nicknameTaken } from "./roster-profile";
-import { placeholderEmailFor, type AddUserValue } from "./add-user";
+import type { AddUserValue } from "./add-user";
 import { joinUrl, PUBLIC_APP_ORIGIN } from "./invite-link";
 import { isDemoEmail } from "./pool-mode";
 import { isSeatClaimed } from "./claim-seat";
@@ -11,7 +11,7 @@ export type CreatedUser = {
   id: string;
   nickname: string;
   realName: string | null;
-  email: string;
+  email: string | null;
   claimed: boolean;
   password: string | null;
   inviteUrl: string | null;
@@ -44,11 +44,11 @@ export async function uniqueAddUserNick(poolId: string, desired: string) {
   return `${desired.slice(0, 19)} ${Date.now().toString(36).slice(-4)}`.slice(0, 24);
 }
 
-export function resolveAddUserEmail(value: AddUserValue, nickname: string): string {
-  return value.email ?? placeholderEmailFor(nickname, Date.now().toString(36).slice(-4));
+export function resolveAddUserEmail(value: AddUserValue): string | null {
+  return value.email;
 }
 
-export function resolveAddUserPassword(value: AddUserValue, email: string): string | null {
+export function resolveAddUserPassword(value: AddUserValue, email: string | null): string | null {
   if (value.password) return value.password;
   if (value.invite && !isDemoEmail(email)) return randomTempPassword();
   return null;
@@ -58,7 +58,7 @@ export function createdUserRow(
   membershipId: string,
   nickname: string,
   value: AddUserValue,
-  email: string,
+  email: string | null,
   password: string | null,
   inviteUrl: string | null
 ): CreatedUser {

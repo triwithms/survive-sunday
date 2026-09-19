@@ -12,7 +12,7 @@ export type RosterProfileValue = {
   membershipId: string;
   nickname: string;
   realName: string | null;
-  email: string;
+  email: string | null;
   phoneE164: string | null;
 };
 
@@ -58,8 +58,9 @@ export function parseRosterProfile(body: unknown): ParseRosterProfile {
     return fail(`Full name must be ${MAX_REAL_NAME} characters or fewer`);
   }
 
-  const email = normalizeEmail(typeof input.email === "string" ? input.email : "");
-  if (!email || !EMAIL_RE.test(email)) return fail("Enter a valid email address");
+  const emailRaw = normalizeEmail(typeof input.email === "string" ? input.email : "");
+  if (emailRaw && !EMAIL_RE.test(emailRaw)) return fail("Enter a valid email address");
+  const email = emailRaw || null;
 
   const phoneRaw = typeof input.phone === "string" ? input.phone.trim() : "";
   let phoneE164: string | null = null;

@@ -5,7 +5,7 @@ import { isDemoEmail, isLiveMode } from "./pool-mode";
 
 export type CredentialRecord = {
   id: string;
-  email: string;
+  email: string | null;
   name: string | null;
   image: string | null;
   passwordHash: string | null;
@@ -57,7 +57,7 @@ export async function userFromCredentials(
 ): Promise<AuthorizedUser | null> {
   try {
     const user = await lookup(email);
-    if (!user?.passwordHash) return null;
+    if (!user?.passwordHash || !user.email) return null;
 
     if (isDemoEmail(email)) {
       const pool = await prisma.pool.findUnique({

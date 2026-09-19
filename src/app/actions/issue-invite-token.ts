@@ -3,7 +3,7 @@
 import { requireAdmin } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { createHashedInviteToken } from "@/lib/invite-token-db";
-import { inviteJoinPath } from "@/lib/invite-token";
+import { inviteLoginPath } from "@/lib/invite-token";
 import { joinUrl, PUBLIC_APP_ORIGIN } from "@/lib/invite-link";
 
 function appOrigin(): string {
@@ -38,7 +38,7 @@ export async function issueInviteToken(
   const minted = await createHashedInviteToken(seat.id);
   return {
     ok: true,
-    url: joinUrl(appOrigin(), inviteJoinPath(minted.token)),
+    url: joinUrl(appOrigin(), inviteLoginPath(minted.token)),
     expiresAt: minted.expiresAt.toISOString(),
   };
 }

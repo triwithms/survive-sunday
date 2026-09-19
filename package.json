@@ -22,6 +22,7 @@
     "verify:delivery": "tsx scripts/verify-delivery.ts",
     "verify:admin-set-password": "tsx scripts/verify-admin-set-password.ts",
     "verify:invite-links": "tsx scripts/verify-invite-links.ts",
+    "verify:invite-prefill": "tsx scripts/verify-invite-prefill.ts",
     "verify:pwa-install": "tsx scripts/verify-pwa-install.ts",
     "verify:signin-otp": "tsx scripts/verify-signin-otp.ts",
     "verify:password-reset-flow": "node scripts/verify-password-reset-flow.mjs",

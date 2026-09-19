@@ -17,7 +17,7 @@ export function AddUserSavedCard({
 }) {
   const [toast, setToast] = useState("");
   const share =
-    saved.password && saved.claimed
+    saved.password && saved.claimed && saved.email
       ? memberPasswordShareText({
           email: saved.email,
           password: saved.password,
@@ -38,12 +38,16 @@ export function AddUserSavedCard({
         {saved.realName ? ` (${saved.realName})` : ""}. Gaps can wait for Welcome.
       </p>
       <p className="text-xs text-[var(--text-muted)] break-all">
-        {saved.claimed ? saved.email : "No real email yet — send Join, they’ll add it."}
+        {saved.email
+          ? saved.claimed
+            ? saved.email
+            : "No real email yet — send the invite, they’ll add it."
+          : "Needs email to log in"}
       </p>
       {saved.inviteUrl ? (
         <Button type="button" variant="secondary" className="w-full min-h-11"
-          onClick={() => void copy("Join invite", saved.inviteUrl!)}>
-          Copy Join invite
+          onClick={() => void copy("invite link", saved.inviteUrl!)}>
+          Copy invite link
         </Button>
       ) : null}
       {share ? (

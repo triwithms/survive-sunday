@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import {
   inviteIsUsable,
   inviteJoinPath,
+  inviteLoginPath,
   inviteSecretsMatch,
   mintInviteSecret,
 } from "../src/lib/invite-token";
@@ -38,6 +39,8 @@ assert.equal(
   false
 );
 assert.equal(inviteJoinPath("abc+d"), "/join?t=abc%2Bd");
+assert.equal(inviteLoginPath("abc+d"), "/login?invite=abc%2Bd");
+assert.doesNotMatch(inviteLoginPath("abc+d"), /email=|phone=|cell=|nickname=|password=/i);
 
 const now = Date.now();
 const cron = mintApiToken("cron", 60_000, now);

@@ -35,6 +35,14 @@ function main() {
   const empty = parseAddUser({});
   assert.equal(empty.ok, false);
 
+  const nickOnly = parseAddUser({ nickname: "Pauli" });
+  assert.equal(nickOnly.ok, true);
+  if (nickOnly.ok) {
+    assert.equal(nickOnly.value.nickname, "Pauli");
+    assert.equal(nickOnly.value.email, null);
+    assert.equal(nickOnly.value.phoneE164, null);
+  }
+
   const parsed = parseAddUser({
     realName: "Sam Gama",
     email: " Sam@Example.com ",
@@ -61,6 +69,9 @@ function main() {
   assert.match(fields, /add-user-invite/);
   assert.match(fields, /SetPasswordKind/);
   assert.match(readFileSync("src/lib/add-user-db.ts", "utf8"), /addUserContactClash/);
+  assert.match(readFileSync("src/lib/add-user-db.ts", "utf8"), /inviteLoginPath/);
+  assert.match(readFileSync("src/lib/add-user-prep.ts", "utf8"), /return value\.email/);
+  assert.ok(lineCount("src/lib/user-email-schema.ts") <= 100);
   assert.match(
     readFileSync("src/lib/contact-taken.ts", "utf8"),
     /That email is already used/

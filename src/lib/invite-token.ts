@@ -43,3 +43,7 @@ export function inviteIsUsable(
 export function inviteJoinPath(token: string): string {
   return `/join?t=${encodeURIComponent(token)}`;
 }
+
+export function inviteLoginPath(token: string): string {
+  return `/login?invite=${encodeURIComponent(token)}`;
+}

@@ -1,32 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import { Share2 } from "lucide-react";
 import { issueInviteToken } from "@/app/actions/issue-invite-token";
-import { Button } from "@/components/ui";
-import { copyText, memberCopyJoinUrl } from "./copy-join";
+import { shareOrCopy } from "./copy-join";
 
 type Props = {
   membershipId: string;
   nickname: string;
-  rosterNicknames: string[];
 };
 
-export function InviteJoinButtons({
-  membershipId,
-  nickname,
-  rosterNicknames,
-}: Props) {
+export function InviteJoinButtons({ membershipId, nickname }: Props) {
   const [toast, setToast] = useState("");
   const [busy, setBusy] = useState(false);
 
   function flash(msg: string) {
     setToast(msg);
     window.setTimeout(() => setToast(""), 2200);
-  }
-
-  async function copyJoin() {
-    const url = memberCopyJoinUrl(membershipId, nickname, rosterNicknames);
-    flash((await copyText(url)) ? "Copied Join link" : "Couldn’t copy — try again");
   }
 
   async function invite() {
@@ -37,35 +27,27 @@ export function InviteJoinButtons({
       flash(result.error);
       return;
     }
-    const ok = await copyText(result.url);
+    const ok = await shareOrCopy(result.url, `Survive Sunday for ${nickname}`);
     flash(ok ? "Copied invite link" : "Couldn’t copy — try again");
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2 min-w-0">
-      <Button
-        variant="secondary"
-        className="min-h-11 w-full px-2 text-sm"
+    <div className="relative shrink-0">
+      <button
+        type="button"
+        className="min-h-11 min-w-11 inline-flex items-center justify-center text-gold-400"
         disabled={busy}
+        aria-label={`Invite ${nickname}`}
         data-testid={`invite-${membershipId}`}
         onClick={() => void invite()}
       >
-        {busy ? "Inviting…" : "Invite"}
-      </Button>
-      <Button
-        variant="secondary"
-        className="min-h-11 w-full px-2 text-sm"
-        disabled={busy}
-        data-testid={`copy-join-${membershipId}`}
-        onClick={() => void copyJoin()}
-      >
-        Copy Join
-      </Button>
+        <Share2 className="h-5 w-5" aria-hidden />
+      </button>
       {toast ? (
         <p
           role="status"
           aria-live="polite"
-          className="col-span-2 text-sm text-field-400"
+          className="absolute right-0 top-full z-10 w-max max-w-[11rem] text-xs text-field-400"
           data-testid="copy-toast"
         >
           {toast}

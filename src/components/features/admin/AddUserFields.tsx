@@ -74,7 +74,7 @@ export function AddUserFields({ draft, busy, err, onChange, onSuggest, onSubmit 
           data-testid="add-user-invite"
         />
         <span className="min-w-0 flex-1 whitespace-normal break-words leading-snug">
-          Also make a Join invite I can send. They can finish missing details on Welcome.
+          Also make a Sign in invite I can send. They can finish missing details on Welcome.
         </span>
       </label>
       <RosterNotifySoon />

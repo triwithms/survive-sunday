@@ -21,7 +21,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | What you see | Point the chat here |
 |--------------|---------------------|
 | **Selections** (group weekly picks) | `src/components/features/home/` — `HomeScreen.tsx`, `SelectionsList.tsx`, `load-home.ts`, `sort-selections.ts`. Old Home hero / game-cluster / videos strip are unused on this screen. |
-| **Sign in / Forgot password** | `src/components/features/login/` — `LoginForm.tsx` (email + password + Forgot password only), `ForgotPasswordForm.tsx`. Cold open `/` redirects here. |
+| **Sign in / Forgot password** | `src/components/features/login/` — `LoginForm.tsx` (email + password + Forgot password only), `ForgotPasswordForm.tsx`, `use-invite-prefill.ts`, `InviteGreeting.tsx`. `/login?invite=` peeks a hashed token via `src/app/api/login/invite/route.ts` + `src/lib/invite-prefill.ts` / `invite-prefill-db.ts` (email + nickname only; no session). Cold open `/` redirects here. |
 | **First-run profile** | `src/components/features/profile/` + `src/app/welcome/page.tsx` — after Sign in, ask only for missing nickname / full name / cell, then My pick. |
 | **My pick** | `src/components/features/pick/` — `PickScreen.tsx`, `load-pick.ts`, `PickMatchupCard.tsx`, `PickOutOverlay.tsx` (eliminated: near-full **YOU’RE OUT** cover; pick controls off). Server still refuses (`src/app/actions/submit-pick.ts`). |
 | **Scores** | `src/components/features/scores/` — `ScoresScreen.tsx`, `load-scores.ts`, `ScoreGameCard.tsx` |
@@ -48,8 +48,9 @@ Team logos: `src/components/TeamLogo.tsx` + `src/lib/espn-teams.ts` / `src/lib/t
 |------|------|
 | Submit pick | `src/app/actions/submit-pick.ts` — eliminated players get `403` (“You’re out — no picks”) |
 | Admin elim notify | `src/lib/elimination-admin-alert.ts` + `elimination-admin-copy.ts` — after grade / missed-pick / import newly eliminates someone, email+SMS all Administrators (same multi-admin union as password-reset). Dedupe via `NotificationSend`. Account/Roster pref toggles stay **Coming soon**; this alert is not gated (password-reset style). |
-| Issue invite | `src/app/actions/issue-invite-token.ts` |
-| Add user | `src/app/api/admin/add-user/route.ts` + `src/lib/add-user.ts` — unique email/cell: `src/lib/contact-taken.ts` |
+| Issue invite | `src/app/actions/issue-invite-token.ts` — URL is `/login?invite=` (`inviteLoginPath`). Reuses hashed `InviteToken` (14-day TTL). |
+| Invite prefill | `src/app/api/login/invite/route.ts` + `src/lib/invite-prefill-db.ts` — peek token, return email + nickname only |
+| Add user | `src/app/api/admin/add-user/route.ts` + `src/lib/add-user.ts` — unique email/cell: `src/lib/contact-taken.ts`. Blank email/cell store NULL (`src/lib/user-email-schema.ts`). |
 | Save this person | `src/app/api/admin/roster/route.ts` + `src/lib/roster-profile.ts` — same uniqueness helpers |
 
 ## Thin route pages

@@ -18,15 +18,14 @@ export function RosterEditor({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-  const nicknames = members.map((row) => row.nickname);
   const visible = members.filter((m) => rosterMatches(m, query));
   return (
     <Card as="section" className="p-4 space-y-3 min-w-0">
       <div>
         <h2 className="font-semibold">Roster</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Tap a person to edit their profile, set a password, or copy a Join
-          link. One open at a time.
+          Tap a person to edit their profile or set a password. The invite
+          icon shares a Sign in link. One open at a time.
         </p>
       </div>
       <label className="block text-sm space-y-1">
@@ -51,7 +50,6 @@ export function RosterEditor({
             <RosterCard
               key={m.id}
               member={m}
-              rosterNicknames={nicknames}
               open={openId === m.id}
               onToggle={() => setOpenId((id) => (id === m.id ? null : m.id))}
               disabled={busyId !== null && busyId !== m.id}

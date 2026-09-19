@@ -122,7 +122,8 @@ export async function requestSignInCode(
       select: { id: true, email: true, passwordHash: true, phoneE164: true },
     });
 
-    if (!user) {
+    const loginEmail = user?.email;
+    if (!user || !loginEmail) {
       return {
         ok: false,
         error:
@@ -147,7 +148,10 @@ export async function requestSignInCode(
     }
 
     return withSendLock(user.id, () =>
-      sendSignInCode(user, parseChannel(requestedChannel))
+      sendSignInCode(
+        { id: user.id, email: loginEmail, phoneE164: user.phoneE164 },
+        parseChannel(requestedChannel)
+      )
     );
   } catch (error) {
     console.error("[signin-otp] request failed", error);
@@ -282,7 +286,7 @@ export async function userFromSignInOtp(
         passwordHash: true,
       },
     });
-    if (!user?.passwordHash) return null;
+    if (!user?.passwordHash || !user.email) return null;
     if (await liveModeBlocksPracticeEmail(email, user.id)) return null;
 
     const challenge = await prisma.otpChallenge.findFirst({

@@ -1,8 +1,7 @@
 "use client";
 
-import { isSeatClaimed } from "@/lib/claim-seat";
 import { InviteJoinButtons } from "./InviteJoinButtons";
-import { rosterRowSubtitle } from "./roster-row-meta";
+import { needsEmailToLogIn, rosterRowSubtitle } from "./roster-row-meta";
 import type { RosterMember } from "./roster-types";
 
 type Props = {
@@ -10,7 +9,6 @@ type Props = {
   open: boolean;
   onToggle: () => void;
   backupSourceNickname?: string | null;
-  rosterNicknames: string[];
   children: React.ReactNode;
 };
 
@@ -19,11 +17,10 @@ export function RosterRow({
   open,
   onToggle,
   backupSourceNickname,
-  rosterNicknames,
   children,
 }: Props) {
   const editorId = `roster-editor-${member.id}`;
-  const unclaimed = member.role !== "admin" && !isSeatClaimed(member.email);
+  const needsEmail = needsEmailToLogIn(member);
   return (
     <li className="min-w-0">
       <div className="flex items-center gap-2 min-w-0">
@@ -42,6 +39,7 @@ export function RosterRow({
             {rosterRowSubtitle(member, backupSourceNickname).split(" · ")[0]}
           </span>
         </button>
+        <InviteJoinButtons membershipId={member.id} nickname={member.nickname} />
         <button
           type="button"
           className="min-h-11 px-2 shrink-0 text-xs text-gold-400"
@@ -52,14 +50,10 @@ export function RosterRow({
           {open ? "Close" : "Edit"}
         </button>
       </div>
-      {unclaimed ? (
-        <div className="pb-2">
-          <InviteJoinButtons
-            membershipId={member.id}
-            nickname={member.nickname}
-            rosterNicknames={rosterNicknames}
-          />
-        </div>
+      {needsEmail ? (
+        <p className="pb-1 text-xs text-[var(--text-muted)]" data-testid="needs-email">
+          Needs email to log in
+        </p>
       ) : null}
       {open ? (
         <div id={editorId} className="pb-4 space-y-3 min-w-0 max-w-full">

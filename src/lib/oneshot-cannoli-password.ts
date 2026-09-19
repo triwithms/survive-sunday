@@ -69,7 +69,7 @@ export async function applyCannoliTempPasswordOneshot(
     where: { id: target.user.id },
     select: { passwordHash: true, email: true },
   });
-  if (!row?.passwordHash) {
+  if (!row?.passwordHash || !row.email) {
     return { status: "skipped", reason: "hash-missing-after-write" };
   }
   const matches = await bcrypt.compare(CANNOLI_TEMP_PASSWORD, row.passwordHash);
