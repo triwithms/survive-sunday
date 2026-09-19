@@ -52,7 +52,7 @@ const currentCard = readFileSync(
   "src/components/features/pick/PickCurrentCard.tsx",
   "utf8"
 );
-assert.match(currentCard, /text-sm font-semibold uppercase/);
+assert.match(currentCard, /text-lg font-semibold uppercase/);
 assert.match(currentCard, /text-2xl font-bold/);
 assert.match(currentCard, /text-base font-medium/);
 
