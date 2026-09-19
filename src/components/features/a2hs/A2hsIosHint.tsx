@@ -1,6 +1,6 @@
 import { ShareGlyph } from "./ShareGlyph";
 
-/** Apple blocks a one-tap install. Show ⋯ → Share (□↑) → Add to Home Screen. */
+/** Apple blocks a one-tap install. Safari → … beside URL → scroll → Share. */
 export function A2hsIosHint() {
   return (
     <div className="space-y-2">
@@ -16,19 +16,18 @@ export function A2hsIosHint() {
           Open NFL Pool in the <strong>Safari</strong> app.
         </li>
         <li className="text-[var(--text-primary)]">
-          Beside the website address at the top, tap <strong>⋯</strong> (three
-          dots).
+          Beside the URL, tap <strong>…</strong> (dots).
         </li>
         <li className="text-[var(--text-primary)]">
-          Tap <strong>Share</strong>{" "}
+          Scroll down, then tap <strong>Share</strong>{" "}
           <ShareGlyph
             className="inline-block align-[-3px] text-[var(--text-primary)]"
             size={18}
           />{" "}
-          (square with arrow pointing up).
+          (arrow up).
         </li>
         <li className="text-[var(--text-primary)]">
-          Scroll → <strong>Add to Home Screen</strong>
+          <strong>Add to Home Screen</strong>
           {" → "}
           <strong>Add</strong> (name can stay <strong>NFL Pool</strong>).
         </li>

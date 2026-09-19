@@ -47,7 +47,7 @@ export function HelpIntro() {
         <p className="text-[var(--text-muted)] mb-2">
           After Sign in on a phone, we ask: <strong>Do you want to add NFL Pool
           to your Home Screen?</strong> Tap <strong>Yes</strong> to install or
-          see the Safari ⋯ → Share steps. Tap <strong>Not now</strong> to ask again next
+          see the Safari … → scroll → Share steps. Tap <strong>Not now</strong> to ask again next
           Sign in. Tap <strong>No</strong> to stop asking — then use{" "}
           <strong>Install on Home Screen</strong> at the top of Help. Opening
           from the icon does not nag. If you delete the icon and open in Safari,
