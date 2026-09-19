@@ -1,0 +1,1 @@
+export { CompleteProfileForm } from "./CompleteProfileForm";

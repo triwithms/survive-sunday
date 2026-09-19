@@ -1,6 +1,6 @@
 {
-  "name": "Survive Sunday",
-  "short_name": "Survive",
+  "name": "NFL Pool",
+  "short_name": "NFL Pool",
   "description": "Private NFL survivor pool for friends",
   "start_url": "/pool",
   "display": "standalone",

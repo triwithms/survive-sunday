@@ -20,10 +20,8 @@ export function A2hsCopy({
     return (
       <>
         <p className="text-sm text-[var(--text-muted)]">
-          Open in{" "}
-          <strong className="text-[var(--text-primary)]">Safari</strong> or{" "}
-          <strong className="text-[var(--text-primary)]">Chrome</strong> to add
-          Survive Sunday to your Home Screen. This in-app browser can&apos;t.
+          Open this link in Safari or Chrome to add NFL Pool to your Home
+          Screen.
         </p>
         <button type="button" className="btn-primary w-full" onClick={onCopy}>
           {copied ? "Link copied" : "Copy link"}
@@ -34,27 +32,18 @@ export function A2hsCopy({
 
   if (variant === "ios") {
     return (
-      <ol className="list-decimal pl-5 space-y-2 text-sm text-[var(--text-muted)]">
-        <li>
-          Tap Share <ShareGlyph />
-        </li>
-        <li>
-          Tap{" "}
-          <strong className="text-[var(--text-primary)]">
-            Add to Home Screen
-          </strong>
-        </li>
-        <li>
-          Tap <strong className="text-[var(--text-primary)]">Add</strong>
-        </li>
-      </ol>
+      <p className="text-sm text-[var(--text-muted)]">
+        <strong className="text-[var(--text-primary)]">
+          Share <ShareGlyph /> → Add to Home Screen
+        </strong>
+      </p>
     );
   }
 
   return (
     <>
       <p className="text-sm text-[var(--text-muted)]">
-        Install Survive Sunday so it opens like an app and stays signed in.
+        Add NFL Pool to your Home Screen.
       </p>
       {canPrompt ? (
         <button type="button" className="btn-primary w-full" onClick={onInstall}>
@@ -63,11 +52,7 @@ export function A2hsCopy({
       ) : (
         <p className="text-sm text-[var(--text-muted)]">
           Chrome menu (⋮) →{" "}
-          <strong className="text-[var(--text-primary)]">Install app</strong> or{" "}
-          <strong className="text-[var(--text-primary)]">
-            Add to Home screen
-          </strong>
-          .
+          <strong className="text-[var(--text-primary)]">Install app</strong>
         </p>
       )}
     </>

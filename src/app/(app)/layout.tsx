@@ -1,6 +1,7 @@
 import { BottomNav } from "@/components/BottomNav";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { AppHeader } from "@/components/AppHeader";
+import { A2hsNudge } from "@/components/features/a2hs";
 import { loadAppHeader } from "./load-app-header";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +25,7 @@ export default async function AppLayout({
         {children}
       </div>
       <FooterDisclaimer />
+      <A2hsNudge />
       <BottomNav isAdmin={chrome.showAdminChrome} />
     </div>
   );

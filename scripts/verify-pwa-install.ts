@@ -4,6 +4,7 @@
  *   npx tsx scripts/verify-pwa-install.ts
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "fs";
 import {
   a2hsVariant,
   isAndroid,
@@ -75,5 +76,17 @@ assert.equal(
   true,
   "expired snooze → show again"
 );
+
+const manifest = readFileSync("public/manifest.webmanifest", "utf8");
+assert.match(manifest, /"name": "NFL Pool"/);
+assert.match(manifest, /"short_name": "NFL Pool"/);
+
+const copy = readFileSync("src/components/features/a2hs/A2hsCopy.tsx", "utf8");
+assert.match(copy, /Add NFL Pool to your Home Screen/);
+assert.match(copy, /Share .*→ Add to Home Screen/);
+assert.doesNotMatch(copy, /list-decimal/);
+
+const apple = readFileSync("src/app/layout.tsx", "utf8");
+assert.match(apple, /title: "NFL Pool"/);
 
 console.log("verify-pwa-install OK");

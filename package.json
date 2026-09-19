@@ -42,6 +42,7 @@
     "verify:placeholder-auth-url": "tsx scripts/verify-placeholder-auth-url.ts",
     "verify:login-error": "tsx scripts/verify-login-error.ts",
     "verify:login-screen": "tsx scripts/verify-login-screen.ts",
+    "verify:profile-complete": "tsx scripts/verify-profile-complete.ts",
     "verify:auth-rewrite": "tsx scripts/verify-auth-rewrite.ts",
     "verify:live-feeds": "tsx scripts/verify-live-feeds.ts",
     "verify:game-display": "tsx scripts/verify-game-display.ts",

@@ -3,7 +3,7 @@
  *
  *   npx tsx scripts/verify-login-screen.ts
  */
-import { readdirSync, readFileSync } from "fs";
+import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
 
 function assert(cond: unknown, msg: string): asserts cond {
@@ -53,6 +53,23 @@ function main() {
   assert(!page.includes("demoMode"), "login page does not load demo picker");
   assert(/spam\/junk/.test(copy), "forgot copy mentions spam/junk");
   assert(!/Send to my phone/i.test(actions), "no SMS-first toggle on Forgot");
+  const landing = readFileSync(join("src/app/page.tsx"), "utf8");
+  const joinPage = readFileSync(join("src/app/join/page.tsx"), "utf8");
+  const joinForm = readFileSync(join("src/components/JoinForm.tsx"), "utf8");
+
+  assert(landing.includes('redirect("/login")'), "cold / goes to Sign in");
+  assert(!/WhoAreYou|Who are you/.test(landing), "no people list on /");
+  assert(joinPage.includes('redirect("/login")'), "signed-out /join → Sign in");
+  assert(!joinForm.includes("WhoAreYouSelect"), "Join has no roster picker");
+  assert(!joinForm.includes("roster list"), "Join has no roster-list toggle");
+  assert(
+    !existsSync(join("src/components/WhoAreYouCard.tsx")),
+    "WhoAreYouCard removed"
+  );
+  assert(
+    !existsSync(join("src/components/WhoAreYouSelect.tsx")),
+    "WhoAreYouSelect removed"
+  );
   assertCap("src/components/features/login");
   assertCap("src/lib", 100, /^password-reset/);
   console.log("PASS  Sign in is email + password + Forgot password");
