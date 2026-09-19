@@ -1,8 +1,14 @@
 # Survive Sunday — owner handoff
 
+**New Chief of Staff / crash recovery:** [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md) — how a new CoS takes over if Grok Bot freezes. Then this file + [`docs/FILE-MAP.md`](FILE-MAP.md).
+
 ## Agent cost / how to work
 
 **#1 cost rule:** For specs, FILE-MAP lookups, QA critic scoring, copy, and checklists, use free tiers in order — **free Grok, then free Claude, then free Gemini** — before any paid Grok Bot / Cursor coding agents. Paid agents only for the actual code PR/merge. Aim to save ~30–50% usage by keeping planning and critic loops off paid runs.
+
+**AI split:** **Free Grok** (and the free cascade: Grok → Claude → Gemini) for planning, research, copy, and checklists. **Paid Cursor / Grok Bot for actual code PRs only.** Details: [`docs/FREE-GROK.md`](FREE-GROK.md).
+
+**Free-AI entry (copy-paste prompts):** [`docs/FREE-AI-START-HERE.md`](FREE-AI-START-HERE.md) · [`docs/FREE-AI-QUEUE.md`](FREE-AI-QUEUE.md) · [`docs/MNF-WRAP-FREE-AI.md`](MNF-WRAP-FREE-AI.md) · [`docs/DOCS-REFRESH-FREE-AI.md`](DOCS-REFRESH-FREE-AI.md).
 
 **Docs freshness:** When any free or included usage allotment is near empty (owner flags Usage low, or it is known to be low), refresh HANDOFF / FREE-GROK.md / FILE-MAP with shipped changes **before** starting more work — so the next session (next free tier, or next week’s included Grok Bot / Cursor usage) starts from current docs. Applies to free Grok → free Claude → free Gemini **and** to Grok Bot / Cursor included weekly usage. Help only if a user/admin process changed. Do not wait until quota is fully gone.
 
@@ -10,11 +16,11 @@ Paste-ready brief: [`docs/FREE-GROK.md`](FREE-GROK.md) (**free AI first** — Gr
 
 ## Multi-bot control (Chief of Staff)
 
-**Chief of Staff (Grok Bot)** is the lead director. Specialists work **on assignment only** (not a discovery swarm): Safety/DB, Docs Sync, Codebase Audit, QA.
+**Chief of Staff (Grok Bot)** is the lead director. Takeover playbook: [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md). Specialists work **on assignment only** (not a discovery swarm): Safety/DB, Docs Sync, Codebase Audit, QA.
 
 Chief of Staff turns friend-language product asks into small ordered jobs, enforces the **#1 cost rule** (free Grok → free Claude → free Gemini → paid only for code PRs), and stops duplicate PRs / credit burn. Specialists critique or ship in their lane when asked or on a clear trigger.
 
-Free-AI drafting: [`docs/FREE-GROK.md`](FREE-GROK.md).
+Free-AI drafting: [`docs/FREE-GROK.md`](FREE-GROK.md). Start here: [`docs/FREE-AI-START-HERE.md`](FREE-AI-START-HERE.md).
 
 This is the **keep-up guide** for the pool app. It is written for a **non-coder**. Use **click-by-click** steps here, then paste a starter prompt into a **new chat** when something breaks or you want a small change.
 
@@ -30,13 +36,13 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 **Never paste secrets** (passwords, `AUTH_SECRET`, `DATABASE_URL`, API keys) into a chat, a screenshot, or a commit.
 
-**Snapshot (19 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Nav IA polish (My pick · Selections · Leaderboard · Scores · Schedule · Standings; header **?** for Help) may still be on an open PR — trust `main` until it merges. Live tonight:
+**Snapshot (19 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). The pool is on **Week 2**. Header **Week N** is the **pool** week from the slate (read-only); a friend’s personal next-pick week can still differ ([#122](https://github.com/triwithms/survive-sunday/pull/122)). Bottom nav is **live**: **My pick · Selections · Leaderboard · Scores · Schedule · Standings**; header **?** for Help ([#126](https://github.com/triwithms/survive-sunday/pull/126)). Live tonight:
 
 - **CRITICAL — production data:** A Vercel Production build is `npm run build` → `next build` only. It does **not** run `ensure-production-db`, `prisma db push`, or seeds. Scheduled jobs (missing-pick reminders, ensure-week) do **not** wipe or reseed the pool. Never reattach those scripts to the build. Details: [DEPLOY.md](../DEPLOY.md) section 4.
 
 - **Cannoli Stuffer (Mike Frigo) has Joined.** Email codes were failing. A one-shot temporary password **`Cannoli1!`** was already written on Neon, and **Admin → Set a temporary password** is live for anyone else. A Redeploy does **not** rewrite passwords. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login) with his email and password. His sign-in email is on **Admin → Roster**. He should change the password after he is in.
 
-- **Who are you? Join** + **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** in **Account** — merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
+- Cold open (`/`) is **Sign in**. Join via a personal or invite link (`/join?who=` / `/login?invite=`). After Sign in, default landing is **My pick**. **Selections** is `/pool`. **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** in **Account** — roles merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
 - **Week 2 schedule restored** in Real/live (viewable; Demo isolation is practice UX only — it does **not** hide the Week 2 slate) — merged [PR #22](https://github.com/triwithms/survive-sunday/pull/22)
 - **Next-week picks unlock per player** as soon as *their* current-week game has started (not after Monday Night Football). Week 2 pick UI is live for those players and for new joiners who missed a Week 1 pick path. Friends still waiting on their own Week 1 kickoff keep the normal Week 1 change-pick flow.
@@ -51,13 +57,19 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Share Leaderboard / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). No Share button on the screen. On Leaderboard or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
 - **Scores Details ›** — merged [PR #46](https://github.com/triwithms/survive-sunday/pull/46). Each game card shows gold **Details ›** (live, Final, and upcoming) so friends know the card opens more info.
 - **Videos** — merged [PR #51](https://github.com/triwithms/survive-sunday/pull/51). Not a bottom tab. Clips live in Scores / Schedule → **Details**. **This 2026/27 season only** — [PR #52](https://github.com/triwithms/survive-sunday/pull/52). **Previews until kickoff, then highlights** — [PR #54](https://github.com/triwithms/survive-sunday/pull/54). **No in-app YouTube player** — thumbnail + title + **Watch on YouTube** (NFL blocks embeds). Role switch is in **Account** only. **Scores** opens on your pick week and will not open future weeks (browse those on Schedule).
-- **Spreads and logos (15 Sep):** real ESPN favourites written **“BUF favoured by 4.5”**. Official ESPN team marks (not colour badges). Home pick helmet is large. Logos are ESPN URLs, not stored on Vercel.
-- **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset and sign-in codes are **not** gated by these prefs.
+- **Spreads and logos:** real ESPN favourites written **“BUF favoured by 4.5”**. Team marks are **local-only** transparent helmets at `public/helmets/{abbr}.png` — no white plates, no ESPN CDN ([#119](https://github.com/triwithms/survive-sunday/pull/119), [#124](https://github.com/triwithms/survive-sunday/pull/124)). Never letter badges.
+- **Notifications:** Account **notifyPref** is Email / SMS / both / none (`NotificationPrefsForm`). Admin **Send test to me**. `NOTIFY_MODE` is `dryrun` | `allowlist` | `live` ([#133](https://github.com/triwithms/survive-sunday/pull/133)). Password-reset and sign-in codes are **not** gated by prefs. The first-run prompt still asks friends to **add their cell for SMS reminders** (**Not now** is fine).
+- **Eliminated:** My pick shows a near-full **YOU'RE OUT** overlay; pick controls off; server still refuses ([#128](https://github.com/triwithms/survive-sunday/pull/128)).
+- **Icons / PWA** — NFL Pool football mark for Home Screen and browser ([#127](https://github.com/triwithms/survive-sunday/pull/127)).
+- **Invite sign-in** — `/login?invite=` peeks email + nickname only (no session) ([#130](https://github.com/triwithms/survive-sunday/pull/130)).
+- Help **topic menu** ([#108](https://github.com/triwithms/survive-sunday/pull/108)); Leaderboard season-end tiebreak **collapsed** until tapped ([#118](https://github.com/triwithms/survive-sunday/pull/118)); team unit pages list **healthy starters, then injured** ([#121](https://github.com/triwithms/survive-sunday/pull/121)); slate/injury last-good cache ([#120](https://github.com/triwithms/survive-sunday/pull/120)).
+- Free-AI queue docs: [`FREE-AI-START-HERE`](FREE-AI-START-HERE.md) / [`QUEUE`](FREE-AI-QUEUE.md) / [`MNF-WRAP`](MNF-WRAP-FREE-AI.md).
 - **Pool rules — mulligan** + **Hand the pool to someone else** — administrator can turn off the free mulligan from a chosen week (one-and-done; already-scored weeks stay) and give Admin to another existing member (they keep playing; you stay as a player). Different from **Make administrator**.
+- Team full-season schedule is **not** live ([PR #132](https://github.com/triwithms/survive-sunday/pull/132) — **HOLD**).
 
 The Real-mode playbook is [`docs/REAL-MODE.md`](./REAL-MODE.md). Earlier handoff refreshes ([PR #13](https://github.com/triwithms/survive-sunday/pull/13), [PR #15](https://github.com/triwithms/survive-sunday/pull/15)) are **superseded by this file**.
 
-**Friends:** do **not** hold forever. The board, Who are you?, roles, Week 2 slate, and Week 1 imports are live. **Do not send personal Join links** until Resend keys are set and you have tested **Forgot password** once (you should receive a 6-digit code; check spam/junk). Without those keys, friends who forget their password are stuck. After that, copy one Admin link per friend — do not send one blast to the whole group chat.
+**Friends:** do **not** hold forever. The board, roles, Week 2 slate, and Week 1 imports are live. Cold open is Sign in; Join is via a personal or invite link. **Do not send personal Join links** until Resend keys are set and you have tested **Forgot password** once (you should receive a 6-digit code; check spam/junk). Without those keys, friends who forget their password are stuck. After that, copy one Admin link per friend — do not send one blast to the whole group chat.
 
 ---
 
@@ -212,7 +224,7 @@ A Redeploy also does **not** patch leftover short names or emails. Edit names on
 
 ## 6. BM Boys roster (confirmed real names)
 
-Nicknames stay as friends know them. Real names show in brackets on the board and on **Who are you?** / Join. Live late 13 Sep 2026: **13 player seats**.
+Nicknames stay as friends know them. Real names show in brackets on the board and on Join. Live late 13 Sep 2026: **13 player seats**.
 
 | Nickname | Real name | On live Join |
 |----------|-----------|--------------|
@@ -263,17 +275,17 @@ JaJa,DAL
 
 The pool is **live-only**. The Demo vs Real toggle is gone (no practice picker). Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
-Home shows **Who are you?** (live roster), **Join**, and **Sign in**. Friends never see a `demo1234` practice picker. The pool sits on **Week 1** for the group board. **Home, Scores, Pick, and Schedule open on that friend’s current pick week** (Week 1 until their game starts, then Week 2). Home and Scores will **not** open a future week — future weeks stay on **Schedule**, which still lets you browse every week. Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football. Week 2 stays on the schedule.
+Cold open (`/`) goes to **Sign in**. Join is via a personal or invite link (`/join?who=` / `/login?invite=`). After Sign in, default landing is **My pick**. **Selections** is `/pool` (group weekly picks). Friends never see a `demo1234` practice picker. The pool sits on **Week 2** for the group board. Header **Week N** is that pool week from the slate (read-only; not a friend’s personal next-pick week). **My pick, Selections, Scores, and Schedule** open on that friend’s current pick week (which can still be Week 1 until their game starts). Selections and Scores will **not** open a future week — future weeks stay on **Schedule**, which still lets you browse every week. Once a friend’s Week 1 game has started (or they never had a Week 1 pick path), **their** Week 2 picks open immediately — do not wait for Monday Night Football.
 
 Unclaimed seats still use practice `@survivesunday.demo` emails so Join can claim that nickname. That is seat claiming, not Demo mode. Do not seed Production.
 
 ### Real login / join
 
 - **Sign in** (`/login`): **email + password + Sign in**, plus a **Forgot password?** link. Safari still POSTs `/api/login`. Google is not on this screen (it was flaky). This is **not** a code at every login. Stay signed in on this phone.
-- **Join** (`/join`): personal link from Admin, then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. Invite code **`SUNDAY26`** is filled in. If the seat already has a real email, the page says it is claimed and links to Sign in. Practice `@survivesunday.demo` seats (and leftover `@pending.survivesunday.local` placeholders) are claimable. **One user, more than one role** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)): there is **no special admin account**. The same email can be **Player + Administrator**. Switch **Playing as …** / **Admin tools** from **Account** (top right) — not on League or other main screens. Administrator email can claim a player seat (Gams). People not on the list can still join as a new player.
+- **Join** (`/join`): personal link from Admin (`/join?who=` / `?seat=`), or hashed invite sign-in (`/login?invite=` — email + nickname only). Then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. Invite code **`SUNDAY26`** is filled in. If the seat already has a real email, the page says it is claimed and links to Sign in. Practice `@survivesunday.demo` seats (and leftover `@pending.survivesunday.local` placeholders) are claimable. **One user, more than one role** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)): there is **no special admin account**. The same email can be **Player + Administrator**. Switch **Playing as …** / **Admin tools** from **Account** (top right) — not on League or other main screens. Administrator email can claim a player seat (Gams). People not on the list can still join as a new player.
 - **Forgot password?** is the small link on Sign in: we email a 6-digit code (and text it if a cell is saved). Check inbox and spam/junk. Then new password → signed back in. Administrators get a notify that someone asked (no code in that email). Only after that friend has Joined with that email. This is **not** a code at every login. **Codes do not send until Resend keys are on Vercel** (section 4). That is still the group-invite blocker.
 - **Sign out:** header **Account** (top right) → **Sign out** (merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)). Also on Admin and Help.
-- **Notification preferences:** header **Account** → **Notification preferences**. Each friend chooses which emails they want. Missing-pick texts use the same Missing pick reminder switch. Password-reset codes always send when requested.
+- **Notification preferences:** header **Account** → **Notification preferences**. Each friend chooses **Email / SMS / both / none** (`notifyPref`). Admin **Send test to me** on System. `NOTIFY_MODE` is `dryrun` | `allowlist` | `live`. Password-reset codes always send when requested (SECURITY ignores prefs).
 - **Pick backup:** header **Account** → **Pick backup**. Off, copy from a member (30 min), or auto best remaining **2025 rank** team (~2 min). Administrators can set the same on **Admin → Roster**. JaJa copies Gams by default.
 
 The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` (click-by-click in [DEPLOY.md](../DEPLOY.md) §3b), then Redeploy. Optional Twilio for texts. Do not claim codes are sending until those keys are set and you have tested once. Practice `@survivesunday.demo` seats are Join placeholders, not a Demo-mode login.
@@ -284,9 +296,9 @@ The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY
 2. Tap a team that is playing this week and not already used.
 3. Confirm. You can change that pick until **your team’s kickoff**, as long as the new game has not started either. **When that game starts, next week opens for you right away.**
 
-On `main`, Pick opens on **your** open week (Week 1 while your game is still upcoming; Week 2 as soon as that pick is locked, or if you never had a Week 1 pick path). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
+On `main`, Pick opens on **your** open week (Week 1 while your game is still upcoming; Week 2 as soon as that pick is locked, or if you never had a Week 1 pick path). The header **Week N** badge is the **pool** week from the slate (read-only), not your personal next-pick week ([#122](https://github.com/triwithms/survive-sunday/pull/122)). Previous/next week arrows on the Pick header shipped with [PR #14](https://github.com/triwithms/survive-sunday/pull/14).
 
-Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on Pick / Schedule / confirm / team This week / Home are **informational ESPN lines** in plain language when we have them (for example “BUF favoured by 4.5”; a pick'em is “Even (pick'em)”). Those lists do **not** show TV channel or quarter / down-distance (that stays on **Scores**). If ESPN has no line, that field is hidden — we never invent a fake **-3** for every team.
+Team logos and names on the pick slate open a **team research** page (roster, news, record). Tap an NFL **player name** there for college, depth role, and any matching ESPN injury note. Spreads on Pick / Schedule / confirm / team This week / Selections are **informational ESPN lines** in plain language when we have them (for example “BUF favoured by 4.5”; a pick'em is “Even (pick'em)”). Those lists do **not** show TV channel or quarter / down-distance (that stays on **Scores**). If ESPN has no line, that field is hidden — we never invent a fake **-3** for every team.
 
 ### Lock
 
@@ -298,16 +310,16 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 ### Scores & injuries (live on `main`)
 
 - **Scores** opens on the signed-in friend’s **current pick week** (same week Pick is focused on). Past weeks are fine; **future weeks stay on Schedule** — Scores will not open them.
-- **Scores** (and Home / Pick / Schedule) refresh from ESPN while games are on. Finals auto-grade.
-- **Scores**, **My pick**, **Selections**, and **Standings** show ESPN team logos beside abbreviations (`Team.logoUrl` or the ESPN CDN). Marks are sized to read at a glance on a phone (second bump after [#43](https://github.com/triwithms/survive-sunday/pull/43), in [#49](https://github.com/triwithms/survive-sunday/pull/49)). Possession is a **🏈** plus a gold bar.
-- **Team pages** show ESPN’s public injury report as a **name list** (not official NFL). Home / Scores / Schedule / Pick do not show Out / Doubtful / Q chips or TV stations. Tap a **player name** on the roster or injury list for a detail page.
+- **Scores** (and My pick / Selections / Schedule) refresh from ESPN while games are on. Finals auto-grade.
+- **Scores**, **My pick**, **Selections**, and **Standings** show **local-only** transparent helmets (`public/helmets/{abbr}.png` — no white plates, no ESPN CDN / `Team.logoUrl`; [#119](https://github.com/triwithms/survive-sunday/pull/119), [#124](https://github.com/triwithms/survive-sunday/pull/124)). Marks are sized to read at a glance on a phone. Possession is a **🏈** plus a gold bar.
+- **Team pages** show ESPN’s public injury report as a **name list** (not official NFL). Selections / Scores / Schedule / Pick do not show Out / Doubtful / Q chips or TV stations. Tap a **player name** on the roster or injury list for a detail page.
 - If ESPN is blocked or down, last saved scores stay; injury cards say the feed failed and link out.
 - **Static cache (slice 1):** week slate / kickoffs last-good **6h** (20s while games are live or in the kickoff window); Scores/Schedule do not refetch ESPN on every tap inside TTL. Injuries last-good **24h** — UI keeps the last good list while a refresh runs and only replaces it when the content hash changes. Live scores and picks stay live.
 - `data/sample_injury_news.json` is schema-only and is **not** shown in the UI on `main`.
 
 ### Standings / in vs out
 
-- **Leaderboard** (`/standings`): still in → out, then fewest losses / most weeks survived; among equals clean record → live win margin of finished picks → nickname. Scores **Participants’ picks** / `GET /api/picks`: undefeated → one-loss → eliminated, then same pick / same game / nickname A–Z. **Selections** (`/pool`) is the weekly pick list (same team, then A–Z) — not the in/out race.
+- **Leaderboard** (`/standings`): still in → out, then fewest losses / most weeks survived; among equals clean record → live win margin of finished picks → nickname. Season-end tiebreak starts **collapsed** until tapped ([#118](https://github.com/triwithms/survive-sunday/pull/118)). Scores **Participants’ picks** / `GET /api/picks`: undefeated → one-loss → eliminated, then same pick / same game / nickname A–Z. **Selections** (`/pool`) is the weekly pick list (same team, then A–Z) — not the in/out race.
 - You can open My pick, Selections, Scores, Standings, Leaderboard, Help, and team pages **without** making a pick. If lock hits and a player still has no pick, the app records a **missed pick** (loss / mulligan), except a spectator administrator. Players see a gold banner when the administrator has turned the mulligan off: **From Week X: no mulligan / one-and-done.**
 
 ### Scores, League, team pages
@@ -316,7 +328,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 - **Scores** pulls the ESPN scoreboard, shows live / scheduled / final, and auto-grades games that are final.
 - **Share as a picture** (merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45)): no Share button. Leaderboard or Scores → **press and hold the title** or **triple-tap the week label**. Full long screenshot is always a choice. Shorter options plus split pages when the page is very long. Nav, bottom tabs, **Details ›**, and “tap for details” stay off the image. Help → **Share Leaderboard & Scores as a picture**. Does **not** change picks, Join, Sign in, or lock. Scores cards themselves still show **Details ›** on the live page ([#46](https://github.com/triwithms/survive-sunday/pull/46)).
 - **Standings** and **Schedule** are research screens (NFL W-L / full slate). In Real mode, Standings **W-L syncs from ESPN** (not the demo `week2-standings.json` seed, and no player-facing “demo” League copy). Kickoff times in the app are the **US slate** (ET + US networks such as CBS / Fox / NBC).
-- **Team pages** (`/team/KC` and so on): helmet, record, this week’s game, **style** (above coach), **head coach** (ESPN name + ESPN / Wikipedia / team links), then links for **Offence / Defence / Special teams** (starters-only checkbox), **Injuries** (ESPN public report, not official NFL), and **News**. No Key players card. No full roster dump. Tap a **player name** for number, position, college, starter vs depth, and any matching ESPN injury note.
+- **Team pages** (`/team/KC` and so on): helmet, record, this week’s game, **style** (above coach), **head coach** (ESPN name + ESPN / Wikipedia / team links), then links for **Offence / Defence / Special teams** (starters-only checkbox; healthy starters first, then injured starters — [#121](https://github.com/triwithms/survive-sunday/pull/121)), **Injuries** (ESPN public report, not official NFL), and **News**. No Key players card. No full roster dump. Tap a **player name** for number, position, college, starter vs depth, and any matching ESPN injury note. Full-season team schedule is **not** on `main` yet (open [PR #132](https://github.com/triwithms/survive-sunday/pull/132) — **HOLD**).
 - These are **NFL roster players**, not pool members (nicknames on Selections / Leaderboard).
 
 ### Canadian TV (when you share a schedule — not in the app)
@@ -343,7 +355,7 @@ Hold the **group invite** until Resend keys are set and Forgot password actually
 
 ## 8. Admin
 
-**Admin** is in the bottom bar for administrators (also under **Account**). Three phone tabs: **Users · Pool · System**. `/admin` opens Users. There is no Demo vs Real toggle — the pool is live-only (Week 1 current; Week 2 stays on the schedule).
+**Admin** is in the bottom bar for administrators (also under **Account**). Three phone tabs: **Users · Pool · System**. `/admin` opens Users. There is no Demo vs Real toggle — the pool is live-only (Week 2 current).
 
 Gams is Player + Administrator. Switch **Playing as Gams** / **Admin tools** from **Account**. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
@@ -383,11 +395,11 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 | Friends can use the app without picking every week | **Built.** They can browse without picking. A missed week still counts as a loss after lock. Changing that rule is a product decision — say so explicitly. |
 | Transfer ownership (hand Admin to another friend) | **Shipped.** Admin → **Hand the pool to someone else**. They keep playing; you stay as a player and lose Admin. Different from **Make administrator**. |
 | Turn off the free mulligan (one-and-done from a week) | **Shipped.** Admin → **Pool rules — mulligan**. Already-scored weeks stay. Players see a gold banner. |
-| No “demo” labels / `demo1234` practice picker | **Shipped.** Pool is live-only (Demo vs Real toggle removed). Week 1 current; Week 2 stays viewable. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
-| Friends pick themselves from the live roster and claim that seat | **Shipped** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)). Join + logged-out Home show **Who are you?** from the live Admin roster. Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch from **Account** with **Playing as …** / **Admin tools**. Admin can promote another existing member. Administrators copy **personal Join links** from Admin / Roster. |
+| No “demo” labels / `demo1234` practice picker | **Shipped.** Pool is live-only (Demo vs Real toggle removed). Week 2 current. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
+| Friends claim a seat via Join / invite link | **Shipped** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)). Cold open is Sign in; Join via personal/invite link (`/join?who=` / `/login?invite=`). Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch from **Account** with **Playing as …** / **Admin tools**. Admin can promote another existing member. Administrators copy **personal Join links** from Admin / Roster. |
 | Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in is **email + password**; **Forgot password?** → 6-digit code is on `main`. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Check spam/junk. Optional Twilio for texts. |
 | Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** After Sign in on a phone, Yes / No / Not now. Yes = Install or iOS … → scroll → Share → Add to Home Screen. Not now = next Sign in. No = Help → Install on Home Screen. Home Screen icon does not nag. Cookie is ~**90 days**. |
-| Each friend chooses which notification types they want | **Shipped.** Account → **Notification preferences**. Per-user row in the database. Core on, noisy off. Gates pick-confirm, results, elimination/mulligan, pool notes, missing-pick email/SMS. Password reset is never gated. |
+| Each friend chooses Email / SMS / both / none | **Shipped** ([#133](https://github.com/triwithms/survive-sunday/pull/133)). Account → **Notification preferences** (`User.notifyPref`). Admin **Send test to me**. `NOTIFY_MODE` is `dryrun` \| `allowlist` \| `live`. Password reset is never gated. |
 
 ### Do not build (already decided)
 
@@ -397,7 +409,7 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 
 - **Live odds-based favourite strength meter** on the pick screen until kickoff. Today the pick screen shows a **static** spread from seeded data, not a live meter.
 
-Live **scores** and **injury report** (ESPN public JSON) are already wired on `main` — not a bonus. **Weekly videos + game highlights** are shipped (header **Videos**, Scores → Details) — do not rebuild them.
+Live **scores** and **injury report** (ESPN public JSON) are already wired on `main` — not a bonus. **Weekly videos + game highlights** are shipped (Scores / Schedule → **Details**, leftover `/videos` deep link) — do not rebuild them. Videos are **not** a bottom tab or header item.
 
 ### Later / Wave 2 (do not confuse with MUST)
 
@@ -407,7 +419,7 @@ Lowest priority. Do **not** start unless the owner asks. None of this is on `mai
 
 ---
 
-## 10. Shipped vs still open (17 September 2026)
+## 10. Shipped vs still open (19 September 2026)
 
 Re-checked against GitHub `main` and the live site. **Do not describe an open PR as live.** After you merge one, update this file in the same PR.
 
@@ -419,11 +431,11 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | BM Boys real names + Roster editor | [#9](https://github.com/triwithms/survive-sunday/pull/9) | John Stilo / Steve Venerus / Tony Gyuro, plus Admin → Roster. Live roster also has **Go Giants** (Carson Gama) and **Pauli** (Paul Gama). |
 | Owner handoff (earlier passes) | [#13](https://github.com/triwithms/survive-sunday/pull/13), [#15](https://github.com/triwithms/survive-sunday/pull/15) | **Superseded by this file.** |
 | Live ESPN scores + injury report | [#12](https://github.com/triwithms/survive-sunday/pull/12) | Scores poll ESPN; team pages + chips use ESPN injuries. No paid key. |
-| Live pool (was Real vs Demo), Week 1 current week, reset, real administrator login | [#10](https://github.com/triwithms/survive-sunday/pull/10); toggle removed on Admin tabs PR | Live-only. Week 1 current, no practice picker. [`docs/REAL-MODE.md`](./REAL-MODE.md). |
+| Live pool (was Real vs Demo), reset, real administrator login | [#10](https://github.com/triwithms/survive-sunday/pull/10); toggle removed on Admin tabs PR | Live-only. **Week 2** is the current board week (header **Week N** from the slate). No practice picker. [`docs/REAL-MODE.md`](./REAL-MODE.md). |
 | Forgot password + ~90 day stay-logged-in | [#7](https://github.com/triwithms/survive-sunday/pull/7) (squash-merged, `2df4645`) | Sign in → **Forgot password?** → 6-digit code → new password. **Merged / shipping.** Codes send only after Resend (optional Twilio) env vars are on Vercel + Redeploy. **Still the invite blocker.** |
 | Pick header previous / next week | [#14](https://github.com/triwithms/survive-sunday/pull/14) | Chevrons around the gold `W#` badge; `?week=` like Home / Scores. Past / future weeks read-only. |
 | Safari sign-in + Account Sign out | [#18](https://github.com/triwithms/survive-sunday/pull/18) | Login errors show on the page. Header **Account → Sign out**. |
-| Who are you? live-roster claim + Player/Admin roles | [#19](https://github.com/triwithms/survive-sunday/pull/19) | Friends pick `Gams (Robert Gama)` (or Pauli, Go Giants, …) from the live roster. **One user, multiple roles** — not a separate admin account. **Playing as … / Admin tools** lives in **Account**, not on League / main screens. Promote another member. |
+| Seat claim + Player/Admin roles | [#19](https://github.com/triwithms/survive-sunday/pull/19) | Join via personal/invite link. Cold open is Sign in (no Home **Who are you?** list). **One user, multiple roles** — not a separate admin account. **Playing as … / Admin tools** lives in **Account**, not on League / main screens. Promote another member. |
 | Week 2 schedule in Real/live | [#22](https://github.com/triwithms/survive-sunday/pull/22) | Week 2 is a real NFL week on Schedule / Pick. Demo isolation does **not** hide the slate. |
 | Survival board / pick-list sort | this PR (after [#21](https://github.com/triwithms/survive-sunday/pull/21), [#24](https://github.com/triwithms/survive-sunday/pull/24), [#38](https://github.com/triwithms/survive-sunday/pull/38)) | Undefeated → one-loss → eliminated, then same pick → same game → nickname A–Z. Pick-first (and weeks-survived) was wrong for these lists. |
 | League W-L from ESPN (no demo leak) | live-standings merge (`538be1f`) | Real-mode League syncs ESPN W-L. Demo `week2-standings` seed is not shown to Real-mode friends. |
@@ -453,10 +465,25 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | App Router layout (ui / features / actions) | Phase 1–4 on `main` ([#75](https://github.com/triwithms/survive-sunday/pull/75), [#74](https://github.com/triwithms/survive-sunday/pull/74)) | Shared UI in `src/components/ui/`. My pick / Selections / Scores / Leaderboard / Standings in `src/components/features/`. Server actions in `src/app/actions/`. Pages under `src/app/` stay thin. |
 | Invite / API tokens | [#78](https://github.com/triwithms/survive-sunday/pull/78) | Modules under `src/lib/`: `invite-token.ts`, `invite-token-db.ts`, `invite-token-schema.ts`, `invite-link.ts`, `api-token.ts`, `token-crypto.ts`. Hashed invite `?t=` is wired on Join; Admin Personal Join links still copy `?who=` / `?seat=`. No extra token Admin tab. |
 | Production build does not touch Neon | Safety P0 (`3820ba4`) | `npm run build` is `next build` only. `postinstall` is `prisma generate` only. Seed/setup/`db:push` refuse Production. Do **not** reattach `ensure-production-db` / db push / seed to the Vercel build. Crons do not wipe or reseed. |
+| Help topic menu | [#108](https://github.com/triwithms/survive-sunday/pull/108) | `/help` is a short topic list. Tap a topic (or a hash) to see only that section + **Back to Help topics**. |
+| Leaderboard tiebreak collapsed | [#118](https://github.com/triwithms/survive-sunday/pull/118) | Season-end tiebreak starts collapsed until tapped. |
+| Local-only team logos | [#119](https://github.com/triwithms/survive-sunday/pull/119) | Helmets from `public/helmets/{abbr}.png`. No ESPN CDN marks in the UI. |
+| Slate / injury last-good cache | [#120](https://github.com/triwithms/survive-sunday/pull/120) | Week slate 6h (20s while live); injuries 24h. Live scores and picks stay live. |
+| Healthy-then-injured starters | [#121](https://github.com/triwithms/survive-sunday/pull/121) | Team unit pages list healthy starters first, then injured starters. |
+| Header Week N = pool week | [#122](https://github.com/triwithms/survive-sunday/pull/122) | Header **Week N** is the pool week from the slate, not a friend’s personal next-pick week. |
+| Transparent helmets (no white plates) | [#124](https://github.com/triwithms/survive-sunday/pull/124) | NE / CLE (and others) are transparent local PNGs — no leftover white plates. |
+| Bottom nav IA | [#126](https://github.com/triwithms/survive-sunday/pull/126) | **My pick · Selections · Leaderboard · Scores · Schedule · Standings**; header **?** Help. Bottom nav stays on the viewport (iPhone Schedule). |
+| NFL Pool Home Screen / browser icons | [#127](https://github.com/triwithms/survive-sunday/pull/127) | Football mark in `public/icons/`. Shortcut name **NFL Pool**. |
+| YOU'RE OUT overlay | [#128](https://github.com/triwithms/survive-sunday/pull/128) | Eliminated players get a near-full overlay on My pick; no picks. Admin elimination alerts. |
+| Invite sign-in prefill | [#130](https://github.com/triwithms/survive-sunday/pull/130) | `/login?invite=` peeks hashed token (email + nickname only). Partial Admin player profiles. |
+| Account notifyPref + NOTIFY_MODE | [#133](https://github.com/triwithms/survive-sunday/pull/133) | Email / SMS / both / none on Account; Admin **Send test to me**; `NOTIFY_MODE` `dryrun` \| `allowlist` \| `live`. |
+| Chief of Staff takeover doc | [#135](https://github.com/triwithms/survive-sunday/pull/135) | [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md) — crash-recovery playbook for a new CoS. |
 
 ### Open — not on `main` yet
 
-None at wrap-up time. Do not describe an open PR as live.
+| Work | PR | Notes |
+|------|-----|-------|
+| Team page full-season schedule | [#132](https://github.com/triwithms/survive-sunday/pull/132) | **HOLD** — not live. Do not document as shipped. Merge only when Robert says go. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
@@ -547,7 +574,7 @@ That was last afternoon’s leftover seed. **Official Week 1 rows are imported**
 **Rules for every chat**
 
 1. Prefer **one small PR per chat**.
-2. **Continue** an existing open PR branch. Never reopen password reset (merged PR #7), Real mode (merged PR #10), Who are you? / roles (merged PR #19), Safari/Sign out (merged PR #18), Week 2 slate restore (merged PR #22), board sort (merged PRs #21 / #24), pick-week nav (merged PR #14), Week 1 pick-change-until-kickoff (merged PR #25), mulligan/transfer (merged PR #8), player-detail pages (merged PR #11), or head-coach / team-page order (merged PR #20).
+2. **Continue** an existing open PR branch. Never reopen password reset (merged PR #7), Real mode (merged PR #10), seat-claim / roles (merged PR #19), Safari/Sign out (merged PR #18), Week 2 slate restore (merged PR #22), board sort (merged PRs #21 / #24), pick-week nav (merged PR #14), Week 1 pick-change-until-kickoff (merged PR #25), mulligan/transfer (merged PR #8), player-detail pages (merged PR #11), or head-coach / team-page order (merged PR #20).
 3. **Never invent features as “live.”** If it is not on `main` (section 10), say it is not shipped.
 4. Owner is **not a coder** — every answer needs click-by-click GitHub / Vercel / Admin steps, not “run this locally.”
 5. Do not use or recommend **paid Grok Bot**, Cursor desktop agents, or other expensive coding bots unless **free Grok**, then **free Claude**, then **free Gemini** are exhausted (or unsuitable) and the owner asks.
@@ -619,7 +646,7 @@ Honest status:
 - Do not rebuild every-login 2FA (closed PR #5).
 - Password reset (email/SMS one-time code) is **on main** (merged PR #7). Do not start a second copy. Do not claim codes are sending until Resend (optional Twilio) env vars are on Vercel and Production is Redeployed.
 - Stay-logged-in on the phone is ~90 days on main.
-- Who are you? claim + Player/Administrator roles + role switcher are **on main** (merged PR #19). Do not start a second copy.
+- Seat claim + Player/Administrator roles + role switcher are **on main** (merged PR #19). Do not start a second copy.
 - Safari sign-in + Account Sign out are **on main** (merged PR #18).
 - Personal Join links and Home Screen prompt ship in the Join / Home Screen UX pack. The client A2HS card lives in `src/components/features/a2hs/`. Do not start a second copy. Sign in is email + password + Forgot password. Password form POST to `/api/login` must stay (Safari cookies).
 
@@ -667,7 +694,7 @@ You are free / basic Grok chat — not Grok Bot. Owner is not a coder. Click-by-
 
 MUST on main (already shipped):
 - Live-only pool (Demo vs Real toggle removed). Reset pool and real administrator login. Do not add a mode switch.
-- Who are you? claim + Player/Administrator roles + Make administrator (merged PR #19). Do not start a second copy.
+- Seat claim + Player/Administrator roles + Make administrator (merged PR #19). Do not start a second copy.
 - Administrator can change a participant pick after the fact (Import week picks, audit-logged). Week 1 is already imported — HANDOFF section 6b.
 - Roster real-name editor (including Go Giants, Pauli, JaJa). Pick backup (copy from another member within 30 min of kickoff) is on Account and Admin → Roster.
 - Turn off mulligan / one-and-done from a week; **Hand the pool to someone else** (confirm nickname; previous stays a player and loses Admin). Do not start a second copy.
@@ -733,7 +760,7 @@ You are free / basic Grok chat — not Grok Bot. Trust main for what is live:
 - Live scores / injuries upgrade already shipped as merged PR #12. Do not invent another feed.
 - Real-mode League W-L syncs from ESPN (not demo week2-standings). Do not show player-facing demo League copy.
 - Head coach card already shipped as merged PR #20. Do not open a second copy.
-- Weekly YouTube videos (header Videos) and Scores → Details highlights already ship. Do not invent a second video library.
+- Weekly YouTube videos (Scores / Schedule → **Details**; leftover `/videos` deep link) already ship. Do not invent a second video library. Videos are not a header item.
 
 Canadian TSN / CTV / RDS / DAZN listings are not in the app. Do not invent a live Canadian TV feed.
 Small PR only. Do not rewrite picks / board / in-out.
@@ -748,7 +775,7 @@ Read docs/HANDOFF.md section 10. Trust GitHub main.
 Continue the existing open PR I name. Rebase that branch onto latest origin/main.
 Do not open a second PR for the same feature. Do not merge. Do not invent extras.
 Owner is not a coder: after you push, give click-by-click GitHub steps to review the updated PR.
-Password reset PR #7, Real mode PR #10, pick-week nav PR #14, Safari/Sign out PR #18, Who are you? PR #19, board sort PRs #21/#24, Week 2 restore PR #22, Week 1 pick-change PR #25, mulligan/transfer PR #8, player-detail pages PR #11, and head-coach / team-page order PR #20 are already merged — do not reopen them.
+Password reset PR #7, Real mode PR #10, pick-week nav PR #14, Safari/Sign out PR #18, seat-claim PR #19, board sort PRs #21/#24, Week 2 restore PR #22, Week 1 pick-change PR #25, mulligan/transfer PR #8, player-detail pages PR #11, and head-coach / team-page order PR #20 are already merged — do not reopen them.
 My problem: [PR number and what GitHub shows — conflicts / failed checks]
 ```
 
@@ -768,9 +795,9 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |
 | **Audit log** | A written record of administrator changes (imports, removals, real-name edits, pool rules, transfer). |
-| **Live pool** | The only pool mode. Week 1 is the current board week. Week 2 stays on the schedule. Each player’s Week 2 pick opens when their own Week 1 game has started. Demo vs Real toggle was removed. |
+| **Live pool** | The only pool mode. **Week 2** is the current board week. Header **Week N** is the pool week from the slate. Each player’s personal next-pick week can still lag until their own game has started. Demo vs Real toggle was removed. |
 | **Practice seat email** | `@survivesunday.demo` on an unclaimed Join seat. Seat claiming, not Demo mode. |
-| **Who are you? / claim seat** | Real-mode Join (and logged-out Home) list from the **live Admin roster**. Friend picks their nickname (e.g. **Pauli**, **Go Giants**, **JaJa**, Gams), sets their own email + password, and keeps that seat’s picks. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
+| **Claim seat / Join** | Join via a personal or invite link (`/join?who=` / `/login?invite=`). Friend claims their nickname (e.g. **Pauli**, **Go Giants**, **JaJa**, Gams), sets their own email + password, and keeps that seat’s picks. Cold open is Sign in, not a Home people list. Same email can hold Player + Administrator. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19); invite prefill [#130](https://github.com/triwithms/survive-sunday/pull/130)). |
 | **Personal Join link** | Per-person URL from Admin (`/join?who=cannoli-stuffer` when unique). Opens Join with that seat picked. Claimed seats → Sign in. |
 | **Pick backup** | Off, copy from a member (30 min), or auto best remaining 2025-rank team (~2 min) if you still have no pick. JaJa copies Gams. |
 | **OTP / reset code** | One-time 6-digit code on **Forgot password?** (email first; optional text if a cell is saved). Sign in itself is email + password. Not a code at every login. Codes send only after Resend keys are on Vercel. Check spam/junk. |
