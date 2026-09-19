@@ -15,7 +15,7 @@ Chief of Staff (Grok Bot) owns when to surface these. **Never auto-paste a stale
 | # | Prompt | Fire when | Status |
 |---|--------|-----------|--------|
 | 0 | [MNF wrap copy](./MNF-WRAP-FREE-AI.md) | Notification prefs **live** (not Coming soon) + Week facts ready | waiting on prefs |
-| 1 | [Notifications coding brief](./NOTIFICATIONS-FREE-AI.md) | Icons + Admin invite PRs merged; prefs still stubbed | waiting on icons/invite |
+| 1 | [Notifications coding brief](./NOTIFICATIONS-FREE-AI.md) | Icons + Admin invite PRs merged; prefs still stubbed | in PR (prefs live) |
 | 2 | [Team schedule coding brief](./TEAM-SCHEDULE-FREE-AI.md) | After icons + Admin invite (can run before or after notifs) | waiting on icons/invite |
 | 3 | [Docs refresh](./DOCS-REFRESH-FREE-AI.md) | Free quota available; HANDOFF/FILE-MAP lag today’s merges | optional anytime |
 

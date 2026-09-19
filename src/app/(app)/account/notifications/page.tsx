@@ -2,7 +2,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { NotificationPrefsForm } from "@/components/NotificationPrefsForm";
-import { ensureNotificationPrefsSafe } from "@/lib/notification-prefs";
+import { loadNotifyPref } from "@/lib/notify-pref-db";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -10,7 +10,7 @@ export const revalidate = 0;
 export default async function NotificationPrefsPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
-  const { prefs, error } = await ensureNotificationPrefsSafe(session.user.id);
+  const { pref } = await loadNotifyPref(session.user.id);
 
   return (
     <div className="space-y-5">
@@ -26,12 +26,11 @@ export default async function NotificationPrefsPage() {
           Notification preferences
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Each alert is SMS / Email / both / none. Coming soon — notifications
-          not sending yet. Password-reset codes still send when you ask.
-          Path: Account (header) → Notification preferences.
+          Choose SMS, Email, both, or none. Password-reset codes still send when
+          you ask. Path: Account (header) → Notification preferences.
         </p>
       </div>
-      <NotificationPrefsForm initial={prefs} initialError={error} />
+      <NotificationPrefsForm initial={pref} />
     </div>
   );
 }

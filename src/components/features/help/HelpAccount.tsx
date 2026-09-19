@@ -9,8 +9,8 @@ export function HelpAccount() {
           <strong>Account</strong> is in the header (top right). Change
           nickname, add a cell, Sign out.{" "}
           <strong>Account → Notification preferences</strong> stays there —
-          not on Help. Each alert is SMS / Email / both / none (coming soon
-          until send works).
+          not on Help. Choose SMS, Email, both, or none. Password-reset codes
+          always send when you ask.
         </li>
         <li className="text-[var(--text-primary)]">
           Sign in is email (or username) and password. We do not ask for a code

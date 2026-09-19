@@ -7,6 +7,7 @@ import { hasRole, isAdministrator, isPlayerSeat, POOL_ROLES } from "./roles";
 import { backfillPoolAccessRoles, listUserPoolRoles } from "./roles-db";
 import { ensurePickMirrorColumn } from "./pick-mirror-schema";
 import { ensurePoolRulesColumns } from "./pool-rules-schema";
+import { ensureUserNotifyPref } from "./notify-pref-schema";
 
 const membershipInclude = {
   pool: true,
@@ -43,7 +44,7 @@ function isMissingMembershipColumn(error: unknown): boolean {
     if (code === "P2022") return true;
   }
   const msg = error instanceof Error ? error.message : String(error ?? "");
-  return /autoPickStamps|pickBackup|mirrorFromMembershipId|isParticipant|playingFromWeek|singleEliminationFromWeek|does not exist in the current database/i.test(
+  return /autoPickStamps|pickBackup|mirrorFromMembershipId|isParticipant|playingFromWeek|singleEliminationFromWeek|notifyPref|does not exist in the current database/i.test(
     msg
   );
 }
@@ -59,6 +60,7 @@ async function loadMemberships(userId: string) {
     if (!isMissingMembershipColumn(error)) throw error;
     await ensurePickMirrorColumn(prisma);
     await ensurePoolRulesColumns(prisma);
+    await ensureUserNotifyPref(prisma);
     return prisma.membership.findMany({
       where: { userId },
       include: membershipInclude,

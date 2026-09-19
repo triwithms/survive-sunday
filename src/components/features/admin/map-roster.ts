@@ -13,12 +13,14 @@ export function isVisibleAdminPerson(member: {
 export function toRosterMembers(members: MemberRow[]) {
   return members.filter(isVisibleAdminPerson).map((m) => ({
     id: m.id,
+    userId: m.userId,
     nickname: m.nickname,
     realName: m.realName,
     status: m.status,
     role: m.role,
     email: m.user.email,
     phoneE164: m.user.phoneE164,
+    notifyPref: m.user.notifyPref ?? null,
     mirrorFromMembershipId: m.mirrorFromMembershipId,
     pickBackup: m.pickBackup,
   }));

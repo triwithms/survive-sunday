@@ -1,8 +1,4 @@
-import {
-  sendResendMessage,
-  sendTwilioMessage,
-  stadiumEmailHtml,
-} from "./delivery";
+import { dispatchNotice } from "./notify-dispatch";
 import { isDemoEmail, normalizeEmail } from "./otp";
 import { claimNotificationSend, notifyInBackground } from "./notify";
 import { loadPoolAdminUsers } from "./password-reset-admins";
@@ -25,7 +21,7 @@ export function scheduleAdminEliminationNotice(opts: {
   notifyInBackground(() => deliverAdminEliminationNotice(opts));
 }
 
-/** Claim new elims, then one email/SMS per Administrator. Safe to re-run. */
+/** Claim new elims, then notify each Administrator via their own prefs. */
 export async function deliverAdminEliminationNotice(opts: {
   poolId: string;
   weekId: string;
@@ -49,46 +45,29 @@ export async function deliverAdminEliminationNotice(opts: {
     nicknames: claimed.map((p) => p.nickname),
   });
   const ids = claimed.map((p) => p.membershipId);
-  const admins = await loadPoolAdminUsers(opts.poolId);
+  const blastKey = adminBlastDedupeKey(opts.weekId, ids, "email").replace(
+    /:email$/,
+    ""
+  );
   let emailed = 0;
   let texted = 0;
-
-  for (const admin of admins) {
-    const email = normalizeEmail(admin.email ?? "");
-    const demo = isDemoEmail(email);
-    if (email.includes("@") && !demo) {
-      const take = await claimNotificationSend(
-        admin.id,
-        ADMIN_ELIM_TYPE,
-        adminBlastDedupeKey(opts.weekId, ids, "email"),
-        "email"
-      );
-      if (take) {
-        const sent = await sendResendMessage({
-          to: email,
-          subject: copy.subject,
-          text: copy.text,
-          html: stadiumEmailHtml({
-            heading: copy.subject,
-            bodyHtml: copy.htmlBody,
-          }),
-        });
-        if (sent.ok) emailed += 1;
-      }
-    }
-    const phone = (admin.phoneE164 ?? "").trim();
-    if (phone && !demo) {
-      const take = await claimNotificationSend(
-        admin.id,
-        ADMIN_ELIM_TYPE,
-        adminBlastDedupeKey(opts.weekId, ids, "sms"),
-        "sms"
-      );
-      if (take) {
-        const sent = await sendTwilioMessage({ to: phone, body: copy.smsBody });
-        if (sent.ok) texted += 1;
-      }
-    }
+  for (const admin of await loadPoolAdminUsers(opts.poolId)) {
+    const demo = isDemoEmail(normalizeEmail(admin.email ?? ""));
+    if (demo) continue;
+    const result = await dispatchNotice({
+      target: {
+        userId: admin.id,
+        email: admin.email,
+        phoneE164: admin.phoneE164,
+        notifyPref: admin.notifyPref,
+      },
+      category: "admin_alert",
+      type: ADMIN_ELIM_TYPE,
+      dedupeKey: blastKey,
+      content: copy,
+    });
+    if (result.emailed) emailed += 1;
+    if (result.texted) texted += 1;
   }
   return { claimed: ids, emailed, texted };
 }

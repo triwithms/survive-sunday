@@ -17,6 +17,8 @@ model User {
   image          String?
   phoneE164      String?   // SMS missing-pick reminders (+1XXXXXXXXXX)
   phoneSkippedAt DateTime? // soft-prompt skip; null = never asked
+  /// email | sms | both | none. Channel for GAME notices. See notify-channels.ts.
+  notifyPref     String    @default("none")
   createdAt      DateTime  @default(now())
   accounts       Account[]
   sessions       Session[]
@@ -268,6 +270,8 @@ model NotificationSend {
   type      String
   dedupeKey String
   channel   String
+  /// sent | skipped_pref | no_contact | dry_run
+  outcome   String   @default("sent")
   createdAt DateTime @default(now())
 
   @@unique([userId, type, dedupeKey])

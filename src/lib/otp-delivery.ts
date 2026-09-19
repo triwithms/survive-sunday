@@ -59,7 +59,7 @@ export async function deliverOtp(
   });
 }
 
-function emailText(code: string, kind: OtpCopyKind): string {
+export function emailText(code: string, kind: OtpCopyKind): string {
   const noun = kind === "sign_in" ? "sign-in code" : "password-reset code";
   const ignore =
     kind === "sign_in"
@@ -74,7 +74,7 @@ function emailText(code: string, kind: OtpCopyKind): string {
   ].join("\n");
 }
 
-function emailHtml(code: string, kind: OtpCopyKind): string {
+export function emailHtml(code: string, kind: OtpCopyKind): string {
   const heading =
     kind === "sign_in" ? "Your sign-in code is:" : "Your password-reset code is:";
   const ignore =

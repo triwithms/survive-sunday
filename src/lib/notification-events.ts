@@ -13,11 +13,13 @@ function targetFrom(user: {
   id: string;
   email: string | null;
   phoneE164?: string | null;
+  notifyPref?: string | null;
 }, nickname?: string | null): NotifyTarget {
   return {
     userId: user.id,
     email: user.email,
     phoneE164: user.phoneE164,
+    notifyPref: user.notifyPref,
     nickname,
   };
 }

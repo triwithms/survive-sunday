@@ -34,12 +34,14 @@ function assertCap(dir: string, cap = 100) {
 function member(partial: Partial<RosterMember>): RosterMember {
   return {
     id: "1",
+    userId: "u-1",
     nickname: "Pauli",
     realName: "Paul Gama",
     status: "active",
     role: "member",
     email: "paul@example.com",
     phoneE164: null,
+    notifyPref: "email",
     mirrorFromMembershipId: null,
     pickBackup: null,
     ...partial,
@@ -118,7 +120,7 @@ function main() {
   assert.match(panel, /embedded/);
   assert.doesNotMatch(panel, /MirrorPicksForm/);
   assert.match(panel, /RosterContactFields/);
-  assert.match(panel, /RosterNotifySoon/);
+  assert.match(panel, /RosterNotifyPref/);
   assert.match(panel, /Save this person/);
 
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {

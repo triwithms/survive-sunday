@@ -3,6 +3,8 @@ export type NotifyContent = {
   text: string;
   htmlBody: string;
   smsBody?: string;
+  /** Full HTML document — skip the stadium wrapper when set. */
+  html?: string;
 };
 
 export function pickConfirmedCopy(opts: {

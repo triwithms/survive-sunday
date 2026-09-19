@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import {
-  ensureNotificationPrefsSafe,
-  saveNotificationPrefsSafe,
-} from "@/lib/notification-prefs";
-import { parsePreferencePatch } from "@/lib/notification-types";
+import { parseNotifyPrefBody } from "@/lib/notify-pref";
+import { loadNotifyPref, saveNotifyPref } from "@/lib/notify-pref-db";
 
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const { prefs, error } = await ensureNotificationPrefsSafe(session.user.id);
-  return NextResponse.json({ ok: !error, prefs, error });
+  const loaded = await loadNotifyPref(session.user.id);
+  return NextResponse.json({ ok: true, pref: loaded.pref });
 }
 
 export async function PATCH(req: Request) {
@@ -26,18 +23,12 @@ export async function PATCH(req: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const parsed = parsePreferencePatch(body);
+  const parsed = parseNotifyPrefBody(body);
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }
-  const { prefs, error } = await saveNotificationPrefsSafe(
-    session.user.id,
-    parsed.prefs
-  );
-  if (error) {
-    return NextResponse.json({ error, prefs }, { status: 503 });
-  }
-  return NextResponse.json({ ok: true, prefs });
+  const pref = await saveNotifyPref(session.user.id, parsed.pref);
+  return NextResponse.json({ ok: true, pref });
 }
 
 export async function POST(req: Request) {

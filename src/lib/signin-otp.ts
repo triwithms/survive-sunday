@@ -17,7 +17,8 @@ import {
   expirySeconds,
   type OtpChannel,
 } from "./otp";
-import { canRevealDevCode, deliverOtp } from "./otp-delivery";
+import { canRevealDevCode } from "./otp-delivery";
+import { dispatchOtp } from "./otp-notify";
 import type { AuthorizedUser } from "./credentials-user";
 
 export type SignInCodeStatus = {
@@ -217,12 +218,12 @@ async function sendSignInCode(
   }
 
   const code = generateOtpCode();
-  let delivered = await deliverOtp(channel, destination, code, purpose);
+  let delivered = await dispatchOtp(user, channel, code, purpose);
   let usedChannel = channel;
   let usedDestination = destination;
 
   if (!delivered.ok && channel === "sms" && canEmail) {
-    delivered = await deliverOtp("email", user.email, code, purpose);
+    delivered = await dispatchOtp(user, "email", code, purpose);
     if (delivered.ok) {
       usedChannel = "email";
       usedDestination = user.email;

@@ -131,11 +131,11 @@ console.log("PASS  same multi-admin model as password-reset");
 
 const alert = src("src/lib/elimination-admin-alert.ts");
 assert.match(alert, /loadPoolAdminUsers/);
-assert.match(alert, /sendResendMessage/);
-assert.match(alert, /sendTwilioMessage/);
+assert.match(alert, /dispatchNotice/);
 assert.match(alert, /claimNotificationSend/);
-assert.doesNotMatch(alert, /shouldSendPoolEmail|getNotificationPrefs/);
-console.log("PASS  reuses Resend/Twilio + NotificationSend; prefs UI is stubbed so not gated");
+assert.match(alert, /admin_alert/);
+assert.doesNotMatch(alert, /sendResendMessage|sendTwilioMessage/);
+console.log("PASS  reuses dispatchNotice + NotificationSend; admin prefs gate the blast");
 
 const grading = src("src/lib/grading.ts");
 assert.match(grading, /scheduleAdminEliminationNotice/);

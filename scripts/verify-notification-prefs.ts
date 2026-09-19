@@ -182,25 +182,29 @@ const helpAccount = readFileSync(
   "utf8"
 );
 assert.match(helpAccount, /Account → Notification preferences/);
-assert.match(helpAccount, /SMS \/ Email \/ both \/ none/);
-assert.doesNotMatch(helpAccount, /Pick backup|pick backup/);
+assert.match(helpAccount, /SMS, Email, both, or none/);
+assert.doesNotMatch(helpAccount, /coming soon|Pick backup|pick backup/i);
 assert.doesNotMatch(
   readFileSync("src/components/features/help/HelpScreens.tsx", "utf8"),
   /Wave 1|Wave 2|Pick backup/
 );
 assert.match(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
-  /ensureNotificationPrefsSafe/
+  /loadNotifyPref/
 );
 assert.match(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
   /Account \(header\) → Notification preferences/
 );
+assert.doesNotMatch(
+  readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
+  /Coming soon/
+);
 const prefsForm = readFileSync("src/components/NotificationPrefsForm.tsx", "utf8");
-assert.match(prefsForm, /NotifyChannelSelect/);
-assert.match(prefsForm, /Coming soon — notifications not sending yet/);
-assert.match(prefsForm, /disabled/);
-const channel = readFileSync("src/components/NotifyChannelSelect.tsx", "utf8");
+assert.match(prefsForm, /NotifyPrefSelect/);
+assert.match(prefsForm, /Saved/);
+assert.doesNotMatch(prefsForm, /Coming soon|disabled/);
+const channel = readFileSync("src/components/NotifyPrefSelect.tsx", "utf8");
 assert.match(channel, /SMS/);
 assert.match(channel, /Email/);
 assert.match(channel, /both/);

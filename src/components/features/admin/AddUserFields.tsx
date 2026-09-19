@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui";
 import { RosterCardFields } from "./RosterCardFields";
 import { RosterContactFields } from "./RosterContactFields";
-import { RosterNotifySoon } from "./RosterNotifySoon";
 import { SetPasswordKind } from "./SetPasswordKind";
 import type { AddUserDraft } from "./add-user-types";
 
@@ -77,7 +76,10 @@ export function AddUserFields({ draft, busy, err, onChange, onSuggest, onSubmit 
           Also make a Sign in invite I can send. They can finish missing details on Welcome.
         </span>
       </label>
-      <RosterNotifySoon />
+      <p className="text-xs text-[var(--text-muted)]">
+        Notification preference is set after you add them (email → Email, otherwise
+        None). Change it on their Users row.
+      </p>
       {err ? <p className="text-sm text-crimson-400" role="alert">{err}</p> : null}
       <Button type="submit" className="w-full min-h-11" disabled={busy} data-testid="add-user-submit">
         {busy ? "Adding…" : "Add user"}

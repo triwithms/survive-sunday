@@ -7,7 +7,7 @@ import { rosterToPasswordMember } from "./password-members";
 import { RemoveSeatButton } from "./RemoveSeatButton";
 import { RosterCardFields } from "./RosterCardFields";
 import { RosterContactFields } from "./RosterContactFields";
-import { RosterNotifySoon } from "./RosterNotifySoon";
+import { RosterNotifyPref } from "./RosterNotifyPref";
 import { SetMemberPasswordForm } from "./SetMemberPasswordForm";
 import type { RosterDraft } from "./use-roster-edit";
 import type { RosterMember } from "./roster-types";
@@ -50,7 +50,7 @@ export function UserEditPanel(p: Props) {
       >
         {p.busy ? "Saving…" : "Save this person"}
       </Button>
-      <RosterNotifySoon />
+      <RosterNotifyPref userId={member.userId} initial={member.notifyPref} />
       {claimed && player ? (
         <SetMemberPasswordForm
           members={[rosterToPasswordMember(member)]}

@@ -1,48 +1,53 @@
 "use client";
 
-import {
-  DEFAULT_NOTIFICATION_PREFS,
-  NOTIFICATION_TYPES,
-  type NotificationPrefs,
-} from "@/lib/notification-types";
-import { NotifyChannelSelect, channelFromOn } from "./NotifyChannelSelect";
-
-const COMING_SOON = "Coming soon — notifications not sending yet";
+import { useState } from "react";
+import { parseNotifyPref, type NotifyPref } from "@/lib/notify-pref";
+import { NotifyPrefSelect } from "./NotifyPrefSelect";
 
 export function NotificationPrefsForm({
   initial,
   initialError,
 }: {
-  initial?: NotificationPrefs;
+  initial: NotifyPref;
   initialError?: string | null;
 }) {
-  const prefs = initial ?? DEFAULT_NOTIFICATION_PREFS;
+  const [pref, setPref] = useState<NotifyPref>(parseNotifyPref(initial) ?? "email");
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState(initialError ?? null);
+
+  async function onChange(next: NotifyPref) {
+    setPref(next);
+    setSaved(false);
+    setError(null);
+    const res = await fetch("/api/account/notifications", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pref: next }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(typeof data.error === "string" ? data.error : "Could not save");
+      return;
+    }
+    setSaved(true);
+  }
+
   return (
     <div className="space-y-4">
-      <fieldset
-        disabled
-        className="card-glass space-y-1 p-4 opacity-70"
-        data-testid="notification-prefs-form"
-      >
+      <fieldset className="card-glass space-y-1 p-4" data-testid="notification-prefs-form">
         <legend className="px-1 text-sm font-semibold text-gold-400 uppercase tracking-wide">
           Notifications
         </legend>
-        <p className="text-xs text-[var(--text-muted)] mb-2">{COMING_SOON}</p>
-        {NOTIFICATION_TYPES.map((type) => (
-          <NotifyChannelSelect
-            key={type}
-            type={type}
-            value={channelFromOn(prefs[type])}
-          />
-        ))}
+        <NotifyPrefSelect value={pref} onChange={onChange} />
+        {saved ? (
+          <p className="text-xs text-gold-400" data-testid="prefs-saved">
+            Saved
+          </p>
+        ) : null}
       </fieldset>
-      {initialError ? (
-        <p
-          className="text-crimson-400 text-sm"
-          role="alert"
-          data-testid="prefs-load-error"
-        >
-          {initialError}
+      {error ? (
+        <p className="text-crimson-400 text-sm" role="alert" data-testid="prefs-load-error">
+          {error}
         </p>
       ) : null}
     </div>

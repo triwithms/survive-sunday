@@ -3,6 +3,7 @@ import { AdminHeading } from "./AdminHeading";
 import { AuditLogList } from "./AuditLogList";
 import { EnterPickForm } from "./EnterPickForm";
 import { ResetPoolPanel } from "./ResetPoolPanel";
+import { SendTestNotify } from "./SendTestNotify";
 import type { SystemScreenProps } from "./types";
 
 export function SystemScreen(props: SystemScreenProps) {
@@ -13,6 +14,7 @@ export function SystemScreen(props: SystemScreenProps) {
         for them after their own game starts. Reset stays closed.
       </AdminHeading>
       <EnterPickForm data={props.enterPick} />
+      <SendTestNotify />
       <AdminDetails title="Danger — reset the pool" danger testId="system-danger">
         <ResetPoolPanel />
       </AdminDetails>

@@ -50,6 +50,7 @@ export async function createAddUser(
       name: value.realName || nickname,
       phoneE164: value.phoneE164,
       passwordHash,
+      notifyPref: email ? "email" : "none",
     };
     const user = clash.existing
       ? await prisma.user.update({

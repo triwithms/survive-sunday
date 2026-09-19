@@ -40,15 +40,17 @@ function assertCap(dir: string, cap = 100) {
 }
 
 const member: RosterMember = {
-  id: "1",
-  nickname: "Pauli",
-  realName: "Paul Gama",
-  status: "active",
-  role: "member",
-  email: "paul@example.com",
-  phoneE164: "+14165551234",
-  mirrorFromMembershipId: null,
-  pickBackup: null,
+    id: "1",
+    userId: "u-1",
+    nickname: "Pauli",
+    realName: "Paul Gama",
+    status: "active",
+    role: "member",
+    email: "paul@example.com",
+    phoneE164: "+14165551234",
+    notifyPref: "email",
+    mirrorFromMembershipId: null,
+    pickBackup: null,
 };
 
 function main() {
@@ -162,15 +164,15 @@ function main() {
 
   const panel = readFileSync("src/components/features/admin/UserEditPanel.tsx", "utf8");
   assert.match(panel, /RosterContactFields/);
-  assert.match(panel, /RosterNotifySoon/);
+  assert.match(panel, /RosterNotifyPref/);
   assert.match(panel, /SetMemberPasswordForm/);
   assert.doesNotMatch(panel, /Who are you/i);
+  assert.doesNotMatch(panel, /Coming soon/);
 
-  const soon = readFileSync("src/components/features/admin/RosterNotifySoon.tsx", "utf8");
-  assert.match(soon, /Coming soon — notifications not sending yet/);
-  assert.match(soon, /disabled/);
-  assert.match(soon, /NotifyChannelSelect/);
-  assert.doesNotMatch(soon, /onSave|fetch\(/);
+  const pref = readFileSync("src/components/features/admin/RosterNotifyPref.tsx", "utf8");
+  assert.match(pref, /\/api\/admin\/notify-pref/);
+  assert.doesNotMatch(pref, /disabled/);
+  assert.doesNotMatch(pref, /Coming soon/);
 
   const fields = readFileSync("src/components/features/admin/RosterCardFields.tsx", "utf8");
   assert.match(fields, /Full name/);
@@ -184,7 +186,7 @@ function main() {
     role: "admin",
     pickBackup: null,
     mirrorFromMembershipId: null,
-    user: { email: "admin@survivesunday.demo", phoneE164: null },
+    user: { email: "admin@survivesunday.demo", phoneE164: null, notifyPref: "email" },
   };
   const gams: MemberRow = {
     ...spectator,
@@ -222,7 +224,7 @@ function main() {
   assert.equal(pkg.scripts.build, "next build");
   assert.doesNotMatch(pkg.scripts.build, /ensure-production-db/);
 
-  console.log("PASS  Admin can edit identity fields; notify prefs stay coming-soon");
+  console.log("PASS  Admin can edit identity fields and notification preference");
 }
 
 main();
