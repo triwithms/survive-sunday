@@ -46,6 +46,32 @@ assert.doesNotMatch(
   "Leaderboard must not grow a pick’em points column"
 );
 
+const tiebreak = readFileSync(
+  "src/components/features/board/BoardTiebreak.tsx",
+  "utf8"
+);
+assert.match(tiebreak, /<details\b/, "tiebreak starts collapsed");
+assert.match(tiebreak, /<summary\b/);
+assert.doesNotMatch(
+  tiebreak,
+  /<details\b[^>]*\bopen\b/,
+  "tiebreak must not default open"
+);
+assert.match(
+  tiebreak,
+  /Official winner must have a <strong>clean<\/strong> season — no/
+);
+assert.match(
+  tiebreak,
+  /fewest losses → most weeks survived → shared win/
+);
+assert.match(tiebreak, /Season-end tiebreak/);
+assert.match(tiebreak, /Hide/);
+assert.ok(
+  tiebreak.split("\n").length <= 100,
+  "BoardTiebreak.tsx must stay ≤ 100 lines"
+);
+
 type Row = {
   nickname: string;
   status: string;

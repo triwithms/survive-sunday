@@ -49,7 +49,7 @@ Everyone’s picks for the week at `/pool` (old Home URL). Not the in/out race.
 
 ## Leaderboard
 
-**Pool in/out race** at `/standings`: still in, then out; then fewest losses / most weeks survived (mulligan). Among equals: clean record, live win margin of finished picks, nickname. No week chip — season race. Not NFL win-loss. Weekly picks are on **Selections**.
+**Pool in/out race** at `/standings`: still in, then out; then fewest losses / most weeks survived (mulligan). Among equals: clean record, live win margin of finished picks, nickname. No week chip — season race. Not NFL win-loss. Weekly picks are on **Selections**. Season-end tiebreak sits behind a tap at the bottom.
 
 Files: `src/components/features/board/` — [FILE-MAP](FILE-MAP.md).
 

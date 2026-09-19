@@ -9,12 +9,22 @@ export function BoardTiebreak({
 }) {
   return (
     <>
-      <section
-        className="card-glass p-4 text-sm space-y-2 min-w-0"
+      <details
+        className="group card-glass p-4 text-sm space-y-2 min-w-0"
         data-share-chunk=""
         data-share-section="tiebreak"
       >
-        <h2 className="font-semibold text-gold-400">Season-end tiebreak</h2>
+        <summary className="font-semibold text-gold-400 min-h-11 cursor-pointer py-1 list-none [&::-webkit-details-marker]:hidden [&::marker]:hidden">
+          Season-end tiebreak
+          <span className="font-normal text-[var(--text-muted)] group-open:hidden">
+            {" "}
+            ▾
+          </span>
+          <span className="font-normal text-[var(--text-muted)] hidden group-open:inline">
+            {" "}
+            Hide
+          </span>
+        </summary>
         <p className="text-[var(--text-muted)]">
           Official winner must have a <strong>clean</strong> season — no
           ranked auto-pick 💩. Copy-from-member and manual / imported picks
@@ -39,7 +49,7 @@ export function BoardTiebreak({
             best-ranked auto-pick (💩).
           </p>
         ) : null}
-      </section>
+      </details>
       <p
         data-share-stamp=""
         className="text-[11px] text-[var(--text-muted)] pt-1"
