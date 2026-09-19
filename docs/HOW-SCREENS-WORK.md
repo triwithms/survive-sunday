@@ -94,6 +94,6 @@ Files: `src/components/features/team/` — [FILE-MAP](FILE-MAP.md).
 
 - **Help** (`/help`) — header **?**. Topic menu: tap one topic (or a hash) to see only that section + **Back to Help topics**. How-to. Not a pool screen.
 - **Videos** (`/videos`) — leftover deep link. Clips also sit in Scores / Schedule **Details**.
-- **Account** (top right) — sign out, notification preferences.
+- **Account** (top right) — opens **Settings** (`/account`). Notify prefs, pick backup, install, Help, feedback, sign out.
 
 Do not invent Admin tabs or admin click-paths in this file. Admin tools are a separate topic (`HANDOFF` §8).

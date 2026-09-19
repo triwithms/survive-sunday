@@ -133,11 +133,19 @@ assert.doesNotMatch(
   /RoleSwitcher/,
   "Playing as / Admin tools must not sit on League or other main screens"
 );
-const accountMenu = readFileSync("src/components/AccountMenu.tsx", "utf8");
+const accountHub = readFileSync(
+  "src/components/features/account/AccountScreen.tsx",
+  "utf8"
+);
 assert.match(
-  accountMenu,
+  accountHub,
   /RoleSwitcher/,
-  "Role switch belongs in Account"
+  "Role switch belongs in Account Settings"
+);
+assert.doesNotMatch(
+  readFileSync("src/components/AccountMenu.tsx", "utf8"),
+  /RoleSwitcher/,
+  "Header Account is a link; the switch lives on Settings"
 );
 const helpPage = readFileSync("src/app/help/page.tsx", "utf8");
 assert.doesNotMatch(

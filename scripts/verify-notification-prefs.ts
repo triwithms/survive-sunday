@@ -167,9 +167,17 @@ assert.match(PREFS_LOAD_ERROR, /defaults/i);
 console.log("PASS  missing-schema detector");
 
 const accountMenu = readFileSync("src/components/AccountMenu.tsx", "utf8");
-assert.match(accountMenu, /href="\/account\/notifications"/);
-assert.match(accountMenu, /Notification preferences/);
+assert.match(accountMenu, /href="\/account"/);
+assert.doesNotMatch(accountMenu, /Notification preferences/);
 assert.doesNotMatch(accountMenu, /account\/mirror|pick-backup|Pick backup/);
+const hubLinks = readFileSync(
+  "src/components/features/account/AccountHubLinks.tsx",
+  "utf8"
+);
+assert.match(hubLinks, /href="\/account\/notifications"/);
+assert.match(hubLinks, /Notification preferences/);
+assert.match(hubLinks, /account\/mirror/);
+assert.match(hubLinks, /Pick backup/);
 const helpPage = readFileSync("src/app/help/page.tsx", "utf8");
 assert.doesNotMatch(helpPage, /href="\/account\/notifications"/);
 assert.doesNotMatch(helpPage, /SignOutButton/);
