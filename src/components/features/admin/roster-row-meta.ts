@@ -10,7 +10,7 @@ export function rosterRowDetail(member: RosterMember): string {
   const name = member.realName?.trim() || "no real name";
   const claim =
     member.role === "admin"
-      ? "Commissioner"
+      ? "Administrator"
       : isSeatClaimed(member.email)
         ? "Joined"
         : "Not joined";
@@ -18,7 +18,7 @@ export function rosterRowDetail(member: RosterMember): string {
 }
 
 export function claimShortLabel(member: RosterMember): string {
-  if (member.role === "admin") return "Commissioner";
+  if (member.role === "admin") return "Administrator";
   return isSeatClaimed(member.email) ? "Joined" : "Unclaimed";
 }
 

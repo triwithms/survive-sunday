@@ -77,7 +77,7 @@ export function isPoolParticipant(member: {
   isParticipant?: boolean;
   role?: string;
 }): boolean {
-  // Dual-role spectator commissioner seat (role=admin) is never on the board.
+  // Dual-role spectator administrator seat (role=admin) is never on the board.
   if (member.role === "admin") return false;
   if (typeof member.isParticipant === "boolean") return member.isParticipant;
   return true;

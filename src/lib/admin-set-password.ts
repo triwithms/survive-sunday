@@ -71,7 +71,7 @@ export async function setMemberTemporaryPassword(args: {
         details: JSON.stringify({
           nickname: check.nickname,
           emailMasked: maskEmail(check.email),
-          note: "Commissioner set a password. The password itself is not stored here.",
+          note: "Administrator set a password. The password itself is not stored here.",
         }),
       },
     }),

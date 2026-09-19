@@ -13,6 +13,7 @@ const DEMO_PROFILES: Record<
     role: "member",
   },
   "admin@survivesunday.demo": {
+    // INTERNAL seed nickname (same Administrator role). Seed/DB rename is out of scope.
     nickname: "Commissioner",
     realName: "Robert Gama",
     role: "admin",

@@ -62,7 +62,17 @@ Also exist (same thin-page pattern): Account, Admin, Team.
 
 Also: Sign in `src/app/login/page.tsx`, Forgot password `src/app/login/forgot/page.tsx`.
 
-Help still gates leftover Demo copy with `showDemoCopy={false}` (`src/components/HelpContent.tsx`). Docs Sync if rewriting Help.
+Help still gates leftover Demo copy with `showDemoCopy={false}` (`src/components/HelpContent.tsx` + `src/components/features/help/`). Docs Sync if rewriting Help.
+
+## Flagged internals (Commissioner → Admin copy)
+
+Same role. No new role. User-facing copy says **Admin** (screen/nav) or **Administrator** (person). Keep **Hand the pool** / **Make administrator**. These identifiers / seed values were **not** renamed:
+
+- Routes: `/api/admin/commissioner-account`, `/api/admin/transfer-commissioner`
+- Components: `CommissionerAccountPanel`, `CommissionerLoginForm`, `CommissionerSignOut`, `TransferCommissionerForm`
+- Helpers / keys: `poolHasRealCommissioner`, `hasRealCommissioner`, `CLAIM_ERRORS.commissionerSeat` / `alreadyCommissioner`, `commissionerSeat` vars
+- Audit actions: `commissioner_account_set`, `transfer_commissioner`, `newCommissionerStaysOnBoard`
+- Demo seed nickname `Commissioner` in `src/lib/demo-account.ts` (seed/DB out of scope)
 
 ## CRITICAL — never run these from a Vercel build
 

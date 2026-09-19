@@ -1,6 +1,6 @@
 /**
  * Season “💩” stamps for the ~2-minute best-ranked leftover auto-pick.
- * Copy-from-member, user picks, missed picks, and commissioner
+ * Copy-from-member, user picks, missed picks, and administrator
  * import / fix-pick (including JaJa Week 1 DAL) never increment this.
  */
 

@@ -48,7 +48,7 @@ export function boardCta(args: {
     return {
       href: "/pick",
       muted: true,
-      title: args.adminSpectator ? "Commissioner — optional" : "Picks unavailable",
+      title: args.adminSpectator ? "Admin — optional" : "Picks unavailable",
       label: args.adminSpectator ? "Change pick (optional)" : "Pick",
     };
   }

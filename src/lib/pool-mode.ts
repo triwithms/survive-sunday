@@ -34,7 +34,7 @@ function emailDomain(email: string): string {
 }
 
 /**
- * Leftover commissioner placeholders such as
+ * Leftover administrator placeholders such as
  * `go-giants@pending.survivesunday.local` — not a real claimed login.
  */
 export function isPendingPlaceholderEmail(

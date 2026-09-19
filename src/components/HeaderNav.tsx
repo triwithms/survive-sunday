@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 type Props = {
   canChangePick: boolean;
-  /** Show muted Change pick for commissioner when they cannot pick */
+  /** Show muted Change pick for administrator when they cannot pick */
   showMutedChangePick?: boolean;
   /** Next week is open for this player — offer Make pick instead of silence. */
   showMakePick?: boolean;

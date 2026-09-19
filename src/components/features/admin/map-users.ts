@@ -56,6 +56,7 @@ export function toDemoteIds(
   }));
   return members
     .filter((m) => {
+      // INTERNAL var name kept; user-facing copy says Administrator.
       const commissioner = members.some(
         (row) => row.userId === m.userId && row.role === "admin"
       );

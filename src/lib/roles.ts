@@ -58,7 +58,7 @@ export type RoleGrant = {
   role: string;
 };
 
-/** Membership.role is the seat kind: player board vs commissioner spectator. */
+/** Membership.role is the seat kind: player board vs administrator spectator. */
 export function isPlayerSeat(member: RoleFlags): boolean {
   return member.role !== "admin";
 }

@@ -7,13 +7,13 @@ import { ADMIN_TABS } from "./admin-tabs";
 export function AdminNav() {
   const path = usePathname();
   return (
-    <nav aria-label="Commissioner menus" className="space-y-2">
+    <nav aria-label="Admin menus" className="space-y-2">
       <Link
         href="/admin"
         prefetch={false}
         className="text-sm text-gold-400"
       >
-        Commissioner
+        Admin
       </Link>
       <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {ADMIN_TABS.map((tab) => {
