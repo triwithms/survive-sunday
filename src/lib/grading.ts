@@ -1,5 +1,6 @@
 import { prisma } from "./db";
 import { scheduleResultsNotice } from "./notification-events";
+import { scheduleAdminEliminationNotice } from "./elimination-admin-alert";
 import {
   decideStatusAfterLoss,
   shouldApplyMissedPick,
@@ -76,7 +77,7 @@ export async function applyLossToMembership(
     where: { id: membershipId },
     include: { pool: true },
   });
-  if (m.status === "eliminated") return m;
+  if (m.status === "eliminated") return { ...m, newlyEliminated: false };
 
   const decision = decideStatusAfterLoss({
     currentStatus: m.status,
@@ -84,9 +85,9 @@ export async function applyLossToMembership(
     weekNumber,
     singleEliminationFromWeek: m.pool.singleEliminationFromWeek,
   });
-  if (decision.unchanged) return m;
+  if (decision.unchanged) return { ...m, newlyEliminated: false };
 
-  return prisma.membership.update({
+  const after = await prisma.membership.update({
     where: { id: membershipId },
     data: {
       mulliganRemaining: decision.mulliganRemaining,
@@ -94,6 +95,10 @@ export async function applyLossToMembership(
       losses: m.losses + 1,
     },
   });
+  return {
+    ...after,
+    newlyEliminated: after.status === "eliminated",
+  };
 }
 
 export async function applyWinToMembership(membershipId: string) {
@@ -160,10 +165,17 @@ export async function gradeWeekPicks(weekId: string) {
   });
 
   const graded: string[] = [];
+  const newlyOut: Array<{
+    membershipId: string;
+    userId: string;
+    nickname: string;
+  }> = [];
+  let poolId = "";
   for (const pick of picks) {
     if (!pick.game) continue;
     const result = gradePickFromScore(pick.teamAbbr, pick.game);
     if (result === "pending") continue;
+    poolId = pick.membership.poolId;
 
     await prisma.pick.update({
       where: { id: pick.id },
@@ -173,8 +185,15 @@ export async function gradeWeekPicks(weekId: string) {
     const before = pick.membership;
     let afterStatus = before.status;
     if (result === "loss" || result === "push") {
-      afterStatus = (await applyLossToMembership(pick.membershipId, weekNumber))
-        .status;
+      const after = await applyLossToMembership(pick.membershipId, weekNumber);
+      afterStatus = after.status;
+      if (after.newlyEliminated) {
+        newlyOut.push({
+          membershipId: pick.membershipId,
+          userId: before.userId,
+          nickname: before.nickname,
+        });
+      }
     } else if (result === "win") {
       afterStatus = (await applyWinToMembership(pick.membershipId)).status;
     }
@@ -192,6 +211,12 @@ export async function gradeWeekPicks(weekId: string) {
     });
     graded.push(pick.id);
   }
+  scheduleAdminEliminationNotice({
+    poolId,
+    weekId,
+    weekNumber,
+    eliminated: newlyOut,
+  });
   return graded;
 }
 
@@ -212,6 +237,11 @@ export async function applyMissedPicks(weekId: string) {
   // Week-level short-circuit when every eligible member already handled
   const picked = new Set(week.picks.map((p) => p.membershipId));
   const applied: string[] = [];
+  const newlyOut: Array<{
+    membershipId: string;
+    userId: string;
+    nickname: string;
+  }> = [];
 
   for (const m of week.pool.memberships) {
     if (!shouldApplyMissedPick(m, week.number)) continue;
@@ -234,6 +264,13 @@ export async function applyMissedPicks(weekId: string) {
     }
 
     const after = await applyLossToMembership(m.id, week.number);
+    if (after.newlyEliminated) {
+      newlyOut.push({
+        membershipId: m.id,
+        userId: m.userId,
+        nickname: m.nickname,
+      });
+    }
     scheduleResultsNotice({
       user: m.user,
       nickname: m.nickname,
@@ -258,6 +295,13 @@ export async function applyMissedPicks(weekId: string) {
 
     applied.push(m.id);
   }
+
+  scheduleAdminEliminationNotice({
+    poolId: week.poolId,
+    weekId: week.id,
+    weekNumber: week.number,
+    eliminated: newlyOut,
+  });
 
   if (!week.missedPicksAppliedAt) {
     await prisma.week.update({

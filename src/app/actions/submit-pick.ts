@@ -21,7 +21,7 @@ export async function submitPick(
     return { ok: false, error: "Not in a pool", status: 403 };
   }
   if (membership.status === "eliminated") {
-    return { ok: false, error: "Eliminated — no picks", status: 403 };
+    return { ok: false, error: "You're out — no picks", status: 403 };
   }
   if (!isPoolParticipant(membership)) {
     return {

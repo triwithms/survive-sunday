@@ -236,6 +236,12 @@ export async function POST(req: Request) {
     skippedMembershipUpdate?: boolean;
   }[] = [];
 
+  const newlyOut: Array<{
+    membershipId: string;
+    userId: string;
+    nickname: string;
+  }> = [];
+
   for (const item of resolved) {
     const { member, teamAbbr, game, matchBy } = item;
     const existingPick = member.picks.find((p) => p.weekId === week.id);
@@ -373,7 +379,14 @@ export async function POST(req: Request) {
       pick.result = immediate;
 
       if (immediate === "loss" || immediate === "push") {
-        await applyLossToMembership(member.id, weekNumber);
+        const after = await applyLossToMembership(member.id, weekNumber);
+        if (after.newlyEliminated) {
+          newlyOut.push({
+            membershipId: member.id,
+            userId: member.userId,
+            nickname: member.nickname,
+          });
+        }
       } else if (immediate === "win") {
         await applyWinToMembership(member.id);
       }
@@ -430,6 +443,18 @@ export async function POST(req: Request) {
   await ensureWeekLockedEffects(week.id);
   // Safety: grade remaining finals (only pending — won't re-burn)
   await gradeWeekPicks(week.id);
+
+  if (newlyOut.length > 0) {
+    const { scheduleAdminEliminationNotice } = await import(
+      "@/lib/elimination-admin-alert"
+    );
+    scheduleAdminEliminationNotice({
+      poolId: admin.membership.poolId,
+      weekId: week.id,
+      weekNumber,
+      eliminated: newlyOut,
+    });
+  }
 
   return NextResponse.json({
     ok: true,

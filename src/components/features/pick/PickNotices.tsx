@@ -5,7 +5,6 @@ import type { PickScreenBanner } from "@/lib/next-week-picks";
 
 export function PickNotices({
   spectator,
-  eliminated,
   week1Change,
   tipWeek,
   banner,
@@ -13,7 +12,6 @@ export function PickNotices({
   redirectIn,
 }: {
   spectator: boolean;
-  eliminated: boolean;
   week1Change: boolean;
   tipWeek: number | null;
   banner: PickScreenBanner | null;
@@ -29,14 +27,6 @@ export function PickNotices({
           <p className="text-[var(--text-muted)]">
             You&apos;re not a player in this pool, so you don&apos;t need to
             pick. Use Admin to change rules or hand the pool to someone else.
-          </p>
-        </Card>
-      )}
-      {eliminated && (
-        <Card role="status" className="border border-crimson-400/40 p-3 text-sm space-y-1">
-          <p className="font-semibold text-crimson-400">Eliminated this season</p>
-          <p className="text-[var(--text-muted)]">
-            No more picks — you can still browse this week&apos;s games below.
           </p>
         </Card>
       )}

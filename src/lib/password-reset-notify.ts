@@ -48,6 +48,19 @@ export function collectAdminEmails(
   return [...out];
 }
 
+/** Skip demo seats. Empty / whitespace phones are dropped. */
+export function collectAdminPhones(
+  users: Array<{ phoneE164?: string | null; email?: string | null }>
+): string[] {
+  const out = new Set<string>();
+  for (const user of users) {
+    if (isDemoEmail(user.email ?? "")) continue;
+    const phone = (user.phoneE164 ?? "").trim();
+    if (phone) out.add(phone);
+  }
+  return [...out];
+}
+
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (ch) => {
     if (ch === "&") return "&amp;";

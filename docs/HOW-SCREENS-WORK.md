@@ -30,6 +30,7 @@ Header **?** opens Help (`/help`). Videos stay inside game **Details** (Scores /
 Today’s pick screen at `/pick`. After Join or Sign in, you land here.
 
 - Your card plus change / make pick until **your** kickoff. Header shows the week badge only — no slate-wide countdown or “Deadline passed.”
+- If you’re **out** for the season, My pick is covered with a huge **YOU’RE OUT** overlay (not a chip). Pick controls are off; the bottom nav still works.
 - Opens on **your** open week. The header **Week N** badge is the pool’s current week (read-only). Browse other weeks on **Schedule** or **Scores**.
 - Used teams and bye-week teams are off the board.
 - Files: `src/components/features/pick/` — [FILE-MAP](FILE-MAP.md).

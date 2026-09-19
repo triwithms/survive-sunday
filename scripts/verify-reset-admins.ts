@@ -6,6 +6,7 @@
 import {
   adminNotifyLooksSafe,
   collectAdminEmails,
+  collectAdminPhones,
   resetAdminNotifyCopy,
   resetAdminUserIds,
 } from "../src/lib/password-reset-notify";
@@ -30,6 +31,13 @@ function main() {
       { email: "robertgama@gmail.com" },
     ]).join(",") === "robertgama@gmail.com",
     "admin emails skip demo and dedupe"
+  );
+  assert(
+    collectAdminPhones([
+      { phoneE164: "+14165551212", email: "robertgama@gmail.com" },
+      { phoneE164: "+14165559999", email: "admin@survivesunday.demo" },
+    ]).join(",") === "+14165551212",
+    "admin phones skip demo"
   );
   const union = resetAdminUserIds(
     [

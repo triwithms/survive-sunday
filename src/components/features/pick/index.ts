@@ -5,3 +5,4 @@ export { PickCurrentCard } from "./PickCurrentCard";
 export { PickHeader } from "./PickHeader";
 export { PickNotices } from "./PickNotices";
 export { PickGameList } from "./PickGameList";
+export { PickOutOverlay } from "./PickOutOverlay";

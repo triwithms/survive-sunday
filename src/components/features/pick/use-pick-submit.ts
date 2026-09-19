@@ -8,7 +8,11 @@ import type { PickMatchup, PickSide } from "./types";
 
 type Confirm = { side: PickSide; matchup: PickMatchup };
 
-export function usePickSubmit(weekNumber: number, currentPick: string | null) {
+export function usePickSubmit(
+  weekNumber: number,
+  currentPick: string | null,
+  opts?: { disabled?: boolean }
+) {
   const [selected, setSelected] = useState(currentPick ?? null);
   const [optimisticPick, setOptimisticPick] = useOptimistic(selected);
   const [confirm, setConfirm] = useState<Confirm | null>(null);
@@ -37,6 +41,7 @@ export function usePickSubmit(weekNumber: number, currentPick: string | null) {
   }, [redirectIn, router]);
 
   function submit(abbr: string) {
+    if (opts?.disabled) return;
     setBusy(true);
     setMsg("");
     startTransition(async () => {
@@ -68,12 +73,15 @@ export function usePickSubmit(weekNumber: number, currentPick: string | null) {
     busy,
     msg,
     redirectIn,
-    onPick: (side: PickSide, matchup: PickMatchup) => setConfirm({ side, matchup }),
+    onPick: (side: PickSide, matchup: PickMatchup) => {
+      if (opts?.disabled) return;
+      setConfirm({ side, matchup });
+    },
     onCancel: () => {
       if (!busy) setConfirm(null);
     },
     onConfirm: () => {
-      if (confirm && !busy) submit(confirm.side.abbr);
+      if (confirm && !busy && !opts?.disabled) submit(confirm.side.abbr);
     },
   };
 }

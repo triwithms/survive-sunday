@@ -35,6 +35,7 @@ const files = [
   "src/components/features/pick/PickScreen.tsx",
   "src/components/features/pick/PickSideButton.tsx",
   "src/components/features/pick/PickCurrentCard.tsx",
+  "src/components/features/pick/PickOutOverlay.tsx",
 ];
 for (const file of files) {
   const lines = readFileSync(file, "utf8").split("\n").length;
@@ -48,6 +49,7 @@ assert.match(button, /disabled=\{blocked\}/);
 assert.doesNotMatch(button, /disabled=\{pending/);
 
 const hook = readFileSync("src/components/features/pick/use-pick-submit.ts", "utf8");
+assert.match(hook, /opts\?\.disabled/);
 assert.match(hook, /useOptimistic/);
 assert.match(hook, /setOptimisticPick\(abbr\)/);
 assert.match(hook, /setBusy\(true\)/);
