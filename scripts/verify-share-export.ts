@@ -165,11 +165,11 @@ mustInclude("src/components/ShareExport.tsx", [
   "share-export-week",
   "share-export-title",
 ]);
-mustInclude("src/components/HeaderWeekNav.tsx", [
+mustInclude("src/components/HeaderWeekBadge.tsx", [
   "SHARE_OPEN_EVENT",
   "isTripleTap",
 ]);
-mustInclude("src/app/(app)/layout.tsx", ['data-share-chrome=""']);
+mustInclude("src/components/AppHeader.tsx", ['data-share-chrome=""']);
 mustInclude("src/components/BottomNav.tsx", ['data-share-chrome=""']);
 mustInclude("src/components/features/scores/GameDetailsHint.tsx", [
   "GameDetailsHint",

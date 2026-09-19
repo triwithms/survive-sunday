@@ -23,18 +23,13 @@ export function AppHeader(data: AppHeaderData) {
         </Link>
         <Suspense
           fallback={
-            <HeaderWeekBadge
-              weekNumber={data.pickActionWeek}
-              lockAt={data.lockIso}
-              nextOpen={data.nextOpen}
-            />
+            <HeaderWeekBadge weekNumber={data.pickActionWeek} />
           }
         >
           <HeaderWeekNav
             weeks={data.weekNav}
             currentWeek={data.currentWeek}
             pickActionWeek={data.pickActionWeek}
-            nextOpen={data.nextOpen}
           />
         </Suspense>
         <div className="flex items-center gap-1.5 shrink-0 ml-auto">

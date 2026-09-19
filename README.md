@@ -117,7 +117,7 @@ Wave 1 Pool QA (critical):
 8. **Admin session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. Demo Administrator `admin@survivesunday.demo` / `demo1234` keeps admin membership for `/admin` and `/admin/import`.
 8b. **Tunnel login Host** — middleware forwards a public `Host` (e.g. `*.trycloudflare.com`) as `x-forwarded-host` / `x-forwarded-proto`. Auth `callbacks.redirect` and the auth route rewrite any `https://localhost:3000` Location to the request Host. Client `afterAuthNavigate` always uses a relative signed-in path (`/pick`).
 9. **Session identity drift** — demo login `signOut`s first, `await getSession()` before navigate, then hard-loads `/pick`. Authenticated routes are `force-dynamic` + `revalidate = 0`; BottomNav prefetch is off; SW is network-only for HTML/RSC. `SessionProvider` remounts on user id (`refetchOnWindowFocus`, `refetchInterval={60}`).
-10. **/pick red “1 Error” toast** — `Countdown` no longer hydrates `Date.now()` from the server; kickoff/logo/undefined guards in `PickClient`.
+10. **/pick red “1 Error” toast** — header has no slate-wide countdown; kickoff/logo/undefined guards in `PickClient`.
 
 Server identity check: `node scripts/verify-session-identity.mjs`
 

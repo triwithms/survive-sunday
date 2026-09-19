@@ -290,7 +290,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 ### Lock
 
-- Lock = first kickoff of the week (unless the administrator overrides it). Header countdown is labelled as the pick deadline. After that first kickoff, **the next week opens for a player as soon as their own pick is locked** (their game started) — **not** after Monday Night Football. MNF is only for the weekly recap later. New joiners who never had a Week 1 pick path see **Week 2 is open — make your pick** instead of a stranded “Deadline passed” empty Pick screen.
+- First kickoff is when everyone’s picks **reveal** on Selections (unless the administrator overrides it). There is **no** header countdown or “Deadline passed” banner. On **My pick**, you can change until **your game starts**; then that pick is locked and **the next week opens for you** — **not** after Monday Night Football. New joiners who never had a Week 1 pick path see **Week 2 is open — make your pick**.
 - Before lock: only **your** pick is visible.
 - After lock: everyone’s picks show; missed picks are applied once; finals are graded.
 - After first kickoff, a player who already picked may still switch to another **not-started** game if their current pick’s game has also **not started**. Once that game starts, the pick locks and the next week opens for them. A missed first pick at lock stays a miss.
@@ -767,7 +767,7 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Draft PR** | A pull request that is not ready to merge yet. None of the live-tonight work is draft. |
 | **Rebase** | Replay an open PR’s changes on top of the latest `main` after another PR merged. Ask a chat to continue **that** branch. |
 | **Redeploy** | Rebuild the same code with the latest env vars. Compiles only (`next build`). Does **not** push schema, seed, or rewrite live pool data. |
-| **Lock** | Pick deadline: first kickoff (unless overridden). After lock, you can still change an existing pick until **that team’s** kickoff if the new game has not started. Once that game starts, **next week opens for you** (do not wait for MNF). |
+| **Lock** | Picks **reveal** at first kickoff (unless overridden). You can change until **your game starts**. Then **next week opens for you** (do not wait for MNF). No header countdown. |
 | **PWA** | Website you can pin to the phone home screen. |
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |

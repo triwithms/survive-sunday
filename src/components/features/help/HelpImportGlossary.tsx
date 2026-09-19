@@ -29,7 +29,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
         <h2 className="text-lg font-semibold text-gold-400 mb-2">16. Glossary</h2>
         <pre className="card-glass p-3 text-xs overflow-x-auto whitespace-pre-wrap mb-2">| Term | Meaning |
 |------|---------|
-| **Pick deadline** | Header countdown to lock — first kickoff of the week. After that, everyone’s picks reveal. **Your next week opens when your own pick is locked** (your game started), not after Monday Night Football. |
+| **Pick deadline** | You can change until **your game starts**. First kickoff is when everyone’s picks reveal on Selections — not a personal lock. **Your next week opens when your own pick is locked** (your game started), not after Monday Night Football. |
 | **Lock** | Same moment as the pick deadline for the group board. You can still change an existing pick until that team’s kickoff. When that game starts, next week’s picks open for you. |
 | **This week’s games** | The list of matchups you pick from on the Pick screen (not “slate”). |
 | **Leaderboard** | Pool in/out race (`/standings`): undefeated, then one-loss, then eliminated, then nickname A–Z. Weekly picks are on **Selections**. |

@@ -15,8 +15,8 @@ export function HomeWeekHeader({
         Selections
       </h1>
       <p className="text-sm text-[var(--text-muted)] mt-1">
-        {label} · Lock: {formatKickoff(lockAt)}
-        {revealAllPicks ? " · Picks revealed" : " · Others’ picks hidden"}
+        {label} · Picks reveal: {formatKickoff(lockAt)}
+        {revealAllPicks ? " · Revealed" : " · Others hidden"}
       </p>
     </div>
   );

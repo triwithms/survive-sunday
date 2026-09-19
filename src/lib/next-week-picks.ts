@@ -271,7 +271,7 @@ export function pickScreenCopy(input: {
 
   if (pendingOwnGame) {
     return {
-      kicker: "You can change your pick until that team’s kickoff.",
+      kicker: "You can change until your game starts.",
       banner: null,
       showWeek1ChangeCard: true,
       showDismissibleTip: false,
@@ -301,7 +301,9 @@ export function pickScreenCopy(input: {
 
   if (onActionWeek && decision.canStillPlayCurrentWeek && canChange) {
     return {
-      kicker: "Use Pick on a side to choose that team. One team. No reuse.",
+      kicker: input.hasCurrentPick
+        ? "You can change until your game starts."
+        : "Choose a team. You can change until your game starts.",
       banner: null,
       showWeek1ChangeCard: false,
       showDismissibleTip: false,
@@ -370,11 +372,10 @@ export function pickScreenCopy(input: {
 
   if (locked && !canChange) {
     return {
-      kicker: "Week locked — picks are read-only.",
-      banner: {
-        title: `Week ${weekNumber} is locked (season in progress).`,
-        body: "Picks cannot change. The administrator can reopen the week from the Admin page (“Reopen week for picks”).",
-      },
+      kicker: input.hasCurrentPick
+        ? "This pick is locked — your game has started."
+        : "This week is closed for you.",
+      banner: null,
       showWeek1ChangeCard: false,
       showDismissibleTip: false,
     };
@@ -382,8 +383,10 @@ export function pickScreenCopy(input: {
 
   return {
     kicker: canChange
-      ? "Use Pick on a side to choose that team. One team. No reuse."
-      : "This week’s pick is read-only.",
+      ? input.hasCurrentPick
+        ? "You can change until your game starts."
+        : "Choose a team. You can change until your game starts."
+      : "This pick is locked.",
     banner: null,
     showWeek1ChangeCard: false,
     showDismissibleTip: false,

@@ -71,7 +71,7 @@ export function HelpAccount({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
 | Share picture failed | Press and hold the Leaderboard or Scores title (or triple-tap the week). Try a shorter option. Or take a regular screenshot. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
-| Deadline passed / empty Pick | That week’s first kickoff has gone. If **your** game has started (or you never had a pick path), open **Pick** — next week should already be available (**Week 2 is open — make your pick**). You do not wait for Monday Night Football. |
+| My pick says locked | **Your** game has started (or you never had a pick path). Next week should already be available (**Week 2 is open — make your pick**). You do not wait for Monday Night Football. There is no slate-wide deadline countdown. |
 | Can’t change my pick | You can change until your pick’s kickoff, but only onto a game that has not started. Once that game starts, the pick is locked — make next week’s pick instead. |`}</pre>
         <p className="text-[var(--text-muted)] mb-2">Still stuck? Ask your administrator or check the pool notice for schedule overrides.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
