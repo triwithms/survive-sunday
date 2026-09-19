@@ -9,8 +9,9 @@ export function HelpAccount() {
           <strong>Account</strong> is in the header (top right). It opens{" "}
           <strong>Settings</strong>. Change nickname, add a cell, Sign out.{" "}
           <strong>Account → Notification preferences</strong> stays on its own
-          screen — not on Help. Master On or Off, then Email, SMS, both, or
-          Off for each type. Pool emails may land in spam/junk — mark Not junk.
+          screen — not on Help. Master On shows Email, SMS, both, or Off for
+          each type. Master Off hides that list. Pool emails may land in
+          spam/junk — mark Not junk.
           Notices include a Preferences link. Password-reset codes always send
           when you ask.
         </li>

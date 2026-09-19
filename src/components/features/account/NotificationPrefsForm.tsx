@@ -63,11 +63,7 @@ export function NotificationPrefsForm({
               void persist({ ...prefs, [type]: channel })
             }
           />
-        ) : (
-          <p className="text-sm text-[var(--text-muted)]" data-testid="notify-master-off">
-            Off — no game notices. Password-reset codes still send.
-          </p>
-        )}
+        ) : null}
         {saved ? (
           <p className="text-xs text-gold-400" data-testid="prefs-saved">
             Saved

@@ -28,7 +28,8 @@ export default async function NotificationPrefsPage() {
           Notification preferences
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Master On or Off, then Email, SMS, both, or Off for each type.
+          Master On shows Email, SMS, both, or Off for each type. Master Off
+          hides that list.
           Password-reset codes still send when you ask. Path: Account (header) → Notification preferences.
         </p>
       </div>

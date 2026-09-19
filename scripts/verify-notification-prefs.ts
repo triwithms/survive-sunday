@@ -181,7 +181,8 @@ console.log("PASS  missing-schema detector");
 
 const helpAccount = readFileSync("src/components/features/help/HelpAccount.tsx", "utf8");
 assert.match(helpAccount, /Account → Notification preferences/);
-assert.match(helpAccount, /Master On or Off/);
+assert.match(helpAccount, /Master On shows/);
+assert.match(helpAccount, /Master Off hides that list/);
 assert.match(helpAccount, /Email, SMS, both, or/);
 assert.match(helpAccount, /spam\/junk/);
 assert.doesNotMatch(helpAccount, /coming soon|Pick backup|pick backup/i);
@@ -197,8 +198,11 @@ const prefsForm = readFileSync(
 );
 assert.match(prefsForm, /NotifyMasterToggle/);
 assert.match(prefsForm, /NotifyTypeList/);
+assert.match(prefsForm, /prefs\.masterOn \?/);
+assert.match(prefsForm, /: null/);
 assert.match(prefsForm, /Saved/);
 assert.doesNotMatch(prefsForm, /Coming soon/);
+assert.doesNotMatch(prefsForm, /notify-master-off/);
 console.log("PASS  Account sheet link");
 
 console.log("\nverify-notification-prefs OK");
