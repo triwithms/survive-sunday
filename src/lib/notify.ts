@@ -22,9 +22,6 @@ export async function notifyUser(opts: {
   content: NotifyContent;
   dedupeKey: string;
 }): Promise<{ emailed: boolean; texted: boolean; skipped: string | null }> {
-  if (opts.type === "scoreUpdates" || opts.type === "injuryNotes") {
-    return { emailed: false, texted: false, skipped: "noisy-off" };
-  }
   try {
     return await dispatchNotice({
       target: opts.target,

@@ -1,3 +1,4 @@
+import { prefsFromRow } from "@/lib/notify-pref-columns";
 import { isPlayerSeat } from "@/lib/roles";
 import type { MemberRow } from "./types";
 
@@ -21,6 +22,7 @@ export function toRosterMembers(members: MemberRow[]) {
     email: m.user.email,
     phoneE164: m.user.phoneE164,
     notifyPref: m.user.notifyPref ?? null,
+    notifyPrefs: prefsFromRow(m.user.notificationPreference),
     mirrorFromMembershipId: m.mirrorFromMembershipId,
     pickBackup: m.pickBackup,
   }));

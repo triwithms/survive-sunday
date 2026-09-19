@@ -77,8 +77,8 @@ export function AddUserFields({ draft, busy, err, onChange, onSuggest, onSubmit 
         </span>
       </label>
       <p className="text-xs text-[var(--text-muted)]">
-        Notification preference is set after you add them (email → Email, otherwise
-        None). Change it on their Users row.
+        Notification preference is set after you add them (master On and the
+        usual per-type defaults). Change it on their Users row.
       </p>
       {err ? <p className="text-sm text-crimson-400" role="alert">{err}</p> : null}
       <Button type="submit" className="w-full min-h-11" disabled={busy} data-testid="add-user-submit">

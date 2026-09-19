@@ -25,6 +25,15 @@ const libFiles = [
   "src/lib/notify-dispatch.ts",
   "src/lib/notify-pref-schema.ts",
   "src/lib/notify-pref-db.ts",
+  "src/lib/notify-pref-save.ts",
+  "src/lib/notify-pref-columns.ts",
+  "src/lib/notify-game-footer.ts",
+  "src/lib/notify-type-schema.ts",
+  "src/lib/notification-types.ts",
+  "src/lib/notification-parse.ts",
+  "src/lib/notification-labels.ts",
+  "src/lib/notification-gates.ts",
+  "src/lib/notification-prefs.ts",
   "src/lib/notify.ts",
   "src/lib/otp-notify.ts",
   "src/lib/notify-test-copy.ts",
@@ -60,6 +69,51 @@ assert.deepEqual(resolveChannels({ notifyPref: "both" }, "admin_alert"), [
   "email",
   "sms",
 ]);
+assert.deepEqual(
+  resolveChannels(
+    { masterOn: true, channels: { missingPickReminder: "both" } },
+    "game",
+    undefined,
+    "missingPickReminder"
+  ),
+  ["email", "sms"]
+);
+assert.deepEqual(
+  resolveChannels(
+    { masterOn: true, channels: { pickConfirmed: "email" } },
+    "game",
+    undefined,
+    "pickConfirmed"
+  ),
+  ["email"]
+);
+assert.deepEqual(
+  resolveChannels(
+    { masterOn: false, channels: { missingPickReminder: "both" } },
+    "game",
+    undefined,
+    "missingPickReminder"
+  ),
+  []
+);
+assert.deepEqual(
+  resolveChannels(
+    { masterOn: true, channels: { scoreUpdates: "off" } },
+    "game",
+    undefined,
+    "scoreUpdates"
+  ),
+  []
+);
+assert.deepEqual(
+  resolveChannels(
+    { masterOn: false, channels: { eliminationMulligan: "both" } },
+    "admin_alert",
+    undefined,
+    "eliminationMulligan"
+  ),
+  ["email", "sms"]
+);
 console.log("PASS  resolveChannels categories");
 
 const skipPref = planNotice({
@@ -124,6 +178,10 @@ const dispatch = readFileSync("src/lib/notify-dispatch.ts", "utf8");
 assert.match(dispatch, /planNotice/);
 assert.match(dispatch, /sendResendMessage/);
 assert.match(dispatch, /sendTwilioMessage/);
+assert.match(dispatch, /withGameSmsFooter/);
+assert.match(dispatch, /withGameEmailText/);
+assert.match(dispatch, /withGameEmailHtml/);
+assert.doesNotMatch(readFileSync("src/lib/otp-notify.ts", "utf8"), /withGameSmsFooter|withGameEmailText/);
 assert.doesNotMatch(readFileSync("src/lib/elimination-admin-alert.ts", "utf8"), /sendResendMessage/);
 assert.doesNotMatch(readFileSync("src/lib/password-reset-alert.ts", "utf8"), /sendResendMessage/);
 assert.match(readFileSync("src/lib/password-reset-deliver.ts", "utf8"), /dispatchOtp/);

@@ -158,5 +158,7 @@ export async function ensureNotificationTables(prisma: SchemaClient) {
         ON DELETE CASCADE ON UPDATE CASCADE
     `
   );
+  const { ensureTypeChannelPrefs } = await import("./notify-type-schema");
+  await ensureTypeChannelPrefs(prisma);
   console.log("[ensure-db] NotificationPreference + NotificationSend ready");
 }

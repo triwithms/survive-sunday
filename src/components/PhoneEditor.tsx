@@ -180,8 +180,8 @@ export function PhoneEditor({
               </>
             ) : (
               <>
-                Used for missing-pick SMS reminders (same on/off switch as
-                email, under Account → Notification preferences). Canadian and
+                Used for missing-pick SMS if that type is Email, SMS, or both
+                under Account → Notification preferences. Canadian and
                 US numbers welcome — e.g. (416) 951-4262 or +1…
               </>
             )}
