@@ -8,7 +8,8 @@ import {
   weekNavOptions,
 } from "@/lib/page-week";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
-import { syncWeekScoresFromEspn, shouldPollLiveScores } from "@/lib/live-scores";
+import { shouldPollLiveScores } from "@/lib/live-scores";
+import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { formatKickoff } from "@/lib/utils";
 import { mapScheduleGames } from "./schedule-games";
 import type { ScheduleScreenProps } from "./types";
@@ -26,7 +27,7 @@ export async function loadSchedulePage(searchParams?: {
   });
   if (!selectedRef) return null;
 
-  await syncWeekScoresFromEspn(selectedRef.id).catch((e) => {
+  await syncWeekEspnForPage(selectedRef.id).catch((e) => {
     console.error("schedule espn score sync skipped", e);
     return null;
   });

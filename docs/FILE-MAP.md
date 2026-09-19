@@ -88,3 +88,7 @@ Same role. No new role. User-facing copy says **Admin** (screen/nav) or **Admini
 | Production build | `package.json` → `scripts.build` is **`next build` only**. Never attach `db push`, seed, or `ensure-production-db`. |
 | Seed / setup / db:push refuse Production | `scripts/assert-not-production.ts` — stops those commands from changing the live database. `db:push` / `setup` go through this guard. Emergency only: `ALLOW_PROD_DB_MUTATION=1`. **Vercel is always refused** (even with that break-glass). |
 | Dangerous one-off DB helper | Live helper: `scripts/_dangerous/ensure-production-db.ts`. Old `scripts/ensure-production-db.ts` prints “Moved…” and **exits 1**. **Must never run from a Vercel build.** |
+
+## ESPN last-good cache (slice 1)
+
+TTLs: `src/lib/static-cache-ttl.ts`. **Week slate / kickoffs** — last-good 6h (20s while live or in the kickoff window); refresh on TTL or slate hash change; Scores/Schedule skip ESPN refetch inside TTL (`espn-scoreboard.ts`, `week-espn-refresh.ts`, schedule/scores loaders). **Injuries** — last-good 24h, keep the last good list while refresh runs, replace only when the hash changes (`injury-cache.ts`, `live-injuries.ts`). Not frozen: live scores in a live window, picks, leaderboard, auth, Admin writes. Logos are a separate local-helmets PR.

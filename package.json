@@ -49,6 +49,7 @@
     "verify:profile-complete": "tsx scripts/verify-profile-complete.ts",
     "verify:auth-rewrite": "tsx scripts/verify-auth-rewrite.ts",
     "verify:live-feeds": "tsx scripts/verify-live-feeds.ts",
+    "verify:static-cache": "tsx scripts/verify-static-cache.ts",
     "verify:game-display": "tsx scripts/verify-game-display.ts",
     "verify:espn-game-detail": "tsx scripts/verify-espn-game-detail.ts",
     "verify:team-logo": "tsx scripts/verify-team-logo.ts",

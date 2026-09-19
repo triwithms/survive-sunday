@@ -8,7 +8,8 @@ import {
   weekNavOptions,
 } from "@/lib/page-week";
 import { ensureWeekLockedEffects, isWeekLocked } from "@/lib/grading";
-import { syncWeekScoresFromEspn, shouldPollLiveScores } from "@/lib/live-scores";
+import { shouldPollLiveScores } from "@/lib/live-scores";
+import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { scoreCardGames, scoresPickRows, sortScoreGames } from "./score-view";
@@ -30,7 +31,7 @@ export async function loadScoresPage(searchParams?: {
   try { await ensureWeekLockedEffects(selectedRef.id); }
   catch (e) { console.error("scores lock effects skipped", e); }
   let espnSyncError: string | null = null;
-  try { await syncWeekScoresFromEspn(selectedRef.id); }
+  try { await syncWeekEspnForPage(selectedRef.id); }
   catch (e) {
     console.error("espn score sync skipped", e);
     espnSyncError = "Couldn’t refresh ESPN right now — showing last saved scores.";
