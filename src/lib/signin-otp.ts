@@ -89,6 +89,7 @@ async function liveModeBlocksPracticeEmail(
     where: { poolId: pool.id, role: "admin" },
     select: { userId: true, user: { select: { email: true } } },
   });
+  // INTERNAL name kept; user-facing copy says administrator.
   const hasRealCommissioner = admins.some((a) => !isDemoEmail(a.user.email));
   const isPracticeAdmin = admins.some((a) => a.userId === userId);
   return hasRealCommissioner || !isPracticeAdmin;
@@ -133,7 +134,7 @@ export async function requestSignInCode(
       return {
         ok: false,
         error:
-          "This email does not have a password. Join with email and a password, or ask the commissioner.",
+          "This email does not have a password. Join with email and a password, or ask the administrator.",
       };
     }
 

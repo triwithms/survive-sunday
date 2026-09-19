@@ -88,7 +88,7 @@ export function TransferCommissionerForm({ members }: { members: MemberOption[] 
         onUnderstood={setUnderstood}
       />
       <Button className="w-full min-h-11" disabled={busy || !understood} onClick={() => void transfer()}>
-        {busy ? "Transferring…" : "Transfer commissioner"}
+        {busy ? "Handing the pool…" : "Hand the pool"}
       </Button>
       {msg ? <p className="text-sm text-field-400" role="status">{msg}</p> : null}
     </Card>

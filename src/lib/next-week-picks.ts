@@ -253,7 +253,7 @@ export function pickScreenCopy(input: {
   }
   if (spectator) {
     return {
-      kicker: "Commissioner view — no pick required.",
+      kicker: "Admin view — no pick required.",
       banner: null,
       showWeek1ChangeCard: false,
       showDismissibleTip: false,
@@ -373,7 +373,7 @@ export function pickScreenCopy(input: {
       kicker: "Week locked — picks are read-only.",
       banner: {
         title: `Week ${weekNumber} is locked (season in progress).`,
-        body: "Picks cannot change. The commissioner can reopen the week from the Admin page (“Reopen week for picks”).",
+        body: "Picks cannot change. The administrator can reopen the week from the Admin page (“Reopen week for picks”).",
       },
       showWeek1ChangeCard: false,
       showDismissibleTip: false,

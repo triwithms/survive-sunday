@@ -6,7 +6,7 @@ import { AdminHeading } from "./AdminHeading";
 export function AdminHub() {
   return (
     <div className="space-y-4">
-      <AdminHeading title="Commissioner">
+      <AdminHeading title="Admin">
         Pick a menu. Tools stay on one screen each — roster, pool settings,
         invites, and status.
       </AdminHeading>

@@ -32,7 +32,7 @@ export async function issueInviteToken(
     return { ok: false, error: "Seat not found", status: 404 };
   }
   if (seat.role === "admin") {
-    return { ok: false, error: "Commissioner seat is not inviteable", status: 400 };
+    return { ok: false, error: "Administrator seat is not inviteable", status: 400 };
   }
 
   const minted = await createHashedInviteToken(seat.id);

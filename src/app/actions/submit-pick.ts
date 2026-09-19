@@ -26,7 +26,7 @@ export async function submitPick(
   if (!isPoolParticipant(membership)) {
     return {
       ok: false,
-      error: "Commissioner is not a participant — no pick required",
+      error: "Administrator is not a participant — no pick required",
       status: 403,
     };
   }

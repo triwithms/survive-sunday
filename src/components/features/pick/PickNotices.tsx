@@ -25,7 +25,7 @@ export function PickNotices({
     <>
       {spectator && (
         <Card role="status" className="border border-gold-400/40 p-3 text-sm space-y-1">
-          <p className="font-semibold text-gold-400">Commissioner view</p>
+          <p className="font-semibold text-gold-400">Admin view</p>
           <p className="text-[var(--text-muted)]">
             You&apos;re not a player in this pool, so you don&apos;t need to
             pick. Use Admin to change rules or hand the pool to someone else.

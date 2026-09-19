@@ -13,7 +13,7 @@ import {
 
 /**
  * Demo/testing toggle: After deadline | Before deadline for the current week.
- * API mode keys stay after_lock / before_lock. Commissioner-only in Demo mode.
+ * API mode keys stay after_lock / before_lock. Administrator-only in Demo mode.
  *
  * after_lock  — set lockOverrideAt to past, apply lock effects, then replace
  *               MISS with source=demo Week picks (testing only — not real picks)
@@ -155,7 +155,7 @@ export async function POST(req: Request) {
   }
   if (!isDemoMode(membership.pool.mode) || !ctx.isAdmin) {
     return NextResponse.json(
-      { error: "Testing lock toggle is only available to the commissioner in Demo mode" },
+      { error: "Testing lock toggle is only available to the administrator in Demo mode" },
       { status: 403 }
     );
   }

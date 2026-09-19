@@ -50,7 +50,7 @@ export async function requestPasswordReset(
       return {
         ok: false,
         error:
-          "We don’t have that email. Check the spelling, or ask the commissioner.",
+          "We don’t have that email. Check the spelling, or ask the administrator.",
       };
     }
 

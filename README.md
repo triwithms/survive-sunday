@@ -37,7 +37,7 @@ npm install && npx prisma db push && npm run seed && npm run build
 
 The pool is **live-only**. There is no Demo↔Real switch on Admin. Friends see **Who are you?** from the live roster, then Join (own email + password) or Sign in. Unclaimed seats still use practice `@survivesunday.demo` emails for Join claiming — that is seat claiming, not a Demo mode.
 
-**First real commissioner login:** Admin → **Your commissioner login** → your email + password → sign out → Sign in with that email.
+**First real administrator login:** Admin → **Your administrator login** → your email + password → sign out → Sign in with that email.
 
 Week 1 is the current board week. Week 2 stays on the schedule. Playbook: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
 
@@ -85,7 +85,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - Live ESPN scores (poll ~45s while games are on) + auto-grade finals; admin simulate button
 - Near-live ESPN injury report on team pages and pick-adjacent chips (Out / Doubtful / Questionable)
 - Head coach on each team research page (ESPN name + ESPN / Wikipedia / team links)
-- Light admin: lock override, remove player, force grade, **audit log**, **mulligan / one-and-done from a week**, **transfer commissioner**
+- Light admin: lock override, remove player, force grade, **audit log**, **mulligan / one-and-done from a week**, **Hand the pool**
 - **Import Week picks** (CSV / paste) for groups mid-season — counts for grading/mulligan/reuse
 - Season-end tiebreak helpers (clean record / no ranked auto-pick 💩 → fewest losses → weeks survived → nickname A–Z)
 - `/help` from HELP-COPY (+ importing prior picks); footer disclaimer
@@ -93,7 +93,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - Dark stadium UI (gold/green); installable PWA shell
 - Seed via `npm run seed`
 
-### Import prior picks (commissioner)
+### Import prior picks (administrator)
 
 Week 1 may already be in progress. As **admin@survivesunday.demo**:
 
@@ -108,13 +108,13 @@ Week 1 may already be in progress. As **admin@survivesunday.demo**:
 Wave 1 Pool QA (critical):
 
 1. **Natural lock applies missed picks** — `ensureWeekLockedEffects(weekId)` runs on pool, picks API, standings, scores, and import. When `now >= lockAt` (or week is locked/graded), it applies missed-pick losses once and auto-grades FINAL games.
-2. **Missed picks are idempotent** — each no-pick member gets a `source: missed` pick (`teamAbbr: MISS`) + `week.missedPicksAppliedAt`. Lock now then Force grade will not double-loss. `role === "admin"` (Commissioner) is skipped.
+2. **Missed picks are idempotent** — each no-pick member gets a `source: missed` pick (`teamAbbr: MISS`) + `week.missedPicksAppliedAt`. Lock now then Force grade will not double-loss. `role === "admin"` (Administrator) is skipped.
 3. **Re-import won’t re-burn** — if an imported pick’s team is unchanged and already graded, membership status is left alone (no second mulligan / weeksSurvived bump). Team changes undo the prior grade effect once, then apply the new result.
 4. **usedTeamsJson on change-before-lock** — rebuilt from prior-week picks + current pick only (frees KC when changing KC→BUF). Same rebuild on import updates.
 5. **Import preview** — Preview matches resolves nickname→team (nickname first, then email) before Confirm import.
 6. **Auto-grade on load** — scores/pool (and other ensure paths) grade pending picks whose games are FINAL.
 7. **App Router error boundaries** — `src/app/not-found.tsx`, `error.tsx`, `global-error.tsx`, and `(app)/error.tsx` so a reload on `/admin` or `/help` no longer 404/500 with “missing required error components”.
-8. **Commissioner session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. Demo `admin@survivesunday.demo` / `demo1234` keeps admin membership for `/admin` and `/admin/import`.
+8. **Admin session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. Demo Administrator `admin@survivesunday.demo` / `demo1234` keeps admin membership for `/admin` and `/admin/import`.
 8b. **Tunnel login Host** — middleware forwards a public `Host` (e.g. `*.trycloudflare.com`) as `x-forwarded-host` / `x-forwarded-proto`. Auth `callbacks.redirect` and the auth route rewrite any `https://localhost:3000` Location to the request Host. Client `afterAuthNavigate` always uses a relative `/pool`.
 9. **Session identity drift** — demo login `signOut`s first, `await getSession()` before navigate, then hard-loads `/pool`. Authenticated routes are `force-dynamic` + `revalidate = 0`; BottomNav prefetch is off; SW is network-only for HTML/RSC. `SessionProvider` remounts on user id (`refetchOnWindowFocus`, `refetchInterval={60}`).
 10. **/pick red “1 Error” toast** — `Countdown` no longer hydrates `Date.now()` from the server; kickoff/logo/undefined guards in `PickClient`.

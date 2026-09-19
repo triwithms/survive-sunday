@@ -35,7 +35,7 @@ export async function lookupUserByEmail(email: string): Promise<CredentialRecord
  *
  * Live pool:
  * - Practice member emails cannot sign in.
- * - Practice commissioner may sign in only until a real commissioner email exists
+ * - Practice administrator may sign in only until a real administrator email exists
  *   (so the owner is not locked out before saving a real login).
  */
 export async function userFromCredentials(
@@ -57,6 +57,7 @@ export async function userFromCredentials(
           where: { poolId: pool.id, role: "admin" },
           select: { userId: true, user: { select: { email: true } } },
         });
+        // INTERNAL name kept; user-facing copy says administrator.
         const hasRealCommissioner = admins.some((a) => !isDemoEmail(a.user.email));
         const isPracticeAdmin = admins.some((a) => a.userId === user.id);
         if (hasRealCommissioner || !isPracticeAdmin) return null;

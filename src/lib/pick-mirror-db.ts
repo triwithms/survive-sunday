@@ -39,7 +39,7 @@ export async function setMembershipPickBackup(args: {
     throw Object.assign(new Error("Member not found"), { status: 404 });
   }
   if (!isPlayerSeat(member)) {
-    throw Object.assign(new Error("Commissioner seat cannot mirror picks"), {
+    throw Object.assign(new Error("Administrator seat cannot mirror picks"), {
       status: 400,
     });
   }

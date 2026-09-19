@@ -187,7 +187,7 @@ export function JoinForm({
       {viaPersonal && !invited && !newPlayer && (
         <p className="text-sm text-crimson-400 mb-3" role="status">
           We could not match that personal link to a seat. Pick your name from
-          the list, or ask the commissioner for a fresh link.
+          the list, or ask the administrator for a fresh link.
         </p>
       )}
       <p className="text-[var(--text-muted)] text-sm mb-6">

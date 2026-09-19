@@ -1,7 +1,7 @@
 import { INVITE_CODE } from "./constants";
 import type { ClaimableSeat } from "./claim-seat";
 
-/** Canonical production origin for commissioner share text. */
+/** Canonical production origin for administrator share text. */
 export const PUBLIC_APP_ORIGIN = "https://survive-sunday.vercel.app";
 
 /** Nickname → URL-safe alias (`Cannoli Stuffer` → `cannoli-stuffer`). */
@@ -40,7 +40,7 @@ export function joinUrl(origin: string, path: string): string {
   return `${base}${rel}`;
 }
 
-/** Stable per-seat link the commissioner copies (membership id). */
+/** Stable per-seat link the administrator copies (membership id). */
 export function personalSeatJoinUrl(
   origin: string,
   membershipId: string

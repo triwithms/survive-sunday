@@ -63,7 +63,7 @@ export function CommissionerLoginForm({
       </label>
       {err ? <p className="text-sm text-crimson-400" role="alert">{err}</p> : null}
       <Button type="submit" className="w-full" disabled={busy}>
-        {busy ? "Saving…" : "Save real commissioner login"}
+        {busy ? "Saving…" : "Save real administrator login"}
       </Button>
     </form>
   );

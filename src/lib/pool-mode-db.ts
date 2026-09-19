@@ -17,6 +17,7 @@ export async function getPrimaryPool() {
   return pool;
 }
 
+/** INTERNAL name kept; user-facing copy says administrator. Same role. */
 export async function poolHasRealCommissioner(poolId: string): Promise<boolean> {
   const admins = await prisma.membership.findMany({
     where: { poolId, role: "admin" },
