@@ -4,7 +4,7 @@
  *   npx tsx scripts/verify-pwa-install.ts
  */
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "fs";
+import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
 import {
   a2hsVariant,
@@ -194,6 +194,29 @@ assert.doesNotMatch(helpAccount, /A2hsIosHint|bottom of Safari/);
 const manifest = readFileSync("public/manifest.webmanifest", "utf8");
 assert.match(manifest, /"name": "NFL Pool"/);
 assert.match(manifest, /"short_name": "NFL Pool"/);
+assert.match(manifest, /"theme_color": "#0B0E12"/);
+assert.doesNotMatch(manifest, /any maskable/);
+assert.match(manifest, /icon-192\.png[\s\S]*"purpose": "any"/);
+assert.match(manifest, /icon-512\.png[\s\S]*"purpose": "any"/);
+assert.match(manifest, /icon-1024\.png[\s\S]*"purpose": "any"/);
+assert.match(manifest, /icon-192-maskable\.png[\s\S]*"purpose": "maskable"/);
+assert.match(manifest, /icon-512-maskable\.png[\s\S]*"purpose": "maskable"/);
+const layout = readFileSync("src/app/layout.tsx", "utf8");
+assert.match(layout, /rel: "apple-touch-icon"|apple:[\s\S]*apple-touch-icon\.png/);
+assert.match(layout, /icon-32\.png|favicon\.ico/);
+for (const file of [
+  "public/icons/icon.svg",
+  "public/icons/icon-32.png",
+  "public/icons/apple-touch-icon.png",
+  "public/icons/icon-192.png",
+  "public/icons/icon-512.png",
+  "public/icons/icon-1024.png",
+  "public/icons/icon-192-maskable.png",
+  "public/icons/icon-512-maskable.png",
+  "src/app/favicon.ico",
+]) {
+  assert.ok(existsSync(file), `missing ${file}`);
+}
 
 for (const name of readdirSync("src/components/features/a2hs")) {
   if (!/\.(ts|tsx)$/.test(name)) continue;
