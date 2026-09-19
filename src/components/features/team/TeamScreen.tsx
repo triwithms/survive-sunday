@@ -9,7 +9,7 @@ import type { TeamPageData } from "./types";
 export function TeamScreen({ data }: { data: TeamPageData }) {
   return (
     <div className="team-research space-y-5 min-w-0 text-base leading-relaxed">
-      <TeamNav />
+      <TeamNav abbr={data.abbr} />
       <TeamHeader header={data.header} />
       {data.thisWeek && <TeamThisWeek week={data.thisWeek} />}
       {data.style && <TeamStyle style={data.style} />}

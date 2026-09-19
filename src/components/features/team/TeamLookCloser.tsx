@@ -31,6 +31,7 @@ function Row({
 
 export function TeamLookCloser({ data }: { data: TeamPageData }) {
   const items: Array<{ section: TeamSection; label: string; count?: number }> = [
+    { section: "schedule", label: "Schedule" },
     { section: "offence", label: "Offence", count: data.offence.length },
     { section: "defence", label: "Defence", count: data.defence.length },
     { section: "special-teams", label: "Special teams", count: data.special.length },
@@ -49,7 +50,7 @@ export function TeamLookCloser({ data }: { data: TeamPageData }) {
     <section className="card-glass p-4 space-y-1">
       <h2 className="text-xl font-semibold text-gold-400">Look closer</h2>
       <p className="text-sm text-[var(--text-muted)] pb-1">
-        Units, who&apos;s dinged, and the latest headlines.
+        Season slate, units, who&apos;s dinged, and the latest headlines.
       </p>
       <ul className="divide-y divide-stadium-border">
         {items.map((item) => (
