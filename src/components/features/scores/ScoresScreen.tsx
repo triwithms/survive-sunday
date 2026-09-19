@@ -1,4 +1,3 @@
-import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
 import { ScoreGameCard } from "./ScoreGameCard";
 import { ScoresHeading } from "./ScoresHeading";
@@ -13,7 +12,7 @@ export function ScoresScreen(props: ScoresScreenProps) {
       data-share-week={props.heading.weekLabel}
       className="space-y-4 min-w-0"
     >
-      <ScoresHeading {...props.heading} />
+      <ScoresHeading {...props.heading} poll={props.poll} />
       <div data-share-chrome="">
         <WeekSwitcher
           weeks={props.weekOptions}
@@ -21,7 +20,6 @@ export function ScoresScreen(props: ScoresScreenProps) {
           currentWeek={props.focusWeek}
           basePath="/scores"
         />
-        <LiveScoresRefresh weekNumber={props.selectedWeek} poll={props.poll} />
       </div>
       {props.games.length === 0 ? (
         <div
