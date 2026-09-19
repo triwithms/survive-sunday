@@ -33,7 +33,7 @@ export function TeamLookCloser({ data }: { data: TeamPageData }) {
   const items: Array<{ section: TeamSection; label: string; count?: number }> = [
     { section: "offence", label: "Offence", count: data.offence.length },
     { section: "defence", label: "Defence", count: data.defence.length },
-    { section: "special", label: "Special teams", count: data.special.length },
+    { section: "special-teams", label: "Special teams", count: data.special.length },
     {
       section: "injuries",
       label: "Injuries",

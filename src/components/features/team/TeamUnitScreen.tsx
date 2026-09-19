@@ -46,7 +46,7 @@ export function TeamUnitScreen({
         )}
         {shown.length === 0 ? (
           <p className="text-base text-[var(--text-muted)]">
-            {unit === "special"
+            {unit === "special-teams"
               ? "None listed. ESPN often skips returners as their own spots."
               : "None listed yet."}
           </p>

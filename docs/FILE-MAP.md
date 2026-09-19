@@ -62,7 +62,7 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | Standings (NFL) | `src/app/(app)/nfl/page.tsx` |
 | Videos | `src/app/(app)/videos/page.tsx` |
 | Schedule | `src/app/(app)/schedule/page.tsx` |
-| Team research | `src/app/(app)/team/[abbr]/page.tsx` — units `/offence` `/defence` `/special`, plus `/injuries` and `/news`. Player detail stays `/team/[abbr]/player/[slug]`. |
+| Team research | `src/app/(app)/team/[abbr]/page.tsx` — own pages: `/offence` `/defence` `/special-teams` `/injuries` `/news`. Player detail stays `/team/[abbr]/player/[slug]`. |
 | Admin hub | `src/app/(app)/admin/page.tsx` redirects to Users. Tabs: Users `/admin/users`, Pool `/admin/config`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/comms` → Users, `/admin/import` stays. |
 
 Also exist (same thin-page pattern): Account, Admin, Team.

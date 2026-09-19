@@ -1,4 +1,5 @@
 export { loadTeamPage } from "./load-team";
+export { loadTeamUnit } from "./load-team-unit";
 export { TeamScreen } from "./TeamScreen";
 export { TeamUnitScreen } from "./TeamUnitScreen";
 export { TeamInjuriesScreen } from "./TeamInjuriesScreen";

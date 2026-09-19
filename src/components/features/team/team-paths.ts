@@ -3,13 +3,13 @@ import { normAbbr } from "@/lib/espn-teams";
 export const TEAM_SECTIONS = [
   "offence",
   "defence",
-  "special",
+  "special-teams",
   "injuries",
   "news",
 ] as const;
 
 export type TeamSection = (typeof TEAM_SECTIONS)[number];
-export type TeamUnitKey = "offence" | "defence" | "special";
+export type TeamUnitKey = "offence" | "defence" | "special-teams";
 
 export function teamAbbr(raw: string): string {
   return normAbbr(raw);
@@ -25,7 +25,7 @@ export function isTeamSection(value: string): value is TeamSection {
 }
 
 export function isTeamUnit(value: string): value is TeamUnitKey {
-  return value === "offence" || value === "defence" || value === "special";
+  return value === "offence" || value === "defence" || value === "special-teams";
 }
 
 export function unitTitle(unit: TeamUnitKey): string {
