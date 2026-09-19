@@ -78,24 +78,54 @@ assert.equal(teamLogoUrl("CHI", espnTeamLogoUrl("CHI")), espnTeamLogoUrl("CHI"))
 const stale = "https://example.com/stale-chi.png";
 const localChi = localHelmetSrc("CHI");
 assert.equal(localChi, "/helmets/chi.png");
+assert.equal(localHelmetSrc("PIT"), "/helmets/pit.png");
+assert.equal(localHelmetSrc("Chi"), "/helmets/chi.png");
 assert.equal(localHelmetSrc("wsh"), "/helmets/was.png");
+assert.equal(localHelmetSrc("WSH"), "/helmets/was.png");
+assert.equal(localHelmetSrc("/helmets/PIT.png"), "/helmets/pit.png");
+assert.equal(localHelmetSrc("PIT.png"), "/helmets/pit.png");
+assert.equal(localHelmetSrc("PIT"), localHelmetSrc("PIT").toLowerCase());
+assert.doesNotMatch(localHelmetSrc("PIT"), /[A-Z]/);
+assert.doesNotMatch(localHelmetSrc("Chi"), /[A-Z]/);
 assert.equal(resolveTeamLogoSrc("CHI", stale, null), localChi);
 assert.equal(resolveTeamLogoSrc("CHI", stale, localChi), stale);
-assert.equal(resolveTeamLogoSrc("CHI", stale, stale), espnTeamLogoUrl("CHI"));
+assert.equal(
+  resolveTeamLogoSrc("CHI", stale, [localChi, stale]),
+  espnTeamLogoUrl("CHI")
+);
 assert.equal(resolveTeamLogoSrc("CHI", null, null), localChi);
 assert.equal(
   resolveTeamLogoSrc("CHI", espnTeamLogoUrl("CHI"), localChi),
   espnTeamLogoUrl("CHI")
 );
 assert.equal(
-  resolveTeamLogoSrc("CHI", espnTeamLogoUrl("CHI"), espnTeamLogoUrl("CHI")),
+  resolveTeamLogoSrc("CHI", espnTeamLogoUrl("CHI"), [
+    localChi,
+    espnTeamLogoUrl("CHI"),
+  ]),
   TEAM_HELMET_PLACEHOLDER
 );
 assert.equal(
-  resolveTeamLogoSrc("CHI", null, TEAM_HELMET_PLACEHOLDER),
+  resolveTeamLogoSrc("CHI", null, [
+    localChi,
+    espnTeamLogoUrl("CHI"),
+    TEAM_HELMET_PLACEHOLDER,
+  ]),
   TEAM_HELMET_PLACEHOLDER
 );
 assert.notEqual(resolveTeamLogoSrc("CHI", null, "gone"), null);
+assert.equal(
+  resolveTeamLogoSrc("PIT", "/helmets/PIT.png", null),
+  "/helmets/pit.png"
+);
+assert.equal(
+  resolveTeamLogoSrc("PIT", "/helmets/PIT.png", "/helmets/pit.png"),
+  espnTeamLogoUrl("PIT")
+);
+assert.equal(
+  resolveTeamLogoSrc("PIT", null, [localHelmetSrc("PIT"), espnTeamLogoUrl("PIT")]),
+  TEAM_HELMET_PLACEHOLDER
+);
 
 assert.equal(Object.keys(ESPN_TEAM_IDS).length, 32);
 const localHashes = new Set<string>();
@@ -106,6 +136,12 @@ for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
     /^https:\/\/a\.espncdn\.com\/i\/teamlogos\/nfl\/500\/[a-z]{2,3}\.png$/,
     `${abbr} logo url`
   );
+  const local = localHelmetSrc(abbr);
+  assert.equal(local, `/helmets/${abbr.toLowerCase()}.png`, `${abbr} local path`);
+  assert.equal(local, localHelmetSrc(abbr.toLowerCase()));
+  assert.equal(local, local.toLowerCase(), `${abbr} path is lowercase`);
+  assert.doesNotMatch(local, /[A-Z]/, `${abbr} never uppercase path`);
+  assert.match(local, /^\/helmets\/[a-z]{2,3}\.png$/, `${abbr} helmet slug`);
   const file = path.join(
     process.cwd(),
     "public/helmets",
@@ -137,13 +173,57 @@ const teamLogoSrc = fs.readFileSync(
 );
 assert.match(teamLogoSrc, /<img/);
 assert.match(teamLogoSrc, /resolveTeamLogoSrc/);
+assert.match(teamLogoSrc, /object-contain/);
+assert.match(teamLogoSrc, /bg-stadium-800/);
+assert.equal(teamLogoSrc.includes("bg-white"), false);
 assert.equal(teamLogoSrc.includes("opacity-0"), false);
 assert.equal(teamLogoSrc.includes("teamBadge"), false);
 assert.equal(teamLogoSrc.includes("TEAM_BADGES"), false);
 assert.equal(teamLogoSrc.includes("29.png"), false);
 assert.equal(teamLogoSrc.includes("abbr.slice"), false);
 assert.equal(teamLogoSrc.includes("letter"), false);
+assert.match(teamLogoSrc, /setFailed/);
 assert.ok(teamLogoSrc.split("\n").length <= 100, "TeamLogo stays small");
+
+const scoreTeamRowSrc = fs.readFileSync(
+  path.join(process.cwd(), "src/components/features/scores/ScoreTeamRow.tsx"),
+  "utf8"
+);
+assert.match(scoreTeamRowSrc, /<TeamLogo/);
+assert.equal(scoreTeamRowSrc.includes("/helmets/"), false);
+assert.equal(scoreTeamRowSrc.includes("<img"), false);
+
+const scoresPickRowSrc = fs.readFileSync(
+  path.join(process.cwd(), "src/components/features/scores/ScoresPickRow.tsx"),
+  "utf8"
+);
+assert.match(scoresPickRowSrc, /<TeamLogo/);
+assert.equal(scoresPickRowSrc.includes("/helmets/"), false);
+
+const pickSideSrc = fs.readFileSync(
+  path.join(process.cwd(), "src/components/features/pick/PickSideTeamLink.tsx"),
+  "utf8"
+);
+assert.match(pickSideSrc, /<TeamLogo/);
+assert.equal(pickSideSrc.includes("/helmets/"), false);
+assert.equal(pickSideSrc.includes("<img"), false);
+
+function walkTs(dir: string, out: string[] = []): string[] {
+  for (const name of fs.readdirSync(dir)) {
+    const full = path.join(dir, name);
+    if (fs.statSync(full).isDirectory()) walkTs(full, out);
+    else if (/\.(ts|tsx)$/.test(name)) out.push(full);
+  }
+  return out;
+}
+const helmetBuilders = walkTs(path.join(process.cwd(), "src")).filter((file) =>
+  /`\/helmets\/\$\{/.test(fs.readFileSync(file, "utf8"))
+);
+assert.deepEqual(
+  helmetBuilders.map((f) => path.relative(process.cwd(), f)),
+  ["src/lib/team-helmets.ts"],
+  "only localHelmetSrc builds /helmets/ paths"
+);
 
 const poolSrc = fs.readFileSync(
   path.join(process.cwd(), "src/components/features/home/HomePickHero.tsx"),
