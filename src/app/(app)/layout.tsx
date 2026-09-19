@@ -21,6 +21,7 @@ import {
 } from "@/lib/pool-mode";
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
+import { A2hsNudge } from "@/components/features/a2hs";
 import { PoolRulesBanner } from "@/components/PoolRulesBanner";
 
 export const dynamic = "force-dynamic";
@@ -205,6 +206,7 @@ export default async function AppLayout({
         {children}
       </div>
       <FooterDisclaimer />
+      <A2hsNudge />
       <BottomNav isAdmin={showAdminChrome} />
     </div>
   );

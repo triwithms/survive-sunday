@@ -8,7 +8,7 @@ import {
   loginEmailQueryValue,
   safeLoginCallbackPath,
 } from "@/lib/login-error";
-import { markAddToHomePending } from "@/lib/pwa-install";
+import { markAddToHomePending } from "@/components/features/a2hs/actions";
 
 export function LoginForm() {
   const params = useSearchParams();

@@ -47,7 +47,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Pick-change until kickoff** — every week: you can still change an existing pick until **that team’s** kickoff if the new game has not started.
 - Forgot password is on `main`; emails will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**. Sign in is **email + password** (not a sign-in code first).
 - **Personal Join links** — Admin → **Personal Join links** → one **Copy** per friend who has not Joined (`/join?who=cannoli-stuffer` when the nickname is unique; otherwise `/join?seat=…`). Opens Join with that seat already picked. Invite code `SUNDAY26` is filled in. If the seat is already claimed, the friend sees Sign in — not a broken form. Send one link per friend; do not blast one link to the group chat. Roster has the same Copy button, without extra wording. **Help → Getting started**.
-- **Home Screen prompt** — after Join or first Sign in on a phone browser (not already the Home Screen icon), we ask if they already added the app. Yes = don’t ask again on that phone. Show me how = iPhone Safari / Android Chrome steps. Not now = skip for a while. Already installed = no nag (optional one-time “You’re good”).
+- **Home Screen prompt** — after Join or Sign in on a phone browser (not already the Home Screen icon), a bottom card asks them to add the app. **I added it** = don’t ask again. **Later** = skip 3 days. **Don’t ask again** = opt out (Account → **Add to Home Screen** brings it back). iPhone: Share → Add to Home Screen. Android: Install. In-app browsers: open Safari/Chrome + copy link. Desktop never shows. Code: `src/components/features/a2hs/`.
 - **Share Board / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). No Share button on the screen. On Board or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
 - **Scores Details ›** — merged [PR #46](https://github.com/triwithms/survive-sunday/pull/46). Each game card shows gold **Details ›** (live, Final, and upcoming) so friends know the card opens more info.
 - **Videos** — merged [PR #51](https://github.com/triwithms/survive-sunday/pull/51). Header **Videos** plus Home title cards; Scores → **Details** for that game. **This 2026/27 season only** — [PR #52](https://github.com/triwithms/survive-sunday/pull/52). **Previews until kickoff, then highlights** — [PR #54](https://github.com/triwithms/survive-sunday/pull/54). **No in-app YouTube player** — thumbnail + title + **Watch on YouTube** (NFL blocks embeds). Role switch is in **Account** only. **Scores** opens on your pick week and will not open future weeks (browse those on Schedule).
@@ -324,7 +324,7 @@ The app does **not** list Canadian channels. When you text or email friends a sl
 
 ### Phone / Home Screen (PWA)
 
-After Join or first Sign in on a **phone browser**, the app asks if they already added Survive Sunday to the Home Screen. **Yes** = never ask again on that phone. **Show me how** = short steps. **Not now** = skip for about a week. If they already open the **Home Screen icon**, we do not nag.
+After Join or Sign in on a **phone browser**, a bottom card asks them to add Survive Sunday to the Home Screen. **I added it** = never ask again on that phone. **Later** = skip for 3 days. **Don’t ask again** = opt out (Account → **Add to Home Screen** restores the card). If they already open the **Home Screen icon**, we mark installed and do not nag. Desktop never shows.
 
 - **iPhone:** stay in Safari (not Chrome, not the browser inside Messages) → Share → Add to Home Screen. iPhone cannot install with one button.
 - **Android:** Chrome menu → Install app / Add to Home screen. If Chrome offers Install, they can tap it.
@@ -390,7 +390,7 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 | No “demo” labels / `demo1234` practice picker | **Shipped.** Pool is live-only (Demo vs Real toggle removed). Week 1 current; Week 2 stays viewable. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md). |
 | Friends pick themselves from the live roster and claim that seat | **Shipped** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)). Join + logged-out Home show **Who are you?** from the live Admin roster. Claiming attaches email/password to the existing seat. Already-claimed seats say Sign in instead. Same email can be **Player + Administrator**; switch from **Account** with **Playing as …** / **Admin tools**. Admin can promote another existing member. Administrators copy **personal Join links** from Admin / Roster. |
 | Simple password reset (code by email or SMS) | **Merged / shipping** ([PR #7](https://github.com/triwithms/survive-sunday/pull/7)). Sign in is **email + password**; **Forgot password?** → 6-digit code is on `main`. Set `RESEND_API_KEY` + `RESEND_FROM_EMAIL` on Vercel or emails will not send. Check spam/junk. Optional Twilio for texts. |
-| Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** After Join / first Sign in on a phone browser, a gentle prompt (Yes / Show me how / Not now). Already-installed Home Screen icon does not nag. Cookie is ~**90 days**. |
+| Add to Home Screen + stay logged in on phone; also mobile web + desktop | **Built.** After Join / Sign in on a phone browser, a bottom card (Install / iOS Share steps / open Safari·Chrome). **I added it** / **Later** (3 days) / **Don’t ask again**. Account restores it. Home Screen icon does not nag. Cookie is ~**90 days**. |
 | Each friend chooses which notification types they want | **Shipped.** Account → **Notification preferences**. Per-user row in the database. Core on, noisy off. Gates pick-confirm, results, elimination/mulligan, pool notes, missing-pick email/SMS. Password reset is never gated. |
 
 ### Do not build (already decided)
@@ -625,7 +625,7 @@ Honest status:
 - Stay-logged-in on the phone is ~90 days on main.
 - Who are you? claim + Player/Administrator roles + role switcher are **on main** (merged PR #19). Do not start a second copy.
 - Safari sign-in + Account Sign out are **on main** (merged PR #18).
-- Personal Join links and Home Screen prompt ship in the Join / Home Screen UX pack. Do not start a second copy. Sign in is email + password + Forgot password. Password form POST to `/api/login` must stay (Safari cookies).
+- Personal Join links and Home Screen prompt ship in the Join / Home Screen UX pack. The client A2HS card lives in `src/components/features/a2hs/`. Do not start a second copy. Sign in is email + password + Forgot password. Password form POST to `/api/login` must stay (Safari cookies).
 
 My problem: [describe login / session / forgot-password issue]
 ```

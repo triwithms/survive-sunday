@@ -49,9 +49,10 @@ export function HelpIntro() {
         <h3 className="font-semibold mt-3 mb-1">C. Add to Home Screen (make it an app)</h3>
         <p className="text-[var(--text-muted)] mb-2">
           After you Join or Sign in on a phone browser, we may ask about the Home
-          Screen. Tap <strong>Yes</strong>, <strong>Show me how</strong>, or{" "}
-          <strong>Not now</strong>. If you already open the Home Screen icon, we
-          do not nag.
+          Screen. Tap <strong>I added it</strong>, <strong>Later</strong>, or{" "}
+          <strong>Don&apos;t ask again</strong>. Account →{" "}
+          <strong>Add to Home Screen</strong> brings the card back. If you
+          already open the Home Screen icon, we do not nag.
         </p>
         <p className="text-sm font-medium text-[var(--text-primary)] mb-1">iPhone / iPad — Safari</p>
         <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
