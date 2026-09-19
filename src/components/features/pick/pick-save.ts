@@ -27,6 +27,6 @@ export function applyPickSave(
 
 export function pickSavedMessage(changed: boolean) {
   return changed
-    ? "Pick updated — heading back to pool…"
-    : "Locked in — heading back to pool…";
+    ? "Pick updated — heading to Selections…"
+    : "Locked in — heading to Selections…";
 }

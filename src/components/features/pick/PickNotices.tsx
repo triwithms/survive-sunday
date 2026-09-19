@@ -79,7 +79,7 @@ export function PickNotices({
           <p>{msg}</p>
           {redirectIn != null && (
             <Link href="/pool" prefetch={false} className="btn-primary inline-flex text-sm">
-              Back to pool{redirectIn > 0 ? ` (${redirectIn})` : ""}
+              See selections{redirectIn > 0 ? ` (${redirectIn})` : ""}
             </Link>
           )}
         </div>

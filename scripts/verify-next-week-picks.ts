@@ -189,7 +189,7 @@ const gamsCopy = pickScreenCopy({
   hasCurrentPick: true,
 });
 assert.equal(gamsCopy.showWeek1ChangeCard, true);
-assert.match(gamsCopy.kicker, /until that team’s kickoff/);
+assert.match(gamsCopy.kicker, /until your game starts/);
 assert.equal(homeEmptyPickCopy(gamsWeek2).ctaLabel, "Change pick");
 
 const fromLoadedLockedNext = resolvePlayerPickWeekFromLoaded({
@@ -329,7 +329,7 @@ const stillWeek1Copy = pickScreenCopy({
   hasCurrentPick: true,
 });
 assert.equal(stillWeek1Copy.showWeek1ChangeCard, true);
-assert.match(stillWeek1Copy.kicker, /until that team’s kickoff/);
+assert.match(stillWeek1Copy.kicker, /until your game starts/);
 assert.doesNotMatch(stillWeek1Copy.kicker, /Week 1 only/);
 
 const week2Pending = resolvePlayerPickWeek({
@@ -356,7 +356,7 @@ const stillWeek2Copy = pickScreenCopy({
   hasCurrentPick: true,
 });
 assert.equal(stillWeek2Copy.showWeek1ChangeCard, true);
-assert.match(stillWeek2Copy.kicker, /until that team’s kickoff/);
+assert.match(stillWeek2Copy.kicker, /until your game starts/);
 assert.doesNotMatch(stillWeek2Copy.kicker, /Week 1 only/);
 
 const week2Started = resolvePlayerPickWeek({

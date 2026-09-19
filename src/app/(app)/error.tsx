@@ -29,8 +29,8 @@ export default function AppError({
         <button type="button" className="btn-primary" onClick={() => reset()}>
           Try again
         </button>
-        <Link href="/pool" className="btn-secondary inline-flex items-center justify-center">
-          Pool home
+        <Link href="/pick" className="btn-secondary inline-flex items-center justify-center">
+          My pick
         </Link>
       </div>
     </div>

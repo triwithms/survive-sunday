@@ -78,7 +78,7 @@ export function useForgotPassword() {
         setErr(result.error);
         return;
       }
-      submitCredentialsLogin(email, password, "/pool");
+      submitCredentialsLogin(email, password, "/pick");
     } catch {
       setErr("Could not finish the reset. Try again.");
     } finally {

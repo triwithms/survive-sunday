@@ -1,11 +1,7 @@
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
-import { HomeVideosTeaser } from "@/components/WeeklyVideosPanel";
-import { HomeEmptyPick } from "./HomeEmptyPick";
-import { HomeHiddenParticipants } from "./HomeHiddenParticipants";
-import { HomePickHero } from "./HomePickHero";
-import { HomePicksByGame } from "./HomePicksByGame";
 import { HomeWeekHeader } from "./HomeWeekHeader";
+import { SelectionsList } from "./SelectionsList";
 import type { HomeScreenProps } from "./types";
 
 export function HomeScreen(props: HomeScreenProps) {
@@ -23,21 +19,11 @@ export function HomeScreen(props: HomeScreenProps) {
         basePath="/pool"
       />
       <LiveScoresRefresh weekNumber={props.selectedWeek} poll={props.poll} />
-      {props.hero ? (
-        <HomePickHero {...props.hero} />
-      ) : props.empty ? (
-        <HomeEmptyPick {...props.empty} />
-      ) : null}
-      <HomeVideosTeaser week={props.selectedWeek} />
-      {props.revealAllPicks ? (
-        <HomePicksByGame
-          games={props.games}
-          rows={props.rows}
-          selfId={props.selfId}
-        />
-      ) : (
-        <HomeHiddenParticipants rows={props.rows} selfId={props.selfId} />
-      )}
+      <SelectionsList
+        rows={props.rows}
+        selfId={props.selfId}
+        revealAllPicks={props.revealAllPicks}
+      />
     </div>
   );
 }

@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { DEFAULT_SIGNED_IN_PATH } from "@/lib/app-paths";
 
-/** Client navigate to /pool after cookies settle (fixes Safari "can't open page"). */
+/** Client navigate after cookies settle (fixes Safari "can't open page"). */
 export function SignedInHandoff() {
   useEffect(() => {
     const t = window.setTimeout(() => {
-      window.location.replace("/pool");
+      window.location.replace(DEFAULT_SIGNED_IN_PATH);
     }, 50);
     return () => window.clearTimeout(t);
   }, []);
@@ -16,8 +17,8 @@ export function SignedInHandoff() {
       <p className="text-gold-400 font-display text-2xl tracking-wide mb-2">
         SURVIVE SUNDAY
       </p>
-      <p className="text-[var(--text-muted)] text-sm">Taking you to the pool…</p>
-      <a href="/pool" className="mt-6 text-sm text-gold-400 underline">
+      <p className="text-[var(--text-muted)] text-sm">Taking you to My pick…</p>
+      <a href={DEFAULT_SIGNED_IN_PATH} className="mt-6 text-sm text-gold-400 underline">
         Continue
       </a>
     </main>

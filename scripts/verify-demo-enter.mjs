@@ -78,8 +78,8 @@ async function main() {
     `demo-enter redirected to ${location}`
   );
   assert(
-    location === "/pool" || location.endsWith("/pool") || location.includes("/signed-in"),
-    `expected /pool (or /signed-in), got ${location}`
+    location === "/pick" || location.endsWith("/pick") || location.includes("/signed-in"),
+    `expected /pick (or /signed-in), got ${location}`
   );
   const sessionNames = [...jar.keys()].filter((n) => n.includes("session-token"));
   assert(sessionNames.length > 0, `no session cookie after demo-enter; cookies=${[...jar.keys()]}`);
@@ -102,8 +102,8 @@ async function main() {
       hop = next.startsWith("http") ? new URL(next).pathname + new URL(next).search : next;
       continue;
     }
-    assert(page.status === 200, `/pool hop status ${page.status} at ${hop}`);
-    assert(hop === "/pool" || hop.startsWith("/pool"), `landed on ${hop}`);
+    assert(page.status === 200, `/pick hop status ${page.status} at ${hop}`);
+    assert(hop === "/pick" || hop.startsWith("/pick"), `landed on ${hop}`);
     const html = await page.text();
     assert(!html.includes("no session created"), "NoSession copy on page");
     console.log(`PASS  HTML ${hop} 200 with session`);

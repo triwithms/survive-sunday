@@ -56,14 +56,15 @@ function main() {
   );
 
   assert(safeLoginCallbackPath("/pool") === "/pool", "/pool ok");
+  assert(safeLoginCallbackPath("/pick") === "/pick", "/pick ok");
   assert(safeLoginCallbackPath("/admin") === "/admin", "/admin ok");
   assert(
-    safeLoginCallbackPath("https://evil.example/pool") === "/pool",
+    safeLoginCallbackPath("https://evil.example/pool") === "/pick",
     "reject absolute URL"
   );
-  assert(safeLoginCallbackPath("//evil.example") === "/pool", "reject protocol-relative");
-  assert(safeLoginCallbackPath("/login") === "/pool", "reject /login loop");
-  assert(safeLoginCallbackPath("/api/auth/signin") === "/pool", "reject /api");
+  assert(safeLoginCallbackPath("//evil.example") === "/pick", "reject protocol-relative");
+  assert(safeLoginCallbackPath("/login") === "/pick", "reject /login loop");
+  assert(safeLoginCallbackPath("/api/auth/signin") === "/pick", "reject /api");
   console.log("PASS  login error copy and URL helpers");
 }
 

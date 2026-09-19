@@ -16,7 +16,7 @@ export function LeagueScreen({ asOf, note, teams }: LeaguePageData) {
             prefetch={false}
             className="text-gold-400 underline underline-offset-2"
           >
-            pool survival board
+            pool Leaderboard
           </Link>
         </p>
       </div>

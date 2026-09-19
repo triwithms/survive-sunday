@@ -15,7 +15,7 @@ export const WEEK_NAV_PATHS = {
 
 export type WeekNavPath = keyof typeof WEEK_NAV_PATHS;
 
-/** Home, Pick, Scores, Videos, and Schedule open on that friend’s current pick week. */
+/** My pick, Selections, Scores, Videos, and Schedule open on that friend’s current pick week. */
 export function usesPlayerPickWeekDefault(basePath: string): boolean {
   return (
     basePath === "/pick" ||
@@ -28,7 +28,7 @@ export function usesPlayerPickWeekDefault(basePath: string): boolean {
 
 /**
  * Default week when the URL has no `?week=`.
- * Home / Pick / Scores / Videos / Schedule: the signed-in user’s current pick week.
+ * My pick / Selections / Scores / Videos / Schedule: the signed-in user’s current pick week.
  * Schedule still lets friends browse every week, including future.
  */
 export function defaultWeekForPath({

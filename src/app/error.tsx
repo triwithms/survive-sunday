@@ -29,8 +29,8 @@ export default function Error({
         <button type="button" className="btn-primary" onClick={() => reset()}>
           Try again
         </button>
-        <Link href="/pool" className="btn-secondary inline-flex items-center justify-center">
-          Back to pool
+        <Link href="/pick" className="btn-secondary inline-flex items-center justify-center">
+          My pick
         </Link>
       </div>
     </main>

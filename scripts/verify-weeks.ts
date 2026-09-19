@@ -535,16 +535,16 @@ mustNotMatch(
 mustInclude("src/components/features/scores/ScoresScreen.tsx", [
   "currentWeek={props.focusWeek}",
 ]);
-mustInclude("src/components/HeaderWeekNav.tsx", [
+mustInclude("src/lib/header-week-selection.ts", [
   "defaultWeekForPath",
   "resolvePageWeekNumber",
   "pickActionWeek",
 ]);
-mustInclude("src/app/(app)/layout.tsx", [
-  "pickActionWeek={decision.actionWeek}",
-  "weekNumber={decision.actionWeek}",
+mustInclude("src/components/AppHeader.tsx", [
+  "pickActionWeek={data.pickActionWeek}",
+  "weekNumber={data.pickActionWeek}",
 ]);
-mustInclude("src/components/HelpContent.tsx", [
+mustInclude("src/components/features/help/HelpScreens.tsx", [
   "your current pick week",
   "Future weeks stay on",
 ]);

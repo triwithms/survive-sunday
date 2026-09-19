@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   let email = "";
   let password = "";
   let otp = "";
-  let callbackUrl = "/pool";
+  let callbackUrl = "/pick";
   try {
     const ct = req.headers.get("content-type") ?? "";
     if (ct.includes("application/json")) {

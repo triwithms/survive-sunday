@@ -89,7 +89,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - **Import Week picks** (CSV / paste) for groups mid-season — counts for grading/mulligan/reuse
 - Season-end tiebreak helpers (clean record / no ranked auto-pick 💩 → fewest losses → weeks survived → nickname A–Z)
 - `/help` from HELP-COPY (+ importing prior picks); footer disclaimer
-- Team research: tap a club from Pick / Schedule / League / Scores; team info (record, this week, coach, style) is at the top, then key players and roster. Tap an NFL player for college, depth role, and any ESPN injury note
+- Team research: tap a club from My pick / Schedule / Standings / Scores; team info (record, this week, coach, style) is at the top, then key players and roster. Tap an NFL player for college, depth role, and any ESPN injury note
 - Dark stadium UI (gold/green); installable PWA shell
 - Seed via `npm run seed`
 
@@ -115,9 +115,9 @@ Wave 1 Pool QA (critical):
 6. **Auto-grade on load** — scores/pool (and other ensure paths) grade pending picks whose games are FINAL.
 7. **App Router error boundaries** — `src/app/not-found.tsx`, `error.tsx`, `global-error.tsx`, and `(app)/error.tsx` so a reload on `/admin` or `/help` no longer 404/500 with “missing required error components”.
 8. **Admin session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. Demo Administrator `admin@survivesunday.demo` / `demo1234` keeps admin membership for `/admin` and `/admin/import`.
-8b. **Tunnel login Host** — middleware forwards a public `Host` (e.g. `*.trycloudflare.com`) as `x-forwarded-host` / `x-forwarded-proto`. Auth `callbacks.redirect` and the auth route rewrite any `https://localhost:3000` Location to the request Host. Client `afterAuthNavigate` always uses a relative `/pool`.
-9. **Session identity drift** — demo login `signOut`s first, `await getSession()` before navigate, then hard-loads `/pool`. Authenticated routes are `force-dynamic` + `revalidate = 0`; BottomNav prefetch is off; SW is network-only for HTML/RSC. `SessionProvider` remounts on user id (`refetchOnWindowFocus`, `refetchInterval={60}`).
-10. **/pick red “1 Error” toast** — `Countdown` no longer hydrates `Date.now()` from the server; kickoff/logo/undefined guards in `PickClient`.
+8b. **Tunnel login Host** — middleware forwards a public `Host` (e.g. `*.trycloudflare.com`) as `x-forwarded-host` / `x-forwarded-proto`. Auth `callbacks.redirect` and the auth route rewrite any `https://localhost:3000` Location to the request Host. Client `afterAuthNavigate` always uses a relative signed-in path (`/pick`).
+9. **Session identity drift** — demo login `signOut`s first, `await getSession()` before navigate, then hard-loads `/pick`. Authenticated routes are `force-dynamic` + `revalidate = 0`; BottomNav prefetch is off; SW is network-only for HTML/RSC. `SessionProvider` remounts on user id (`refetchOnWindowFocus`, `refetchInterval={60}`).
+10. **/pick red “1 Error” toast** — header has no slate-wide countdown; kickoff/logo/undefined guards in `PickClient`.
 
 Server identity check: `node scripts/verify-session-identity.mjs`
 

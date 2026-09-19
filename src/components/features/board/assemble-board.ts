@@ -3,7 +3,7 @@ import { MISSED_TEAM } from "@/lib/grading";
 import { isAlive, resolveSeasonWinners } from "@/lib/tiebreak";
 import { isSingleEliminationWeek } from "@/lib/pool-rules";
 import type { PlayerPickWeek } from "@/lib/next-week-picks";
-import { boardCta, boardLockLine, boardSortLine } from "./board-copy";
+import { boardLockLine, boardSortLine } from "./board-copy";
 import type { BoardRow, BoardScreenProps } from "./types";
 
 type Member = {
@@ -37,6 +37,8 @@ export function assembleBoardPage(args: {
   canChangePick: boolean;
   decision: PlayerPickWeek;
 }): BoardScreenProps {
+  void args.decision;
+  void args.playing;
   const { me, week, sorted, pickByMember, logoByAbbr } = args;
   const weekLabel = week?.label ?? `Week ${args.currentWeek}`;
   const winners = resolveSeasonWinners(args.participants);
@@ -66,16 +68,7 @@ export function assembleBoardPage(args: {
       pickRowCount: sorted.length,
       lockLine: boardLockLine(week, args.locked, args.canChangePick),
       sortLine: boardSortLine(revealAllPicks),
-      cta: boardCta({
-        canChangePick: args.canChangePick,
-        showMakePick: !args.canChangePick && args.playing && me.status !== "eliminated" &&
-          (args.decision.nextWeekOpen || args.decision.reason === "slate_not_ready"),
-        showMutedChange: !args.locked &&
-          ((me.role === "admin" && !args.playing) || me.status === "eliminated"),
-        weekNumber: week?.number ?? 1,
-        decision: args.decision,
-        adminSpectator: me.role === "admin" && !args.playing,
-      }),
+      cta: null,
     },
     rows,
     selfId: me.id,

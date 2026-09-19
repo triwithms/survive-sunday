@@ -30,7 +30,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 **Never paste secrets** (passwords, `AUTH_SECRET`, `DATABASE_URL`, API keys) into a chat, a screenshot, or a commit.
 
-**Snapshot (17 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Live tonight:
+**Snapshot (19 September 2026):** latest `main` is what friends see on [survive-sunday.vercel.app](https://survive-sunday.vercel.app). Nav IA polish (My pick · Selections · Leaderboard · Scores · Schedule · Standings; header **?** for Help) may still be on an open PR — trust `main` until it merges. Live tonight:
 
 - **CRITICAL — production data:** A Vercel Production build is `npm run build` → `next build` only. It does **not** run `ensure-production-db`, `prisma db push`, or seeds. Scheduled jobs (missing-pick reminders, ensure-week) do **not** wipe or reseed the pool. Never reattach those scripts to the build. Details: [DEPLOY.md](../DEPLOY.md) section 4.
 
@@ -40,17 +40,17 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
 - **Week 2 schedule restored** in Real/live (viewable; Demo isolation is practice UX only — it does **not** hide the Week 2 slate) — merged [PR #22](https://github.com/triwithms/survive-sunday/pull/22)
 - **Next-week picks unlock per player** as soon as *their* current-week game has started (not after Monday Night Football). Week 2 pick UI is live for those players and for new joiners who missed a Week 1 pick path. Friends still waiting on their own Week 1 kickoff keep the normal Week 1 change-pick flow.
-- Survival board / participant pick lists: **undefeated → one-loss → eliminated**, then **same pick → same game → nickname A–Z** (no-pick last within that status group). Weeks survived does not change this list. **Home** and **Scores** open on your current pick week; future weeks are on **Schedule**.
-- ESPN live scores + injuries; **League W-L syncs from ESPN** (not the demo `week2-standings` seed); no player-facing demo League copy in Real mode
+- Leaderboard (pool in/out): **undefeated → one-loss → eliminated**, then nickname A–Z. Selections is the weekly pick list. **My pick**, **Selections**, and **Scores** open on your current pick week; future weeks are on **Schedule**.
+- ESPN live scores + injuries; **Standings (NFL W-L) syncs from ESPN** (not the demo `week2-standings` seed); no player-facing demo League copy in Real mode
 - Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **DAL** (Dallas — not Gams’ KC). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
 - **Pick backup:** Off by default. Optional copy-from-member within **30 minutes** of lock (no 💩). Optional ranked leftover (~**2 minutes** before lock) stamps 💩 and that player cannot be the official winner. Server jobs apply this — opening the app is not required. Keep Help general; do not name a specific friend.
 - **Pick-change until kickoff** — every week: you can still change an existing pick until **that team’s** kickoff if the new game has not started.
 - Forgot password is on `main`; emails will not send until **`RESEND_API_KEY` + `RESEND_FROM_EMAIL`** are on Vercel Production, then Redeploy. That is still the **invite blocker**. Sign in is **email + password** (not a sign-in code first).
 - **Personal Join links** — Admin → **Personal Join links** → one **Copy** per friend who has not Joined (`/join?who=cannoli-stuffer` when the nickname is unique; otherwise `/join?seat=…`). Opens Join with that seat already picked. Invite code `SUNDAY26` is filled in. If the seat is already claimed, the friend sees Sign in — not a broken form. Send one link per friend; do not blast one link to the group chat. Roster has the same Copy button, without extra wording. **Help → Getting started**.
 - **Home Screen prompt** — after Join or Sign in on a phone browser (not already the Home Screen icon), a bottom card asks them to add the app. **I added it** = don’t ask again. **Later** = skip 3 days. **Don’t ask again** = opt out (Account → **Add to Home Screen** brings it back). iPhone: Share → Add to Home Screen. Android: Install. In-app browsers: open Safari/Chrome + copy link. Desktop never shows. Code: `src/components/features/a2hs/`.
-- **Share Board / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). No Share button on the screen. On Board or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
+- **Share Leaderboard / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). No Share button on the screen. On Leaderboard or Scores, **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents the gesture. Does not change picks, Join, Sign in, or lock.
 - **Scores Details ›** — merged [PR #46](https://github.com/triwithms/survive-sunday/pull/46). Each game card shows gold **Details ›** (live, Final, and upcoming) so friends know the card opens more info.
-- **Videos** — merged [PR #51](https://github.com/triwithms/survive-sunday/pull/51). Header **Videos** plus Home title cards; Scores → **Details** for that game. **This 2026/27 season only** — [PR #52](https://github.com/triwithms/survive-sunday/pull/52). **Previews until kickoff, then highlights** — [PR #54](https://github.com/triwithms/survive-sunday/pull/54). **No in-app YouTube player** — thumbnail + title + **Watch on YouTube** (NFL blocks embeds). Role switch is in **Account** only. **Scores** opens on your pick week and will not open future weeks (browse those on Schedule).
+- **Videos** — merged [PR #51](https://github.com/triwithms/survive-sunday/pull/51). Not a bottom tab. Clips live in Scores / Schedule → **Details**. **This 2026/27 season only** — [PR #52](https://github.com/triwithms/survive-sunday/pull/52). **Previews until kickoff, then highlights** — [PR #54](https://github.com/triwithms/survive-sunday/pull/54). **No in-app YouTube player** — thumbnail + title + **Watch on YouTube** (NFL blocks embeds). Role switch is in **Account** only. **Scores** opens on your pick week and will not open future weeks (browse those on Schedule).
 - **Spreads and logos (15 Sep):** real ESPN favourites written **“BUF favoured by 4.5”**. Official ESPN team marks (not colour badges). Home pick helmet is large. Logos are ESPN URLs, not stored on Vercel.
 - **Notification preferences** — each signed-in friend chooses which alert types they want (**Account → Notification preferences**). Core types start on; live scores / injury notes start off. Email uses the same Resend keys as Forgot password. Missing-pick texts use the cell number and the same Missing pick reminder switch (off means do not text). The first-run prompt asks friends to **add their cell for SMS reminders** (they can tap **Not now** and add it later from Account). Password-reset and sign-in codes are **not** gated by these prefs.
 - **Pool rules — mulligan** + **Hand the pool to someone else** — administrator can turn off the free mulligan from a chosen week (one-and-done; already-scored weeks stay) and give Admin to another existing member (they keep playing; you stay as a player). Different from **Make administrator**.
@@ -109,7 +109,7 @@ Short names you will see in chats. One-line meaning only:
 | **Prisma** | Talks to the database. Shape of the data: `prisma/schema.prisma`. |
 | **PWA** | “Add to Home Screen” so it feels like a phone app. `public/manifest.webmanifest`, `public/sw.js`. |
 
-**How the screens are laid out (live on `main`):** shared buttons and cards live in `src/components/ui/`. Each main screen (Home, Pick, Scores, Board, League) lives in `src/components/features/`. Server actions (submit a pick, issue an invite token) live in `src/app/actions/`. Pages under `src/app/` stay thin — they load data and render those feature screens. Quick file map for targeted fixes: [docs/FILE-MAP.md](FILE-MAP.md).
+**How the screens are laid out (live on `main`):** shared buttons and cards live in `src/components/ui/`. Each main screen (My pick, Selections, Scores, Leaderboard, Standings) lives in `src/components/features/`. Server actions (submit a pick, issue an invite token) live in `src/app/actions/`. Pages under `src/app/` stay thin — they load data and render those feature screens. Quick file map for targeted fixes: [docs/FILE-MAP.md](FILE-MAP.md).
 
 **Invite / API tokens (Phase 5, live under `src/lib/`):** hashed one-time invite tokens (`invite-token.ts`, `invite-token-db.ts`, `invite-token-schema.ts`), personal Join links (`invite-link.ts` — Admin still copies `?who=` / `?seat=`), signed API/cron tokens (`api-token.ts`), HMAC helpers using `AUTH_SECRET` (`token-crypto.ts`). Do not invent extra token screens or env vars. Admin **Personal Join links** have not switched to the hashed `?t=` token yet.
 
@@ -117,7 +117,7 @@ Short names you will see in chats. One-line meaning only:
 
 Local laptop work can use any Postgres URL. **Production always uses Neon**, not a file on someone’s computer.
 
-Bottom nav on the live app: **Home** · **Pick** · **Scores** · **League** · **Board** · **Help**. Administrators also see **Admin**. What those screens do (and why Home is `/pool`, Board is `/standings`, League is `/nfl`): [`docs/HOW-SCREENS-WORK.md`](HOW-SCREENS-WORK.md). File paths stay in [docs/FILE-MAP.md](FILE-MAP.md).
+Bottom nav: **My pick** · **Selections** · **Leaderboard** · **Scores** · **Schedule** · **Standings**. Header **Account** + **?** (Help). Administrators also see **Admin**. What those screens do (and why Selections is `/pool`, Leaderboard is `/standings`, Standings is `/nfl`): [`docs/HOW-SCREENS-WORK.md`](HOW-SCREENS-WORK.md). File paths stay in [docs/FILE-MAP.md](FILE-MAP.md).
 
 ---
 
@@ -280,7 +280,7 @@ The **Forgot password?** screen is on `main` (merged PR #7). Set `RESEND_API_KEY
 
 ### Picks
 
-1. Bottom nav → **Pick**.
+1. Bottom nav → **My pick**.
 2. Tap a team that is playing this week and not already used.
 3. Confirm. You can change that pick until **your team’s kickoff**, as long as the new game has not started either. **When that game starts, next week opens for you right away.**
 
@@ -290,7 +290,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 ### Lock
 
-- Lock = first kickoff of the week (unless the administrator overrides it). Header countdown is labelled as the pick deadline. After that first kickoff, **the next week opens for a player as soon as their own pick is locked** (their game started) — **not** after Monday Night Football. MNF is only for the weekly recap later. New joiners who never had a Week 1 pick path see **Week 2 is open — make your pick** instead of a stranded “Deadline passed” empty Pick screen.
+- First kickoff is when everyone’s picks **reveal** on Selections (unless the administrator overrides it). There is **no** header countdown or “Deadline passed” banner. On **My pick**, you can change until **your game starts**; then that pick is locked and **the next week opens for you** — **not** after Monday Night Football. New joiners who never had a Week 1 pick path see **Week 2 is open — make your pick**.
 - Before lock: only **your** pick is visible.
 - After lock: everyone’s picks show; missed picks are applied once; finals are graded.
 - After first kickoff, a player who already picked may still switch to another **not-started** game if their current pick’s game has also **not started**. Once that game starts, the pick locks and the next week opens for them. A missed first pick at lock stays a miss.
@@ -299,24 +299,24 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 - **Scores** opens on the signed-in friend’s **current pick week** (same week Pick is focused on). Past weeks are fine; **future weeks stay on Schedule** — Scores will not open them.
 - **Scores** (and Home / Pick / Schedule) refresh from ESPN while games are on. Finals auto-grade.
-- **Scores**, **Pick**, the **Board**, and **League** show ESPN team logos beside abbreviations (`Team.logoUrl` or the ESPN CDN). Marks are sized to read at a glance on a phone (second bump after [#43](https://github.com/triwithms/survive-sunday/pull/43), in [#49](https://github.com/triwithms/survive-sunday/pull/49)). Possession is a **🏈** plus a gold bar.
+- **Scores**, **My pick**, **Selections**, and **Standings** show ESPN team logos beside abbreviations (`Team.logoUrl` or the ESPN CDN). Marks are sized to read at a glance on a phone (second bump after [#43](https://github.com/triwithms/survive-sunday/pull/43), in [#49](https://github.com/triwithms/survive-sunday/pull/49)). Possession is a **🏈** plus a gold bar.
 - **Team pages** show ESPN’s public injury report as a **name list** (not official NFL). Home / Scores / Schedule / Pick do not show Out / Doubtful / Q chips or TV stations. Tap a **player name** on the roster or injury list for a detail page.
 - If ESPN is blocked or down, last saved scores stay; injury cards say the feed failed and link out.
 - `data/sample_injury_news.json` is schema-only and is **not** shown in the UI on `main`.
 
 ### Standings / in vs out
 
-- **Home** (`/pool`), **Board** (`/standings`), Scores **Participants’ picks**, and `GET /api/picks`: undefeated → one-loss → eliminated (more losses further down), then same pick (team abbr; no pick last in that group), then same game (earlier kickoff / game id), then nickname A–Z. Weeks survived is not a list key.
-- You can open Home, Scores, League, Board, Help, and team pages **without** making a pick. If lock hits and a player still has no pick, the app records a **missed pick** (loss / mulligan), except a spectator administrator. Players see a gold banner when the administrator has turned the mulligan off: **From Week X: no mulligan / one-and-done.**
+- **Leaderboard** (`/standings`) and Scores **Participants’ picks** / `GET /api/picks`: undefeated → one-loss → eliminated, then same pick / same game / nickname A–Z on pick lists. **Selections** (`/pool`) is the weekly pick list (same team, then A–Z) — not the in/out race.
+- You can open My pick, Selections, Scores, Standings, Leaderboard, Help, and team pages **without** making a pick. If lock hits and a player still has no pick, the app records a **missed pick** (loss / mulligan), except a spectator administrator. Players see a gold banner when the administrator has turned the mulligan off: **From Week X: no mulligan / one-and-done.**
 
 ### Scores, League, team pages
 
-- Tap a team from Pick, Schedule, League, Scores, or the Board to open **team research** (`/team/KC`).
+- Tap a team from My pick, Schedule, Standings, Scores, or Selections to open **team research** (`/team/KC`).
 - **Scores** pulls the ESPN scoreboard, shows live / scheduled / final, and auto-grades games that are final.
-- **Share as a picture** (merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45)): no Share button. Board or Scores → **press and hold the title** or **triple-tap the week label**. Full long screenshot is always a choice. Shorter options plus split pages when the page is very long. Nav, bottom tabs, **Details ›**, and “tap for details” stay off the image. Help → **Share Board & Scores as a picture**. Does **not** change picks, Join, Sign in, or lock. Scores cards themselves still show **Details ›** on the live page ([#46](https://github.com/triwithms/survive-sunday/pull/46)).
-- **League** and **Schedule** are research screens (standings / full slate). In Real mode, League **W-L syncs from ESPN** (not the demo `week2-standings.json` seed, and no player-facing “demo” League copy). Kickoff times in the app are the **US slate** (ET + US networks such as CBS / Fox / NBC).
+- **Share as a picture** (merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45)): no Share button. Leaderboard or Scores → **press and hold the title** or **triple-tap the week label**. Full long screenshot is always a choice. Shorter options plus split pages when the page is very long. Nav, bottom tabs, **Details ›**, and “tap for details” stay off the image. Help → **Share Leaderboard & Scores as a picture**. Does **not** change picks, Join, Sign in, or lock. Scores cards themselves still show **Details ›** on the live page ([#46](https://github.com/triwithms/survive-sunday/pull/46)).
+- **Standings** and **Schedule** are research screens (NFL W-L / full slate). In Real mode, Standings **W-L syncs from ESPN** (not the demo `week2-standings.json` seed, and no player-facing “demo” League copy). Kickoff times in the app are the **US slate** (ET + US networks such as CBS / Fox / NBC).
 - **Team pages** (`/team/KC` and so on): record, this week’s game, **head coach** (ESPN name + ESPN / Wikipedia / team links), style, then key NFL players, full roster, news, and ESPN’s public injury report (not official NFL). Tap a **player name** for number, position, college, starter vs depth, and any matching ESPN injury note.
-- These are **NFL roster players**, not pool members (nicknames on Home / Board).
+- These are **NFL roster players**, not pool members (nicknames on Selections / Leaderboard).
 
 ### Canadian TV (when you share a schedule — not in the app)
 
@@ -364,7 +364,7 @@ First real administrator login: Admin → System → **Your administrator login*
 | Demo lock toggle | Removed with Demo mode. Use **System → lock controls** for week lock / missed picks. |
 | **Administrators** | Grant Admin tools to an existing pool player (confirm). They stay on the board. Same login can be Player + Administrator; switch views. Remove Admin is allowed only if another administrator remains. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
 | **Pool notes & nudge** | Send a short email note to friends who left **Pool notes** on. **Nudge missing picks** emails/texts friends who still have no pick (and left that reminder on). Uses Resend / optional Twilio. |
-| **Share Board / Scores** | Not on Admin. Press and hold the Board or Scores title, or triple-tap the week label. No Share button. Full long picture always, or a shorter / split option. **Shipped** ([PR #45](https://github.com/triwithms/survive-sunday/pull/45)). |
+| **Share Leaderboard / Scores** | Not on Admin. Press and hold the Leaderboard or Scores title, or triple-tap the week label. No Share button. Full long picture always, or a shorter / split option. **Shipped** ([PR #45](https://github.com/triwithms/survive-sunday/pull/45)). |
 
 ### Admin Users UX
 
@@ -454,7 +454,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Schedule / Pick list: no TV or 2Q; real ESPN favourites | [#58](https://github.com/triwithms/survive-sunday/pull/58) | Schedule and Pick cards drop CBS/FOX/TSN and quarter / down-distance. Favourites come from the ESPN week scoreboard (for example BUF -4.5) when ESPN publishes a line. |
 | Schedule / Pick: no injury Q chips; Pick shows favourite | [#59](https://github.com/triwithms/survive-sunday/pull/59) | Schedule and Pick lists no longer show Out / Doubtful / **Q** injury count chips. Pick shows the same favourite line as Schedule. Injuries stay on team pages. Scores live strip is unchanged. |
 | Spread copy: favoured by N | this PR | Plain-language favourite: **BUF favoured by 4.5** (not Favourite: BUF -4.5 / Fav -4.5). Pick’em shows **Even (pick’em)**. Still hidden when ESPN has no line. |
-| App Router layout (ui / features / actions) | Phase 1–4 on `main` ([#75](https://github.com/triwithms/survive-sunday/pull/75), [#74](https://github.com/triwithms/survive-sunday/pull/74)) | Shared UI in `src/components/ui/`. Home / Pick / Scores / Board / League in `src/components/features/`. Server actions in `src/app/actions/`. Pages under `src/app/` stay thin. |
+| App Router layout (ui / features / actions) | Phase 1–4 on `main` ([#75](https://github.com/triwithms/survive-sunday/pull/75), [#74](https://github.com/triwithms/survive-sunday/pull/74)) | Shared UI in `src/components/ui/`. My pick / Selections / Scores / Leaderboard / Standings in `src/components/features/`. Server actions in `src/app/actions/`. Pages under `src/app/` stay thin. |
 | Invite / API tokens | [#78](https://github.com/triwithms/survive-sunday/pull/78) | Modules under `src/lib/`: `invite-token.ts`, `invite-token-db.ts`, `invite-token-schema.ts`, `invite-link.ts`, `api-token.ts`, `token-crypto.ts`. Hashed invite `?t=` is wired on Join; Admin Personal Join links still copy `?who=` / `?seat=`. No extra token Admin tab. |
 | Production build does not touch Neon | Safety P0 (`3820ba4`) | `npm run build` is `next build` only. `postinstall` is `prisma generate` only. Seed/setup/`db:push` refuse Production. Do **not** reattach `ensure-production-db` / db push / seed to the Vercel build. Crons do not wipe or reseed. |
 
@@ -767,7 +767,7 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 | **Draft PR** | A pull request that is not ready to merge yet. None of the live-tonight work is draft. |
 | **Rebase** | Replay an open PR’s changes on top of the latest `main` after another PR merged. Ask a chat to continue **that** branch. |
 | **Redeploy** | Rebuild the same code with the latest env vars. Compiles only (`next build`). Does **not** push schema, seed, or rewrite live pool data. |
-| **Lock** | Pick deadline: first kickoff (unless overridden). After lock, you can still change an existing pick until **that team’s** kickoff if the new game has not started. Once that game starts, **next week opens for you** (do not wait for MNF). |
+| **Lock** | Picks **reveal** at first kickoff (unless overridden). You can change until **your game starts**. Then **next week opens for you** (do not wait for MNF). No header countdown. |
 | **PWA** | Website you can pin to the phone home screen. |
 | **Neon** | The hosted database. |
 | **Vercel** | The company that hosts the website. |

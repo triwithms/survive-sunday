@@ -14,7 +14,7 @@ export function HelpRules() {
         <ol className="list-decimal pl-5 space-y-1 mb-2">
           <li>Open your <strong>personal Join link</strong>. Your name should already be picked. Set your own email and password — once. Stay signed in on this phone. If the seat is already claimed, Sign in instead. New joiners not on the list can create a unique nickname.</li>
           <li>Open **Pick** and choose from **This week’s games** — pick **exactly one** NFL team to win. Use the arrows beside the **W#** badge in the header to flip to other weeks.</li>
-          <li>Submit before the **Pick deadline** (header countdown) — the week locks at the kickoff of the first game that week (usually Thursday Night Football). You can still change your pick until **that team’s** kickoff, as long as the new game has not started either. **When that game starts, next week opens for you immediately** (no waiting for Monday Night Football). If you join after that week has already locked and you never had a pick path, the next week is the obvious next action. After your own game starts, that week’s pick stays read-only.</li>
+          <li>On **My pick**, you can change until **your game starts**. After first kickoff, everyone’s picks reveal on **Selections**. **When your game starts, next week opens for you immediately** (no waiting for Monday Night Football). If you join after that week has already locked and you never had a pick path, the next week is the obvious next action. There is no slate-wide “Deadline passed” countdown in the header.</li>
           <li>If your team wins, you survive. If it loses, your mulligan absorbs the first hit (you’re still alive with one loss) or a second loss eliminates you.</li>
           <li>You **cannot reuse** any team you’ve already picked — win or lose.</li>
           <li>Last friends standing win the bragging rights (and whatever your group agreed offline).</li>
@@ -28,12 +28,12 @@ export function HelpRules() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 space-y-0">
           {[
             { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: 'Sign in (email and password)' },
-            { src: '/help-preview/02-pool-home.png', alt: 'Pool home / Board entry', caption: 'Pool home / Board entry' },
-            { src: '/help-preview/03-pick-this-weeks-games.png', alt: 'Pick — This week’s games', caption: 'Pick — This week’s games' },
+            { src: '/help-preview/02-pool-home.png', alt: 'Selections — group picks', caption: 'Selections — group picks' },
+            { src: '/help-preview/03-pick-this-weeks-games.png', alt: 'My pick — This week’s games', caption: 'My pick — This week’s games' },
             { src: '/help-preview/04-team-research.png', alt: 'Team research', caption: 'Team research' },
             { src: '/help-preview/05-team-news.png', alt: 'Team news', caption: 'Team news' },
-            { src: '/help-preview/06-league-standings.png', alt: 'League standings with 2025 rank', caption: 'League standings (with 2025 rank)' },
-            { src: '/help-preview/07-board-survival.png', alt: 'Board — survival standings', caption: 'Board — survival standings' },
+            { src: '/help-preview/06-league-standings.png', alt: 'Standings — NFL W-L with 2025 rank', caption: 'Standings — NFL W-L (with 2025 rank)' },
+            { src: '/help-preview/07-board-survival.png', alt: 'Leaderboard — pool in/out race', caption: 'Leaderboard — pool in/out race' },
             { src: '/help-preview/08-change-pick.png', alt: 'Change pick', caption: 'Change pick' },
             { src: '/help-preview/09-schedule.png', alt: 'Schedule with week dropdown', caption: 'Schedule (week dropdown)' },
           ].map((item) => (
@@ -69,7 +69,7 @@ export function HelpRules() {
         <p className="text-[var(--text-muted)] mb-2">The week locks at the **kickoff of the first scheduled game** that week. After lock:</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]">You may change an existing pick to another team whose game has **not started yet**, as long as **your current pick’s game has also not started**. Once that kickoff starts (or the game is live/final), the pick locks **and the next week’s picks open for you** — you do not wait until Monday Night Football. A missed first pick at lock still counts as a miss — this is not a late first-pick window.</li>
-          <li className="text-[var(--text-primary)]">**New joiners after a deadline:** if you never had a pick path for the locked week, Pick goes to the **next** week (for example **Week 2 is open — make your pick**). The header will not strand you on “Deadline passed.”</li>
+          <li className="text-[var(--text-primary)]">**New joiners after a deadline:** if you never had a pick path for the locked week, **My pick** goes to the **next** week (for example **Week 2 is open — make your pick**).</li>
           <li className="text-[var(--text-primary)]">Late pickers who never selected take an automatic loss (mulligan applies if you still have it).</li>
           <li className="text-[var(--text-primary)]">Everyone’s picks become visible.</li>
         </ul>

@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     redirect("/?error=DatabaseUnavailable");
   }
 
-  const result = await signInDemoCredentials(email, password, "/pool");
+  const result = await signInDemoCredentials(email, password, "/pick");
   if (!result.ok) {
     if (wantsJson) {
       return NextResponse.json(
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
   }
 
   if (wantsJson) {
-    return NextResponse.json({ ok: true, next: "/pool" });
+    return NextResponse.json({ ok: true, next: "/pick" });
   }
-  redirect("/pool");
+  redirect("/pick");
 }

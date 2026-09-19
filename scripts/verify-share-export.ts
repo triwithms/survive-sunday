@@ -58,7 +58,7 @@ function scoresCtx(over: Partial<ShareOptionContext> = {}): ShareOptionContext {
 const board = shareOptionsFor(boardCtx());
 assert.ok(alwaysIncludesFull(board), "Board always lists full long picture");
 assert.equal(board[0]?.id, "full");
-assert.ok(board.some((o) => o.id === "picks"));
+assert.ok(!board.some((o) => o.id === "picks"));
 assert.ok(board.some((o) => o.id === "still-in"));
 assert.ok(board.some((o) => o.id === "undefeated"));
 assert.ok(!board.some((o) => o.id === "pages"));
@@ -111,7 +111,7 @@ assert.equal(
   }),
   "survive-sunday-scores-week-1-full-2-of-3.png"
 );
-assert.match(shareCaption("board", "Week 1", "full"), /Board/);
+assert.match(shareCaption("board", "Week 1", "full"), /Leaderboard/);
 assert.match(shareCaption("scores", "Week 1", "games"), /scores/i);
 
 assert.equal(isComfortablyLong(COMFORTABLE_SHARE_HEIGHT), false);
@@ -165,25 +165,25 @@ mustInclude("src/components/ShareExport.tsx", [
   "share-export-week",
   "share-export-title",
 ]);
-mustInclude("src/components/HeaderWeekNav.tsx", [
+mustInclude("src/components/HeaderWeekBadge.tsx", [
   "SHARE_OPEN_EVENT",
   "isTripleTap",
 ]);
-mustInclude("src/app/(app)/layout.tsx", ['data-share-chrome=""']);
+mustInclude("src/components/AppHeader.tsx", ['data-share-chrome=""']);
 mustInclude("src/components/BottomNav.tsx", ['data-share-chrome=""']);
 mustInclude("src/components/features/scores/GameDetailsHint.tsx", [
   "GameDetailsHint",
   'data-share-chrome=""',
 ]);
-mustInclude("src/components/HelpContent.tsx", [
-  "Share Board &amp; Scores as a picture",
+mustInclude("src/components/features/help/HelpScreens.tsx", [
+  "Share Leaderboard &amp; Scores as a picture",
   "full long picture",
   "press and hold the page title",
   "tap the week label three times",
   'id="share-board-scores"',
 ]);
 mustInclude("docs/HANDOFF.md", [
-  "Share Board / Scores as a picture",
+  "Share Leaderboard / Scores as a picture",
   "press and hold the page title",
   "full long picture",
 ]);
