@@ -11,7 +11,6 @@ import {
 import type { ClaimableSeat } from "@/lib/claim-seat";
 import { CLAIM_ERRORS } from "@/lib/claim-seat";
 import { normalizeAuthPassword } from "@/lib/auth-credentials";
-import { WhoAreYouSelect } from "@/components/WhoAreYouSelect";
 import {
   arrivedViaPersonalInvite,
   resolveSeatFromInvite,
@@ -35,18 +34,16 @@ export function JoinForm({
   const viaPersonal =
     arrivedViaPersonalInvite({ seat: seatParam, who: whoParam }) ||
     Boolean(tokenParam || tokenSeatId);
-  const initialSeat = invited && !invited.claimed ? invited.membershipId : "";
+  const initialSeat =
+    tokenSeatId || (invited && !invited.claimed ? invited.membershipId : "");
 
   const [inviteCode, setInviteCode] = useState(codeParam || INVITE_CODE);
   const [email, setEmail] = useState(signedIn?.email ?? "");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
   const [realName, setRealName] = useState("");
-  const [membershipId, setMembershipId] = useState(initialSeat);
-  const [newPlayer, setNewPlayer] = useState(
-    seats.length === 0 && !viaPersonal
-  );
-  const [dismissClaimedInvite, setDismissClaimedInvite] = useState(false);
+  const [membershipId] = useState(initialSeat);
+  const [newPlayer] = useState(seats.length === 0 && !viaPersonal);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -131,7 +128,7 @@ export function JoinForm({
     }
   }
 
-  if (viaPersonal && invited?.claimed && !dismissClaimedInvite && !newPlayer) {
+  if (viaPersonal && invited?.claimed && !newPlayer) {
     return (
       <main className="min-h-dvh mx-auto max-w-sheet px-4 py-10">
         <Link href="/" className="text-sm text-gold-400">
@@ -154,13 +151,6 @@ export function JoinForm({
           >
             Sign in
           </Link>
-          <button
-            type="button"
-            className="btn-secondary w-full"
-            onClick={() => setDismissClaimedInvite(true)}
-          >
-            Not me — pick a different name
-          </button>
         </div>
       </main>
     );
@@ -185,20 +175,14 @@ export function JoinForm({
           Personal invite for {invited.label}
         </p>
       )}
-      {viaPersonal && !invited && !newPlayer && (
-        <p className="text-sm text-crimson-400 mb-3" role="status">
-          We could not match that personal link to a seat. Pick your name from
-          the list, or ask the administrator for a fresh link.
-        </p>
-      )}
       <p className="text-[var(--text-muted)] text-sm mb-6">
         {newPlayer
           ? "Choose a nickname your friends will recognise. Join once with your email and a password. Stay signed in on this phone."
           : oneTapClaim
-            ? `Signed in as ${signedIn?.email}. Pick your name — your Week 1 picks stay.`
+            ? `Signed in as ${signedIn?.email}. Claim this seat — your Week 1 picks stay.`
             : viaPersonal && invited && !invited.claimed
               ? "Your name is picked. Enter your email and a password — once. Stay signed in on this phone."
-              : "Join once with your email and a password. Stay signed in on this phone. Pick your name from the list."}
+              : "Join once with your email and a password. Stay signed in on this phone."}
       </p>
       <form onSubmit={onSubmit} className="space-y-4 card-glass p-5">
         <label className="block text-sm">
@@ -216,14 +200,6 @@ export function JoinForm({
             </span>
           )}
         </label>
-
-        {!newPlayer && seats.length > 0 && (
-          <WhoAreYouSelect
-            seats={seats}
-            value={membershipId}
-            onChange={setMembershipId}
-          />
-        )}
 
         {newPlayer && (
           <>
@@ -315,41 +291,12 @@ export function JoinForm({
         )}
 
         <p className="text-xs text-[var(--text-muted)]">
-          Already claimed your seat?{" "}
+          Already have a password?{" "}
           <Link href="/login" className="text-gold-400">
             Sign in
           </Link>
         </p>
       </form>
-
-      {seats.length > 0 && (
-        <p className="mt-4 text-sm text-[var(--text-muted)]">
-          {newPlayer ? (
-            <button
-              type="button"
-              className="text-gold-400 underline-offset-2 hover:underline"
-              onClick={() => {
-                setNewPlayer(false);
-                setErr("");
-              }}
-            >
-              ← Back to the roster list
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="text-gold-400 underline-offset-2 hover:underline"
-              onClick={() => {
-                setNewPlayer(true);
-                setMembershipId("");
-                setErr("");
-              }}
-            >
-              Not on this list? Join as a new player
-            </button>
-          )}
-        </p>
-      )}
     </main>
   );
 }

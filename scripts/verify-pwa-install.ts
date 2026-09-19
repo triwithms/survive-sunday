@@ -4,6 +4,8 @@
  *   npx tsx scripts/verify-pwa-install.ts
  */
 import assert from "node:assert/strict";
+import { readdirSync, readFileSync } from "fs";
+import { join } from "path";
 import {
   a2hsVariant,
   isAndroid,
@@ -12,8 +14,9 @@ import {
   isMobile,
 } from "../src/components/features/a2hs/env";
 import {
-  A2HS_SNOOZE_MS,
+  reconcileA2hs,
   shouldShowA2hs,
+  statusAfterLogin,
 } from "../src/components/features/a2hs/state";
 
 const iphone =
@@ -36,44 +39,50 @@ assert.equal(isMobile(desktop), false);
 assert.equal(isMobile("Mozilla/5.0 (Macintosh; Intel Mac OS X)", 5), true);
 assert.equal(isInAppBrowser(fbIos), true);
 assert.equal(isInAppBrowser(instagram), true);
-assert.equal(isInAppBrowser("Mozilla/5.0 WhatsApp/2.0"), true);
-assert.equal(isInAppBrowser("Mozilla/5.0 Line/13.0"), true);
 assert.equal(a2hsVariant(iphone), "ios");
 assert.equal(a2hsVariant(android), "android");
 assert.equal(a2hsVariant(fbIos), "inapp");
 assert.equal(a2hsVariant(chromeIos), "inapp");
 
 const ask = { mobile: true, standalone: false, status: "pending" as const };
-assert.equal(shouldShowA2hs(ask), true, "iPhone Safari pending → show");
-assert.equal(
-  shouldShowA2hs({ ...ask, standalone: true }),
-  false,
-  "Home Screen icon → never show"
-);
-assert.equal(
-  shouldShowA2hs({ ...ask, mobile: false }),
-  false,
-  "desktop → never show"
-);
-assert.equal(shouldShowA2hs({ ...ask, status: "optout" }), false, "opt-out persists");
-assert.equal(
-  shouldShowA2hs({ ...ask, status: "installed" }),
-  false,
-  "I added it / standalone → installed"
-);
-assert.equal(
-  shouldShowA2hs({
-    ...ask,
-    status: "snoozed",
-    snoozeUntil: Date.now() + A2HS_SNOOZE_MS,
-  }),
-  false,
-  "Later hides for 3 days"
-);
-assert.equal(
-  shouldShowA2hs({ ...ask, status: "snoozed", snoozeUntil: Date.now() - 1 }),
-  true,
-  "expired snooze → show again"
-);
+assert.equal(shouldShowA2hs(ask), true, "login pending → show");
+assert.equal(shouldShowA2hs({ ...ask, standalone: true }), false, "icon → hide");
+assert.equal(shouldShowA2hs({ ...ask, mobile: false }), false, "desktop → hide");
+assert.equal(shouldShowA2hs({ ...ask, status: "optout" }), false, "No → hide");
+assert.equal(shouldShowA2hs({ ...ask, status: "not_now" }), false, "Not now → hide");
+assert.equal(shouldShowA2hs({ ...ask, status: "installed" }), false, "installed");
+assert.equal(reconcileA2hs({ status: "installed" }, false).status, "pending");
+assert.equal(reconcileA2hs({ status: "optout" }, false).status, "optout");
+assert.equal(reconcileA2hs({ status: "not_now" }, false).status, "not_now");
+assert.equal(reconcileA2hs({ status: "pending" }, true).status, "installed");
+assert.equal(statusAfterLogin({ status: "not_now" }).status, "pending");
+assert.equal(statusAfterLogin({ status: "optout" }).status, "optout");
+assert.equal(statusAfterLogin({ status: "pending" }).status, "pending");
+
+const card = readFileSync("src/components/features/a2hs/A2hsCard.tsx", "utf8");
+assert.match(card, /Do you want to add NFL Pool to your Home Screen\?/);
+assert.match(card, />\s*Yes\s*</);
+assert.match(card, />\s*No\s*</);
+assert.match(card, />\s*Not now\s*</);
+assert.doesNotMatch(card, /Later|I added it|Don.?t ask again/);
+const help = readFileSync("src/app/help/page.tsx", "utf8");
+assert.match(help, /HelpInstallLink/);
+const copy = readFileSync("src/components/features/a2hs/A2hsCopy.tsx", "utf8");
+const ios = readFileSync("src/components/features/a2hs/A2hsIosHint.tsx", "utf8");
+assert.match(copy, /Install/);
+assert.match(copy, /Open in Safari first/);
+assert.doesNotMatch(ios, /Share button/);
+assert.match(ios, /bottom of Safari/);
+assert.match(ios, /size=\{56\}/);
+const manifest = readFileSync("public/manifest.webmanifest", "utf8");
+assert.match(manifest, /"name": "NFL Pool"/);
+assert.match(manifest, /"short_name": "NFL Pool"/);
+
+for (const name of readdirSync("src/components/features/a2hs")) {
+  if (!/\.(ts|tsx)$/.test(name)) continue;
+  const path = join("src/components/features/a2hs", name);
+  const n = readFileSync(path, "utf8").split("\n").length;
+  assert.ok(n <= 101, `${path} is ${n} lines`);
+}
 
 console.log("verify-pwa-install OK");

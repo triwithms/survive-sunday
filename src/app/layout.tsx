@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Survive",
+    title: "NFL Pool",
   },
   icons: {
     icon: "/icons/icon.svg",

@@ -1,7 +1,7 @@
 import {
   A2HS_OPEN_EVENT,
-  A2HS_SNOOZE_MS,
   readA2hsState,
+  statusAfterLogin,
   writeA2hsState,
 } from "./state";
 
@@ -9,8 +9,8 @@ export function markInstalled(): void {
   writeA2hsState({ status: "installed" });
 }
 
-export function snoozeA2hs(now = Date.now()): void {
-  writeA2hsState({ status: "snoozed", snoozeUntil: now + A2HS_SNOOZE_MS });
+export function markNotNow(): void {
+  writeA2hsState({ status: "not_now" });
 }
 
 export function optOutA2hs(): void {
@@ -18,21 +18,22 @@ export function optOutA2hs(): void {
 }
 
 export function markAddToHomePending(): void {
-  const rec = readA2hsState();
-  if (rec.status === "installed" || rec.status === "optout") return;
-  if (rec.status === "snoozed") return;
-  writeA2hsState({ status: "pending" });
+  writeA2hsState(statusAfterLogin(readA2hsState()));
 }
 
-export function reopenA2hsNudge(): void {
+/** Help / Account: open the Yes instructions. Clears opt-out for this path. */
+export function reopenA2hsNudge(yes = false): void {
   writeA2hsState({ status: "pending" });
   if (typeof window !== "undefined") {
-    window.dispatchEvent(new Event(A2HS_OPEN_EVENT));
+    window.dispatchEvent(new CustomEvent(A2HS_OPEN_EVENT, { detail: { yes } }));
   }
 }
 
-export function subscribeA2hsOpen(cb: () => void): () => void {
+export function subscribeA2hsOpen(cb: (yes: boolean) => void): () => void {
   if (typeof window === "undefined") return () => undefined;
-  window.addEventListener(A2HS_OPEN_EVENT, cb);
-  return () => window.removeEventListener(A2HS_OPEN_EVENT, cb);
+  const fn = (e: Event) => {
+    cb(e instanceof CustomEvent && Boolean((e.detail as { yes?: boolean })?.yes));
+  };
+  window.addEventListener(A2HS_OPEN_EVENT, fn);
+  return () => window.removeEventListener(A2HS_OPEN_EVENT, fn);
 }

@@ -1,4 +1,4 @@
-import { ShareGlyph } from "./ShareGlyph";
+import { A2hsIosHint } from "./A2hsIosHint";
 import type { A2hsVariant } from "./env";
 
 type Props = {
@@ -19,57 +19,24 @@ export function A2hsCopy({
   if (variant === "inapp") {
     return (
       <>
-        <p className="text-sm text-[var(--text-muted)]">
-          Open in{" "}
-          <strong className="text-[var(--text-primary)]">Safari</strong> or{" "}
-          <strong className="text-[var(--text-primary)]">Chrome</strong> to add
-          Survive Sunday to your Home Screen. This in-app browser can&apos;t.
-        </p>
+        <p className="text-sm text-[var(--text-muted)]">Open in Safari first.</p>
         <button type="button" className="btn-primary w-full" onClick={onCopy}>
           {copied ? "Link copied" : "Copy link"}
         </button>
       </>
     );
   }
-
-  if (variant === "ios") {
+  if (variant === "ios") return <A2hsIosHint />;
+  if (canPrompt) {
     return (
-      <ol className="list-decimal pl-5 space-y-2 text-sm text-[var(--text-muted)]">
-        <li>
-          Tap Share <ShareGlyph />
-        </li>
-        <li>
-          Tap{" "}
-          <strong className="text-[var(--text-primary)]">
-            Add to Home Screen
-          </strong>
-        </li>
-        <li>
-          Tap <strong className="text-[var(--text-primary)]">Add</strong>
-        </li>
-      </ol>
+      <button type="button" className="btn-primary w-full" onClick={onInstall}>
+        Install
+      </button>
     );
   }
-
   return (
-    <>
-      <p className="text-sm text-[var(--text-muted)]">
-        Install Survive Sunday so it opens like an app and stays signed in.
-      </p>
-      {canPrompt ? (
-        <button type="button" className="btn-primary w-full" onClick={onInstall}>
-          Install
-        </button>
-      ) : (
-        <p className="text-sm text-[var(--text-muted)]">
-          Chrome menu (⋮) →{" "}
-          <strong className="text-[var(--text-primary)]">Install app</strong> or{" "}
-          <strong className="text-[var(--text-primary)]">
-            Add to Home screen
-          </strong>
-          .
-        </p>
-      )}
-    </>
+    <p className="text-sm text-[var(--text-muted)]">
+      Chrome (⋮) → <strong className="text-[var(--text-primary)]">Install</strong>
+    </p>
   );
 }

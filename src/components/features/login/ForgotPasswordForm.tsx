@@ -10,11 +10,11 @@ export function ForgotPasswordForm() {
   const f = useForgotPassword();
 
   return (
-    <main className="min-h-dvh mx-auto max-w-sheet px-4 py-10">
-      <Link href="/login" className="text-sm text-gold-400">
-        ← Back to sign in
+    <main className="min-h-dvh mx-auto max-w-sheet px-5 py-16">
+      <Link href="/login" className="text-base text-gold-400 min-h-12 inline-flex items-center">
+        ← Sign in
       </Link>
-      <h1 className="font-display text-3xl text-gold-400 mt-6 mb-2">
+      <h1 className="font-display text-4xl text-gold-400 mt-8 mb-4">
         Forgot password
       </h1>
       <p className="text-[var(--text-muted)] text-sm mb-6">{FORGOT_INTRO}</p>

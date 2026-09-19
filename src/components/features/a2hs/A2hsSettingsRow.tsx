@@ -25,7 +25,7 @@ export function A2hsSettingsRow({
       className={className}
       data-testid="a2hs-settings"
       onClick={() => {
-        reopenA2hsNudge();
+        reopenA2hsNudge(true);
         onOpened?.();
       }}
     >

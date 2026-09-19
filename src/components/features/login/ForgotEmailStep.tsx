@@ -16,16 +16,16 @@ export function ForgotEmailStep({
   busy: boolean;
 }) {
   return (
-    <form onSubmit={onEmail} className="space-y-4 card-glass p-5">
-      <label className="block text-sm">
-        <span className="text-[var(--text-muted)]">Email</span>
+    <form onSubmit={onEmail} className="space-y-6">
+      <label className="block text-base">
+        <span className="text-[var(--text-primary)]">Email</span>
         <input
           type="email"
           required
           value={email}
           onChange={(e) => onChange(e.target.value)}
           autoComplete="email"
-          className="mt-1"
+          className="mt-2 min-h-14 text-lg"
         />
       </label>
       {info && !err && <p className="text-sm text-field-400">{info}</p>}
@@ -34,7 +34,7 @@ export function ForgotEmailStep({
           {err}
         </p>
       )}
-      <button type="submit" className="btn-primary w-full" disabled={busy}>
+      <button type="submit" className="btn-primary w-full min-h-14 text-lg" disabled={busy}>
         {busy ? "Sending…" : "Send code"}
       </button>
     </form>

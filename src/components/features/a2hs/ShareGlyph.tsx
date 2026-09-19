@@ -1,10 +1,16 @@
-/** iOS-style Share icon (square with an arrow up). */
-export function ShareGlyph({ className = "inline-block align-[-2px]" }: { className?: string }) {
+/** iOS Share icon: box with an arrow up (□↑). */
+export function ShareGlyph({
+  className = "inline-block align-[-2px]",
+  size = 16,
+}: {
+  className?: string;
+  size?: number;
+}) {
   return (
     <svg
       className={className}
-      width="16"
-      height="16"
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden

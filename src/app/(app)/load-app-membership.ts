@@ -4,6 +4,10 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getUserPoolContext } from "@/lib/session";
 import { ROLE_VIEW_COOKIE, resolveRoleView, type RoleView } from "@/lib/roles";
+import {
+  profileIsComplete,
+  snapshotFromMember,
+} from "@/lib/profile-complete";
 
 export type AppMembership = {
   userId: string;
@@ -30,6 +34,9 @@ export async function loadAppMembership(): Promise<AppMembership> {
   const ctx = await getUserPoolContext(session.user.id);
   const membership = ctx.membership;
   if (!membership) redirect("/join");
+  if (!profileIsComplete(snapshotFromMember(membership))) {
+    redirect("/welcome");
+  }
 
   const cookieStore = await cookies();
   const roleView = resolveRoleView({

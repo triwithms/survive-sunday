@@ -15,14 +15,14 @@ export function ForgotCodeActions({
     <>
       <button
         type="submit"
-        className="btn-primary w-full"
+        className="btn-primary w-full min-h-14 text-lg"
         disabled={busy || codeLen !== 6}
       >
         {busy ? "Saving…" : "Save password and sign in"}
       </button>
       <button
         type="button"
-        className="btn-secondary w-full"
+        className="btn-secondary w-full min-h-14 text-lg"
         disabled={busy || cooldown > 0}
         onClick={onResend}
       >

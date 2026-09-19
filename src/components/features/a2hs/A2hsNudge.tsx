@@ -2,12 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { A2hsCard } from "./A2hsCard";
-import {
-  markInstalled,
-  optOutA2hs,
-  snoozeA2hs,
-  subscribeA2hsOpen,
-} from "./actions";
+import { markInstalled, markNotNow, optOutA2hs, subscribeA2hsOpen } from "./actions";
 import {
   a2hsVariant,
   clientUa,
@@ -15,36 +10,50 @@ import {
   isStandalone,
   type A2hsVariant,
 } from "./env";
-import { readA2hsState, shouldShowA2hs } from "./state";
+import { readA2hsState, reconcileA2hs, shouldShowA2hs, writeA2hsState } from "./state";
 import { useInstallPrompt } from "./useInstallPrompt";
 
 export function A2hsNudge() {
   const [open, setOpen] = useState(false);
+  const [yesMode, setYesMode] = useState(false);
   const [copied, setCopied] = useState(false);
   const [variant, setVariant] = useState<A2hsVariant>("ios");
   const { canPrompt, promptInstall } = useInstallPrompt();
 
-  const refresh = useCallback(() => {
-    if (isStandalone()) {
-      markInstalled();
+  const refresh = useCallback((startYes = false) => {
+    const standalone = isStandalone();
+    const rec = reconcileA2hs(readA2hsState(), standalone);
+    writeA2hsState(rec);
+    if (standalone) {
       setOpen(false);
+      setYesMode(false);
       return;
     }
     const { ua, touch } = clientUa();
+    const mobile = isMobile(ua, touch);
     setVariant(a2hsVariant(ua, touch));
-    const rec = readA2hsState();
-    setOpen(
-      shouldShowA2hs({
-        mobile: isMobile(ua, touch),
-        standalone: false,
-        ...rec,
-      })
-    );
+    const show = shouldShowA2hs({ mobile, standalone: false, status: rec.status });
+    setOpen(show || (startYes && mobile));
+    setYesMode(Boolean(startYes && mobile));
   }, []);
+
+  const onYes = () => {
+    if (!canPrompt) {
+      setYesMode(true);
+      return;
+    }
+    void promptInstall().then((out) => {
+      if (out === "accepted") {
+        markInstalled();
+        setOpen(false);
+        setYesMode(false);
+      }
+    });
+  };
 
   useEffect(() => {
     refresh();
-    const off = subscribeA2hsOpen(refresh);
+    const off = subscribeA2hsOpen((yes) => refresh(yes));
     window.addEventListener("appinstalled", markInstalled);
     return () => {
       off();
@@ -59,30 +68,21 @@ export function A2hsNudge() {
       variant={variant}
       canPrompt={canPrompt}
       copied={copied}
-      onInstall={() => {
-        void promptInstall().then((out) => {
-          if (out === "accepted") {
-            markInstalled();
-            setOpen(false);
-          }
-        });
+      yesMode={yesMode}
+      onYes={onYes}
+      onNo={() => {
+        optOutA2hs();
+        setOpen(false);
       }}
+      onNotNow={() => {
+        markNotNow();
+        setOpen(false);
+      }}
+      onInstall={onYes}
       onCopy={() => {
         void navigator.clipboard
           .writeText(location.href)
           .then(() => setCopied(true), () => undefined);
-      }}
-      onAdded={() => {
-        markInstalled();
-        setOpen(false);
-      }}
-      onLater={() => {
-        snoozeA2hs();
-        setOpen(false);
-      }}
-      onOptOut={() => {
-        optOutA2hs();
-        setOpen(false);
       }}
     />
   );
