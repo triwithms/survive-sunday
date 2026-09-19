@@ -2,7 +2,6 @@ import { teamLogoUrl } from "@/lib/espn-teams";
 import { MISSED_TEAM } from "@/lib/grading";
 import { isAlive, resolveSeasonWinners } from "@/lib/tiebreak";
 import { isSingleEliminationWeek } from "@/lib/pool-rules";
-import type { PlayerPickWeek } from "@/lib/next-week-picks";
 import { boardLockLine, boardSortLine } from "./board-copy";
 import type { BoardRow, BoardScreenProps } from "./types";
 
@@ -33,12 +32,8 @@ export function assembleBoardPage(args: {
   pickByMember: Map<string, PickRow>;
   logoByAbbr: Map<string, string | null>;
   locked: boolean;
-  playing: boolean;
   canChangePick: boolean;
-  decision: PlayerPickWeek;
 }): BoardScreenProps {
-  void args.decision;
-  void args.playing;
   const { me, week, sorted, pickByMember, logoByAbbr } = args;
   const weekLabel = week?.label ?? `Week ${args.currentWeek}`;
   const winners = resolveSeasonWinners(args.participants);
@@ -67,7 +62,7 @@ export function assembleBoardPage(args: {
       eliminatedCount: sorted.filter((m) => m.status === "eliminated").length,
       pickRowCount: sorted.length,
       lockLine: boardLockLine(week, args.locked, args.canChangePick),
-      sortLine: boardSortLine(revealAllPicks),
+      sortLine: boardSortLine(),
       cta: null,
     },
     rows,
@@ -76,7 +71,6 @@ export function assembleBoardPage(args: {
     canChangePick: args.canChangePick,
     oneAndDone: isSingleEliminationWeek(me.pool.singleEliminationFromWeek, args.currentWeek),
     tiebreak: {
-      weekLabel,
       soleNickname: winners.sole?.nickname ?? null,
       sharedNicknames: winners.shared.map((m) => m.nickname),
       showNoOfficial: !winners.sole && winners.shared.length === 0 &&

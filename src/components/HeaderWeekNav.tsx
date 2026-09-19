@@ -7,6 +7,7 @@ import { headerWeekSelection } from "@/lib/header-week-selection";
 import {
   HeaderWeekBadge,
   WeekBadge,
+  isLeaderboardPath,
   weekAllowsShare,
 } from "@/components/HeaderWeekBadge";
 
@@ -47,6 +48,9 @@ export function HeaderWeekNav({
     currentWeek,
     pickActionWeek,
   });
+  if (isLeaderboardPath(pathname)) {
+    return <div className="min-w-0 flex-1" aria-hidden />;
+  }
   if (!route || weeks.length <= 1) {
     return <HeaderWeekBadge weekNumber={selectedWeek} />;
   }

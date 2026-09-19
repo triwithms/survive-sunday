@@ -14,7 +14,7 @@ Imported picks are real pool data. They affect:</h3>
           <li className="text-[var(--text-primary)]">**Grading** — wins and losses update status the same way live weeks do.</li>
           <li className="text-[var(--text-primary)]">**Mulligan** — a first wrong (or missed) imported pick still auto-burns the mulligan → **one loss**.</li>
           <li className="text-[var(--text-primary)]">**Team reuse** — imported teams are struck from that player’s list for the rest of the season.</li>
-          <li className="text-[var(--text-primary)]">**Leaderboard** — the in/out race sorts **undefeated**, then **one-loss**, then **eliminated**, then nickname A–Z, using the imported history.</li>
+          <li className="text-[var(--text-primary)]">**Leaderboard** — the season race sorts **still in**, then **out**, then fewest losses / most weeks survived, then clean record / win margin / nickname, using the imported history.</li>
         </ul>
         <h3 className="font-semibold mt-3 mb-1">How administrators do it
 1. Open the admin **Import prior picks** flow (CSV upload or on-screen form).
@@ -32,10 +32,10 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **Pick deadline** | You can change until **your game starts**. First kickoff is when everyone’s picks reveal on Selections — not a personal lock. **Your next week opens when your own pick is locked** (your game started), not after Monday Night Football. |
 | **Lock** | Same moment as the pick deadline for the group board. You can still change an existing pick until that team’s kickoff. When that game starts, next week’s picks open for you. |
 | **This week’s games** | The list of matchups you pick from on the Pick screen (not “slate”). |
-| **Leaderboard** | Pool in/out race (`/standings`): undefeated, then one-loss, then eliminated, then nickname A–Z. Weekly picks are on **Selections**. |
+| **Leaderboard** | Pool in/out race (`/standings`): still in, then out; then fewest losses / most weeks survived; among equals, clean record, win margin of finished picks, nickname A–Z. No week chip. Weekly picks are on **Selections**. |
 | **Selections** | Everyone’s picks for the week (`/pool`). Same team together, then nickname A–Z. Not the in/out race. |
 | **Standings** | NFL W-L (`/nfl`). Not the pool Leaderboard. |
-| **Share (picture)** | Leaderboard or Scores: press and hold the title, or triple-tap the week label. No Share button on the screen. Full long picture is always offered. |
+| **Share (picture)** | Leaderboard: press and hold the title. Scores: press and hold the title, or triple-tap the week label. No Share button. Full long picture is always offered. |
 | **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock), unless the administrator turns it off. |
 | **One-and-done** | Administrator rule: from a chosen week, one loss (or missed pick) puts you out. Banner: “From Week X: no mulligan / one-and-done.” |

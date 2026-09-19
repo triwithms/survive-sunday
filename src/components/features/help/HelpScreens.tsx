@@ -3,7 +3,7 @@ export function HelpScreens() {
     <>
       <section id="4-seeing-others-picks">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">4. Seeing others’ picks</h2>
-        <p className="text-[var(--text-muted)] mb-2">**Before lock:** on <strong>Selections</strong> you only see your own pick. Everyone else stays hidden until kickoff. <strong>Leaderboard</strong> still lists people **undefeated first**, then **one-loss**, then **eliminated**, then nickname **A–Z**. Scores’ participants list uses that same in/out order, then same pick / same game / A–Z.</p>
+        <p className="text-[var(--text-muted)] mb-2">**Before lock:** on <strong>Selections</strong> you only see your own pick. Everyone else stays hidden until kickoff. <strong>Leaderboard</strong> is the season race: **still in**, then **out**; then fewest losses and most weeks survived; among equals, clean record (no 💩), then win margin of finished picks, then nickname **A–Z**. It does not show a week chip. Scores’ participants list stays the weekly in/out order, then same pick / same game / A–Z.</p>
         <p className="text-[var(--text-muted)] mb-2">**After lock:** all picks for the week are revealed. <strong>Selections</strong> is the group pick list (same team together, then nickname A–Z — not the in/out race, and not clustered by game). Scores still lists **Participants’ picks**.</p>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -53,7 +53,7 @@ export function HelpScreens() {
       </section>
       <section id="share-board-scores">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">Share Leaderboard &amp; Scores as a picture</h2>
-        <p className="text-[var(--text-muted)] mb-2">Handy for the group text. There is <strong>no Share button</strong> on the screen (so it does not show up in a regular screenshot). On <strong>Leaderboard</strong> or <strong>Scores</strong>: <strong>press and hold the page title</strong>, or <strong>tap the week label three times</strong> (the gold <strong>W#</strong> up top, or the week words in the title). Then pick what to include and tap <strong>Make picture</strong>. Save the image, or tap <strong>Send…</strong> when your phone offers it. Works in the Home Screen app and in mobile Safari / Chrome, and on a computer.</p>
+        <p className="text-[var(--text-muted)] mb-2">Handy for the group text. There is <strong>no Share button</strong> on the screen (so it does not show up in a regular screenshot). On <strong>Leaderboard</strong>, <strong>press and hold the page title</strong> (no week chip — season race). On <strong>Scores</strong>: <strong>press and hold the page title</strong>, or <strong>tap the week label three times</strong> (the gold <strong>W#</strong> up top, or the week words in the title). Then pick what to include and tap <strong>Make picture</strong>. Save the image, or tap <strong>Send…</strong> when your phone offers it. Works in the Home Screen app and in mobile Safari / Chrome, and on a computer.</p>
         <p className="text-[var(--text-muted)] mb-2">You always have a choice — we never force one format:</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]"><strong>Full long picture</strong> (always listed): the whole Leaderboard or the whole Scores page, like a Safari long screenshot — one tall image you can scroll in the preview.</li>
