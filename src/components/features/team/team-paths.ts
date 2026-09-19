@@ -1,6 +1,7 @@
 import { normAbbr } from "@/lib/espn-teams";
 
 export const TEAM_SECTIONS = [
+  "schedule",
   "offence",
   "defence",
   "special-teams",
