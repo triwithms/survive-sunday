@@ -1,8 +1,7 @@
-import { Suspense } from "react";
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
 import { HeaderHelpLink } from "@/components/HeaderHelpLink";
-import { HeaderWeekBadge, HeaderWeekNav } from "@/components/HeaderWeekNav";
+import { HeaderWeekBadge } from "@/components/HeaderWeekBadge";
 import { PoolRulesBanner } from "@/components/PoolRulesBanner";
 import { DEFAULT_SIGNED_IN_PATH } from "@/lib/app-paths";
 import type { AppHeaderData } from "@/app/(app)/load-app-header";
@@ -21,17 +20,7 @@ export function AppHeader(data: AppHeaderData) {
         >
           SURVIVE
         </Link>
-        <Suspense
-          fallback={
-            <HeaderWeekBadge weekNumber={data.currentWeek} />
-          }
-        >
-          <HeaderWeekNav
-            weeks={data.weekNav}
-            currentWeek={data.currentWeek}
-            pickActionWeek={data.pickActionWeek}
-          />
-        </Suspense>
+        <HeaderWeekBadge weekNumber={data.currentWeek} />
         <div className="flex items-center gap-1.5 shrink-0 ml-auto">
           <HeaderHelpLink />
           <AccountMenu

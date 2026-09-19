@@ -41,7 +41,6 @@ export function WeekBadge({
   return (
     <span
       className="chip chip-gold shrink-0 min-w-9 justify-center select-none whitespace-nowrap"
-      aria-current="true"
       data-testid="header-week-badge"
       onClick={allowShareGesture ? onWeekClick : undefined}
     >

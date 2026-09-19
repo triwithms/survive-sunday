@@ -548,15 +548,16 @@ mustInclude("src/lib/header-week-selection.ts", [
   "Week ${weekNumber}",
 ]);
 mustInclude("src/components/AppHeader.tsx", [
-  "pickActionWeek={data.pickActionWeek}",
   "weekNumber={data.currentWeek}",
 ]);
 mustInclude("src/components/HeaderWeekBadge.tsx", [
   "headerPoolWeekLabel",
 ]);
-mustInclude("src/components/HeaderWeekNav.tsx", [
-  "weekNumber={currentWeek}",
-]);
+mustNotMatch(
+  "src/components/AppHeader.tsx",
+  /HeaderWeekNav|pickActionWeek|ChevronLeft|weekNav/,
+  "Header week is a read-only pool label, not a week picker"
+);
 mustNotMatch(
   "src/components/HeaderWeekBadge.tsx",
   /W\{weekNumber\}/,
@@ -564,8 +565,8 @@ mustNotMatch(
 );
 mustNotMatch(
   "src/components/HeaderWeekNav.tsx",
-  /weekNumber=\{selectedWeek\}|weekNumber=\{pickActionWeek\}/,
-  "Header week badge stays on the pool current week"
+  /ChevronLeft|header-week-nav|goTo|useRouter/,
+  "Header must not keep a week picker"
 );
 mustInclude("src/components/features/help/HelpScreens.tsx", [
   "your current pick week",
