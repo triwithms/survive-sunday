@@ -552,7 +552,13 @@ mustInclude("src/components/AppHeader.tsx", [
 ]);
 mustInclude("src/components/HeaderWeekBadge.tsx", [
   "headerPoolWeekLabel",
+  'role="status"',
 ]);
+mustNotMatch(
+  "src/components/HeaderWeekBadge.tsx",
+  /chip-gold|<button|<select/,
+  "Header Week N must look like a label, not a picker"
+);
 mustNotMatch(
   "src/components/AppHeader.tsx",
   /HeaderWeekNav|pickActionWeek|ChevronLeft|weekNav/,
