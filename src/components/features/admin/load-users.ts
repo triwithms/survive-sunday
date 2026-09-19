@@ -8,11 +8,7 @@ import {
   toPasswordMembers,
   toRoleMembers,
 } from "./map-users";
-import {
-  toMirrorOptions,
-  toRemoveMembers,
-  toRosterMembers,
-} from "./map-roster";
+import { toRemoveMembers, toRosterMembers } from "./map-roster";
 import type { UsersScreenProps } from "./types";
 
 export async function loadUsersPage(): Promise<
@@ -31,7 +27,6 @@ export async function loadUsersPage(): Promise<
       roleMembers: toRoleMembers(members, adminIds, userId),
       canDemoteMembershipIds: toDemoteIds(members, adminIds, grants),
       rosterMembers: toRosterMembers(members),
-      mirrorOptions: toMirrorOptions(members),
       removeMembers: toRemoveMembers(members),
     },
   };

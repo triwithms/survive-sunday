@@ -11,10 +11,7 @@ export function UsersScreen(props: UsersScreenProps) {
         cell, set a password you can text, or copy a Join link.
       </AdminHeading>
       <AddUserForm />
-      <RosterEditor
-        members={props.rosterMembers}
-        mirrorOptions={props.mirrorOptions}
-      />
+      <RosterEditor members={props.rosterMembers} />
     </div>
   );
 }

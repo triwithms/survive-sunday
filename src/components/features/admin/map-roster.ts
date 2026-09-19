@@ -1,4 +1,3 @@
-import { formatSeatLabel } from "@/lib/claim-seat";
 import { isPlayerSeat } from "@/lib/roles";
 import type { MemberRow } from "./types";
 
@@ -23,16 +22,6 @@ export function toRosterMembers(members: MemberRow[]) {
     mirrorFromMembershipId: m.mirrorFromMembershipId,
     pickBackup: m.pickBackup,
   }));
-}
-
-export function toMirrorOptions(members: MemberRow[]) {
-  return members
-    .filter(isVisibleAdminPerson)
-    .map((m) => ({
-      id: m.id,
-      nickname: m.nickname,
-      label: formatSeatLabel(m.nickname, m.realName),
-    }));
 }
 
 export function toRemoveMembers(members: MemberRow[]) {

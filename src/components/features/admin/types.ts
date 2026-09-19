@@ -1,6 +1,6 @@
 import type { EnterPickData } from "./enter-pick-types";
 import type { AdminRoleRow } from "./admin-role-types";
-import type { RosterMember, RosterMirrorOption } from "./roster-types";
+import type { RosterMember } from "./roster-types";
 import type { SetPasswordMember } from "./password-members";
 
 export type MemberRow = {
@@ -29,7 +29,6 @@ export type UsersScreenProps = {
   roleMembers: AdminRoleRow[];
   canDemoteMembershipIds: string[];
   rosterMembers: RosterMember[];
-  mirrorOptions: RosterMirrorOption[];
   removeMembers: RemoveMember[];
 };
 

@@ -40,8 +40,7 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock), unless the administrator turns it off. |
 | **One-and-done** | Administrator rule: from a chosen week, one loss (or missed pick) puts you out. Banner: “From Week X: no mulligan / one-and-done.” |
 | **Hand the pool** | Current admin gives Admin to another pool member and stays as a player. Different from Make administrator (that keeps both people as Admin). |
-| **Notification preferences** | Account → Notification preferences. Toggles for which emails (and missing-pick texts) you want. |
-| **Pick backup** | Optional: copy-from-member if no pick within 30 minutes (no 💩), or best unused 2025-rank team within ~2 minutes (stamps 💩). Official winner must be 💩-free. |
+| **Notification preferences** | Account → Notification preferences. Per alert: SMS / Email / both / none (coming soon until send works). |
 | **Auto-pick 💩** | Stamp only when the ~2-minute ranked leftover writes a pick. Shown beside the nickname on Leaderboard / Selections. Clean record required to win. |
 | **Digest** | **Coming later:** post-lock summary of everyone’s picks. |
 | **H2H** | **Coming later:** head-to-head spotlight when two participants pick opposite sides. |

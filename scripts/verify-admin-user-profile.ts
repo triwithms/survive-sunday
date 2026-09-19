@@ -117,6 +117,7 @@ function main() {
   const soon = readFileSync("src/components/features/admin/RosterNotifySoon.tsx", "utf8");
   assert.match(soon, /Coming soon — notifications not sending yet/);
   assert.match(soon, /disabled/);
+  assert.match(soon, /NotifyChannelSelect/);
   assert.doesNotMatch(soon, /onSave|fetch\(/);
 
   const fields = readFileSync("src/components/features/admin/RosterCardFields.tsx", "utf8");
