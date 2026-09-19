@@ -9,6 +9,7 @@ export function toRosterMembers(members: MemberRow[]) {
     status: m.status,
     role: m.role,
     email: m.user.email,
+    phoneE164: m.user.phoneE164,
     mirrorFromMembershipId: m.mirrorFromMembershipId,
     pickBackup: m.pickBackup,
   }));

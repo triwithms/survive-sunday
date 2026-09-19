@@ -31,6 +31,7 @@
     "verify:roster-names": "tsx scripts/verify-roster-name-patch.ts",
     "verify:admin-roster": "tsx scripts/verify-admin-roster-ux.ts",
     "verify:admin-phone": "tsx scripts/verify-admin-phone-ux.ts",
+    "verify:admin-user-profile": "tsx scripts/verify-admin-user-profile.ts",
     "verify:week-isolation": "tsx scripts/verify-week-isolation.ts",
     "verify:board-sort": "tsx scripts/verify-board-sort.ts",
     "verify:leaderboard-sort": "tsx scripts/verify-leaderboard-sort.ts",

@@ -81,6 +81,7 @@ function main() {
     status: "active",
     role: "member",
     email: "paul@example.com",
+    phoneE164: null,
     mirrorFromMembershipId: null,
     pickBackup: null,
   };

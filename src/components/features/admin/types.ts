@@ -16,7 +16,7 @@ export type MemberRow = {
   isParticipant?: boolean;
   pickBackup: string | null;
   mirrorFromMembershipId: string | null;
-  user: { email: string };
+  user: { email: string; phoneE164: string | null };
 };
 
 export type RemoveMember = {

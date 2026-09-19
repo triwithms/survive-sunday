@@ -27,8 +27,8 @@ export function RosterEditor({
       <div>
         <h2 className="font-semibold">Roster</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Tap a person to edit, set a password, or copy a Join link. One open
-          at a time.
+          Tap a person to edit their profile, set a password, or copy a Join
+          link. One open at a time.
         </p>
       </div>
       <label className="block text-sm space-y-1">
