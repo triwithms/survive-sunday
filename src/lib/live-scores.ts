@@ -5,182 +5,21 @@ import {
   undoPickMembershipEffect,
   recomputeWeeksSurvived,
 } from "@/lib/grading";
-import { fetchEspnJson, normAbbr } from "@/lib/espn";
+import { normAbbr } from "@/lib/espn";
 import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
 import { scheduleScoreUpdate } from "@/lib/notification-events";
-import { formatEspnSituation } from "@/lib/game-display";
 import { syncOddsFromEspnSnapshots } from "@/lib/espn-odds";
-import { parseEspnCompetitionOdds, type GameOdds } from "@/lib/odds";
+import {
+  fetchEspnWeekScoreboard,
+  type EspnGameSnapshot,
+} from "@/lib/espn-scoreboard";
+
+export type { EspnGameSnapshot };
+export { fetchEspnWeekScoreboard };
 
 /** ESPN → app team abbreviation. */
 export function fromEspnAbbr(abbr: string): string {
   return normAbbr(abbr);
-}
-
-export type EspnGameSnapshot = {
-  eventId: string | null;
-  awayAbbr: string;
-  homeAbbr: string;
-  status: "scheduled" | "live" | "final";
-  scoreAway: number | null;
-  scoreHome: number | null;
-  clockLabel: string | null;
-  situationLabel: string | null;
-  timeoutsAway: number | null;
-  timeoutsHome: number | null;
-  detail: string | null;
-  odds: GameOdds | null;
-};
-
-type EspnCompetitor = {
-  homeAway: string;
-  score?: string;
-  team: { abbreviation: string };
-};
-
-type EspnSituation = {
-  possession?: string;
-  shortDownDistanceText?: string;
-  possessionText?: string;
-  downDistanceText?: string;
-  down?: number;
-  distance?: number;
-  homeTimeouts?: number;
-  awayTimeouts?: number;
-};
-
-type EspnEvent = {
-  id?: string;
-  competitions?: Array<{
-    competitors?: EspnCompetitor[];
-    odds?: unknown;
-    situation?: EspnSituation;
-    status?: {
-      displayClock?: string;
-      period?: number;
-      type?: {
-        name?: string;
-        state?: string;
-        shortDetail?: string;
-        detail?: string;
-        completed?: boolean;
-      };
-    };
-  }>;
-  status?: {
-    displayClock?: string;
-    period?: number;
-    type?: {
-      name?: string;
-      state?: string;
-      shortDetail?: string;
-      detail?: string;
-      completed?: boolean;
-    };
-  };
-};
-
-function mapEspnStatus(
-  state: string | undefined,
-  name: string | undefined
-): "scheduled" | "live" | "final" {
-  const s = (state || "").toLowerCase();
-  const n = (name || "").toUpperCase();
-  if (s === "post" || n.includes("FINAL")) return "final";
-  if (s === "in" || n.includes("IN_PROGRESS") || n.includes("HALFTIME") || n.includes("END_PERIOD"))
-    return "live";
-  return "scheduled";
-}
-
-function periodClock(
-  period: number | undefined,
-  displayClock: string | undefined,
-  shortDetail: string | undefined,
-  status: "scheduled" | "live" | "final"
-): string | null {
-  if (status === "final") return shortDetail || "Final";
-  if (status === "scheduled") return shortDetail || null;
-  if (shortDetail && /Q|Half|OT|END/i.test(shortDetail)) return shortDetail;
-  if (period && displayClock) {
-    const q = period > 4 ? `OT${period - 4}` : `Q${period}`;
-    return `${q} ${displayClock}`;
-  }
-  return shortDetail || null;
-}
-
-const SCOREBOARD_TTL_MS = 20_000;
-let scoreboardCache: {
-  key: string;
-  at: number;
-  data: EspnGameSnapshot[];
-} | null = null;
-
-export async function fetchEspnWeekScoreboard(
-  weekNumber: number,
-  year = 2026
-): Promise<EspnGameSnapshot[]> {
-  const key = `${year}-w${weekNumber}`;
-  const now = Date.now();
-  if (
-    scoreboardCache &&
-    scoreboardCache.key === key &&
-    now - scoreboardCache.at < SCOREBOARD_TTL_MS
-  ) {
-    return scoreboardCache.data;
-  }
-
-  const data = await fetchEspnJson<{ events?: EspnEvent[] }>(
-    `/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=${weekNumber}&year=${year}`
-  );
-  const out: EspnGameSnapshot[] = [];
-  for (const event of data.events || []) {
-    const comp = event.competitions?.[0];
-    const statusObj = comp?.status || event.status;
-    const type = statusObj?.type;
-    const status = mapEspnStatus(type?.state, type?.name);
-    const by = new Map(
-      (comp?.competitors || []).map((c) => [c.homeAway, c] as const)
-    );
-    const away = by.get("away");
-    const home = by.get("home");
-    if (!away || !home) continue;
-    const awayAbbr = fromEspnAbbr(away.team.abbreviation);
-    const homeAbbr = fromEspnAbbr(home.team.abbreviation);
-    const scoreAway =
-      away.score != null && away.score !== "" ? Number(away.score) : null;
-    const scoreHome =
-      home.score != null && home.score !== "" ? Number(home.score) : null;
-    const timeoutsAway =
-      typeof comp?.situation?.awayTimeouts === "number"
-        ? comp.situation.awayTimeouts
-        : null;
-    const timeoutsHome =
-      typeof comp?.situation?.homeTimeouts === "number"
-        ? comp.situation.homeTimeouts
-        : null;
-    out.push({
-      eventId: event.id ? String(event.id) : null,
-      awayAbbr,
-      homeAbbr,
-      status,
-      scoreAway: Number.isFinite(scoreAway as number) ? scoreAway : null,
-      scoreHome: Number.isFinite(scoreHome as number) ? scoreHome : null,
-      clockLabel: periodClock(
-        statusObj?.period,
-        statusObj?.displayClock,
-        type?.shortDetail,
-        status
-      ),
-      situationLabel:
-        status === "live" ? formatEspnSituation(comp?.situation) : null,
-      timeoutsAway,
-      timeoutsHome,
-      detail: type?.detail || type?.shortDetail || null,
-      odds: parseEspnCompetitionOdds(comp?.odds, homeAbbr, awayAbbr),
-    });
-  }
-  scoreboardCache = { key, at: now, data: out };
-  return out;
 }
 
 function matchKey(away: string, home: string) {
