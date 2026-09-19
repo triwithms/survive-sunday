@@ -363,7 +363,7 @@ Removed from Admin UI (do not put back): Comms tab, pick census, unlock testing,
 
 ### Admin Users UX
 
-Admin → **Users** is a phone-first roster (~390px): **Add user**, **Find a friend**, then one compact row (nickname + Joined / Unclaimed). Tap Edit to open that friend only — opening another closes the first. Unclaimed rows have **Invite** and **Copy Join** (44px; toast on copy). Joined friends get the password form inside Edit (suggest + copy-ready text; we do not email the password). Remove stays inside that person. **Make administrator** and **Hand the pool** live on **Pool**. No player Who-are-you list on Admin. No Commissioner person.
+Admin → **Users** is a phone-first roster (~390px): **Add user**, **Find a friend**, then one compact row (nickname + Joined / Unclaimed). Tap Edit to open that friend only — opening another closes the first. Unclaimed rows have **Invite** and **Copy Join** (44px; toast on copy). Joined friends get the password form inside Edit (suggest + copy-ready text; we do not email the password). Admin can change email and cell, but not to a value another pool member already uses (“That email is already used” / “That cell is already used.”). Remove stays inside that person. **Make administrator** and **Hand the pool** live on **Pool**. No player Who-are-you list on Admin. No Commissioner person.
 
 ---
 

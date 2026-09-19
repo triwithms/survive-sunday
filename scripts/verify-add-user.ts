@@ -28,6 +28,8 @@ function main() {
   assert.ok(lineCount("src/lib/add-user.ts") <= 100);
   assert.ok(lineCount("src/lib/add-user-db.ts") <= 100);
   assert.ok(lineCount("src/lib/add-user-prep.ts") <= 100);
+  assert.ok(lineCount("src/lib/contact-taken.ts") <= 100);
+  assert.ok(lineCount("src/lib/contact-taken-db.ts") <= 100);
   assert.ok(lineCount("src/app/api/admin/add-user/route.ts") <= 100);
 
   const empty = parseAddUser({});
@@ -58,6 +60,15 @@ function main() {
   assert.match(fields, /RosterNotifySoon/);
   assert.match(fields, /add-user-invite/);
   assert.match(fields, /SetPasswordKind/);
+  assert.match(readFileSync("src/lib/add-user-db.ts", "utf8"), /addUserContactClash/);
+  assert.match(
+    readFileSync("src/lib/contact-taken.ts", "utf8"),
+    /That email is already used/
+  );
+  assert.match(
+    readFileSync("src/lib/contact-taken.ts", "utf8"),
+    /That cell is already used\./
+  );
 
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
     scripts: { build: string };
