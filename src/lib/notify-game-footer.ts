@@ -1,13 +1,17 @@
 /** GAME notice tips. SMS is plain text only — no font sizes. */
 
+import { PUBLIC_APP_ORIGIN } from "./invite-link";
+
+export const PREFS_URL = `${PUBLIC_APP_ORIGIN}/account/notifications`;
+
 export const GAME_SMS_FOOTER =
-  "If you also get email, check spam/junk and mark Not junk.";
+  `If you also get email, check spam/junk and mark Not junk.\n${PREFS_URL}`;
 
 export const GAME_EMAIL_FOOTER =
-  "If this is in spam or junk, mark Not junk so the next one reaches you.";
+  `If this is in spam or junk, mark Not junk so the next one reaches you.\nPreferences: ${PREFS_URL}`;
 
 function alreadyHasTip(text: string): boolean {
-  return /spam\/junk|spam or junk/i.test(text);
+  return /account\/notifications|spam\/junk|spam or junk/i.test(text);
 }
 
 export function withGameSmsFooter(body: string): string {
@@ -25,7 +29,7 @@ export function withGameEmailText(body: string): string {
 }
 
 export function gameEmailFooterHtml(): string {
-  return `<p style="color:#9aa5b5;font-size:12px;margin:16px 0 0;">${GAME_EMAIL_FOOTER}</p>`;
+  return `<p style="color:#9aa5b5;font-size:12px;margin:16px 0 0;">If this is in spam or junk, mark Not junk so the next one reaches you. <a href="${PREFS_URL}" style="color:#9aa5b5;text-decoration:underline;">Preferences</a></p>`;
 }
 
 export function withGameEmailHtml(bodyHtml: string): string {
