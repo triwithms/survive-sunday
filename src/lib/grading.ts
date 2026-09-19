@@ -198,7 +198,7 @@ export async function gradeWeekPicks(weekId: string) {
 /**
  * Apply missed-pick losses for playing members with no pick after lock.
  * Idempotent per membership+week via source=missed pick records.
- * Skips spectator commissioners and members not yet playing this week.
+ * Skips spectator administrators and members not yet playing this week.
  */
 export async function applyMissedPicks(weekId: string) {
   const week = await prisma.week.findUniqueOrThrow({

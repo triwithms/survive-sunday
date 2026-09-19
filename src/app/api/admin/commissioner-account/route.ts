@@ -62,7 +62,7 @@ export async function POST(req: Request) {
       details: JSON.stringify({
         from: previousEmail,
         to: email,
-        note: "Commissioner replaced practice login with a real email",
+        note: "Administrator replaced practice login with a real email",
       }),
     },
   });

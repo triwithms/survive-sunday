@@ -51,11 +51,11 @@ export function CommissionerAccountPanel({
   return (
     <Card as="section" className="p-4 space-y-3">
       <div>
-        <h2 className="font-semibold">Your commissioner login</h2>
+        <h2 className="font-semibold">Your administrator login</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
           {isPracticeLogin
             ? "This is still a practice login. Save your real email and password, sign out, then sign in with those."
-            : "Commissioner login is ready. Sign in on the Sign in page with this email — not a practice address."}
+            : "Administrator login is ready. Sign in on the Sign in page with this email — not a practice address."}
         </p>
       </div>
       <p className="text-sm">

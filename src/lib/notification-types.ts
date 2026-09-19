@@ -62,7 +62,7 @@ export const NOTIFICATION_COPY: Record<
   },
   poolAnnouncements: {
     label: "Pool notes",
-    hint: "Important messages from the commissioner.",
+    hint: "Important messages from the administrator.",
   },
   scoreUpdates: {
     label: "Live score updates",

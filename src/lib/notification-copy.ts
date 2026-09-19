@@ -82,7 +82,7 @@ export function announcementCopy(opts: {
 }): NotifyContent {
   const who = opts.nickname || "friend";
   return {
-    subject: "Pool note from your commissioner",
+    subject: "Pool note from your administrator",
     text: `${who},\n\n${opts.message}`,
     htmlBody: `<p style="margin:0 0 12px;">${escapeHtml(who)},</p><p style="margin:0;white-space:pre-wrap;">${escapeHtml(opts.message)}</p>`,
   };

@@ -26,7 +26,7 @@ export type SetMemberPasswordCheck =
   | { ok: false; error: string };
 
 /**
- * Commissioner may set a password only for a claimed player seat
+ * Administrator may set a password only for a claimed player seat
  * (real email, not a practice @survivesunday.demo address).
  */
 export function checkSetMemberPassword(
@@ -44,7 +44,7 @@ export function checkSetMemberPassword(
   if (!isPlayerSeat(input.member)) {
     return {
       ok: false,
-      error: "That seat is the commissioner spectator, not a player.",
+      error: "That seat is the administrator spectator, not a player.",
     };
   }
   if (!isSeatClaimed(input.member.email)) {

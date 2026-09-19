@@ -5,7 +5,7 @@ export function CommissionerSignOut() {
   return (
     <Card as="section" className="p-4 space-y-2">
       <p className="text-sm text-[var(--text-primary)] font-medium">
-        Signed in as commissioner
+        Signed in as administrator
       </p>
       <SignOutButton next="/login" className="btn-danger w-full" />
     </Card>

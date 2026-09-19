@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   if (!target) return NextResponse.json({ error: "Not found" }, { status: 404 });
   if (!isPlayerSeat(target)) {
     return NextResponse.json(
-      { error: "That seat is the commissioner spectator, not a player." },
+      { error: "That seat is the administrator spectator, not a player." },
       { status: 400 }
     );
   }
@@ -77,6 +77,7 @@ export async function POST(req: Request) {
   if (!alreadyAdmin) {
     return NextResponse.json({ ok: true, already: true });
   }
+  // INTERNAL var name kept; user-facing copy says administrator.
   const commissionerSeat = poolMembers.some(
     (m) => m.userId === target.userId && m.role === "admin"
   );
@@ -84,7 +85,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         error:
-          "This login is the commissioner. They keep Administrator.",
+          "This login is the administrator. They keep Administrator.",
       },
       { status: 400 }
     );

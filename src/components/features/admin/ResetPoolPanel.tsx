@@ -15,7 +15,7 @@ export function ResetPoolPanel() {
           Optional. Reset when you want a clean board before importing real
           Week 1 picks. It does{" "}
           <strong className="text-[var(--text-primary)]">not</strong> wipe
-          sign-in settings, the schedule, or your commissioner account.
+          sign-in settings, the schedule, or your administrator account.
         </p>
       </div>
       {reset.preview ? <ResetPoolPreview preview={reset.preview} /> : null}

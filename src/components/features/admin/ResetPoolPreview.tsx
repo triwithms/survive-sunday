@@ -19,7 +19,7 @@ export function ResetPoolPreview({ preview }: { preview: ResetPreview }) {
           Kept (reset to undefeated):{" "}
           {preview.membersKept
             .map((m) =>
-              m.role === "admin" ? `${m.nickname} (commissioner)` : m.nickname
+              m.role === "admin" ? `${m.nickname} (administrator)` : m.nickname
             )
             .join(", ")}
           .

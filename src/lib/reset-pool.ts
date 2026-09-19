@@ -72,7 +72,7 @@ export async function previewPoolReset(
 
 /**
  * Clear season picks / survival state so Week 1 can be imported cleanly.
- * Does not delete the pool, weeks, games, teams, Auth secrets, or commissioner accounts.
+ * Does not delete the pool, weeks, games, teams, Auth secrets, or administrator accounts.
  */
 export async function resetPoolSeasonData(opts: {
   poolId: string;

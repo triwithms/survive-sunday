@@ -34,7 +34,7 @@ type PreviewRow = {
 };
 
 /**
- * Commissioner import of prior/outside picks for a week (Wave 1).
+ * Administrator import of prior/outside picks for a week (Wave 1).
  * Body: { weekNumber, rows|csv, overrideReuse?, dryRun?: boolean }
  * Matching: exact nickname (case-insensitive) first, then email.
  */

@@ -2,16 +2,17 @@ import { isDemoEmail } from "./pool-mode";
 
 export const CLAIM_PASSWORD_MIN = 6;
 
+/** INTERNAL keys commissionerSeat / alreadyCommissioner kept; strings say administrator. */
 export const CLAIM_ERRORS = {
   missingFields: "Enter the invite code, your email, and a password.",
-  invalidInvite: "That invite code is not right. Ask the commissioner for SUNDAY26.",
+  invalidInvite: "That invite code is not right. Ask the administrator for SUNDAY26.",
   poolMissing: "Pool not found — run seed",
   demoEmail: "Use your own email to join — not a practice address.",
   passwordShort: `Password must be at least ${CLAIM_PASSWORD_MIN} characters.`,
   seatMissing: "We could not find that person. Refresh and pick again.",
-  commissionerSeat: "The commissioner is not a player seat. Pick your own name, or ask the commissioner.",
+  commissionerSeat: "The administrator is not a player seat. Pick your own name, or ask the administrator.",
   alreadyClaimed:
-    "This seat is already claimed. Sign in instead, or ask the commissioner if that’s you.",
+    "This seat is already claimed. Sign in instead, or ask the administrator if that’s you.",
   emailTaken: "That email already has an account. Sign in instead, or pick a different email.",
   seatAttachBlocked:
     "Could not attach that seat to your login. Refresh this page and tap Join again.",

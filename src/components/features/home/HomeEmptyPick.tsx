@@ -20,7 +20,7 @@ export function HomeEmptyPick({
       ) : spectator ? (
         <div className="space-y-2">
           <p className="text-[var(--text-muted)]">
-            Commissioner view — you&apos;re not required to pick.
+            Admin view — you&apos;re not required to pick.
           </p>
           <p className="text-sm text-[var(--text-muted)]">
             Also a player?{" "}

@@ -23,7 +23,7 @@ export default async function MirrorPicksPage() {
           Pick backup
         </h1>
         <p className="text-sm text-[var(--text-muted)]">
-          The commissioner spectator seat does not pick. Switch to your player
+          The administrator spectator seat does not pick. Switch to your player
           seat (for example Gams) to set a backup.
         </p>
       </div>

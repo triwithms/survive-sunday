@@ -9,7 +9,7 @@ import { isOfficialWinnerEligible } from "./auto-pick-stamps";
  * 2. Most weeks survived
  * 3. Still tied → shared win (co-champions). Nickname A–Z is display order only —
  *    never used to crown a sole winner.
- * Optional backup (commissioner / offline): one extra pick week among tied players only.
+ * Optional backup (administrator / offline): one extra pick week among tied players only.
  */
 
 export type AliveMember = {

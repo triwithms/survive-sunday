@@ -2,7 +2,7 @@ export const INVITE_CODE = "SUNDAY26";
 export const POOL_NAME = "Survive Sunday — Friends Pool";
 export const SEASON = "2026/27";
 export const DEMO_PASSWORD = "demo1234";
-/** Commissioner must type this to reset season data. */
+/** Administrator must type this to reset season data. */
 export const RESET_POOL_CONFIRM = "RESET";
 
 export const STATUS_ORDER = ["undefeated", "one_loss", "eliminated"] as const;

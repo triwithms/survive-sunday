@@ -120,7 +120,7 @@ function main() {
   );
   assert.equal(
     rosterRowDetail(member({ role: "admin", realName: "Robert Gama" })),
-    "Robert Gama · Commissioner"
+    "Robert Gama · Administrator"
   );
 
   assert.equal(claimShortLabel(member({})), "Joined");
