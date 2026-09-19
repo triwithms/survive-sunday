@@ -3,6 +3,7 @@
 import { isGameStarted } from "@/lib/pick-change";
 import { pickScreenCopy } from "@/lib/next-week-picks";
 import { PickScreen } from "@/components/features/pick/PickScreen";
+import { PickOutOverlay } from "@/components/features/pick/PickOutOverlay";
 import {
   pickChangeHint,
   pickEmptyMessage,
@@ -21,7 +22,11 @@ export function PickClient({
   const lockStarted = copy.showWeek1ChangeCard && locked && canChange;
   const readOnly = !canChange || eliminated || spectator;
   const list = Array.isArray(games) ? games : [];
-  const pick = usePickSubmit(weekNumber, currentPick);
+  const pick = usePickSubmit(weekNumber, currentPick, { disabled: eliminated });
+
+  if (eliminated) {
+    return <PickOutOverlay />;
+  }
 
   return (
     <PickScreen
@@ -33,7 +38,6 @@ export function PickClient({
       readOnly={readOnly}
       lockStarted={lockStarted}
       spectator={spectator}
-      eliminated={eliminated}
       msg={pick.msg}
       redirectIn={pick.redirectIn}
       tipWeek={copy.showDismissibleTip ? decision.nextWeek : null}

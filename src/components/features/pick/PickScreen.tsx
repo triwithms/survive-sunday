@@ -17,7 +17,6 @@ export function PickScreen({
   readOnly,
   lockStarted,
   spectator,
-  eliminated,
   msg,
   redirectIn,
   tipWeek,
@@ -37,7 +36,6 @@ export function PickScreen({
   readOnly: boolean;
   lockStarted: boolean;
   spectator: boolean;
-  eliminated: boolean;
   msg: string;
   redirectIn: number | null;
   tipWeek: number | null;
@@ -62,10 +60,9 @@ export function PickScreen({
       />
       <PickNotices
         spectator={spectator}
-        eliminated={eliminated}
-        week1Change={copy.showWeek1ChangeCard && !eliminated}
+        week1Change={copy.showWeek1ChangeCard}
         tipWeek={tipWeek}
-        banner={!eliminated ? copy.banner : null}
+        banner={copy.banner}
         msg={msg}
         redirectIn={redirectIn}
       />

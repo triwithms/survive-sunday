@@ -28,9 +28,10 @@ export type NotifyTarget = {
   nickname?: string | null;
 };
 
-async function claimSend(
+/** Idempotency row for email/SMS/admin blasts. Duplicate unique key → false. */
+export async function claimNotificationSend(
   userId: string,
-  type: NotificationType,
+  type: string,
   dedupeKey: string,
   channel: string
 ): Promise<boolean> {
@@ -61,7 +62,7 @@ export async function notifyUser(opts: {
     });
     let emailed = false;
     if (emailGate.send) {
-      const claimed = await claimSend(
+      const claimed = await claimNotificationSend(
         opts.target.userId,
         opts.type,
         `${opts.dedupeKey}:email`,
@@ -91,7 +92,7 @@ export async function notifyUser(opts: {
         prefs,
       });
       if (smsGate.send && opts.content.smsBody) {
-        const claimed = await claimSend(
+        const claimed = await claimNotificationSend(
           opts.target.userId,
           opts.type,
           `${opts.dedupeKey}:sms`,
