@@ -1,4 +1,6 @@
+import { isSeatClaimed } from "@/lib/claim-seat";
 import { PUBLIC_APP_ORIGIN } from "@/lib/invite-link";
+import { maskEmail } from "@/lib/otp";
 
 export type SetPasswordMember = {
   id: string;
@@ -32,6 +34,23 @@ export function passwordMemberLabel(m: SetPasswordMember): string {
   return m.claimed
     ? `${who} — Joined ${m.emailMasked ?? ""}`
     : `${who} — not Joined yet`;
+}
+
+export function rosterToPasswordMember(m: {
+  id: string;
+  nickname: string;
+  realName: string | null;
+  email: string | null;
+}): SetPasswordMember {
+  const claimed = isSeatClaimed(m.email);
+  return {
+    id: m.id,
+    nickname: m.nickname,
+    realName: m.realName,
+    claimed,
+    email: claimed ? m.email : null,
+    emailMasked: claimed && m.email ? maskEmail(m.email) : null,
+  };
 }
 
 export function memberPasswordShareText(opts: {

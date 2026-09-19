@@ -7,7 +7,13 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
-import { rosterRowDetail } from "../src/components/features/admin/roster-row-meta";
+import { memberCopyJoinUrl } from "../src/components/features/admin/copy-join";
+import {
+  backupShortLabel,
+  claimShortLabel,
+  rosterRowDetail,
+  rosterRowSubtitle,
+} from "../src/components/features/admin/roster-row-meta";
 import type { RosterMember } from "../src/components/features/admin/roster-types";
 
 function lineCount(path: string): number {
@@ -76,7 +82,26 @@ function main() {
     "utf8"
   );
   assert.match(users, /Tap a person on the roster/);
+  assert.match(users, /Invite and Copy Join/);
   assert.doesNotMatch(users, /on each roster card/);
+  assert.doesNotMatch(users, /SetMemberPasswordForm members=\{props.passwordMembers\}/);
+
+  const invite = readFileSync(
+    "src/components/features/admin/InviteJoinButtons.tsx",
+    "utf8"
+  );
+  assert.match(invite, /min-h-11/);
+  assert.match(invite, /issueInviteToken/);
+  assert.match(invite, /Copied Join link/);
+  assert.match(invite, /role="status"/);
+
+  const panel = readFileSync(
+    "src/components/features/admin/UserEditPanel.tsx",
+    "utf8"
+  );
+  assert.match(panel, /SetMemberPasswordForm/);
+  assert.match(panel, /embedded/);
+  assert.match(panel, /MirrorPicksForm/);
 
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
     scripts: { build: string };
@@ -96,6 +121,32 @@ function main() {
   assert.equal(
     rosterRowDetail(member({ role: "admin", realName: "Robert Gama" })),
     "Robert Gama · Commissioner"
+  );
+
+  assert.equal(claimShortLabel(member({})), "Joined");
+  assert.equal(
+    claimShortLabel(member({ email: "jaja@survivesunday.demo" })),
+    "Unclaimed"
+  );
+  assert.equal(backupShortLabel(member({})), "Off");
+  assert.equal(
+    backupShortLabel(
+      member({ pickBackup: "mirror", mirrorFromMembershipId: "gams" }),
+      "Gams"
+    ),
+    "Copy Gams"
+  );
+  assert.equal(
+    backupShortLabel(member({ pickBackup: "ranked" })),
+    "Ranked"
+  );
+  assert.equal(
+    rosterRowSubtitle(member({ email: "jaja@survivesunday.demo" })),
+    "Unclaimed · Off"
+  );
+  assert.match(
+    memberCopyJoinUrl("seat-1", "JaJa", ["JaJa", "Gams"]),
+    /join\?who=jaja/
   );
 
   console.log("PASS  Admin roster is compact + one editor; radios wrap");

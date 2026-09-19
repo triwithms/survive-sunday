@@ -20,7 +20,9 @@ export function SetPasswordKind({
           checked={kind === "temporary"}
           onChange={() => onKind("temporary")}
         />
-        <span>Temporary — I’ll text it; they can change it later.</span>
+        <span className="min-w-0 flex-1 whitespace-normal break-words leading-snug">
+          Temporary — I’ll text it; they can change it later.
+        </span>
       </label>
       <label className="flex items-start gap-3 text-sm min-h-11">
         <input
@@ -30,7 +32,9 @@ export function SetPasswordKind({
           checked={kind === "permanent"}
           onChange={() => onKind("permanent")}
         />
-        <span>Permanent — they can keep this until they change it.</span>
+        <span className="min-w-0 flex-1 whitespace-normal break-words leading-snug">
+          Permanent — they can keep this until they change it.
+        </span>
       </label>
     </fieldset>
   );

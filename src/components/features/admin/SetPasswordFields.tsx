@@ -26,6 +26,7 @@ type Props = {
   onConfirm: (value: string) => void;
   onKind: (kind: PasswordKind) => void;
   onSubmit: (e: React.FormEvent) => void;
+  lockMember?: boolean;
 };
 
 export function SetPasswordFields(p: Props) {
@@ -33,18 +34,20 @@ export function SetPasswordFields(p: Props) {
     p.kind === "permanent" ? "Save permanent password" : "Save temporary password";
   return (
     <form onSubmit={p.onSubmit} className="space-y-3">
-      <label className="block text-sm space-y-1">
-        <span className="text-[var(--text-muted)]">Friend who Joined</span>
-        <select
-          className="w-full min-h-11 rounded-md bg-stadium-800 border border-stadium-border px-3"
-          value={p.membershipId}
-          onChange={(e) => p.onMembership(e.target.value)}
-        >
-          {p.claimed.map((m) => (
-            <option key={m.id} value={m.id}>{passwordMemberLabel(m)}</option>
-          ))}
-        </select>
-      </label>
+      {p.lockMember ? null : (
+        <label className="block text-sm space-y-1">
+          <span className="text-[var(--text-muted)]">Friend who Joined</span>
+          <select
+            className="w-full min-h-11 rounded-md bg-stadium-800 border border-stadium-border px-3"
+            value={p.membershipId}
+            onChange={(e) => p.onMembership(e.target.value)}
+          >
+            {p.claimed.map((m) => (
+              <option key={m.id} value={m.id}>{passwordMemberLabel(m)}</option>
+            ))}
+          </select>
+        </label>
+      )}
       {p.unclaimed.length > 0 ? (
         <p className="text-xs text-[var(--text-muted)]">
           Not Joined yet — send a Join link, not a password:{" "}
@@ -81,7 +84,7 @@ export function SetPasswordFields(p: Props) {
           autoComplete="off" className="mt-1 font-mono"
         />
       </label>
-      <Button variant="secondary" className="w-full" onClick={() => {
+      <Button variant="secondary" className="w-full min-h-11" onClick={() => {
         const next = suggestTempPassword();
         p.onPassword(next);
         p.onConfirm(next);
@@ -89,7 +92,7 @@ export function SetPasswordFields(p: Props) {
         Suggest a password I can text
       </Button>
       {p.err ? <p className="text-sm text-crimson-400" role="alert">{p.err}</p> : null}
-      <Button type="submit" className="w-full" disabled={p.busy}>
+      <Button type="submit" className="w-full min-h-11" disabled={p.busy}>
         {p.busy ? "Saving…" : saveLabel}
       </Button>
     </form>
