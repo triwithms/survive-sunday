@@ -5,6 +5,7 @@
  */
 import {
   LOGIN_SHARE_URL,
+  confirmNicknameForSave,
   memberPasswordShareText,
 } from "../src/components/features/admin/password-members";
 import {
@@ -41,6 +42,17 @@ function main() {
   });
   assert(ok.ok && ok.nickname === "Cannoli Stuffer", "claimed + nickname match");
   assert(ok.ok && ok.email === "mike.frigo@example.com", "email kept");
+
+  const embeddedBlank = confirmNicknameForSave(true, "", "Cannoli Stuffer");
+  assert(embeddedBlank === "Cannoli Stuffer", "Users Edit auto-confirms nickname");
+  const embeddedOk = checkSetMemberPassword({
+    membershipId: "mem_cannoli",
+    confirmNickname: embeddedBlank,
+    password: "Sunday-4821KQ",
+    member: claimed,
+  });
+  assert(embeddedOk.ok, "embedded empty typed still saves");
+  assert(confirmNicknameForSave(false, "", "Cannoli Stuffer") === "", "standalone still types");
 
   const unclaimed = checkSetMemberPassword({
     membershipId: "mem_cannoli",

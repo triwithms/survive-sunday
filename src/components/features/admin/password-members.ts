@@ -53,6 +53,15 @@ export function rosterToPasswordMember(m: {
   };
 }
 
+/** Users Edit hides the type-to-confirm field — still must satisfy nicknamesMatch. */
+export function confirmNicknameForSave(
+  embedded: boolean,
+  typed: string,
+  selectedNickname: string
+): string {
+  return embedded ? selectedNickname : typed.trim();
+}
+
 export function memberPasswordShareText(opts: {
   email: string;
   password: string;

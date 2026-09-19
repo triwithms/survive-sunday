@@ -7,6 +7,7 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
+import { confirmNicknameForSave } from "../src/components/features/admin/password-members";
 import { rosterMatches } from "../src/components/features/admin/roster-row-meta";
 import { auditDetail, auditTitle } from "../src/components/features/admin/audit-labels";
 import { homeScreenStatusLine } from "../src/components/features/admin/home-screen-status";
@@ -35,7 +36,17 @@ function main() {
   const nav = readFileSync(`${dir}/AdminNav.tsx`, "utf8");
   assert.match(nav, /grid-cols-4/);
   assert.match(nav, /min-h-11/);
+  assert.match(nav, /whitespace-nowrap/);
   assert.doesNotMatch(nav, /overflow-x-auto/);
+
+  assert.equal(confirmNicknameForSave(true, "", "Pauli"), "Pauli");
+  assert.equal(confirmNicknameForSave(true, "nope", "Pauli"), "Pauli");
+  assert.equal(confirmNicknameForSave(false, "", "Pauli"), "");
+  assert.equal(confirmNicknameForSave(false, " Pauli ", "Pauli"), "Pauli");
+  const passwordForm = readFileSync(`${dir}/use-password-form.ts`, "utf8");
+  assert.match(passwordForm, /confirmNicknameForSave\(embedded/);
+  const fields = readFileSync(`${dir}/SetPasswordFields.tsx`, "utf8");
+  assert.match(fields, /lockMember \? null/);
 
   const users = readFileSync(`${dir}/UsersScreen.tsx`, "utf8");
   assert.doesNotMatch(users, /Who are you/i);

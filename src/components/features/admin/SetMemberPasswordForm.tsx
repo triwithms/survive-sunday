@@ -15,7 +15,7 @@ export function SetMemberPasswordForm({
   members: SetPasswordMember[];
   embedded?: boolean;
 }) {
-  const f = usePasswordForm(members);
+  const f = usePasswordForm(members, embedded);
   const heading = (
     <div>
       <h2 className="font-semibold">Set a password</h2>

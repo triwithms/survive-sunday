@@ -15,7 +15,7 @@ export function AdminNav() {
         {ADMIN_TABS.map((tab) => {
           const active = tab.match(path);
           const className = [
-            "min-h-11 px-1 text-xs font-semibold rounded-lg border inline-flex items-center justify-center text-center",
+            "min-h-11 px-0.5 text-xs font-semibold rounded-lg border inline-flex items-center justify-center text-center whitespace-nowrap",
             active
               ? "border-gold-400 text-gold-400 bg-gold-400/10"
               : "border-stadium-border text-[var(--text-muted)]",
