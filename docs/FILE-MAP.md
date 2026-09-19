@@ -38,7 +38,7 @@ Pool board week (header **Week N**, not a player’s next-pick week): `src/lib/p
 
 `src/components/ui/` — `Button.tsx`, `Card.tsx`, `Chip.tsx`, `StatusBadge.tsx`, `index.ts`
 
-**Add to Home Screen nudge** (signed-in phones only): `src/components/features/a2hs/` — `A2hsNudge.tsx` asks Yes / No / Not now. Yes = native Install or iOS Safari … → Share □↑ steps (`A2hsIosHint`). No = opt out; Help menu → **Install on Home Screen** (`HelpInstall` + `HelpInstallLink`) reopens Yes. Not now = next Sign in. Icon deleted (`installed` + !standalone) resets to pending. Mounted in `src/app/(app)/layout.tsx`. Shortcut label is **NFL Pool** (`public/manifest.webmanifest` `name` / `short_name`).
+**Add to Home Screen nudge** (signed-in phones only): `src/components/features/a2hs/` — `A2hsNudge.tsx` asks Yes / No / Not now. Yes = native Install or iOS Safari … → Share □↑ steps (`A2hsIosHint`). No = opt out; Help menu → **Install on Home Screen** (`HelpInstall` + `HelpInstallLink`) reopens Yes. Not now = next Sign in. Icon deleted (`installed` + !standalone) resets to pending. Mounted in `src/app/(app)/layout.tsx`. Shortcut label is **NFL Pool** (`public/manifest.webmanifest` `name` / `short_name`). Home Screen / browser icons: `public/icons/` (PNG `any` 192/512/1024 + `maskable` 192/512 in the centre ~80% safe zone, `apple-touch-icon` 180, SVG source). Favicon: `src/app/favicon.ico` + `public/icons/icon-32.png`, wired in `src/app/layout.tsx`. Rebuild: `node scripts/export-app-icons.mjs`. No NFL marks.
 
 Team logos: `src/components/TeamLogo.tsx` + `src/lib/espn-teams.ts` / `src/lib/team-helmets.ts`. Local backups in `public/helmets/{abbr}.png` (app abbr, e.g. `was.png`). Never letter badges.
 
