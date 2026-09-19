@@ -32,6 +32,8 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 
 `src/components/ui/` — `Button.tsx`, `Card.tsx`, `Chip.tsx`, `StatusBadge.tsx`, `index.ts`
 
+**Add to Home Screen nudge** (signed-in phones only): `src/components/features/a2hs/` — `A2hsNudge.tsx`, `env.ts`, `state.ts`, `useInstallPrompt.ts`. Mounted in `src/app/(app)/layout.tsx`. Account row: `A2hsSettingsRow.tsx`.
+
 Team logos: `src/components/TeamLogo.tsx` + `src/lib/espn-teams.ts` / `src/lib/team-helmets.ts`. Local backups in `public/helmets/{abbr}.png` (app abbr, e.g. `was.png`). Never letter badges.
 
 ## Server actions (save a pick / issue an invite)

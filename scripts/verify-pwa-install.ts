@@ -1,66 +1,79 @@
 /**
- * Add to Home Screen prompt decisions (no browser).
+ * Add to Home Screen nudge decisions (no browser).
  *
  *   npx tsx scripts/verify-pwa-install.ts
  */
 import assert from "node:assert/strict";
 import {
-  decideAddToHomePrompt,
-  detectAndroid,
-  detectIos,
-  isMobileBrowser,
-} from "../src/lib/pwa-install";
+  a2hsVariant,
+  isAndroid,
+  isInAppBrowser,
+  isIOS,
+  isMobile,
+} from "../src/components/features/a2hs/env";
+import {
+  A2HS_SNOOZE_MS,
+  shouldShowA2hs,
+} from "../src/components/features/a2hs/state";
 
-const base = {
-  standalone: false,
-  mobile: true,
-  dismissed: false,
-  snoozed: false,
-  pending: true,
-  greetedStandalone: false,
-};
+const iphone =
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
+const android =
+  "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36";
+const desktop =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+const fbIos =
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 [FBAN/FBIOS;FBAV/1.0]";
+const instagram = "Mozilla/5.0 (iPhone) Instagram 300.0.0";
+const chromeIos =
+  "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/120.0.6099.119 Mobile/15E148 Safari/604.1";
 
-assert.equal(decideAddToHomePrompt(base), "ask", "pending mobile → ask");
+assert.equal(isMobile(iphone), true);
+assert.equal(isIOS(iphone), true);
+assert.equal(isAndroid(android), true);
+assert.equal(isIOS(android), false);
+assert.equal(isMobile(desktop), false);
+assert.equal(isMobile("Mozilla/5.0 (Macintosh; Intel Mac OS X)", 5), true);
+assert.equal(isInAppBrowser(fbIos), true);
+assert.equal(isInAppBrowser(instagram), true);
+assert.equal(isInAppBrowser("Mozilla/5.0 WhatsApp/2.0"), true);
+assert.equal(isInAppBrowser("Mozilla/5.0 Line/13.0"), true);
+assert.equal(a2hsVariant(iphone), "ios");
+assert.equal(a2hsVariant(android), "android");
+assert.equal(a2hsVariant(fbIos), "inapp");
+assert.equal(a2hsVariant(chromeIos), "inapp");
+
+const ask = { mobile: true, standalone: false, status: "pending" as const };
+assert.equal(shouldShowA2hs(ask), true, "iPhone Safari pending → show");
 assert.equal(
-  decideAddToHomePrompt({ ...base, standalone: true }),
-  "good",
-  "pending standalone → one-time good"
+  shouldShowA2hs({ ...ask, standalone: true }),
+  false,
+  "Home Screen icon → never show"
 );
 assert.equal(
-  decideAddToHomePrompt({
-    ...base,
-    standalone: true,
-    greetedStandalone: true,
+  shouldShowA2hs({ ...ask, mobile: false }),
+  false,
+  "desktop → never show"
+);
+assert.equal(shouldShowA2hs({ ...ask, status: "optout" }), false, "opt-out persists");
+assert.equal(
+  shouldShowA2hs({ ...ask, status: "installed" }),
+  false,
+  "I added it / standalone → installed"
+);
+assert.equal(
+  shouldShowA2hs({
+    ...ask,
+    status: "snoozed",
+    snoozeUntil: Date.now() + A2HS_SNOOZE_MS,
   }),
-  "hide",
-  "already greeted standalone → never nag"
+  false,
+  "Later hides for 3 days"
 );
 assert.equal(
-  decideAddToHomePrompt({ ...base, dismissed: true }),
-  "hide",
-  "Yes dismisses permanently"
+  shouldShowA2hs({ ...ask, status: "snoozed", snoozeUntil: Date.now() - 1 }),
+  true,
+  "expired snooze → show again"
 );
-assert.equal(
-  decideAddToHomePrompt({ ...base, snoozed: true }),
-  "hide",
-  "Not now snoozes"
-);
-assert.equal(
-  decideAddToHomePrompt({ ...base, mobile: false, pending: true }),
-  "hide",
-  "desktop does not nag"
-);
-assert.equal(
-  decideAddToHomePrompt({ ...base, pending: false }),
-  "hide",
-  "no pending → hide"
-);
-
-assert.equal(isMobileBrowser("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)"), true);
-assert.equal(detectIos("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)"), true);
-assert.equal(detectAndroid("Mozilla/5.0 (Linux; Android 14)"), true);
-assert.equal(detectIos("Mozilla/5.0 (Linux; Android 14)"), false);
-assert.equal(isMobileBrowser("Mozilla/5.0 (Macintosh; Intel Mac OS X)", 5), true);
-assert.equal(isMobileBrowser("Mozilla/5.0 (Windows NT 10.0)", 0), false);
 
 console.log("verify-pwa-install OK");

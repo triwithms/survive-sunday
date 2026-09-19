@@ -6,6 +6,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ModalDialog } from "@/components/ModalDialog";
 import { PhoneEditor } from "@/components/PhoneEditor";
+import { A2hsSettingsRow } from "@/components/features/a2hs";
 import { SignOutButton } from "@/components/SignOutButton";
 import { RoleSwitcher } from "@/components/RoleSwitcher";
 import type { RoleView } from "@/lib/roles";
@@ -192,6 +193,10 @@ export function AccountMenu({
           >
             Pick backup
           </Link>
+          <A2hsSettingsRow
+            className={rowBtn}
+            onOpened={() => setMenuOpen(false)}
+          />
           <button
             type="button"
             className={rowBtn}

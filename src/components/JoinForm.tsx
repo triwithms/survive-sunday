@@ -30,13 +30,14 @@ export function JoinForm({
   const tokenParam = params.get("t") ?? "";
   const seatParam = tokenSeatId || params.get("seat") || "";
   const whoParam = tokenSeatId ? "" : params.get("who") ?? "";
+  const codeParam = (params.get("code") ?? "").trim().toUpperCase();
   const invited = resolveSeatFromInvite(seats, { seat: seatParam, who: whoParam });
   const viaPersonal =
     arrivedViaPersonalInvite({ seat: seatParam, who: whoParam }) ||
     Boolean(tokenParam || tokenSeatId);
   const initialSeat = invited && !invited.claimed ? invited.membershipId : "";
 
-  const [inviteCode, setInviteCode] = useState(INVITE_CODE);
+  const [inviteCode, setInviteCode] = useState(codeParam || INVITE_CODE);
   const [email, setEmail] = useState(signedIn?.email ?? "");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");

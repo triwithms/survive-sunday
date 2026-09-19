@@ -49,9 +49,10 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h3 className="font-semibold mt-3 mb-1">C. Add to Home Screen (make it an app)</h3>
         <p className="text-[var(--text-muted)] mb-2">
           After you Join or Sign in on a phone browser, we may ask about the Home
-          Screen. Tap <strong>Yes</strong>, <strong>Show me how</strong>, or{" "}
-          <strong>Not now</strong>. If you already open the Home Screen icon, we
-          do not nag.
+          Screen. Tap <strong>I added it</strong>, <strong>Later</strong>, or{" "}
+          <strong>Don&apos;t ask again</strong>. Account →{" "}
+          <strong>Add to Home Screen</strong> brings the card back. If you
+          already open the Home Screen icon, we do not nag.
         </p>
         <p className="text-sm font-medium text-[var(--text-primary)] mb-1">iPhone / iPad — Safari</p>
         <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
@@ -253,7 +254,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
       <section id="11-install-the-app-pwa">
         <h2 className="text-lg font-semibold text-gold-400 mb-2">11. Install the app (PWA)</h2>
         <p className="text-[var(--text-muted)] mb-2">Survive Sunday works in a phone browser, on a computer, or as a Home Screen app. After you Join or Sign in once, you stay signed in on that device — open the icon and you’re in the pool. We do not ask for a code every time.</p>
-        <p className="text-[var(--text-muted)] mb-2">After you Join or first Sign in on a phone browser, we may ask about the Home Screen. Tap <strong>Yes</strong>, <strong>Show me how</strong>, or <strong>Not now</strong>. If you already open the app from the Home Screen icon, we do not nag.</p>
+        <p className="text-[var(--text-muted)] mb-2">After you Join or Sign in on a phone browser, we may ask about the Home Screen. Tap <strong>I added it</strong>, <strong>Later</strong> (3 days), or <strong>Don&apos;t ask again</strong>. Account → <strong>Add to Home Screen</strong> restores the card. If you already open the app from the Home Screen icon, we do not nag.</p>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
           <li className="text-[var(--text-primary)]"><strong>iPhone / iPad (Safari):</strong> stay in Safari (not Chrome, and not the browser inside Messages). Tap the Share button (square with an arrow) → <strong>Add to Home Screen</strong> → Add. iPhone cannot install with a single button — those Share steps are the way.</li>
           <li className="text-[var(--text-primary)]"><strong>Android (Chrome):</strong> stay in Chrome. If you see <strong>Install</strong>, tap it. Or the three-dot menu → <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>
@@ -299,7 +300,7 @@ export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Reset code did not arrive | Sign in → Forgot password?. Use the Join email. Check inbox and spam/junk — codes may be filtered. The page shows the real Resend reason if keys are missing. Commissioner: Admin shows reset email status. |
 | Forgot password | Sign in → Forgot password?${showDemoCopy ? " Demo seats use demo1234." : ""} After the page says the code was sent, check inbox and spam/junk. If sending fails, read the red text. |
 | Friend stuck (no code) | Commissioner: Admin → Set a temporary password (claimed seats only). Text them that password. They Sign in with email + that password. If they have not Joined, send their personal Join link instead. |
-| Home Screen prompt keeps asking | Tap Yes if you already added the icon. Opening from the icon should not nag. |
+| Home Screen prompt keeps asking | Tap I added it, or Account → Add to Home Screen if you hid it. Opening from the icon should not nag. |
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
 | Want to switch account | Header → Account → Sign out (also on Admin and Help). Then Sign in. |
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |

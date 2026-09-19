@@ -1,6 +1,6 @@
 "use client";
 
-import { markAddToHomePending } from "@/lib/pwa-install";
+import { markAddToHomePending } from "@/components/features/a2hs/actions";
 
 export type CredentialsResult = {
   ok: boolean;
