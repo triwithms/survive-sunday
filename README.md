@@ -89,7 +89,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - **Import Week picks** (CSV / paste) for groups mid-season — counts for grading/mulligan/reuse
 - Season-end tiebreak helpers (clean record / no ranked auto-pick 💩 → fewest losses → weeks survived → nickname A–Z)
 - `/help` from HELP-COPY (+ importing prior picks); footer disclaimer
-- Team research: tap a club from My pick / Schedule / Standings / Scores; team info (record, this week, coach, style) is at the top, then key players and roster. Tap an NFL player for college, depth role, and any ESPN injury note
+- Team research: tap a club from My pick / Schedule / Standings / Scores; helmet, record, this week, style (above coach), then Offence / Defence / Special teams, injuries, and news. Tap an NFL player for college, depth role, and any ESPN injury note
 - Dark stadium UI (gold/green); installable PWA shell
 - Seed via `npm run seed`
 

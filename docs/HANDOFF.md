@@ -315,7 +315,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 - **Scores** pulls the ESPN scoreboard, shows live / scheduled / final, and auto-grades games that are final.
 - **Share as a picture** (merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45)): no Share button. Leaderboard or Scores → **press and hold the title** or **triple-tap the week label**. Full long screenshot is always a choice. Shorter options plus split pages when the page is very long. Nav, bottom tabs, **Details ›**, and “tap for details” stay off the image. Help → **Share Leaderboard & Scores as a picture**. Does **not** change picks, Join, Sign in, or lock. Scores cards themselves still show **Details ›** on the live page ([#46](https://github.com/triwithms/survive-sunday/pull/46)).
 - **Standings** and **Schedule** are research screens (NFL W-L / full slate). In Real mode, Standings **W-L syncs from ESPN** (not the demo `week2-standings.json` seed, and no player-facing “demo” League copy). Kickoff times in the app are the **US slate** (ET + US networks such as CBS / Fox / NBC).
-- **Team pages** (`/team/KC` and so on): record, this week’s game, **head coach** (ESPN name + ESPN / Wikipedia / team links), style, then key NFL players, full roster, news, and ESPN’s public injury report (not official NFL). Tap a **player name** for number, position, college, starter vs depth, and any matching ESPN injury note.
+- **Team pages** (`/team/KC` and so on): helmet, record, this week’s game, **style** (above coach), **head coach** (ESPN name + ESPN / Wikipedia / team links), then links for **Offence / Defence / Special teams** (starters-only checkbox), **Injuries** (ESPN public report, not official NFL), and **News**. No Key players card. No full roster dump. Tap a **player name** for number, position, college, starter vs depth, and any matching ESPN injury note.
 - These are **NFL roster players**, not pool members (nicknames on Selections / Leaderboard).
 
 ### Canadian TV (when you share a schedule — not in the app)
@@ -724,7 +724,7 @@ My problem: [e.g. iPhone friends cannot find Add to Home Screen]
 You are helping maintain Survive Sunday. Read docs/HANDOFF.md first.
 You are free / basic Grok chat — not Grok Bot. Trust main for what is live:
 - Scores already sync from ESPN and auto-grade finals (src/lib/live-scores.ts, src/app/(app)/scores/).
-- Team pages already show record, this week, head coach, style, then key players, roster, news (src/app/(app)/team/[abbr]/page.tsx, src/lib/team-research.ts, src/lib/team-coaches.ts).
+- Team pages show record, this week, style (above coach), head coach, then Offence / Defence / Special teams + injuries + news (src/components/features/team/, src/app/(app)/team/[abbr]/, src/lib/team-research.ts, src/lib/team-coaches.ts). No Key players. No full roster dump.
 - Tap an NFL player for a detail page (src/app/(app)/team/[abbr]/player/[slug]/page.tsx).
 - Injury report on main is ESPN public JSON (src/lib/live-injuries.ts), not sample_injury_news.json.
 - Live scores / injuries upgrade already shipped as merged PR #12. Do not invent another feed.
