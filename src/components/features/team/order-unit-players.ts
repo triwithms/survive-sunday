@@ -1,5 +1,3 @@
-import { splitRosterPlayers } from "@/lib/team-research";
-
 export type UnitListPlayer = {
   role: string;
   injury: unknown;
@@ -10,7 +8,8 @@ export function splitUnitPlayers<T extends UnitListPlayer>(players: T[]): {
   injuredStarters: T[];
   depth: T[];
 } {
-  const { starters, depth } = splitRosterPlayers(players);
+  const starters = players.filter((p) => p.role === "starter");
+  const depth = players.filter((p) => p.role !== "starter");
   return {
     healthyStarters: starters.filter((p) => !p.injury),
     injuredStarters: starters.filter((p) => p.injury),

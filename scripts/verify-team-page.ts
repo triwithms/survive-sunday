@@ -84,8 +84,8 @@ function main() {
   assert.match(unit, /splitUnitPlayers/);
   assert.match(unit, /TeamUnitBlocks/);
   const blocks = read(`${dir}/TeamUnitBlocks.tsx`);
-  assert.match(blocks, />Injured</);
-  assert.match(blocks, />Depth</);
+  assert.match(blocks, /heading="Injured"/);
+  assert.match(blocks, /"Depth"/);
   const injuries = read(`${dir}/TeamInjuriesScreen.tsx`);
   assert.match(injuries, />Injuries</);
   assert.doesNotMatch(unit, />Injuries</);
