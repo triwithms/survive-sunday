@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { FEEDBACK_MAX_LEN } from "@/lib/feedback-admin-copy";
 
 export function ReportBugForm() {
@@ -9,7 +9,7 @@ export function ReportBugForm() {
   const [info, setInfo] = useState("");
   const [err, setErr] = useState("");
 
-  async function send(e: React.FormEvent) {
+  async function send(e: FormEvent) {
     e.preventDefault();
     setBusy(true);
     setInfo("");
