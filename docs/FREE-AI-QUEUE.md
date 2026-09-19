@@ -18,8 +18,9 @@ Chief of Staff (Grok Bot) owns when to surface these. **Never auto-paste a stale
 |---|--------|-----------|--------|
 | 0 | [MNF wrap copy](./MNF-WRAP-FREE-AI.md) · [start block A](./FREE-AI-START-HERE.md) | Notification prefs **live** + Week facts ready | **ready** (prefs shipped #133) |
 | 1 | [Notifications coding brief](./NOTIFICATIONS-FREE-AI.md) | Icons + Admin invite merged; prefs still stubbed | **done** (#133) — do not re-run |
-| 2 | [Team schedule coding brief](./TEAM-SCHEDULE-FREE-AI.md) | After icons + Admin invite | icons+invite done; paid PR may already be in flight |
+| 2 | [Team schedule coding brief](./TEAM-SCHEDULE-FREE-AI.md) | After icons + Admin invite | **done** (#132 merged) — do not re-run |
 | 3 | [Docs refresh](./DOCS-REFRESH-FREE-AI.md) | Free quota available; HANDOFF/FILE-MAP lag | optional anytime |
+| 4 | [Pick backup + 💩 docs](./PICK-BACKUP-DOCS-FREE-AI.md) | After pick-backup 5-min / no-copy PR merges | **waiting** (code not shipped) |
 
 ## Triggers
 
