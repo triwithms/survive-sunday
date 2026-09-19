@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { inflateSync } from "node:zlib";
 import {
   ESPN_TEAM_IDS,
   espnTeamLogoUrl,
@@ -128,6 +129,69 @@ assert.equal(
 assert.doesNotMatch(resolveTeamLogoSrc("NE", espnTeamLogoUrl("NE"), null), /^https?:/i);
 assert.doesNotMatch(resolveTeamLogoSrc("CLE", stale, null), /^https?:/i);
 
+/** Decode one RGBA pixel. Stops after that row so 4096² NYJ stays cheap. */
+function pngRgbaAt(
+  file: string,
+  x: number,
+  y: number
+): [number, number, number, number] {
+  const buf = fs.readFileSync(file);
+  let pos = 8;
+  let w = 0;
+  let h = 0;
+  const idat: Buffer[] = [];
+  while (pos < buf.length) {
+    const len = buf.readUInt32BE(pos);
+    const type = buf.toString("latin1", pos + 4, pos + 8);
+    const chunk = buf.subarray(pos + 8, pos + 8 + len);
+    if (type === "IHDR") {
+      w = chunk.readUInt32BE(0);
+      h = chunk.readUInt32BE(4);
+      assert.equal(chunk[8], 8, `${file} 8-bit`);
+      assert.equal(chunk[9], 6, `${file} RGBA`);
+    } else if (type === "IDAT") idat.push(chunk);
+    else if (type === "IEND") break;
+    pos += 12 + len;
+  }
+  const raw = inflateSync(Buffer.concat(idat));
+  const stride = w * 4;
+  let i = 0;
+  let prev = Buffer.alloc(stride);
+  let row = Buffer.alloc(stride);
+  for (let rowY = 0; rowY <= y; rowY++) {
+    const f = raw[i++];
+    row = Buffer.from(raw.subarray(i, i + stride));
+    i += stride;
+    for (let col = 0; col < stride; col++) {
+      const a = col >= 4 ? row[col - 4] : 0;
+      const b = prev[col];
+      const c = col >= 4 ? prev[col - 4] : 0;
+      const p = a + b - c;
+      const pa = Math.abs(p - a);
+      const pb = Math.abs(p - b);
+      const pc = Math.abs(p - c);
+      const pr =
+        f === 1
+          ? a
+          : f === 2
+            ? b
+            : f === 3
+              ? (a + b) >> 1
+              : f === 4
+                ? pa <= pb && pa <= pc
+                  ? a
+                  : pb <= pc
+                    ? b
+                    : c
+                : 0;
+      if (f !== 0) row[col] = (row[col] + pr) & 255;
+    }
+    prev = row;
+  }
+  const o = x * 4;
+  return [row[o], row[o + 1], row[o + 2], row[o + 3]];
+}
+
 assert.equal(Object.keys(ESPN_TEAM_IDS).length, 32);
 const localHashes = new Set<string>();
 for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
@@ -152,6 +216,12 @@ for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
   const bytes = fs.readFileSync(file);
   assert.ok(bytes.length > 1000, `${abbr} local helmet has bytes`);
   assert.equal(bytes[0], 0x89, `${abbr} is PNG`);
+  assert.equal(pngRgbaAt(file, 0, 0)[3], 0, `${abbr} corner transparent`);
+  assert.equal(
+    pngRgbaAt(file, 40, 40)[3],
+    0,
+    `${abbr} has no white plate at (40,40)`
+  );
   localHashes.add(createHash("sha256").update(bytes).digest("hex"));
 }
 assert.equal(localHashes.size, 32, "32 distinct local helmets");
@@ -161,6 +231,17 @@ assert.equal(
   "neutral placeholder helmet"
 );
 assert.equal(TEAM_HELMET_PLACEHOLDER, "/helmets/_placeholder.svg");
+const helmetReadme = fs.readFileSync(
+  path.join(process.cwd(), "public/helmets/README.md"),
+  "utf8"
+);
+assert.match(helmetReadme, /transparent background/);
+assert.match(helmetReadme, /no white rounded plates/);
+assert.equal(helmetReadme.includes("ne.png and cle.png are the same marks"), false);
+const neFile = path.join(process.cwd(), "public/helmets/ne.png");
+const cleFile = path.join(process.cwd(), "public/helmets/cle.png");
+assert.ok(pngRgbaAt(neFile, 250, 250)[3] > 200, "NE mark is opaque at centre");
+assert.ok(pngRgbaAt(cleFile, 250, 250)[3] > 200, "CLE mark is opaque at centre");
 
 assert.equal(TEAM_LOGO_SIZE.compact, 44);
 assert.equal(TEAM_LOGO_SIZE.row, 48);
