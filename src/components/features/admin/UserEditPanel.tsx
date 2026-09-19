@@ -1,9 +1,7 @@
 "use client";
 
-import { MirrorPicksForm } from "@/components/MirrorPicksForm";
 import { Button } from "@/components/ui";
 import { isSeatClaimed } from "@/lib/claim-seat";
-import type { PickBackupMode } from "@/lib/pick-mirror";
 import { AdminDetails } from "./AdminDetails";
 import { rosterToPasswordMember } from "./password-members";
 import { RemoveSeatButton } from "./RemoveSeatButton";
@@ -12,7 +10,7 @@ import { RosterContactFields } from "./RosterContactFields";
 import { RosterNotifySoon } from "./RosterNotifySoon";
 import { SetMemberPasswordForm } from "./SetMemberPasswordForm";
 import type { RosterDraft } from "./use-roster-edit";
-import type { RosterMember, RosterMirrorOption } from "./roster-types";
+import type { RosterMember } from "./roster-types";
 
 type Props = {
   member: RosterMember;
@@ -20,8 +18,6 @@ type Props = {
   disabled: boolean;
   busy: boolean;
   dirty: boolean;
-  initialMode: PickBackupMode;
-  mirrorOptions: RosterMirrorOption[];
   onChange: (patch: Partial<RosterDraft>) => void;
   onSave: () => void;
 };
@@ -59,15 +55,6 @@ export function UserEditPanel(p: Props) {
         <SetMemberPasswordForm
           members={[rosterToPasswordMember(member)]}
           embedded
-        />
-      ) : null}
-      {player ? (
-        <MirrorPicksForm
-          membershipId={member.id}
-          initialMode={p.initialMode}
-          initialSourceId={member.mirrorFromMembershipId}
-          options={p.mirrorOptions}
-          saveAsAdmin
         />
       ) : null}
       {player ? (

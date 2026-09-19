@@ -35,7 +35,7 @@ export function HelpAccount({ showDemoCopy = false }: { showDemoCopy?: boolean }
           <li className="text-[var(--text-primary)]">Your **nickname** is what the pool sees — it must be **unique within the pool** (case doesn’t matter). Returning BM Boys already have one seeded; tap **Account** in the header, then **Change nickname**. New members create a nickname when they join.</li>
           <li className="text-[var(--text-primary)]">**Real name** is optional — handy when friends already know each other offline.</li>
           <li className="text-[var(--text-primary)]">**Cell number:** add your cell for SMS missing-pick reminders and for password-reset texts. You can add or edit it later from Account. Missing-pick texts follow your Notification preferences; password-reset codes do not.</li>
-          <li className="text-[var(--text-primary)]">**Notification preferences:** <strong>Account → Notification preferences</strong>. Save the toggles you want. Defaults are safe for friends (core on, noisy off).</li>
+          <li className="text-[var(--text-primary)]">**Notification preferences:** <strong>Account → Notification preferences</strong>. Each option is SMS / Email / both / none (coming soon until send works).</li>
           <li className="text-[var(--text-primary)]">
             <strong>Sign in:</strong> email + password, then Sign in. We do <strong>not</strong> ask for a code every time you open the app.
             {showDemoCopy

@@ -110,7 +110,7 @@ export function AccountMenu({
         onClick={() => setMenuOpen(true)}
         aria-haspopup="dialog"
         aria-expanded={menuOpen}
-        aria-label="Account menu — nickname, cell, notification preferences, pick backup, and Sign out"
+        aria-label="Account menu — nickname, cell, notification preferences, and Sign out"
         data-testid="account-menu"
         data-user-id={userId}
         data-user-role={role}
@@ -183,15 +183,6 @@ export function AccountMenu({
             data-testid="notification-prefs"
           >
             Notification preferences
-          </Link>
-          <Link
-            href="/account/mirror"
-            prefetch={false}
-            className={rowBtn}
-            onClick={() => setMenuOpen(false)}
-            data-testid="pick-backup"
-          >
-            Pick backup
           </Link>
           <A2hsSettingsRow
             className={rowBtn}

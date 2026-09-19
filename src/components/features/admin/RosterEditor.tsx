@@ -10,10 +10,8 @@ export type { RosterMember, RosterMirrorOption } from "./roster-types";
 
 export function RosterEditor({
   members,
-  mirrorOptions,
 }: {
   members: RosterMember[];
-  mirrorOptions: RosterMirrorOption[];
 }) {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
@@ -54,7 +52,6 @@ export function RosterEditor({
               key={m.id}
               member={m}
               rosterNicknames={nicknames}
-              mirrorOptions={mirrorOptions.filter((o) => o.id !== m.id)}
               open={openId === m.id}
               onToggle={() => setOpenId((id) => (id === m.id ? null : m.id))}
               disabled={busyId !== null && busyId !== m.id}

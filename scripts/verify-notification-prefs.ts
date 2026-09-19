@@ -169,6 +169,7 @@ console.log("PASS  missing-schema detector");
 const accountMenu = readFileSync("src/components/AccountMenu.tsx", "utf8");
 assert.match(accountMenu, /href="\/account\/notifications"/);
 assert.match(accountMenu, /Notification preferences/);
+assert.doesNotMatch(accountMenu, /account\/mirror|pick-backup|Pick backup/);
 const helpPage = readFileSync("src/app/help/page.tsx", "utf8");
 assert.doesNotMatch(helpPage, /href="\/account\/notifications"/);
 assert.doesNotMatch(helpPage, /SignOutButton/);
@@ -176,6 +177,10 @@ assert.match(helpPage, /safe-area-inset-top/);
 assert.match(
   readFileSync("src/components/features/help/HelpScreens.tsx", "utf8"),
   /Account → Notification preferences/
+);
+assert.doesNotMatch(
+  readFileSync("src/components/features/help/HelpScreens.tsx", "utf8"),
+  /Account → <strong>Pick backup/
 );
 assert.match(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
@@ -185,6 +190,15 @@ assert.match(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
   /Account \(header\) → Notification preferences/
 );
+const prefsForm = readFileSync("src/components/NotificationPrefsForm.tsx", "utf8");
+assert.match(prefsForm, /NotifyChannelSelect/);
+assert.match(prefsForm, /Coming soon — notifications not sending yet/);
+assert.match(prefsForm, /disabled/);
+const channel = readFileSync("src/components/NotifyChannelSelect.tsx", "utf8");
+assert.match(channel, /SMS/);
+assert.match(channel, /Email/);
+assert.match(channel, /both/);
+assert.match(channel, /none/);
 console.log("PASS  Account sheet link");
 
 console.log("\nverify-notification-prefs OK");

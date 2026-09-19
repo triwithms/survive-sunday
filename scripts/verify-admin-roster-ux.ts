@@ -1,6 +1,6 @@
 /**
  * Admin Users roster is a compact list with one open editor,
- * and pick-backup radios wrap on a phone (~390px).
+ * and pick-backup radios are gone from the editor.
  *
  *   npx tsx scripts/verify-admin-roster-ux.ts
  */
@@ -106,7 +106,7 @@ function main() {
   );
   assert.match(panel, /SetMemberPasswordForm/);
   assert.match(panel, /embedded/);
-  assert.match(panel, /MirrorPicksForm/);
+  assert.doesNotMatch(panel, /MirrorPicksForm/);
   assert.match(panel, /RosterContactFields/);
   assert.match(panel, /RosterNotifySoon/);
   assert.match(panel, /Save this person/);
