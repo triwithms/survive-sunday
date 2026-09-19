@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "./db";
-import { effectiveCurrentWeek } from "./pool-mode";
+import { resolvedPoolWeek } from "./pool-current-week-db";
 import { isWeekLocked } from "./grading";
 import {
   isPlayerPickWeek,
@@ -35,17 +35,15 @@ export async function loadEligibleWeek(
   membership: SubmitMembership,
   weekNumber: number
 ) {
-  const currentWeek = effectiveCurrentWeek(
-    membership.pool.mode,
-    membership.pool.currentWeek
-  );
   const relatedWeeks = await prisma.week.findMany({
-    where: {
-      poolId: membership.poolId,
-      number: { in: [currentWeek, currentWeek + 1, Number(weekNumber)] },
-    },
+    where: { poolId: membership.poolId },
     include: { games: true },
   });
+  const { currentWeek } = resolvedPoolWeek(
+    membership.pool.mode,
+    membership.pool.currentWeek,
+    relatedWeeks
+  );
   const currentWeekRow = relatedWeeks.find((row) => row.number === currentWeek);
   const nextWeekRow = relatedWeeks.find((row) => row.number === currentWeek + 1);
   const myCurrentWeekPick = currentWeekRow

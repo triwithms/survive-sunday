@@ -4,7 +4,10 @@ import { cronAuthorized } from "@/lib/cron-auth";
 import { ensureWeekLockedEffects } from "@/lib/grading";
 import { applyMirrorPicksForActiveWeeks } from "@/lib/pick-mirror-db";
 import { syncWeekScoresFromEspn } from "@/lib/live-scores";
-import { effectiveCurrentWeek } from "@/lib/pool-mode";
+import {
+  persistPoolWeekAdvance,
+  resolvedPoolWeek,
+} from "@/lib/pool-current-week-db";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -25,8 +28,23 @@ export async function GET(req: Request) {
     [];
   const scores: Array<{ weekId: string; updated?: number; error?: string }> = [];
 
+  const advanced: Array<{ poolId: string; from: number; to: number }> = [];
   for (const pool of pools) {
-    const number = effectiveCurrentWeek(pool.mode, pool.currentWeek);
+    const slate = await prisma.week.findMany({
+      where: { poolId: pool.id },
+      select: {
+        number: true,
+        games: { select: { status: true, kickoff: true } },
+      },
+    });
+    const { stored, currentWeek: number } = resolvedPoolWeek(
+      pool.mode,
+      pool.currentWeek,
+      slate
+    );
+    if (await persistPoolWeekAdvance(prisma, pool.id, stored, number)) {
+      advanced.push({ poolId: pool.id, from: stored, to: number });
+    }
     const week = await prisma.week.findUnique({
       where: { poolId_number: { poolId: pool.id, number } },
       select: { id: true },
@@ -52,6 +70,7 @@ export async function GET(req: Request) {
   return NextResponse.json({
     ok: true,
     mirrored,
+    advanced,
     lockEffects,
     scores,
   });
