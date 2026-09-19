@@ -24,27 +24,33 @@ export default async function HelpPage() {
     requested: cookieStore.get(ROLE_VIEW_COOKIE)?.value,
   });
 
+  const showNav = Boolean(membership);
+
   return (
     <div
       className={
-        membership ? "min-h-dvh flex flex-col pb-24" : "min-h-dvh flex flex-col"
+        showNav
+          ? "h-dvh max-h-dvh flex flex-col overflow-hidden"
+          : "min-h-dvh flex flex-col"
       }
     >
-      <main className="flex-1 mx-auto w-full max-w-pool pb-8 pt-[calc(2rem+env(safe-area-inset-top))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
-        <Link
-          href={membership ? "/pick" : "/"}
-          className="inline-flex min-h-11 items-center text-sm text-gold-400"
-        >
-          ← {membership ? "My pick" : "Survive Sunday"}
-        </Link>
-        <h1 className="font-display text-2xl text-gold-400 tracking-wide mt-6 mb-6">
-          Help
-        </h1>
-        <HelpContent />
-      </main>
-      <FooterDisclaimer />
-      <A2hsNudge />
+      <div className={showNav ? "flex-1 min-h-0 overflow-y-auto" : "flex-1"}>
+        <main className="mx-auto w-full max-w-pool pb-8 pt-[calc(2rem+env(safe-area-inset-top))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
+          <Link
+            href={membership ? "/pick" : "/"}
+            className="inline-flex min-h-11 items-center text-sm text-gold-400"
+          >
+            ← {membership ? "My pick" : "Survive Sunday"}
+          </Link>
+          <h1 className="font-display text-2xl text-gold-400 tracking-wide mt-6 mb-6">
+            Help
+          </h1>
+          <HelpContent />
+        </main>
+        <FooterDisclaimer />
+      </div>
       {membership && <BottomNav isAdmin={roleView === "admin"} />}
+      <A2hsNudge />
     </div>
   );
 }
