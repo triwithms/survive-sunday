@@ -82,9 +82,15 @@ assert.match(manifest, /"name": "NFL Pool"/);
 assert.match(manifest, /"short_name": "NFL Pool"/);
 
 const copy = readFileSync("src/components/features/a2hs/A2hsCopy.tsx", "utf8");
+const ios = readFileSync("src/components/features/a2hs/A2hsIosHint.tsx", "utf8");
 assert.match(copy, /Add NFL Pool to your Home Screen/);
-assert.match(copy, /Share .*→ Add to Home Screen/);
-assert.doesNotMatch(copy, /list-decimal/);
+assert.match(copy, /Install/);
+assert.match(copy, /Open this link in/);
+assert.match(copy, /Safari/);
+assert.doesNotMatch(ios, /Share button/);
+assert.match(ios, /bottom of Safari/);
+assert.match(ios, /Add to Home Screen/);
+assert.match(ios, /size=\{56\}/);
 
 const apple = readFileSync("src/app/layout.tsx", "utf8");
 assert.match(apple, /title: "NFL Pool"/);

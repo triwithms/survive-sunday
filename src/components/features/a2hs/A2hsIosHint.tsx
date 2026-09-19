@@ -1,6 +1,6 @@
 import { ShareGlyph } from "./ShareGlyph";
 
-/** Apple blocks a one-tap install. Show the button, then the menu item. */
+/** Apple blocks a one-tap install. Show the □↑ button, then the menu item. */
 export function A2hsIosHint() {
   return (
     <div className="space-y-3">

@@ -7,7 +7,11 @@ export const revalidate = 0;
 
 /** Cold open is Sign in. Signed-in users go to profile complete or the pool. */
 export default async function LandingPage() {
-  const session = await auth();
-  if (!session?.user?.id) redirect("/login");
-  redirect(await pathAfterLogin(session.user.id));
+  try {
+    const session = await auth();
+    if (session?.user?.id) redirect(await pathAfterLogin(session.user.id));
+  } catch (error) {
+    console.error("[home] session check failed", error);
+  }
+  redirect("/login");
 }

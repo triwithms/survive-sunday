@@ -1,4 +1,4 @@
-import { ShareGlyph } from "./ShareGlyph";
+import { A2hsIosHint } from "./A2hsIosHint";
 import type { A2hsVariant } from "./env";
 
 type Props = {
@@ -20,8 +20,9 @@ export function A2hsCopy({
     return (
       <>
         <p className="text-sm text-[var(--text-muted)]">
-          Open this link in Safari or Chrome to add NFL Pool to your Home
-          Screen.
+          This in-app browser can&apos;t add the icon. Open this link in{" "}
+          <strong className="text-[var(--text-primary)]">Safari</strong> first
+          (Chrome on Android).
         </p>
         <button type="button" className="btn-primary w-full" onClick={onCopy}>
           {copied ? "Link copied" : "Copy link"}
@@ -31,13 +32,7 @@ export function A2hsCopy({
   }
 
   if (variant === "ios") {
-    return (
-      <p className="text-sm text-[var(--text-muted)]">
-        <strong className="text-[var(--text-primary)]">
-          Share <ShareGlyph /> → Add to Home Screen
-        </strong>
-      </p>
-    );
+    return <A2hsIosHint />;
   }
 
   return (
