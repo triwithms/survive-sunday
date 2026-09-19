@@ -1,5 +1,5 @@
 /**
- * Additive Membership.mirrorFromMembershipId.
+ * Additive Membership pick-backup columns.
  * Preview + production share Neon — never drop leftover columns.
  */
 
@@ -34,19 +34,23 @@ export async function ensurePickMirrorColumn(prisma: SchemaClient) {
   }
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "Membership"
-      ADD COLUMN IF NOT EXISTS "pickBackup" TEXT NOT NULL DEFAULT 'off'
+      ADD COLUMN IF NOT EXISTS "pickBackup" TEXT NOT NULL DEFAULT 'ranked'
+  `);
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Membership"
+      ALTER COLUMN "pickBackup" SET DEFAULT 'ranked'
   `);
   await prisma.$executeRawUnsafe(`
     UPDATE "Membership"
-    SET "pickBackup" = 'mirror'
-    WHERE "mirrorFromMembershipId" IS NOT NULL
-      AND ("pickBackup" IS NULL OR "pickBackup" = 'off')
+    SET "pickBackup" = 'ranked'
+    WHERE "pickBackup" = 'mirror'
+       OR "mirrorFromMembershipId" IS NOT NULL
   `);
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "Membership"
       ADD COLUMN IF NOT EXISTS "autoPickStamps" INTEGER NOT NULL DEFAULT 0
   `);
   console.log(
-    "[ensure-db] Membership.mirrorFromMembershipId + pickBackup + autoPickStamps ready"
+    "[ensure-db] Membership pickBackup default ranked; leftover copy-from migrated"
   );
 }

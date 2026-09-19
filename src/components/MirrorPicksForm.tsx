@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  PICK_BACKUP_MIRROR,
-  type PickBackupMode,
-} from "@/lib/pick-mirror";
+import type { PickBackupMode } from "@/lib/pick-mirror";
 import { MirrorBackupRadios } from "./MirrorBackupRadios";
 
 export type MirrorOption = {
@@ -16,28 +13,19 @@ export type MirrorOption = {
 export function MirrorPicksForm({
   membershipId,
   initialMode,
-  initialSourceId,
-  options,
   saveAsAdmin,
 }: {
   membershipId: string;
   initialMode: PickBackupMode;
-  initialSourceId: string | null;
-  options: MirrorOption[];
   saveAsAdmin?: boolean;
 }) {
   const [mode, setMode] = useState<PickBackupMode>(initialMode);
-  const [sourceId, setSourceId] = useState(initialSourceId ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
-  const dirty = mode !== initialMode || sourceId !== (initialSourceId ?? "");
+  const dirty = mode !== initialMode;
 
   async function save() {
-    if (mode === PICK_BACKUP_MIRROR && !sourceId) {
-      setError("Choose a player to copy from");
-      return;
-    }
     setBusy(true);
     setError("");
     setSaved(false);
@@ -48,18 +36,7 @@ export function MirrorPicksForm({
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          saveAsAdmin
-            ? {
-                membershipId,
-                mode,
-                sourceMembershipId:
-                  mode === PICK_BACKUP_MIRROR ? sourceId || null : null,
-              }
-            : {
-                mode,
-                sourceMembershipId:
-                  mode === PICK_BACKUP_MIRROR ? sourceId || null : null,
-              }
+          saveAsAdmin ? { membershipId, mode } : { mode }
         ),
       });
       const data = (await res.json()) as { error?: string };
@@ -80,26 +57,19 @@ export function MirrorPicksForm({
       <MirrorBackupRadios
         membershipId={membershipId}
         mode={mode}
-        sourceId={sourceId}
-        options={options}
         busy={busy}
         saveAsAdmin={saveAsAdmin}
         onMode={(next) => {
           setMode(next);
           setSaved(false);
         }}
-        onSource={(id) => {
-          setSourceId(id);
-          setSaved(false);
-        }}
       />
       <p className="text-xs text-[var(--text-muted)] break-words">
-        Never overwrites a pick you already made. Copy-from uses that member’s
-        team 30 minutes before lock (Week 1: that pick’s kickoff) and does{" "}
-        <strong>not</strong> stamp 💩. Ranked uses the same{" "}
+        Never overwrites a pick you already made. Ranked auto uses the same{" "}
         <strong>2025 rank #N</strong> list as Pick (1 = strongest), skipping
-        used and bye teams, from 2 minutes before week lock — each use stamps 💩
-        and you cannot win the pool officially.
+        used and bye teams, from about 5 minutes before kickoff or lock — each
+        use stamps 💩 and you cannot win the pool officially. You can still
+        change your own pick until your game kicks off.
       </p>
       {error ? (
         <p className="text-crimson-400 text-sm" role="alert">{error}</p>

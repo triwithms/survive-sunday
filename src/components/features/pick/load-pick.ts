@@ -34,7 +34,7 @@ export async function loadPickPage(searchParams?: {
   });
   if (!weekRef) return null;
 
-  try { await ensureWeekLockedEffects(weekRef.id); }
+  try { await ensureWeekLockedEffects(weekRef.id, { applyBackup: false }); }
   catch (e) { console.error("pick lock effects skipped", e); }
   await syncWeekScoresFromEspn(weekRef.id).catch((e) => {
     console.error("pick espn score sync skipped", e);

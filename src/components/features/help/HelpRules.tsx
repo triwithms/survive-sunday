@@ -1,3 +1,5 @@
+import { HelpMulligan } from "./HelpMulligan";
+
 export function HelpRules() {
   return (
     <section id="rules">
@@ -28,6 +30,7 @@ export function HelpRules() {
           <strong>Eliminated</strong>.
         </li>
       </ul>
+      <HelpMulligan />
     </section>
   );
 }

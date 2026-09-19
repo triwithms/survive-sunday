@@ -1,6 +1,5 @@
 import { isSeatClaimed } from "@/lib/claim-seat";
 import {
-  PICK_BACKUP_MIRROR,
   PICK_BACKUP_RANKED,
   resolvePickBackupMode,
 } from "@/lib/pick-mirror";
@@ -32,10 +31,6 @@ export function backupShortLabel(
     member.mirrorFromMembershipId
   );
   if (mode === PICK_BACKUP_RANKED) return "Ranked";
-  if (mode === PICK_BACKUP_MIRROR) {
-    const nick = (sourceNickname ?? "").trim();
-    return nick ? `Copy ${nick}` : "Copy member";
-  }
   return "Off";
 }
 

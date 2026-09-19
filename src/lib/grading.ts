@@ -332,12 +332,17 @@ export function isWeekLocked(week: {
  * Idempotent: after natural or admin lock, apply missed picks once and
  * auto-grade any FINAL games. Safe on pool / picks / standings / scores / import.
  */
-export async function ensureWeekLockedEffects(weekId: string) {
-  try {
-    const { applyMirrorPicksForWeek } = await import("./pick-mirror-db");
-    await applyMirrorPicksForWeek(weekId);
-  } catch (error) {
-    console.warn("[mirror] apply skipped", error);
+export async function ensureWeekLockedEffects(
+  weekId: string,
+  opts?: { applyBackup?: boolean }
+) {
+  if (opts?.applyBackup !== false) {
+    try {
+      const { applyMirrorPicksForWeek } = await import("./pick-mirror-db");
+      await applyMirrorPicksForWeek(weekId);
+    } catch (error) {
+      console.warn("[mirror] apply skipped", error);
+    }
   }
 
   const week = await prisma.week.findUniqueOrThrow({

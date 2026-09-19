@@ -17,16 +17,14 @@ export type CanonicalLiveSeat = {
   realName: string;
   practiceEmail: string;
   week1Team: string;
-  mirrorFromNickname: string | null;
 };
 
-/** Sister seat — Join-claimable practice email, Week 1 DAL. Mirror Gams later. */
+/** Sister seat — Join-claimable practice email, Week 1 DAL. */
 export const JAJA_SEAT: CanonicalLiveSeat = {
   nickname: "JaJa",
   realName: "Jacquie Gama",
   practiceEmail: `jaja${DEMO_EMAIL_SUFFIX}`,
   week1Team: "DAL",
-  mirrorFromNickname: "Gams",
 };
 
 export const CANONICAL_LIVE_SEATS: CanonicalLiveSeat[] = [JAJA_SEAT];
@@ -73,8 +71,7 @@ function nickKey(value: string): string {
 /**
  * Create missing live seats (JaJa) with a Join-claimable practice email,
  * import the official Week 1 team (DAL) if she still has no pick — or
- * correct a leftover imported/mirrored KC — and wire “copy from Gams
- * if no pick within 30 min” for later weeks. Idempotent. Never resets
+ * correct a leftover imported/mirrored KC. Idempotent. Never resets
  * the pool or other members’ picks. Does not stamp 💩.
  */
 export async function ensureCanonicalLiveSeats(
@@ -183,6 +180,7 @@ async function ensureOneLiveSeat(
         role: "member",
         status: "undefeated",
         mulliganRemaining: true,
+        pickBackup: "ranked",
       },
       include: { user: true },
     });
@@ -197,35 +195,6 @@ async function ensureOneLiveSeat(
     });
   } catch (error) {
     console.warn("[live-roster] player role grant skipped", error);
-  }
-
-  if (seat.mirrorFromNickname) {
-    const source = await db.membership.findFirst({
-      where: {
-        poolId,
-        role: { not: "admin" },
-        nickname: { equals: seat.mirrorFromNickname, mode: "insensitive" },
-      },
-      select: { id: true },
-    });
-    if (source && membership.mirrorFromMembershipId !== source.id) {
-      const current = membership.mirrorFromMembershipId;
-      if (!current) {
-        await db.membership.update({
-          where: { id: membership.id },
-          data: {
-            pickBackup: "mirror",
-            mirrorFromMembershipId: source.id,
-          },
-        });
-        membership = {
-          ...membership,
-          pickBackup: "mirror",
-          mirrorFromMembershipId: source.id,
-        };
-        result.mirrorSet = true;
-      }
-    }
   }
 
   const week1 = await db.week.findUnique({
@@ -291,7 +260,6 @@ async function ensureOneLiveSeat(
             ? seat.practiceEmail
             : "(practice)",
           week1Team: seat.week1Team,
-          mirrorFromNickname: seat.mirrorFromNickname,
         }),
       },
     });

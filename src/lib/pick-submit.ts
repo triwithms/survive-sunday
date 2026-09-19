@@ -22,7 +22,7 @@ export async function submitPickForMembership(input: {
     return { ok: false, error: resolved.error, status: resolved.status };
   }
 
-  await ensureWeekLockedEffects(resolved.week.id);
+  await ensureWeekLockedEffects(resolved.week.id, { applyBackup: false });
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: resolved.week.id },
     include: { games: true },

@@ -11,6 +11,14 @@
     {
       "path": "/api/cron/ensure-week",
       "schedule": "45 23 * * *"
+    },
+    {
+      "path": "/api/cron/pick-backup",
+      "schedule": "55 16 * * *"
+    },
+    {
+      "path": "/api/cron/pick-backup",
+      "schedule": "10 0 * * *"
     }
   ]
 }
