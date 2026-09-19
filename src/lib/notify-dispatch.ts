@@ -9,7 +9,12 @@ import { planNotice, type ChannelPlan } from "./notify-plan";
 import type { NotifyCategory, NotifyPerson } from "./notify-channels";
 import { hydrateNotifyTarget } from "./notify-pref-db";
 import type { NotifyChannel } from "./notify-pref";
-import { withGameSmsFooter } from "./notify-sms-footer";
+import {
+  withGameEmailDocument,
+  withGameEmailHtml,
+  withGameEmailText,
+  withGameSmsFooter,
+} from "./notify-game-footer";
 
 export type DispatchTarget = NotifyPerson & { userId: string };
 
@@ -68,14 +73,21 @@ async function sendPlanned(
 ) {
   if (!plan.dest) return false;
   if (plan.channel === "email") {
+    const game = category === "game";
+    const text = game ? withGameEmailText(content.text) : content.text;
+    const html = content.html
+      ? game
+        ? withGameEmailDocument(content.html)
+        : content.html
+      : stadiumEmailHtml({
+          heading: content.subject,
+          bodyHtml: game ? withGameEmailHtml(content.htmlBody) : content.htmlBody,
+        });
     const result = await sendResendMessage({
       to: plan.dest,
       subject: content.subject,
-      text: content.text,
-      html: content.html ?? stadiumEmailHtml({
-        heading: content.subject,
-        bodyHtml: content.htmlBody,
-      }),
+      text,
+      html,
     });
     if (!result.ok) console.warn("[notify] email failed", result.error);
     return result.ok;

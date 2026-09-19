@@ -28,7 +28,13 @@ import {
   isMissingNotificationSchema,
   PREFS_LOAD_ERROR,
 } from "../src/lib/notification-schema";
-import { GAME_SMS_FOOTER, withGameSmsFooter } from "../src/lib/notify-sms-footer";
+import {
+  GAME_EMAIL_FOOTER,
+  GAME_SMS_FOOTER,
+  withGameEmailHtml,
+  withGameEmailText,
+  withGameSmsFooter,
+} from "../src/lib/notify-game-footer";
 
 assert.equal(DEFAULT_NOTIFICATION_PREFS.missingPickReminder, "both");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.pickConfirmed, "email");
@@ -157,7 +163,11 @@ const miss = missingPickCopy({
 assert.match(miss.smsBody ?? "", /no Week 1 pick/);
 assert.match(withGameSmsFooter(miss.smsBody ?? ""), /spam\/junk/);
 assert.match(GAME_SMS_FOOTER, /Not junk/);
-console.log("PASS  copy + SMS footer");
+assert.match(withGameEmailText(pick.text), /spam or junk/);
+assert.match(withGameEmailHtml("<p>hi</p>"), /font-size:12px/);
+assert.match(GAME_EMAIL_FOOTER, /Not junk/);
+assert.doesNotMatch(GAME_EMAIL_FOOTER, /If you also get email/);
+console.log("PASS  copy + GAME email/SMS footer");
 
 assert.equal(isMissingNotificationSchema({ code: "P2021" }), true);
 assert.match(PREFS_LOAD_ERROR, /defaults/i);
@@ -167,6 +177,7 @@ const helpAccount = readFileSync("src/components/features/help/HelpAccount.tsx",
 assert.match(helpAccount, /Account → Notification preferences/);
 assert.match(helpAccount, /Master On or Off/);
 assert.match(helpAccount, /Email, SMS, both, or/);
+assert.match(helpAccount, /spam\/junk/);
 assert.doesNotMatch(helpAccount, /coming soon|Pick backup|pick backup/i);
 
 const page = readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8");
