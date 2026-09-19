@@ -49,7 +49,7 @@ export function rosterRowSubtitle(
 export function rosterMatches(member: RosterMember, query: string): boolean {
   const q = query.trim().toLowerCase();
   if (!q) return true;
-  return [member.nickname, member.realName, member.email]
+  return [member.nickname, member.realName, member.email, member.phoneE164]
     .filter((v): v is string => Boolean(v && v.trim()))
     .some((v) => v.toLowerCase().includes(q));
 }

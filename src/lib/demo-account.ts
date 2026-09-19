@@ -12,12 +12,6 @@ const DEMO_PROFILES: Record<
     realName: "Robert Gama",
     role: "member",
   },
-  "admin@survivesunday.demo": {
-    // INTERNAL seed nickname (same Administrator role). Seed/DB rename is out of scope.
-    nickname: "Commissioner",
-    realName: "Robert Gama",
-    role: "admin",
-  },
   "black-cobra@survivesunday.demo": {
     nickname: "Black Cobra",
     realName: "Justin John",
@@ -90,6 +84,8 @@ function profileFor(email: string) {
 export async function ensureDemoAccount(email: string, password: string): Promise<void> {
   const normalized = email.trim().toLowerCase();
   if (!normalized.endsWith("@survivesunday.demo")) return;
+  // No separate Commissioner person — Gams is Player + Administrator.
+  if (normalized === "admin@survivesunday.demo") return;
 
   const poolEarly = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
   if (poolEarly && isLiveMode(poolEarly.mode)) return;

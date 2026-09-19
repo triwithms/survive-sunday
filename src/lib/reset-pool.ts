@@ -45,6 +45,7 @@ export async function previewPoolReset(
   const membersKept: ResetPoolPreview["membersKept"] = [];
 
   for (const m of members) {
+    if (m.role === "admin") continue;
     const email = m.user.email ?? "";
     const isActor = Boolean(actorUserId && m.userId === actorUserId);
     const dropDemoMember =

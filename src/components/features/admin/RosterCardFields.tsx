@@ -29,7 +29,7 @@ export function RosterCardFields({
         />
       </label>
       <label className="block text-sm">
-        <span className="text-[var(--text-muted)]">Real name</span>
+        <span className="text-[var(--text-muted)]">Full name</span>
         <input
           value={realName}
           onChange={(e) => onRealName(e.target.value)}

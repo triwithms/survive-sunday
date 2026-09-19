@@ -170,6 +170,10 @@ input[type="checkbox"] {
   background: transparent;
   border: none;
 }
+input:disabled, textarea:disabled, select:disabled {
+  opacity: 0.55;
+  color: var(--text-muted);
+}
 input:focus, textarea:focus, select:focus {
   outline: 2px solid var(--gold-400);
   outline-offset: 1px;

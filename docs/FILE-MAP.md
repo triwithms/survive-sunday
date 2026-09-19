@@ -29,7 +29,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Standings** (NFL W-L) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
 | **Videos** (deep link only) | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Not a bottom tab; clips also sit in Scores/Schedule Details. |
 | **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as My pick / Selections / Scores; future weeks stay browsable. |
-| **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · Comms · System** (`AdminNav.tsx`). `/admin` opens Users. Users: find + expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — set password / copy text / Join; no Who-are-you list. Pool: mulligan, **Make administrator**, **Hand the pool**. Comms: Join links + `HomeScreenPanel` (remind / don’t ask). System: census + enter pick; week tools / login / reset stay closed; readable `AuditLogList`. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
+| **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · Comms · System** (`AdminNav.tsx`). `/admin` opens Users. Users: find + expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — edit nickname / full name / email / cell (`RosterContactFields`); set password / copy text / Join; notification toggles stay disabled (`RosterNotifySoon`). No Who-are-you list. Pool: mulligan, **Make administrator**, **Hand the pool**. Comms: Join links + `HomeScreenPanel` (remind / don’t ask). System: census + enter pick; week tools / login / reset stay closed; readable `AuditLogList`. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
 
 ## Shared buttons and cards
 
@@ -75,7 +75,7 @@ Same role. No new role. User-facing copy says **Admin** (screen/nav) or **Admini
 - Components: `CommissionerAccountPanel`, `CommissionerLoginForm`, `CommissionerSignOut`, `TransferCommissionerForm`
 - Helpers / keys: `poolHasRealCommissioner`, `hasRealCommissioner`, `CLAIM_ERRORS.commissionerSeat` / `alreadyCommissioner`, `commissionerSeat` vars
 - Audit actions: `commissioner_account_set`, `transfer_commissioner`, `newCommissionerStaysOnBoard`
-- Demo seed nickname `Commissioner` in `src/lib/demo-account.ts` (seed/DB out of scope)
+- Demo seed no longer creates a Commissioner person (`demo-account.ts` / `prisma/seed.ts`). Users/Pool people lists hide spectator `role=admin` seats. Gams is Player + Administrator.
 
 ## CRITICAL — never run these from a Vercel build
 

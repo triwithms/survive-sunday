@@ -39,6 +39,7 @@ function member(partial: Partial<RosterMember>): RosterMember {
     status: "active",
     role: "member",
     email: "paul@example.com",
+    phoneE164: null,
     mirrorFromMembershipId: null,
     pickBackup: null,
     ...partial,
@@ -106,6 +107,9 @@ function main() {
   assert.match(panel, /SetMemberPasswordForm/);
   assert.match(panel, /embedded/);
   assert.match(panel, /MirrorPicksForm/);
+  assert.match(panel, /RosterContactFields/);
+  assert.match(panel, /RosterNotifySoon/);
+  assert.match(panel, /Save this person/);
 
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
     scripts: { build: string };

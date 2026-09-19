@@ -7,6 +7,7 @@ export type RosterMember = {
   status: string;
   role: string;
   email: string | null;
+  phoneE164: string | null;
   mirrorFromMembershipId: string | null;
   pickBackup: string | null;
 };
