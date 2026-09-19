@@ -34,5 +34,4 @@ for (const [path, svg, size] of jobs) {
 
 const ico = await pngToIco([png(anySvg, 16), png(anySvg, 32)]);
 writeFileSync("src/app/favicon.ico", ico);
-writeFileSync("public/favicon.ico", ico);
-console.log("favicon.ico");
+console.log("src/app/favicon.ico");
