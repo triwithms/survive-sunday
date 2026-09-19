@@ -11,7 +11,7 @@ export function AdminNav() {
       <p className="text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">
         Admin
       </p>
-      <div className="grid grid-cols-4 gap-1">
+      <div className="grid grid-cols-3 gap-1">
         {ADMIN_TABS.map((tab) => {
           const active = tab.match(path);
           const className = [

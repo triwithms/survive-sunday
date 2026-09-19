@@ -22,8 +22,8 @@ export function EnterPickForm({ data }: { data: EnterPickData }) {
       <div>
         <h2 className="font-semibold">Enter a friend’s pick</h2>
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          They called or texted. Nickname, week, unused team. Saved through
-          the same Import path as CSV.
+          They called or texted. Current or past weeks only. Next week
+          opens after their own game starts and they have a pick.
         </p>
       </div>
       {f.saved ? (

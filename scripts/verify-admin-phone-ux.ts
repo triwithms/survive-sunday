@@ -1,5 +1,5 @@
 /**
- * Admin phone UX: four tabs, find user, A2HS on Comms,
+ * Admin phone UX: three tabs, find user, Add user,
  * danger closed on System. No Demo / Who-are-you on Admin screens.
  *
  *   npx tsx scripts/verify-admin-phone-ux.ts
@@ -30,11 +30,11 @@ function main() {
 
   assert.deepEqual(
     ADMIN_TABS.map((t) => t.label),
-    ["Users", "Pool", "Comms", "System"]
+    ["Users", "Pool", "System"]
   );
 
   const nav = readFileSync(`${dir}/AdminNav.tsx`, "utf8");
-  assert.match(nav, /grid-cols-4/);
+  assert.match(nav, /grid-cols-3/);
   assert.match(nav, /min-h-11/);
   assert.match(nav, /whitespace-nowrap/);
   assert.doesNotMatch(nav, /overflow-x-auto/);
@@ -49,6 +49,7 @@ function main() {
   assert.match(fields, /lockMember \? null/);
 
   const users = readFileSync(`${dir}/UsersScreen.tsx`, "utf8");
+  assert.match(users, /AddUserForm/);
   assert.doesNotMatch(users, /Who are you/i);
   assert.doesNotMatch(users, /AdminRolesPanel/);
   assert.doesNotMatch(users, /\bDemo\b/);
@@ -59,18 +60,15 @@ function main() {
   assert.match(pool, /Make administrator/);
   assert.match(pool, /Hand the pool/);
 
-  const comms = readFileSync(`${dir}/CommsScreen.tsx`, "utf8");
-  assert.match(comms, /HomeScreenPanel/);
-  assert.match(comms, /PersonalInvitePanel/);
-
-  const a2hs = readFileSync(`${dir}/HomeScreenPanel.tsx`, "utf8");
-  assert.match(a2hs, /Remind this phone/);
-  assert.match(a2hs, /Don’t ask on this phone/);
-  assert.match(a2hs, /home-screen-admin/);
-
   const system = readFileSync(`${dir}/SystemScreen.tsx`, "utf8");
   assert.match(system, /system-danger/);
   assert.match(system, /ResetPoolPanel/);
+  assert.match(system, /EnterPickForm/);
+  assert.doesNotMatch(system, /PickCensusPanel/);
+  assert.doesNotMatch(system, /AdminLockPanel/);
+  assert.doesNotMatch(system, /AdminGradePanel/);
+  assert.doesNotMatch(system, /CommissionerAccountPanel/);
+  assert.doesNotMatch(system, /Unlock \(testing\)/);
   assert.doesNotMatch(system, /OpsPointers/);
   assert.doesNotMatch(system, /\bDemo\b/);
 
@@ -107,7 +105,7 @@ function main() {
   assert.equal(pkg.scripts.build, "next build");
   assert.doesNotMatch(pkg.scripts.build, /ensure-production-db/);
 
-  console.log("PASS  Admin phone UX: 4 tabs, find, A2HS, closed danger");
+  console.log("PASS  Admin phone UX: 3 tabs, find, Add user, closed danger");
 }
 
 main();

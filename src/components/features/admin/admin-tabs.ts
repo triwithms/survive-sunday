@@ -11,9 +11,11 @@ export const ADMIN_TABS: AdminTab[] = [
     href: "/admin/users",
     label: "Users",
     name: "Users",
-    blurb: "Find a friend, set a password, copy Join.",
+    blurb: "Add a friend, edit roster, password, Join.",
     match: (path) =>
-      path === "/admin/users" || path.startsWith("/admin/roster"),
+      path === "/admin/users" ||
+      path.startsWith("/admin/roster") ||
+      path.startsWith("/admin/comms"),
   },
   {
     href: "/admin/config",
@@ -23,17 +25,10 @@ export const ADMIN_TABS: AdminTab[] = [
     match: (path) => path.startsWith("/admin/config"),
   },
   {
-    href: "/admin/comms",
-    label: "Comms",
-    name: "Comms",
-    blurb: "Join links, Home Screen ask, pool notes.",
-    match: (path) => path.startsWith("/admin/comms"),
-  },
-  {
     href: "/admin/system",
     label: "System",
     name: "System",
-    blurb: "This week’s picks. Danger stays closed.",
+    blurb: "Enter a friend’s pick. Reset stays closed.",
     match: (path) =>
       path.startsWith("/admin/system") || path.startsWith("/admin/import"),
   },

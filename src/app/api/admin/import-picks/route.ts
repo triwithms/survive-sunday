@@ -44,6 +44,23 @@ export async function POST(req: Request) {
 
   const body = await req.json();
   const weekNumber = Number(body.weekNumber ?? 1);
+  if (body.enterPick === true) {
+    const { assertEnterPickWeek } = await import("@/lib/enter-pick-week-db");
+    const nick =
+      Array.isArray(body.rows) && body.rows[0]?.nickname
+        ? String(body.rows[0].nickname)
+        : "";
+    const check = await assertEnterPickWeek({
+      poolId: admin.membership.poolId,
+      mode: admin.membership.pool.mode,
+      storedCurrentWeek: admin.membership.pool.currentWeek,
+      weekNumber,
+      nickname: nick,
+    });
+    if (!check.ok) {
+      return NextResponse.json({ error: check.error }, { status: 400 });
+    }
+  }
   const overrideReuse = Boolean(body.overrideReuse);
   const dryRun = Boolean(body.dryRun);
   let rows: ImportRow[] = body.rows || [];

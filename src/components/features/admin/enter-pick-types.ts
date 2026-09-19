@@ -5,6 +5,7 @@ export type EnterPickMember = {
   status: string;
   usedTeams: string[];
   picks: { weekNumber: number; teamAbbr: string }[];
+  allowedWeeks: number[];
 };
 
 export type EnterPickTeam = { abbr: string; name: string };

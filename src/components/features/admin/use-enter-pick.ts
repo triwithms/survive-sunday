@@ -2,7 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { unusedTeamsForWeek, pickForWeek } from "./enter-pick-options";
+import {
+  unusedTeamsForWeek,
+  pickForWeek,
+  snapEnterPickWeek,
+  weeksForMember,
+} from "./enter-pick-options";
 import type { EnterPickData, EnterPickSaved } from "./enter-pick-types";
 import { importErrorMessage } from "./import-picks-types";
 
@@ -16,12 +21,22 @@ export function useEnterPick(data: EnterPickData) {
   const [saved, setSaved] = useState<EnterPickSaved | null>(null);
 
   const member = data.members.find((m) => m.id === memberId);
-  const week = data.weeks.find((w) => w.number === weekNumber);
+  const weeks = weeksForMember(data.weeks, member);
+  const week = weeks.find((w) => w.number === weekNumber);
   const teams = useMemo(
     () => unusedTeamsForWeek({ weekTeams: week?.teams ?? [], member, weekNumber }),
     [week, member, weekNumber]
   );
   const current = pickForWeek(member, weekNumber);
+
+  useEffect(() => {
+    const next = snapEnterPickWeek(
+      weekNumber,
+      member?.allowedWeeks ?? [],
+      data.currentWeek
+    );
+    if (next !== weekNumber) setWeekNumber(next);
+  }, [memberId, member?.allowedWeeks, data.currentWeek, weekNumber]);
 
   useEffect(() => {
     const allowed = new Set(teams.map((t) => t.abbr));
@@ -37,6 +52,10 @@ export function useEnterPick(data: EnterPickData) {
       setErr("Pick the friend who called.");
       return;
     }
+    if (!member.allowedWeeks.includes(weekNumber)) {
+      setErr("That week is not open for this friend yet.");
+      return;
+    }
     if (!teamAbbr) {
       setErr("Pick an unused team playing this week.");
       return;
@@ -47,6 +66,7 @@ export function useEnterPick(data: EnterPickData) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         weekNumber,
+        enterPick: true,
         rows: [{ nickname: member.nickname, teamAbbr }],
       }),
     });
@@ -68,6 +88,6 @@ export function useEnterPick(data: EnterPickData) {
   return {
     memberId, setMemberId, weekNumber, setWeekNumber, teamAbbr, setTeamAbbr,
     busy, err, saved, setSaved, member, teams, current, save, members: data.members,
-    weeks: data.weeks,
+    weeks,
   };
 }
