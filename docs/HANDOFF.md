@@ -366,6 +366,10 @@ First real commissioner login: Admin → System → **Your commissioner login** 
 | **Pool notes & nudge** | Send a short email note to friends who left **Pool notes** on. **Nudge missing picks** emails/texts friends who still have no pick (and left that reminder on). Uses Resend / optional Twilio. |
 | **Share Board / Scores** | Not on Admin. Press and hold the Board or Scores title, or triple-tap the week label. No Share button. Full long picture always, or a shorter / split option. **Shipped** ([PR #45](https://github.com/triwithms/survive-sunday/pull/45)). |
 
+### Admin Users UX
+
+Admin → **Users** is a phone-first roster (~390px): one compact row per friend (nickname, Joined / Unclaimed, backup). Tap Edit to open that friend only — opening another closes the first. Unclaimed rows have **Invite** and **Copy Join** (44px; toast on copy). Joined friends get the password form inside Edit (suggest + copy-ready text; we do not email the password).
+
 **Not on Admin yet (other open PRs):** none at the moment. Player-detail pages and head coach on team pages ship with this merge.
 
 ---

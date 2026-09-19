@@ -2,14 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MirrorPicksForm } from "@/components/MirrorPicksForm";
-import { InviteLinkCopy } from "@/components/InviteLinkCopy";
-import { Button } from "@/components/ui";
-import { isSeatClaimed } from "@/lib/claim-seat";
 import { resolvePickBackupMode } from "@/lib/pick-mirror";
 import { postRosterSave } from "./post-roster-save";
-import { RosterCardFields } from "./RosterCardFields";
 import { RosterRow } from "./RosterRow";
+import { UserEditPanel } from "./UserEditPanel";
 import type { RosterMember, RosterMirrorOption } from "./roster-types";
 
 type Props = {
@@ -41,6 +37,9 @@ export function RosterCard(p: Props) {
   const dirty =
     nickname.trim() !== member.nickname ||
     realName.trim() !== (member.realName ?? "");
+  const sourceNick = p.mirrorOptions.find(
+    (o) => o.id === member.mirrorFromMembershipId
+  )?.nickname;
 
   async function save() {
     p.onBusy(true); p.onMsg(""); p.onErr("");
@@ -57,34 +56,26 @@ export function RosterCard(p: Props) {
   }
 
   return (
-    <RosterRow member={member} open={p.open} onToggle={p.onToggle}>
-      {member.email ? (
-        <p className="text-xs text-[var(--text-muted)] break-all">{member.email}</p>
-      ) : null}
-      {member.role !== "admin" ? (
-        <InviteLinkCopy
-          membershipId={member.id}
-          nickname={member.nickname}
-          claimed={isSeatClaimed(member.email)}
-          rosterNicknames={p.rosterNicknames}
-        />
-      ) : null}
-      <RosterCardFields
-        nickname={nickname} realName={realName} disabled={p.disabled || p.busy}
-        onNickname={setNickname} onRealName={setRealName}
+    <RosterRow
+      member={member}
+      open={p.open}
+      onToggle={p.onToggle}
+      backupSourceNickname={sourceNick}
+      rosterNicknames={p.rosterNicknames}
+    >
+      <UserEditPanel
+        member={member}
+        nickname={nickname}
+        realName={realName}
+        disabled={p.disabled || p.busy}
+        busy={p.busy}
+        dirty={dirty}
+        initialMode={initialMode}
+        mirrorOptions={p.mirrorOptions}
+        onNickname={setNickname}
+        onRealName={setRealName}
+        onSave={() => void save()}
       />
-      <Button className="w-full" disabled={p.disabled || p.busy || !dirty} onClick={() => void save()}>
-        {p.busy ? "Saving…" : "Save this person"}
-      </Button>
-      {member.role !== "admin" ? (
-        <MirrorPicksForm
-          membershipId={member.id}
-          initialMode={initialMode}
-          initialSourceId={member.mirrorFromMembershipId}
-          options={p.mirrorOptions}
-          saveAsAdmin
-        />
-      ) : null}
     </RosterRow>
   );
 }
