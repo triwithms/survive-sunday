@@ -240,8 +240,72 @@ assert.match(helmetReadme, /no white rounded plates/);
 assert.equal(helmetReadme.includes("ne.png and cle.png are the same marks"), false);
 const neFile = path.join(process.cwd(), "public/helmets/ne.png");
 const cleFile = path.join(process.cwd(), "public/helmets/cle.png");
-assert.ok(pngRgbaAt(neFile, 250, 250)[3] > 200, "NE mark is opaque at centre");
-assert.ok(pngRgbaAt(cleFile, 250, 250)[3] > 200, "CLE mark is opaque at centre");
+
+function isNearWhiteOpaque(
+  px: [number, number, number, number]
+): boolean {
+  const [r, g, b, a] = px;
+  return a >= 180 && r >= 230 && g >= 230 && b >= 230;
+}
+
+function assertTransparent(
+  file: string,
+  x: number,
+  y: number,
+  label: string
+): void {
+  const px = pngRgbaAt(file, x, y);
+  assert.equal(px[3], 0, `${label} @ (${x},${y}) is transparent`);
+  assert.equal(isNearWhiteOpaque(px), false, `${label} @ (${x},${y}) is not a white plate`);
+}
+
+/** #124 restored ESPN marks whose corners/(40,40) are clear but a thick
+ *  white sticker stroke still reads as a rounded plate at 44px Scores.
+ *  These samples sit in that stroke on the pre-fix files. */
+assertTransparent(neFile, 25, 200, "NE plate");
+assertTransparent(neFile, 300, 140, "NE plate");
+assertTransparent(cleFile, 30, 200, "CLE plate");
+assertTransparent(cleFile, 25, 200, "CLE plate");
+const neMark = pngRgbaAt(neFile, 320, 220);
+assert.ok(neMark[3] > 200, "NE mark is opaque at the helmet");
+assert.equal(isNearWhiteOpaque(neMark), false, "NE mark is not a white plate");
+assert.ok(neMark[2] > neMark[0], "NE mark is navy");
+const cleMark = pngRgbaAt(cleFile, 250, 250);
+assert.ok(cleMark[3] > 200, "CLE mark is opaque at centre");
+assert.equal(isNearWhiteOpaque(cleMark), false, "CLE mark is not a white plate");
+assert.ok(cleMark[0] > 200 && cleMark[1] < 80, "CLE mark is orange");
+
+/** Phone-width Scores (44px): mapped plate samples stay clear. */
+function sampleAtDisplay(
+  file: string,
+  sx: number,
+  sy: number,
+  display = 44,
+  source = 500
+): [number, number, number, number] {
+  const x = Math.min(source - 1, Math.round((sx + 0.5) * (source / display) - 0.5));
+  const y = Math.min(source - 1, Math.round((sy + 0.5) * (source / display) - 0.5));
+  return pngRgbaAt(file, x, y);
+}
+for (const [file, label] of [
+  [neFile, "NE"],
+  [cleFile, "CLE"],
+] as const) {
+  for (const [dx, dy] of [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+    [41, 2],
+    [2, 41],
+    [43, 43],
+  ] as const) {
+    assert.equal(
+      isNearWhiteOpaque(sampleAtDisplay(file, dx, dy)),
+      false,
+      `${label} 44px Scores corner (${dx},${dy}) is not a white plate`
+    );
+  }
+}
 
 assert.equal(TEAM_LOGO_SIZE.compact, 44);
 assert.equal(TEAM_LOGO_SIZE.row, 48);
@@ -259,6 +323,8 @@ assert.match(teamLogoSrc, /@\/lib\/team-helmets/);
 assert.match(teamLogoSrc, /object-contain/);
 assert.match(teamLogoSrc, /bg-stadium-800/);
 assert.equal(teamLogoSrc.includes("bg-white"), false);
+assert.equal(teamLogoSrc.includes("bg-gray"), false);
+assert.doesNotMatch(teamLogoSrc, /className="[^"]*bg-white/);
 assert.equal(teamLogoSrc.includes("opacity-0"), false);
 assert.equal(teamLogoSrc.includes("espncdn"), false);
 assert.equal(teamLogoSrc.includes("espnTeamLogoUrl"), false);
