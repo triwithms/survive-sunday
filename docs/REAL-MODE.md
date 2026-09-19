@@ -16,19 +16,9 @@ Home is **Who are you?** from the live roster, then Join or Sign in. Unclaimed s
 
 ## Administrator login is READY
 
-The first real administrator account is **not** `admin@survivesunday.demo`. You create it yourself on Admin:
+There is no **Your administrator login** panel on Admin. Gams is Player + Administrator. Sign in with that real email, then switch **Admin tools** from **Account**.
 
-1. Open **Admin → System**.
-2. Scroll to **Your administrator login**.
-3. Enter **your real email** and a new password (at least 6 characters).
-4. Tap **Save real administrator login**.
-5. Tap **Sign out and use the new login**.
-6. Open **Sign in** and use that real email and password.
-7. Confirm you still see **Admin** in the header. You should see a **Ready** chip on the login card.
-
-**After that, administrator login is ready.** Tell yourself: use the real email, not `admin@survivesunday.demo`.
-
-If you have not saved a real email yet, you can still sign in once with the practice administrator via **Sign in** so you can finish this step. Friends never see that password.
+Friends never see a practice administrator password.
 
 ---
 

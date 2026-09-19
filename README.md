@@ -37,7 +37,7 @@ npm install && npx prisma db push && npm run seed && npm run build
 
 The pool is **live-only**. There is no Demo↔Real switch on Admin. Friends see **Who are you?** from the live roster, then Join (own email + password) or Sign in. Unclaimed seats still use practice `@survivesunday.demo` emails for Join claiming — that is seat claiming, not a Demo mode.
 
-**First real administrator login:** Admin → **Your administrator login** → your email + password → sign out → Sign in with that email.
+**First real administrator login:** Sign in as Gams (Player + Administrator). Switch **Admin tools** from Account.
 
 Week 1 is the current board week. Week 2 stays on the schedule. Playbook: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
 

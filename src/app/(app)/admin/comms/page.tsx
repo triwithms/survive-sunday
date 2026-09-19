@@ -1,14 +1,8 @@
-import {
-  AdminDenied,
-  CommsScreen,
-  loadCommsPage,
-} from "@/components/features/admin";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default async function AdminCommsPage() {
-  const data = await loadCommsPage();
-  if (!data.ok) return <AdminDenied isDemo={data.isDemo} />;
-  return <CommsScreen {...data.props} />;
+export default function AdminCommsPage() {
+  redirect("/admin/users");
 }

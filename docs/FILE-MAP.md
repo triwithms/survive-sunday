@@ -29,7 +29,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Standings** (NFL W-L) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
 | **Videos** (deep link only) | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Not a bottom tab; clips also sit in Scores/Schedule Details. |
 | **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as My pick / Selections / Scores; future weeks stay browsable. |
-| **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · Comms · System** (`AdminNav.tsx`). `/admin` opens Users. Users: find + expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — edit nickname / full name / email / cell (`RosterContactFields`); set password / copy text / Join; notification toggles stay disabled (`RosterNotifySoon`). No Who-are-you list. Pool: mulligan, **Make administrator**, **Hand the pool**. Comms: Join links + `HomeScreenPanel` (remind / don’t ask). System: census + enter pick; week tools / login / reset stay closed; readable `AuditLogList`. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
+| **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · System** (`AdminNav.tsx`). `/admin` opens Users. `/admin/comms` redirects to Users. Users: **Add user** (`AddUserForm`) + find/expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — edit nickname / full name / email / cell (`RosterContactFields`); set password / copy text / Join; notification toggles stay disabled (`RosterNotifySoon`). No Who-are-you list. No Commissioner person. Pool: mulligan, **Make administrator**, **Hand the pool**. System: **Enter a friend’s pick** for current/past weeks (next week only after that friend’s own game starts + valid pick — `src/lib/enter-pick-week.ts`). Reset stays closed. No census / lock / grade / administrator-login panel. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
 
 ## Shared buttons and cards
 
@@ -45,6 +45,7 @@ Team logos: `src/components/TeamLogo.tsx` + `src/lib/espn-teams.ts` / `src/lib/t
 |------|------|
 | Submit pick | `src/app/actions/submit-pick.ts` |
 | Issue invite | `src/app/actions/issue-invite-token.ts` |
+| Add user | `src/app/api/admin/add-user/route.ts` + `src/lib/add-user.ts` |
 
 ## Thin route pages
 
@@ -59,7 +60,7 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | Standings (NFL) | `src/app/(app)/nfl/page.tsx` |
 | Videos | `src/app/(app)/videos/page.tsx` |
 | Schedule | `src/app/(app)/schedule/page.tsx` |
-| Admin hub | `src/app/(app)/admin/page.tsx` redirects to Users. Tabs: Users `/admin/users`, Pool `/admin/config`, Comms `/admin/comms`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/import` stays. |
+| Admin hub | `src/app/(app)/admin/page.tsx` redirects to Users. Tabs: Users `/admin/users`, Pool `/admin/config`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/comms` → Users, `/admin/import` stays. |
 
 Also exist (same thin-page pattern): Account, Admin, Team.
 

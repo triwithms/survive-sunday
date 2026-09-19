@@ -1,12 +1,30 @@
 /**
- * Unused-team list for commissioner phone pick entry (no DB).
+ * Unused-team list + week options for Admin enter-pick (no DB).
  *
  *   npx tsx scripts/verify-enter-pick.ts
  */
+import assert from "node:assert/strict";
 import { unusedTeamsForWeek, pickForWeek } from "../src/components/features/admin/enter-pick-options";
+import { allowedEnterPickWeeks } from "../src/lib/enter-pick-week";
 
-function assert(cond: unknown, msg: string): asserts cond {
-  if (!cond) throw new Error(msg);
+function kick(hoursAgo: number) {
+  return new Date(Date.now() - hoursAgo * 3600 * 1000);
+}
+
+function week(number: number, locked: boolean, started: boolean) {
+  return {
+    number,
+    locked,
+    games: [
+      {
+        id: `w${number}-1`,
+        awayAbbr: "DET",
+        homeAbbr: "CHI",
+        status: started ? "live" : "scheduled",
+        kickoff: started ? kick(2) : new Date(Date.now() + 86400000),
+      },
+    ],
+  };
 }
 
 function main() {
@@ -20,6 +38,7 @@ function main() {
       { weekNumber: 1, teamAbbr: "DET" },
       { weekNumber: 2, teamAbbr: "PHI" },
     ],
+    allowedWeeks: [1, 2],
   };
   const week2 = [
     { abbr: "PHI", name: "PHI Eagles vs KC" },
@@ -33,22 +52,45 @@ function main() {
     weekNumber: 2,
   });
   const abbrs = unused.map((t) => t.abbr).join(",");
-  assert(abbrs.includes("PHI"), "current week pick stays selectable");
-  assert(abbrs.includes("KC") && abbrs.includes("BUF"), "fresh teams");
-  assert(!abbrs.includes("DET"), "week 1 team is used");
-  assert(pickForWeek(gams, 2) === "PHI", "current pick");
+  assert.ok(abbrs.includes("PHI"), "current week pick stays selectable");
+  assert.ok(abbrs.includes("KC") && abbrs.includes("BUF"), "fresh teams");
+  assert.ok(!abbrs.includes("DET"), "week 1 team is used");
+  assert.equal(pickForWeek(gams, 2), "PHI");
 
-  const missed = {
-    ...gams,
-    picks: [{ weekNumber: 1, teamAbbr: "MISS" }],
-    usedTeams: [],
-  };
   const afterMiss = unusedTeamsForWeek({
     weekTeams: week2,
-    member: missed,
+    member: {
+      ...gams,
+      picks: [{ weekNumber: 1, teamAbbr: "MISS" }],
+      usedTeams: [],
+    },
     weekNumber: 2,
   });
-  assert(afterMiss.some((t) => t.abbr === "DET"), "MISS is not a used team");
+  assert.ok(afterMiss.some((t) => t.abbr === "DET"), "MISS is not a used team");
+
+  const weeks = [week(1, true, true), week(2, false, false), week(3, false, false), week(5, false, false)];
+  const currentOpen = allowedEnterPickWeeks({
+    currentWeek: 2,
+    weeks,
+    member: { picks: [{ weekNumber: 2, teamAbbr: "PHI", source: "user" }] },
+  });
+  assert.deepEqual(currentOpen, [1, 2], "no next week while own game is pending");
+
+  const unlocked = allowedEnterPickWeeks({
+    currentWeek: 2,
+    weeks: [week(1, true, true), week(2, false, true), week(3, false, false), week(5, false, false)],
+    member: { picks: [{ weekNumber: 2, teamAbbr: "DET", source: "user", gameId: "w2-1" }] },
+    now: new Date(),
+  });
+  assert.ok(unlocked.includes(3), "own game started + valid pick opens next week");
+  assert.ok(!unlocked.includes(5), "far-future weeks stay hidden");
+
+  const noPick = allowedEnterPickWeeks({
+    currentWeek: 2,
+    weeks,
+    member: { picks: [] },
+  });
+  assert.deepEqual(noPick, [1, 2], "no pick yet — stay on current week");
 
   console.log("verify-enter-pick OK");
 }

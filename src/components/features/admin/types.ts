@@ -1,10 +1,7 @@
-import type { PickCensus } from "./pick-census";
 import type { EnterPickData } from "./enter-pick-types";
 import type { AdminRoleRow } from "./admin-role-types";
 import type { RosterMember, RosterMirrorOption } from "./roster-types";
 import type { SetPasswordMember } from "./password-members";
-import type { ClaimableSeat } from "@/lib/claim-seat";
-import type { EmailDeliveryStatus } from "@/lib/delivery";
 
 export type MemberRow = {
   id: string;
@@ -46,11 +43,6 @@ export type ConfigScreenProps = {
   canDemoteMembershipIds: string[];
 };
 
-export type CommsScreenProps = {
-  seats: ClaimableSeat[];
-  delivery: EmailDeliveryStatus;
-};
-
 export type AuditLogRow = {
   id: string;
   action: string;
@@ -59,11 +51,7 @@ export type AuditLogRow = {
 };
 
 export type SystemScreenProps = {
-  currentEmail: string | null;
-  isPracticeLogin: boolean;
   weekNumber: number;
-  games: { id: string; label: string; status: string }[];
-  census: PickCensus;
   enterPick: EnterPickData;
   logs: AuditLogRow[];
 };

@@ -84,7 +84,7 @@ function main() {
     "src/components/features/admin/UsersScreen.tsx",
     "utf8"
   );
-  assert.match(users, /Find a friend/);
+  assert.match(users, /AddUserForm/);
   assert.match(users, /set a password you can text/);
   assert.doesNotMatch(users, /Who are you/);
   assert.doesNotMatch(users, /AdminRolesPanel/);

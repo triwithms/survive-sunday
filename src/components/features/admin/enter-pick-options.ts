@@ -37,3 +37,22 @@ export function unusedTeamsForWeek(opts: {
   }
   return opts.weekTeams.filter((t) => !used.has(t.abbr));
 }
+
+export function weeksForMember<T extends { number: number }>(
+  weeks: T[],
+  member: EnterPickMember | undefined
+): T[] {
+  if (!member) return weeks;
+  const allowed = new Set(member.allowedWeeks);
+  return weeks.filter((w) => allowed.has(w.number));
+}
+
+export function snapEnterPickWeek(
+  preferred: number,
+  allowed: number[],
+  fallback: number
+): number {
+  if (allowed.includes(preferred)) return preferred;
+  if (allowed.includes(fallback)) return fallback;
+  return allowed[allowed.length - 1] ?? fallback;
+}

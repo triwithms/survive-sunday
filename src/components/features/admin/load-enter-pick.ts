@@ -1,22 +1,8 @@
 import "server-only";
 import { prisma } from "@/lib/db";
-import { MISSED_TEAM, parseUsedTeams } from "@/lib/grading";
 import { isPoolParticipant } from "@/lib/pool-rules";
-import type { EnterPickData, EnterPickTeam } from "./enter-pick-types";
-
-function weekTeamOptions(
-  games: { awayAbbr: string; homeAbbr: string }[],
-  names: Map<string, string>
-): EnterPickTeam[] {
-  const rows: EnterPickTeam[] = [];
-  for (const g of games) {
-    const away = names.get(g.awayAbbr) ?? g.awayAbbr;
-    const home = names.get(g.homeAbbr) ?? g.homeAbbr;
-    rows.push({ abbr: g.awayAbbr, name: `${g.awayAbbr} ${away} @ ${g.homeAbbr}` });
-    rows.push({ abbr: g.homeAbbr, name: `${g.homeAbbr} ${home} vs ${g.awayAbbr}` });
-  }
-  return rows.sort((a, b) => a.abbr.localeCompare(b.abbr));
-}
+import { toEnterPickMember, weekBits, weekTeamOptions } from "./enter-pick-map";
+import type { EnterPickData } from "./enter-pick-types";
 
 export async function loadEnterPick(
   poolId: string,
@@ -33,11 +19,13 @@ export async function loadEnterPick(
         status: true,
         role: true,
         isParticipant: true,
+        playingFromWeek: true,
         usedTeamsJson: true,
         picks: {
           select: {
             teamAbbr: true,
             source: true,
+            gameId: true,
             week: { select: { number: true } },
           },
         },
@@ -48,24 +36,28 @@ export async function loadEnterPick(
       orderBy: { number: "asc" },
       select: {
         number: true,
-        games: { select: { awayAbbr: true, homeAbbr: true } },
+        lockAt: true,
+        lockOverrideAt: true,
+        games: {
+          select: {
+            id: true,
+            awayAbbr: true,
+            homeAbbr: true,
+            status: true,
+            kickoff: true,
+          },
+        },
       },
     }),
     prisma.team.findMany({ select: { abbr: true, name: true } }),
   ]);
   const names = new Map(teams.map((t) => [t.abbr, t.name]));
+  const bits = weekBits(weeks);
   return {
     currentWeek,
-    members: members.filter(isPoolParticipant).map((m) => ({
-      id: m.id,
-      nickname: m.nickname,
-      realName: m.realName,
-      status: m.status,
-      usedTeams: parseUsedTeams(m.usedTeamsJson).filter((t) => t !== MISSED_TEAM),
-      picks: m.picks
-        .filter((p) => p.source !== "missed" && p.teamAbbr !== MISSED_TEAM)
-        .map((p) => ({ weekNumber: p.week.number, teamAbbr: p.teamAbbr })),
-    })),
+    members: members.filter(isPoolParticipant).map((m) =>
+      toEnterPickMember(m, currentWeek, bits)
+    ),
     weeks: weeks.map((w) => ({
       number: w.number,
       teams: weekTeamOptions(w.games, names),

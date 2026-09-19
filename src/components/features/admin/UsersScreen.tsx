@@ -1,4 +1,5 @@
 import { AdminHeading } from "./AdminHeading";
+import { AddUserForm } from "./AddUserForm";
 import { RosterEditor } from "./RosterEditor";
 import type { UsersScreenProps } from "./types";
 
@@ -6,10 +7,10 @@ export function UsersScreen(props: UsersScreenProps) {
   return (
     <div className="space-y-4">
       <AdminHeading title="Users">
-        Find a friend. Tap them to edit nickname, full name, email, or cell,
-        set a password you can text, or copy a Join link. We do not email the
-        password.
+        Add a friend, or tap someone to edit nickname, full name, email, or
+        cell, set a password you can text, or copy a Join link.
       </AdminHeading>
+      <AddUserForm />
       <RosterEditor
         members={props.rosterMembers}
         mirrorOptions={props.mirrorOptions}
