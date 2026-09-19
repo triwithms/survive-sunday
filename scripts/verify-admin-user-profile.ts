@@ -85,6 +85,18 @@ function main() {
   assert.equal(noPhone.ok, true);
   if (noPhone.ok) assert.equal(noPhone.value.phoneE164, null);
 
+  const noEmail = parseRosterProfile({
+    membershipId: "seat-1",
+    nickname: "Pauli",
+    email: "",
+    phone: "",
+  });
+  assert.equal(noEmail.ok, true);
+  if (noEmail.ok) {
+    assert.equal(noEmail.value.email, null);
+    assert.equal(noEmail.value.phoneE164, null);
+  }
+
   const badPhone = parseRosterProfile({
     membershipId: "seat-1",
     nickname: "Pauli",
@@ -105,6 +117,8 @@ function main() {
     isEmailTakenByOther("u1", "paul@example.com", "other@example.com", { id: "u2" }),
     true
   );
+  assert.equal(isEmailTakenByOther("u1", null, null, { id: "u2" }), false);
+  assert.equal(isEmailTakenByOther("u1", "", "", { id: "u2" }), false);
   assert.equal(
     isCellTakenByOther("u1", "+14165551234", "+14165551234", { id: "u1" }),
     false

@@ -12,7 +12,7 @@ export type AddUserDraft = {
 export type AddUserSaved = {
   nickname: string;
   realName: string | null;
-  email: string;
+  email: string | null;
   claimed: boolean;
   password: string | null;
   inviteUrl: string | null;

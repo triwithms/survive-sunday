@@ -28,12 +28,14 @@ export async function emailHasPlayerSeat(poolId: string, email: string) {
 }
 
 export async function rosterContactClash(
-  user: { id: string; email: string; phoneE164: string | null },
-  next: { email: string; phoneE164: string | null }
+  user: { id: string; email: string | null; phoneE164: string | null },
+  next: { email: string | null; phoneE164: string | null }
 ): Promise<{ error: string; status: number } | null> {
-  const byEmail = await findUserIdByEmail(next.email);
-  if (isEmailTakenByOther(user.id, user.email, next.email, byEmail)) {
-    return { error: EMAIL_ALREADY_USED, status: 409 };
+  if (next.email) {
+    const byEmail = await findUserIdByEmail(next.email);
+    if (isEmailTakenByOther(user.id, user.email, next.email, byEmail)) {
+      return { error: EMAIL_ALREADY_USED, status: 409 };
+    }
   }
   if (!next.phoneE164) return null;
   const byPhone = await findUserIdByPhone(next.phoneE164);
@@ -45,10 +47,12 @@ export async function rosterContactClash(
 
 export async function addUserContactClash(
   poolId: string,
-  email: string,
+  email: string | null,
   phoneE164: string | null
 ) {
-  const found = await emailHasPlayerSeat(poolId, email);
+  const found = email
+    ? await emailHasPlayerSeat(poolId, email)
+    : { existing: null as { id: string } | null, taken: false };
   if (found.taken) {
     return { ok: false as const, error: EMAIL_ALREADY_USED, status: 409 };
   }

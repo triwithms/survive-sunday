@@ -26,7 +26,10 @@ export function toPasswordMembers(members: MemberRow[]) {
     realName: m.realName,
     claimed: isSeatClaimed(m.user.email),
     email: isSeatClaimed(m.user.email) ? m.user.email : null,
-    emailMasked: isSeatClaimed(m.user.email) ? maskEmail(m.user.email) : null,
+    emailMasked:
+      m.user.email && isSeatClaimed(m.user.email)
+        ? maskEmail(m.user.email)
+        : null,
   }));
 }
 

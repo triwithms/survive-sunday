@@ -46,6 +46,10 @@ export function rosterRowSubtitle(
   return `${claimShortLabel(member)} · ${backupShortLabel(member, sourceNickname)}`;
 }
 
+export function needsEmailToLogIn(member: RosterMember): boolean {
+  return member.role !== "admin" && !(member.email ?? "").trim();
+}
+
 export function rosterMatches(member: RosterMember, query: string): boolean {
   const q = query.trim().toLowerCase();
   if (!q) return true;

@@ -44,6 +44,9 @@ function main() {
   assert(login.includes("Forgot password?"), "Forgot password link");
   assert(login.includes('name="email"'), "email field");
   assert(login.includes('name="password"'), "password field");
+  assert(login.includes("useInvitePrefill"), "invite token prefill hook");
+  assert(login.includes("InviteGreeting"), "invite greeting");
+  assert(!login.includes("params.get(\"password\")"), "never read password from URL");
   assert(login.includes("Email or username"), "email or username label");
   assert(!login.includes("← Survive Sunday"), "no back-link chrome");
   assert(!/Join the pool|Who are you/i.test(login), "no Join CTA");

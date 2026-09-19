@@ -70,10 +70,10 @@ function main() {
   assert.match(radios, /Auto ranked/);
   assert.match(radios, /BackupRadioRow/);
 
-  const row = readFileSync("src/components/BackupRadioRow.tsx", "utf8");
-  assert.match(row, /!w-4/);
-  assert.match(row, /min-w-0 flex-1/);
-  assert.match(row, /break-words/);
+  const backupRow = readFileSync("src/components/BackupRadioRow.tsx", "utf8");
+  assert.match(backupRow, /!w-4/);
+  assert.match(backupRow, /min-w-0 flex-1/);
+  assert.match(backupRow, /break-words/);
 
   const form = readFileSync("src/components/MirrorPicksForm.tsx", "utf8");
   assert.match(form, /Never overwrites/);
@@ -97,8 +97,18 @@ function main() {
   );
   assert.match(invite, /min-h-11/);
   assert.match(invite, /issueInviteToken/);
-  assert.match(invite, /Copied Join link/);
+  assert.match(invite, /Copied invite link/);
+  assert.match(invite, /shareOrCopy/);
+  assert.match(invite, /Share2/);
   assert.match(invite, /role="status"/);
+
+  const row = readFileSync(
+    "src/components/features/admin/RosterRow.tsx",
+    "utf8"
+  );
+  assert.match(row, /InviteJoinButtons/);
+  assert.match(row, /Needs email to log in/);
+  assert.doesNotMatch(row, /unclaimed \?/);
 
   const panel = readFileSync(
     "src/components/features/admin/UserEditPanel.tsx",

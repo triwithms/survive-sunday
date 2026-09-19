@@ -2,24 +2,32 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   friendlyLoginError,
   loginEmailQueryValue,
   safeLoginCallbackPath,
 } from "@/lib/login-error";
 import { markAddToHomePending } from "@/components/features/a2hs/actions";
+import { InviteGreeting } from "./InviteGreeting";
+import { useInvitePrefill } from "./use-invite-prefill";
 
 export function LoginForm() {
   const params = useSearchParams();
   const [busy, setBusy] = useState(false);
-  const emailPrefill = loginEmailQueryValue(params.get("email"));
+  const [email, setEmail] = useState(loginEmailQueryValue(params.get("email")));
+  const invite = useInvitePrefill(params.get("invite"));
   const err = friendlyLoginError(params.get("error"));
   const callbackUrl = safeLoginCallbackPath(params.get("callbackUrl"));
+
+  useEffect(() => {
+    if (invite.email) setEmail(invite.email);
+  }, [invite.email]);
 
   return (
     <main className="min-h-dvh mx-auto max-w-sheet px-5 py-16">
       <h1 className="font-display text-4xl text-gold-400 mb-10">Sign in</h1>
+      <InviteGreeting nickname={invite.nickname} expired={invite.expired} />
       {err && (
         <p
           className="mb-5 text-crimson-400 text-base font-medium"
@@ -45,7 +53,8 @@ export function LoginForm() {
             type="text"
             name="email"
             required
-            defaultValue={emailPrefill}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             autoComplete="username"
             inputMode="email"
             className="mt-2 min-h-14 text-lg"

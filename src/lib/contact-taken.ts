@@ -10,11 +10,12 @@ function normalizeEmail(email: string): string {
 
 export function isEmailTakenByOther(
   currentUserId: string,
-  currentEmail: string,
-  nextEmail: string,
+  currentEmail: string | null,
+  nextEmail: string | null,
   existing: { id: string } | null
 ): boolean {
-  if (normalizeEmail(currentEmail) === nextEmail) return false;
+  if (!nextEmail) return false;
+  if (normalizeEmail(currentEmail ?? "") === nextEmail) return false;
   return Boolean(existing && existing.id !== currentUserId);
 }
 

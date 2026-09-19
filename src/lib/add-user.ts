@@ -53,8 +53,8 @@ export function parseAddUser(body: unknown): ParseAddUser {
   const phoneRaw = typeof input.phone === "string" ? input.phone.trim() : "";
   const password = typeof input.password === "string" ? input.password : "";
   const invite = input.invite === true;
-  if (!nickname && !realName && !emailRaw && !phoneRaw) {
-    return fail("Enter a nickname, name, email, or cell.");
+  if (!nickname && !realName && !emailRaw && !phoneRaw && !password) {
+    return fail("Enter a nickname, name, email, cell, or password.");
   }
   if (nickname.length > MAX_NICKNAME) {
     return fail(`Nickname must be ${MAX_NICKNAME} characters or fewer`);

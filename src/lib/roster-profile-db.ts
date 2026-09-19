@@ -2,13 +2,14 @@ import { NICKNAME_TAKEN, uniqueContactFail } from "./contact-taken";
 import { rosterContactClash } from "./contact-taken-db";
 import { prisma } from "./db";
 import { nicknameTaken, type RosterProfileValue } from "./roster-profile";
+import { ensureUserEmailNullable } from "./user-email-schema";
 
 type AdminCtx = { user: { id: string }; membership: { poolId: string } };
 export type SavedRoster = {
   id: string;
   nickname: string;
   realName: string | null;
-  email: string;
+  email: string | null;
   phoneE164: string | null;
 };
 export type SaveRosterResult =
@@ -40,6 +41,7 @@ export async function saveRosterProfile(
     { email: value.email, phoneE164: value.phoneE164 }
   );
   if (clash) return { ok: false, ...clash };
+  if (!value.email) await ensureUserEmailNullable(prisma);
 
   try {
     const [membership, user] = await prisma.$transaction([

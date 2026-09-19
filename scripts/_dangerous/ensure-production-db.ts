@@ -27,6 +27,7 @@ import { ensureDualMembershipIndex } from "../../src/lib/membership-schema";
 import { ensureNotificationTables } from "../../src/lib/notification-schema";
 import { ensureInviteTokenTable } from "../../src/lib/invite-token-schema";
 import { ensurePickMirrorColumn } from "../../src/lib/pick-mirror-schema";
+import { ensureUserEmailNullable } from "../../src/lib/user-email-schema";
 import { ensurePoolRulesColumns } from "../../src/lib/pool-rules-schema";
 import { ensureCanonicalLiveSeats } from "../../src/lib/live-roster";
 import { applyCannoliTempPasswordOneshot } from "../../src/lib/oneshot-cannoli-password";
@@ -261,6 +262,7 @@ async function main() {
     await ensureNotificationTables(prisma);
     await ensureInviteTokenTable(prisma);
     await ensurePickMirrorColumn(prisma);
+    await ensureUserEmailNullable(prisma);
   });
 
   const pushed = pushSchema(env);
@@ -284,6 +286,7 @@ async function main() {
       await ensureNotificationTables(prisma);
       await ensureInviteTokenTable(prisma);
       await ensurePickMirrorColumn(prisma);
+      await ensureUserEmailNullable(prisma);
       await assertRequiredSchema(prisma);
     });
   } else {
@@ -295,6 +298,7 @@ async function main() {
       await ensureNotificationTables(prisma);
       await ensureInviteTokenTable(prisma);
       await ensurePickMirrorColumn(prisma);
+      await ensureUserEmailNullable(prisma);
       await assertRequiredSchema(prisma);
     });
   }

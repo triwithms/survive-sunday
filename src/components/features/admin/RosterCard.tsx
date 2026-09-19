@@ -7,7 +7,6 @@ import type { RosterMember } from "./roster-types";
 
 type Props = {
   member: RosterMember;
-  rosterNicknames: string[];
   open: boolean;
   onToggle: () => void;
   disabled: boolean;
@@ -26,7 +25,6 @@ export function RosterCard(p: Props) {
       member={member}
       open={p.open}
       onToggle={p.onToggle}
-      rosterNicknames={p.rosterNicknames}
     >
       <UserEditPanel
         member={member}

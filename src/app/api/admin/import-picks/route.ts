@@ -123,7 +123,7 @@ export async function POST(req: Request) {
       : undefined;
     let matchBy: "nickname" | "email" | undefined = member ? "nickname" : undefined;
     if (!member && email) {
-      member = members.find((m) => m.user.email.toLowerCase() === email);
+      member = members.find((m) => (m.user.email ?? "").toLowerCase() === email);
       if (member) matchBy = "email";
     }
     // If both provided and nickname missed, email already tried; if only nickname in email field handled by parse
@@ -201,7 +201,7 @@ export async function POST(req: Request) {
     preview.push({
       input,
       nickname: member.nickname,
-      email: member.user.email,
+      email: member.user.email ?? undefined,
       teamAbbr,
       memberId: member.id,
       ok: true,

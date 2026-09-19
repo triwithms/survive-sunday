@@ -12,6 +12,18 @@ export function memberCopyJoinUrl(
   );
 }
 
+export async function shareOrCopy(url: string, title: string): Promise<boolean> {
+  const copied = await copyText(url);
+  if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+    try {
+      await navigator.share({ title, url, text: title });
+    } catch {
+      /* share cancelled or unsupported */
+    }
+  }
+  return copied;
+}
+
 export async function copyText(text: string): Promise<boolean> {
   try {
     if (navigator.clipboard?.writeText) {

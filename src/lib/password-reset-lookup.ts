@@ -18,10 +18,13 @@ export async function lookupResetUser(
     where: { email },
     select,
   });
-  if (byNormalized) return byNormalized;
+  if (byNormalized?.email) {
+    return { ...byNormalized, email: byNormalized.email };
+  }
   const raw = emailRaw.trim();
   if (raw && raw !== email) {
-    return prisma.user.findUnique({ where: { email: raw }, select });
+    const byRaw = await prisma.user.findUnique({ where: { email: raw }, select });
+    if (byRaw?.email) return { ...byRaw, email: byRaw.email };
   }
   return null;
 }

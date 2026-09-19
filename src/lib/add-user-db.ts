@@ -4,7 +4,8 @@ import type { AddUserValue } from "./add-user";
 import { grantPoolRole } from "./roles-db";
 import { POOL_ROLES } from "./roles";
 import { createHashedInviteToken } from "./invite-token-db";
-import { inviteJoinPath } from "./invite-token";
+import { inviteLoginPath } from "./invite-token";
+import { ensureUserEmailNullable } from "./user-email-schema";
 import { isWeekLocked } from "./grading";
 import { effectiveCurrentWeek } from "./pool-mode";
 import { nextPlayingWeek } from "./pool-rules";
@@ -30,7 +31,8 @@ export async function createAddUser(
     select: { id: true, mode: true, currentWeek: true },
   });
   const nickname = await uniqueAddUserNick(pool.id, value.nickname);
-  const email = resolveAddUserEmail(value, nickname);
+  const email = resolveAddUserEmail(value);
+  if (!email) await ensureUserEmailNullable(prisma);
   const clash = await addUserContactClash(pool.id, email, value.phoneE164);
   if (!clash.ok) return clash;
   const passwordPlain = resolveAddUserPassword(value, email);
@@ -71,7 +73,7 @@ export async function createAddUser(
     });
     await grantPoolRole(prisma, { poolId: pool.id, userId: user.id, role: POOL_ROLES.player });
     const minted = value.invite ? await createHashedInviteToken(membership.id) : null;
-    const inviteUrl = minted ? joinUrl(appOrigin(), inviteJoinPath(minted.token)) : null;
+    const inviteUrl = minted ? joinUrl(appOrigin(), inviteLoginPath(minted.token)) : null;
     await prisma.auditLog.create({
       data: {
         poolId: pool.id,
