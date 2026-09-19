@@ -1,22 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { resolveTeamLogoSrc } from "@/lib/espn-teams";
+import { resolveTeamLogoSrc } from "@/lib/team-helmets";
 import { TEAM_LOGO_SIZE } from "@/lib/team-logo-size";
 
 export { TEAM_LOGO_SIZE };
 
 export function TeamLogo({
   abbr,
-  logoUrl,
   size = TEAM_LOGO_SIZE.compact,
 }: {
   abbr: string;
-  logoUrl: string | null;
+  /** Ignored — logos are local `/helmets/{abbr}.png` only. */
+  logoUrl?: string | null;
   size?: number;
 }) {
   const [failed, setFailed] = useState<string[]>([]);
-  const src = resolveTeamLogoSrc(abbr, logoUrl, failed);
+  const src = resolveTeamLogoSrc(abbr, null, failed);
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
