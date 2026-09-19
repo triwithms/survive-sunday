@@ -24,13 +24,8 @@ export function AppHeader(data: AppHeaderData) {
         <div className="flex items-center gap-1.5 shrink-0 ml-auto">
           <HeaderHelpLink />
           <AccountMenu
-            nickname={data.nickname}
-            statusLabel={data.statusLabel}
             userId={data.userId}
             role={data.role}
-            showAdmin={data.showAdminChrome}
-            canSwitchRoles={data.canSwitchRoles}
-            roleView={data.roleView}
             phoneE164={data.phoneE164}
             phoneSoftPrompt={data.phoneSoftPrompt}
           />

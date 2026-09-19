@@ -6,11 +6,11 @@ export function HelpAccount() {
       </h2>
       <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)]">
         <li className="text-[var(--text-primary)]">
-          <strong>Account</strong> is in the header (top right). Change
-          nickname, add a cell, Sign out.{" "}
-          <strong>Account → Notification preferences</strong> stays there —
-          not on Help. Choose SMS, Email, both, or none. Password-reset codes
-          always send when you ask.
+          <strong>Account</strong> is in the header (top right). It opens{" "}
+          <strong>Settings</strong>. Change nickname, add a cell, Sign out.{" "}
+          <strong>Account → Notification preferences</strong> stays on its own
+          screen — not on Help. Choose SMS, Email, both, or none.
+          Password-reset codes always send when you ask.
         </li>
         <li className="text-[var(--text-primary)]">
           Sign in is email (or username) and password. We do not ask for a code

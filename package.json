@@ -59,6 +59,7 @@
     "verify:next-week-picks": "tsx scripts/verify-next-week-picks.ts",
     "verify:weeks": "tsx scripts/verify-weeks.ts",
     "verify:app-chrome": "tsx scripts/verify-app-chrome.ts",
+    "verify:account-hub": "tsx scripts/verify-account-hub.ts",
     "verify:notification-prefs": "tsx scripts/verify-notification-prefs.ts",
     "verify:notify-channels": "tsx scripts/verify-notify-channels.ts",
     "notify:defaults": "tsx scripts/default-notify-prefs.ts",

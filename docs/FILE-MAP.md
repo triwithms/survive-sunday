@@ -31,6 +31,7 @@ Checked on `main` (`263b34c`, 19 Sep 2026). Do not invent paths. Team full-seaso
 | **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as My pick / Selections / Scores; future weeks stay browsable. |
 | **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · System** (`AdminNav.tsx`). `/admin` opens Users. `/admin/comms` redirects to Users. Users: **Add user** (`AddUserForm`) + find/expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — edit nickname / full name / email / cell (`RosterContactFields`); email/cell unique vs another pool member (`src/lib/contact-taken.ts`); set password / copy text / Join; notification preference (`RosterNotifyPref`, same Email / SMS / both / none field as Account). No Who-are-you list. No Commissioner person. Pool: mulligan, **Make administrator**, **Hand the pool**. System: **Enter a friend’s pick** for current/past weeks (next week only after that friend’s own game starts + valid pick — `src/lib/enter-pick-week.ts`) plus **Send test to me** (`SendTestNotify`). Reset stays closed. No census / lock / grade / administrator-login panel. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
 | **Team research** | `src/components/features/team/` — `TeamScreen.tsx`, `load-team.ts`, unit / injuries / news screens. Thin pages under `src/app/(app)/team/[abbr]/`. Helmet, record, this week, **style** (above coach), coach, then **Look closer** links: Offence / Defence / Special teams (starters-only checkbox; healthy starters first, then injured starters), Injuries (own page), News. No Key players. No full roster dump. |
+| **Settings / Account** | `src/components/features/account/` — hub at `/account` (header **Account**). Rows link to notify prefs (`/account/notifications`), pick backup (`/account/mirror`), Help `/help` + `#install`, mailto feedback, Sign out. Playing as / Admin tools stay on the hub. No notify form on the hub. |
 
 Pool board week (header **Week N**, not a player’s next-pick week): `src/lib/pool-current-week.ts` + `pool-current-week-db.ts`. Derives from the slate when `Pool.currentWeek` lags; `ensure-week` cron can persist a forward-only bump.
 
@@ -69,8 +70,7 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | Schedule | `src/app/(app)/schedule/page.tsx` |
 | Team research | `src/app/(app)/team/[abbr]/page.tsx` — own pages: `/offence` `/defence` `/special-teams` `/injuries` `/news`. Player detail stays `/team/[abbr]/player/[slug]`. |
 | Admin hub | `src/app/(app)/admin/page.tsx` redirects to Users. Tabs: Users `/admin/users`, Pool `/admin/config`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/comms` → Users, `/admin/import` stays. |
-
-Also exist (same thin-page pattern): Account, Admin, Team.
+| Settings / Account | `src/app/(app)/account/page.tsx` — hub. Notify `/account/notifications`. Pick backup `/account/mirror`. |
 
 Also: Sign in `src/app/login/page.tsx`, Forgot password `src/app/login/forgot/page.tsx`. Landing `src/app/page.tsx` redirects to Sign in (or `/welcome` / `/pick` if already signed in). No people-list / Who are you? screen.
 

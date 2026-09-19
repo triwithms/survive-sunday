@@ -16,11 +16,13 @@ export default async function NotificationPrefsPage() {
     <div className="space-y-5">
       <div>
         <p className="text-xs text-[var(--text-muted)]">
+          <Link href="/account" prefetch={false} className="text-gold-400">
+            ← Settings
+          </Link>
+          {" · "}
           <Link href="/help#account" className="text-gold-400">
             Help
           </Link>
-          {" · "}
-          Account
         </p>
         <h1 className="font-display text-2xl text-gold-400 tracking-wide mt-1">
           Notification preferences
