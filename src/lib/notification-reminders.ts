@@ -48,6 +48,7 @@ export async function sendMissingPickReminders(opts?: {
           userId: m.user.id,
           email: m.user.email,
           phoneE164: m.user.phoneE164,
+          notifyPref: m.user.notifyPref,
           nickname: m.nickname,
         },
         type: "missingPickReminder",
@@ -57,7 +58,6 @@ export async function sendMissingPickReminders(opts?: {
           lockLabel,
         }),
         dedupeKey: week.id,
-        alsoSms: true,
       });
       if (result.emailed || result.texted) reminded += 1;
       else skipped += 1;

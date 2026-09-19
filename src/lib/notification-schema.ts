@@ -132,6 +132,9 @@ export async function ensureNotificationTables(prisma: SchemaClient) {
     ALTER TABLE "NotificationSend" ADD COLUMN IF NOT EXISTS "channel" TEXT NOT NULL DEFAULT 'email'
   `);
   await prisma.$executeRawUnsafe(`
+    ALTER TABLE "NotificationSend" ADD COLUMN IF NOT EXISTS "outcome" TEXT NOT NULL DEFAULT 'sent'
+  `);
+  await prisma.$executeRawUnsafe(`
     ALTER TABLE "NotificationSend" ADD COLUMN IF NOT EXISTS "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
   `);
   await prisma.$executeRawUnsafe(`

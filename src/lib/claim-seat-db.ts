@@ -392,6 +392,7 @@ async function joinAsNewPlayer(args: {
       data: {
         email: args.email,
         name: args.realName || args.nickname,
+        notifyPref: "email",
         passwordHash: await bcrypt.hash(
           normalizeAuthPassword(args.password) || args.password,
           10

@@ -1,4 +1,4 @@
-import { sendResendMessage } from "./delivery";
+import { dispatchNotice } from "./notify-dispatch";
 import { notifyInBackground } from "./notify";
 import { loadResetNotifyContext } from "./password-reset-admins";
 import { resetAdminNotifyCopy } from "./password-reset-notify";
@@ -9,16 +9,27 @@ export function notifyAdminsOfResetRequest(
   email: string
 ): void {
   notifyInBackground(async () => {
-    const { who, adminEmails } = await loadResetNotifyContext(userId, email);
-    if (adminEmails.length === 0) return;
+    const { who, admins } = await loadResetNotifyContext(userId, email);
+    if (admins.length === 0) return;
     const copy = resetAdminNotifyCopy(who);
+    const stamp = Date.now();
     await Promise.all(
-      adminEmails.map((to) =>
-        sendResendMessage({
-          to,
-          subject: copy.subject,
-          text: copy.text,
-          html: copy.html,
+      admins.map((admin) =>
+        dispatchNotice({
+          target: {
+            userId: admin.id,
+            email: admin.email,
+            phoneE164: admin.phoneE164,
+            notifyPref: admin.notifyPref,
+          },
+          category: "admin_alert",
+          type: "password_reset_admin",
+          dedupeKey: `reset-admin:${userId}:${stamp}:${admin.id}`,
+          content: {
+            subject: copy.subject,
+            text: copy.text,
+            htmlBody: copy.html,
+          },
         })
       )
     );

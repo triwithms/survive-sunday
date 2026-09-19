@@ -15,12 +15,14 @@ export async function register() {
     const { ensureNotificationTables } = await import(
       "@/lib/notification-schema"
     );
+    const { ensureUserNotifyPref } = await import("@/lib/notify-pref-schema");
     const { ensurePickMirrorColumn } = await import(
       "@/lib/pick-mirror-schema"
     );
     const result = await ensureDualMembershipIndex(prisma);
     await ensurePickMirrorColumn(prisma);
     await ensureNotificationTables(prisma);
+    await ensureUserNotifyPref(prisma);
     console.log(
       `[boot] schema ready${result.droppedUnique ? " (dropped leftover unique)" : ""}`
     );

@@ -82,6 +82,8 @@ function main() {
     phoneE164: null,
     mirrorFromMembershipId: null,
     pickBackup: null,
+    notifyPref: "email",
+    userId: "u-1",
   };
   assert.equal(rosterMatches(pauli, ""), true);
   assert.equal(rosterMatches(pauli, "pau"), true);

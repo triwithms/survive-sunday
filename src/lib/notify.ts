@@ -1,16 +1,6 @@
-import { prisma } from "./db";
-import {
-  sendResendMessage,
-  sendTwilioMessage,
-  stadiumEmailHtml,
-} from "./delivery";
-import { getNotificationPrefs } from "./notification-prefs";
-import {
-  shouldSendMissingPickSms,
-  shouldSendPoolEmail,
-  type NotificationType,
-} from "./notification-types";
+import { dispatchNotice, type DispatchTarget } from "./notify-dispatch";
 import type { NotifyContent } from "./notification-copy";
+import type { NotificationType } from "./notification-types";
 
 export type { NotifyContent };
 export {
@@ -20,107 +10,29 @@ export {
   resultsCopy,
   scoreUpdateCopy,
 } from "./notification-copy";
+export { claimNotificationSend } from "./notify-log";
 
-export type NotifyTarget = {
-  userId: string;
-  email?: string | null;
-  phoneE164?: string | null;
+export type NotifyTarget = DispatchTarget & {
   nickname?: string | null;
 };
-
-/** Idempotency row for email/SMS/admin blasts. Duplicate unique key → false. */
-export async function claimNotificationSend(
-  userId: string,
-  type: string,
-  dedupeKey: string,
-  channel: string
-): Promise<boolean> {
-  try {
-    await prisma.notificationSend.create({
-      data: { userId, type, dedupeKey, channel },
-    });
-    return true;
-  } catch {
-    return false;
-  }
-}
 
 export async function notifyUser(opts: {
   target: NotifyTarget;
   type: NotificationType;
   content: NotifyContent;
   dedupeKey: string;
-  /** SMS only when the type is missing-pick and a cell is saved. */
-  alsoSms?: boolean;
 }): Promise<{ emailed: boolean; texted: boolean; skipped: string | null }> {
+  if (opts.type === "scoreUpdates" || opts.type === "injuryNotes") {
+    return { emailed: false, texted: false, skipped: "noisy-off" };
+  }
   try {
-    const prefs = await getNotificationPrefs(opts.target.userId);
-    const emailGate = shouldSendPoolEmail({
-      email: opts.target.email,
-      prefs,
+    return await dispatchNotice({
+      target: opts.target,
+      category: "game",
       type: opts.type,
+      content: opts.content,
+      dedupeKey: opts.dedupeKey,
     });
-    let emailed = false;
-    if (emailGate.send) {
-      const claimed = await claimNotificationSend(
-        opts.target.userId,
-        opts.type,
-        `${opts.dedupeKey}:email`,
-        "email"
-      );
-      if (claimed) {
-        const result = await sendResendMessage({
-          to: opts.target.email!.trim(),
-          subject: opts.content.subject,
-          text: opts.content.text,
-          html: stadiumEmailHtml({
-            heading: opts.content.subject,
-            bodyHtml: opts.content.htmlBody,
-          }),
-        });
-        emailed = result.ok;
-        if (!result.ok) {
-          console.warn("[notify] email failed", result.error);
-        }
-      }
-    }
-
-    let texted = false;
-    if (opts.alsoSms) {
-      const smsGate = shouldSendMissingPickSms({
-        phoneE164: opts.target.phoneE164,
-        prefs,
-      });
-      if (smsGate.send && opts.content.smsBody) {
-        const claimed = await claimNotificationSend(
-          opts.target.userId,
-          opts.type,
-          `${opts.dedupeKey}:sms`,
-          "sms"
-        );
-        if (claimed) {
-          const result = await sendTwilioMessage({
-            to: opts.target.phoneE164!.trim(),
-            body: opts.content.smsBody,
-          });
-          texted = result.ok;
-          if (!result.ok) {
-            console.warn("[notify] SMS failed", result.error);
-          }
-        }
-      } else if (!smsGate.send && smsGate.reason === "pref-off") {
-        return {
-          emailed,
-          texted: false,
-          skipped: emailed ? null : "pref-off",
-        };
-      }
-    }
-
-    if (!emailed && !texted) {
-      return { emailed, texted, skipped: emailGate.reason };
-    }
-    return { emailed, texted, skipped: null };
   } catch (error) {
     console.error("[notify] failed", error);
     return { emailed: false, texted: false, skipped: "error" };

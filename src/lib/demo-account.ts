@@ -106,6 +106,7 @@ export async function ensureDemoAccount(email: string, password: string): Promis
           email: normalized,
           name: profile.realName,
           passwordHash,
+          notifyPref: "email",
         },
       });
 

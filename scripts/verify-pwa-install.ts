@@ -92,7 +92,8 @@ assert.match(helpAdmins, /Users · Pool · System/);
 assert.match(helpAdmins, /Add user/);
 assert.match(helpAdmins, /nickname, full name, email, or cell/);
 assert.match(helpAdmins, /Save this person/);
-assert.match(helpAdmins, /Coming soon/);
+assert.match(helpAdmins, /Send test to me/);
+assert.doesNotMatch(helpAdmins, /Coming soon/);
 assert.match(helpAdmins, /must be unique/);
 assert.doesNotMatch(helpAdmins, /Commissioner|Users → Edit|Comms|Pick backup/);
 assert.doesNotMatch(

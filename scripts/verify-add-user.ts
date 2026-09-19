@@ -65,7 +65,7 @@ function main() {
   assert.match(users, /AddUserForm/);
   assert.match(users, /RosterEditor/);
   const fields = readFileSync(`${dir}/AddUserFields.tsx`, "utf8");
-  assert.match(fields, /RosterNotifySoon/);
+  assert.match(fields, /Notification preference is set after you add them/);
   assert.match(fields, /add-user-invite/);
   assert.match(fields, /SetPasswordKind/);
   assert.match(readFileSync("src/lib/add-user-db.ts", "utf8"), /addUserContactClash/);

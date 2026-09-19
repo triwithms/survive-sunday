@@ -404,6 +404,7 @@ async function main() {
         email,
         name: p.realName,
         passwordHash,
+        notifyPref: "email",
       },
     });
 

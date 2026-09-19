@@ -21,7 +21,7 @@ export function HelpForAdmins() {
         </li>
         <li className="text-[var(--text-primary)]">
           Notifications on Users use the same SMS / Email / both / none
-          dropdowns as Account (Coming soon — not sending yet).
+          dropdown as Account. System has <strong>Send test to me</strong>.
         </li>
         <li className="text-[var(--text-primary)]">
           Personal Join links: one Copy per friend on their Users row. Do not

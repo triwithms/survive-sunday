@@ -1,11 +1,12 @@
 import { prisma } from "./db";
 import { INVITE_CODE } from "./constants";
-import { collectAdminEmails, resetAdminUserIds } from "./password-reset-notify";
+import { resetAdminUserIds } from "./password-reset-notify";
 
 export type AdminNotifyUser = {
   id: string;
   email: string | null;
   phoneE164: string | null;
+  notifyPref: string;
 };
 
 /** Same multi-admin union as password-reset notify. */
@@ -24,19 +25,19 @@ export async function loadPoolAdminUsers(
   if (adminIds.length === 0) return [];
   return prisma.user.findMany({
     where: { id: { in: adminIds } },
-    select: { id: true, email: true, phoneE164: true },
+    select: { id: true, email: true, phoneE164: true, notifyPref: true },
   });
 }
 
 export async function loadResetNotifyContext(
   userId: string,
   email: string
-): Promise<{ who: string; adminEmails: string[] }> {
+): Promise<{ who: string; admins: AdminNotifyUser[] }> {
   const pool = await prisma.pool.findUnique({
     where: { inviteCode: INVITE_CODE },
     select: { id: true },
   });
-  if (!pool) return { who: email, adminEmails: [] };
+  if (!pool) return { who: email, admins: [] };
 
   const members = await prisma.membership.findMany({
     where: { poolId: pool.id },
@@ -44,6 +45,6 @@ export async function loadResetNotifyContext(
   });
   const who =
     members.find((m) => m.userId === userId)?.nickname?.trim() || email;
-  const users = await loadPoolAdminUsers(pool.id);
-  return { who, adminEmails: collectAdminEmails(users) };
+  const admins = await loadPoolAdminUsers(pool.id);
+  return { who, admins };
 }
