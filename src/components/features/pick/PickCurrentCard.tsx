@@ -32,7 +32,7 @@ export function PickCurrentCard({
       className="p-4 border border-gold-400/30"
       aria-label="Your current pick"
     >
-      <p className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">
+      <p className="text-sm font-semibold uppercase tracking-wide text-[var(--text-muted)] mb-2">
         Your pick{saving ? " · Saving…" : ""}
       </p>
       {side ? (
@@ -44,10 +44,10 @@ export function PickCurrentCard({
               size={TEAM_LOGO_SIZE.featured}
             />
             <div className="min-w-0">
-              <p className="font-mono text-2xl font-semibold text-gold-400 leading-none">
+              <p className="font-mono text-2xl font-bold text-gold-400 leading-none">
                 {side.abbr}
               </p>
-              <p className="text-sm text-[var(--text-primary)] truncate mt-1">
+              <p className="text-base font-medium text-[var(--text-primary)] truncate mt-1">
                 {side.name}
               </p>
               {opp && (
