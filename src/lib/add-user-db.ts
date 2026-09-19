@@ -8,14 +8,14 @@ import { inviteJoinPath } from "./invite-token";
 import { isWeekLocked } from "./grading";
 import { effectiveCurrentWeek } from "./pool-mode";
 import { nextPlayingWeek } from "./pool-rules";
+import { uniqueContactFail } from "./contact-taken";
+import { addUserContactClash } from "./contact-taken-db";
 import {
   appOrigin,
   createdUserRow,
-  emailHasPlayerSeat,
   joinUrl,
   resolveAddUserEmail,
   resolveAddUserPassword,
-  uniqueAddUserFail,
   uniqueAddUserNick,
   type AddUserResult,
   type AdminCtx,
@@ -31,10 +31,8 @@ export async function createAddUser(
   });
   const nickname = await uniqueAddUserNick(pool.id, value.nickname);
   const email = resolveAddUserEmail(value, nickname);
-  const found = await emailHasPlayerSeat(pool.id, email);
-  if (found.taken) {
-    return { ok: false, error: "That email already has an account", status: 409 };
-  }
+  const clash = await addUserContactClash(pool.id, email, value.phoneE164);
+  if (!clash.ok) return clash;
   const passwordPlain = resolveAddUserPassword(value, email);
   const passwordHash = passwordPlain ? await bcrypt.hash(passwordPlain, 10) : undefined;
   const currentWeek = effectiveCurrentWeek(pool.mode, pool.currentWeek);
@@ -51,9 +49,9 @@ export async function createAddUser(
       phoneE164: value.phoneE164,
       passwordHash,
     };
-    const user = found.existing
+    const user = clash.existing
       ? await prisma.user.update({
-          where: { id: found.existing.id },
+          where: { id: clash.existing.id },
           data: {
             ...(passwordHash ? { passwordHash } : {}),
             ...(value.phoneE164 ? { phoneE164: value.phoneE164, phoneSkippedAt: null } : {}),
@@ -91,8 +89,8 @@ export async function createAddUser(
       ),
     };
   } catch (err) {
-    const fail = uniqueAddUserFail(err);
-    if (fail) return fail;
+    const fail = uniqueContactFail(err);
+    if (fail) return { ok: false, ...fail };
     throw err;
   }
 }

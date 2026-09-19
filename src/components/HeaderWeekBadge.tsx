@@ -7,6 +7,7 @@ import {
   recordTapTimes,
   SHARE_OPEN_EVENT,
 } from "@/lib/share-export";
+import { headerPoolWeekLabel } from "@/lib/header-week-selection";
 
 export function isLeaderboardPath(path: string): boolean {
   return path === "/standings" || path.startsWith("/standings/");
@@ -39,12 +40,11 @@ export function WeekBadge({
 
   return (
     <span
-      className="chip chip-gold shrink-0 min-w-9 justify-center select-none"
-      aria-current="true"
+      className="chip chip-gold shrink-0 min-w-9 justify-center select-none whitespace-nowrap"
       data-testid="header-week-badge"
       onClick={allowShareGesture ? onWeekClick : undefined}
     >
-      W{weekNumber}
+      {headerPoolWeekLabel(weekNumber)}
     </span>
   );
 }

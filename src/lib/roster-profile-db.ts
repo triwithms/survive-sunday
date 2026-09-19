@@ -1,10 +1,7 @@
+import { NICKNAME_TAKEN, uniqueContactFail } from "./contact-taken";
+import { rosterContactClash } from "./contact-taken-db";
 import { prisma } from "./db";
-import { isUserEmailUniqueError } from "./membership-schema";
-import {
-  isEmailTakenByOther,
-  nicknameTaken,
-  type RosterProfileValue,
-} from "./roster-profile";
+import { nicknameTaken, type RosterProfileValue } from "./roster-profile";
 
 type AdminCtx = { user: { id: string }; membership: { poolId: string } };
 export type SavedRoster = {
@@ -17,17 +14,6 @@ export type SavedRoster = {
 export type SaveRosterResult =
   | { ok: true; membership: SavedRoster }
   | { ok: false; error: string; status: number };
-
-function uniqueFail(err: unknown): SaveRosterResult | null {
-  if (isUserEmailUniqueError(err)) {
-    return { ok: false, error: "That email already has an account", status: 409 };
-  }
-  const msg = err instanceof Error ? err.message : "";
-  if (/Unique constraint|UNIQUE/.test(msg)) {
-    return { ok: false, error: "That nickname is already taken in this pool", status: 409 };
-  }
-  return null;
-}
 
 export async function saveRosterProfile(
   admin: AdminCtx,
@@ -45,17 +31,15 @@ export async function saveRosterProfile(
       select: { id: true, nickname: true },
     });
     if (nicknameTaken(pool, target.id, value.nickname)) {
-      return { ok: false, error: "That nickname is already taken in this pool", status: 409 };
+      return { ok: false, error: NICKNAME_TAKEN, status: 409 };
     }
   }
 
-  const existing = await prisma.user.findUnique({
-    where: { email: value.email },
-    select: { id: true },
-  });
-  if (isEmailTakenByOther(target.userId, target.user.email, value.email, existing)) {
-    return { ok: false, error: "That email already has an account", status: 409 };
-  }
+  const clash = await rosterContactClash(
+    { id: target.userId, email: target.user.email, phoneE164: target.user.phoneE164 },
+    { email: value.email, phoneE164: value.phoneE164 }
+  );
+  if (clash) return { ok: false, ...clash };
 
   try {
     const [membership, user] = await prisma.$transaction([
@@ -92,8 +76,8 @@ export async function saveRosterProfile(
     });
     return { ok: true, membership: { ...membership, email: user.email, phoneE164: user.phoneE164 } };
   } catch (err) {
-    const fail = uniqueFail(err);
-    if (fail) return fail;
+    const fail = uniqueContactFail(err);
+    if (fail) return { ok: false, ...fail };
     throw err;
   }
 }
