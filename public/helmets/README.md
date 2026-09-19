@@ -1,13 +1,16 @@
 # Local helmet backups
 
-Committed ESPN NFL team marks for all 32 clubs used in Survive Sunday.
+Committed NFL team marks for all 32 clubs used in Survive Sunday.
 
 - Files: `{abbr}.png` using **app** abbreviations (`was.png`, not ESPN’s `wsh.png`).
-- Source (downloaded once): `https://a.espncdn.com/i/teamlogos/nfl/500/{espnAbbr}.png`
+- Source (downloaded once, stored here): ESPN NFL 500 marks. Runtime never fetches the CDN.
   - Washington CDN slug is `wsh`; we save it as `was.png`.
-- `_placeholder.svg` is a neutral helmet graphic (no letters) if both local and ESPN fail.
+- `ne.png` and `cle.png` are the same marks on a light rounded plate so navy / thin
+  helmets stay visible on dark Scores cards.
+- `_placeholder.svg` is a neutral helmet graphic (no letters) if a local PNG fails.
 
-`TeamLogo` tries local first, then the ESPN CDN URL. It never shows abbreviation letter badges.
+`TeamLogo` uses `/helmets/{abbr}.png` only, then this placeholder. No ESPN/CDN lookup.
+It never shows abbreviation letter badges.
 
 Robert Gama accepts responsibility for storing these local/saved helmet image backups.
 

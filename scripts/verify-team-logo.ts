@@ -1,10 +1,9 @@
 /**
- * Official ESPN team-mark URLs (abbr slug, not numeric ids).
+ * Local-only team marks (`/helmets/{abbr}.png`) plus leftover ESPN URL helpers.
  *
  *   npx tsx scripts/verify-team-logo.ts
  */
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
@@ -88,15 +87,15 @@ assert.equal(localHelmetSrc("PIT"), localHelmetSrc("PIT").toLowerCase());
 assert.doesNotMatch(localHelmetSrc("PIT"), /[A-Z]/);
 assert.doesNotMatch(localHelmetSrc("Chi"), /[A-Z]/);
 assert.equal(resolveTeamLogoSrc("CHI", stale, null), localChi);
-assert.equal(resolveTeamLogoSrc("CHI", stale, localChi), stale);
+assert.equal(resolveTeamLogoSrc("CHI", stale, localChi), TEAM_HELMET_PLACEHOLDER);
 assert.equal(
   resolveTeamLogoSrc("CHI", stale, [localChi, stale]),
-  espnTeamLogoUrl("CHI")
+  TEAM_HELMET_PLACEHOLDER
 );
 assert.equal(resolveTeamLogoSrc("CHI", null, null), localChi);
 assert.equal(
   resolveTeamLogoSrc("CHI", espnTeamLogoUrl("CHI"), localChi),
-  espnTeamLogoUrl("CHI")
+  TEAM_HELMET_PLACEHOLDER
 );
 assert.equal(
   resolveTeamLogoSrc("CHI", espnTeamLogoUrl("CHI"), [
@@ -113,19 +112,21 @@ assert.equal(
   ]),
   TEAM_HELMET_PLACEHOLDER
 );
-assert.notEqual(resolveTeamLogoSrc("CHI", null, "gone"), null);
+assert.equal(resolveTeamLogoSrc("CHI", null, "gone"), localChi);
 assert.equal(
   resolveTeamLogoSrc("PIT", "/helmets/PIT.png", null),
   "/helmets/pit.png"
 );
 assert.equal(
   resolveTeamLogoSrc("PIT", "/helmets/PIT.png", "/helmets/pit.png"),
-  espnTeamLogoUrl("PIT")
+  TEAM_HELMET_PLACEHOLDER
 );
 assert.equal(
   resolveTeamLogoSrc("PIT", null, [localHelmetSrc("PIT"), espnTeamLogoUrl("PIT")]),
   TEAM_HELMET_PLACEHOLDER
 );
+assert.doesNotMatch(resolveTeamLogoSrc("NE", espnTeamLogoUrl("NE"), null), /^https?:/i);
+assert.doesNotMatch(resolveTeamLogoSrc("CLE", stale, null), /^https?:/i);
 
 assert.equal(Object.keys(ESPN_TEAM_IDS).length, 32);
 const localHashes = new Set<string>();
@@ -173,10 +174,13 @@ const teamLogoSrc = fs.readFileSync(
 );
 assert.match(teamLogoSrc, /<img/);
 assert.match(teamLogoSrc, /resolveTeamLogoSrc/);
+assert.match(teamLogoSrc, /@\/lib\/team-helmets/);
 assert.match(teamLogoSrc, /object-contain/);
 assert.match(teamLogoSrc, /bg-stadium-800/);
 assert.equal(teamLogoSrc.includes("bg-white"), false);
 assert.equal(teamLogoSrc.includes("opacity-0"), false);
+assert.equal(teamLogoSrc.includes("espncdn"), false);
+assert.equal(teamLogoSrc.includes("espnTeamLogoUrl"), false);
 assert.equal(teamLogoSrc.includes("teamBadge"), false);
 assert.equal(teamLogoSrc.includes("TEAM_BADGES"), false);
 assert.equal(teamLogoSrc.includes("29.png"), false);
@@ -184,6 +188,15 @@ assert.equal(teamLogoSrc.includes("abbr.slice"), false);
 assert.equal(teamLogoSrc.includes("letter"), false);
 assert.match(teamLogoSrc, /setFailed/);
 assert.ok(teamLogoSrc.split("\n").length <= 100, "TeamLogo stays small");
+
+const helmetLibSrc = fs.readFileSync(
+  path.join(process.cwd(), "src/lib/team-helmets.ts"),
+  "utf8"
+);
+assert.match(helmetLibSrc, /TEAM_HELMET_PLACEHOLDER/);
+assert.equal(helmetLibSrc.includes("espncdn"), false);
+assert.equal(helmetLibSrc.includes("espnTeamLogoUrl"), false);
+assert.ok(helmetLibSrc.split("\n").length <= 100, "team-helmets stays small");
 
 const scoreTeamRowSrc = fs.readFileSync(
   path.join(process.cwd(), "src/components/features/scores/ScoreTeamRow.tsx"),
@@ -246,33 +259,10 @@ const scheduleLoadSrc = fs.readFileSync(
 );
 assert.match(scheduleLoadSrc, /logoByAbbr/);
 
-function httpStatus(url: string): string {
-  const result = spawnSync(
-    "curl",
-    ["-s", "-o", "/dev/null", "-w", "%{http_code}", "-L", url],
-    { encoding: "utf8" }
-  );
-  assert.equal(result.status, 0, `curl ${url}`);
-  return result.stdout.trim();
+for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
+  const src = resolveTeamLogoSrc(abbr, espnTeamLogoUrl(abbr), null);
+  assert.equal(src, localHelmetSrc(abbr), `${abbr} resolve is local`);
+  assert.doesNotMatch(src, /^https?:/i, `${abbr} never remote`);
 }
-
-const SPOT: Array<[string, string]> = [
-  ["ATL", espnTeamLogoUrl("ATL")],
-  ["BUF", espnTeamLogoUrl("BUF")],
-  ["CAR", espnTeamLogoUrl("CAR")],
-  ["CHI", espnTeamLogoUrl("CHI")],
-  ["DET", espnTeamLogoUrl("DET")],
-  ["KC", espnTeamLogoUrl("KC")],
-];
-const hashes = new Set<string>();
-for (const [abbr, url] of SPOT) {
-  assert.equal(httpStatus(url), "200", `${abbr} HEAD 200`);
-  const body = spawnSync("curl", ["-sL", url]);
-  assert.equal(body.status, 0, `curl body ${abbr}`);
-  const bytes = Buffer.from(body.stdout);
-  assert.ok(bytes.length > 1000, `${abbr} image has bytes`);
-  hashes.add(createHash("sha256").update(bytes).digest("hex"));
-}
-assert.equal(hashes.size, SPOT.length, "spot-check logos are distinct files");
 
 console.log("verify-team-logo: ok");
