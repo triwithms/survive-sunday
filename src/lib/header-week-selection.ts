@@ -5,6 +5,11 @@ import {
   weekNavForPath,
 } from "@/lib/weeks";
 
+/** Pool board week, spelled out — not a cramped `W1` or a personal next-pick week. */
+export function headerPoolWeekLabel(weekNumber: number): string {
+  return `Week ${weekNumber}`;
+}
+
 export function headerWeekSelection({
   pathname,
   weekParam,

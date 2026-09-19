@@ -23,7 +23,7 @@ export function AppHeader(data: AppHeaderData) {
         </Link>
         <Suspense
           fallback={
-            <HeaderWeekBadge weekNumber={data.pickActionWeek} />
+            <HeaderWeekBadge weekNumber={data.currentWeek} />
           }
         >
           <HeaderWeekNav

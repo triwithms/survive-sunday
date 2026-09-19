@@ -13,7 +13,7 @@ export function HelpRules() {
         <h2 className="text-lg font-semibold text-gold-400 mb-2">2. How to play (quick start)</h2>
         <ol className="list-decimal pl-5 space-y-1 mb-2">
           <li>Open your <strong>personal Join link</strong>. Your name should already be picked. Set your own email and password — once. Stay signed in on this phone. If the seat is already claimed, Sign in instead. New joiners not on the list can create a unique nickname.</li>
-          <li>Open **Pick** and choose from **This week’s games** — pick **exactly one** NFL team to win. Use the arrows beside the **W#** badge in the header to flip to other weeks.</li>
+          <li>Open **Pick** and choose from **This week’s games** — pick **exactly one** NFL team to win. Use the arrows beside the **Week N** badge in the header to flip to other weeks. The badge is the pool’s current week, not your personal next-pick week.</li>
           <li>On **My pick**, you can change until **your game starts**. After first kickoff, everyone’s picks reveal on **Selections**. **When your game starts, next week opens for you immediately** (no waiting for Monday Night Football). If you join after that week has already locked and you never had a pick path, the next week is the obvious next action. There is no slate-wide “Deadline passed” countdown in the header.</li>
           <li>If your team wins, you survive. If it loses, your mulligan absorbs the first hit (you’re still alive with one loss) or a second loss eliminates you.</li>
           <li>You **cannot reuse** any team you’ve already picked — win or lose.</li>

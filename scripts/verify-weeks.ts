@@ -6,6 +6,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { resolvePlayerPickWeek } from "../src/lib/next-week-picks";
+import { headerPoolWeekLabel } from "../src/lib/header-week-selection";
 import {
   WEEK_NAV_PATHS,
   defaultWeekForPath,
@@ -19,6 +20,10 @@ const weekNumbers = [1, 2, 3];
 const sunday = new Date("2026-09-13T16:00:00.000Z");
 const lacKickoff = new Date("2026-09-13T20:25:00.000Z");
 const lacPick = { source: "user", teamAbbr: "LAC", result: "pending" };
+
+assert.equal(headerPoolWeekLabel(2), "Week 2");
+assert.equal(headerPoolWeekLabel(1), "Week 1");
+assert.notEqual(headerPoolWeekLabel(2), "W2");
 
 assert.equal(parseWeekParam(undefined), null);
 assert.equal(parseWeekParam(""), null);
@@ -539,11 +544,29 @@ mustInclude("src/lib/header-week-selection.ts", [
   "defaultWeekForPath",
   "resolvePageWeekNumber",
   "pickActionWeek",
+  "headerPoolWeekLabel",
+  "Week ${weekNumber}",
 ]);
 mustInclude("src/components/AppHeader.tsx", [
   "pickActionWeek={data.pickActionWeek}",
-  "weekNumber={data.pickActionWeek}",
+  "weekNumber={data.currentWeek}",
 ]);
+mustInclude("src/components/HeaderWeekBadge.tsx", [
+  "headerPoolWeekLabel",
+]);
+mustInclude("src/components/HeaderWeekNav.tsx", [
+  "weekNumber={currentWeek}",
+]);
+mustNotMatch(
+  "src/components/HeaderWeekBadge.tsx",
+  /W\{weekNumber\}/,
+  "Header week badge must spell out Week N, not W#"
+);
+mustNotMatch(
+  "src/components/HeaderWeekNav.tsx",
+  /weekNumber=\{selectedWeek\}|weekNumber=\{pickActionWeek\}/,
+  "Header week badge stays on the pool current week"
+);
 mustInclude("src/components/features/help/HelpScreens.tsx", [
   "your current pick week",
   "Future weeks stay on",

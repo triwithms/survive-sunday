@@ -52,7 +52,7 @@ export function HeaderWeekNav({
     return <div className="min-w-0 flex-1" aria-hidden />;
   }
   if (!route || weeks.length <= 1) {
-    return <HeaderWeekBadge weekNumber={selectedWeek} />;
+    return <HeaderWeekBadge weekNumber={currentWeek} />;
   }
 
   const { previous, next } = adjacentWeeks({
@@ -86,7 +86,7 @@ export function HeaderWeekNav({
         <ChevronLeft className="h-5 w-5" aria-hidden />
       </button>
       <WeekBadge
-        weekNumber={selectedWeek}
+        weekNumber={currentWeek}
         allowShareGesture={weekAllowsShare(pathname)}
       />
       <button
