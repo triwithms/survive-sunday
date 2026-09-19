@@ -25,7 +25,7 @@ export function isAlive(status: string): boolean {
   return status === "undefeated" || status === "one_loss";
 }
 
-/** Player-facing Survival board / standings list (not season-end crowning). */
+/** Player-facing Leaderboard / in-out list (not season-end crowning). */
 export type BoardMember = {
   status: string;
   nickname: string;
@@ -124,7 +124,7 @@ function boardStatusRank(member: BoardMember): number {
 
 /**
  * Player-facing board / week pick-list order — reuse anywhere a week’s
- * participant picks are listed (Board, Home/Pool, Scores, week picks API):
+ * participant picks are listed (Leaderboard, Scores, week picks API):
  * 1. Status / losses: undefeated → one-loss (still alive) → eliminated
  *    (more losses further down)
  * 2. Same pick (team abbr; no-pick / missed last within that status band)

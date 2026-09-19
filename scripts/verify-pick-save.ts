@@ -9,8 +9,8 @@ import { applyPickSave, pickSavedMessage } from "../src/components/features/pick
 
 assert.deepEqual(applyPickSave({ ok: true }, null, "KC"), { kind: "ok", changed: false });
 assert.deepEqual(applyPickSave({ ok: true }, "BUF", "KC"), { kind: "ok", changed: true });
-assert.equal(pickSavedMessage(false), "Locked in — heading back to pool…");
-assert.equal(pickSavedMessage(true), "Pick updated — heading back to pool…");
+assert.equal(pickSavedMessage(false), "Locked in — heading to Selections…");
+assert.equal(pickSavedMessage(true), "Pick updated — heading to Selections…");
 
 const locked = applyPickSave({ ok: false, locked: true }, "BUF", "KC");
 assert.equal(locked.kind, "locked");

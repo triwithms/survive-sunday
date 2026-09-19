@@ -3,28 +3,28 @@
 import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Home,
   Target,
-  Radio,
+  Users,
   Trophy,
+  Radio,
+  Calendar,
   ListOrdered,
-  HelpCircle,
   Shield,
 } from "lucide-react";
 
 const items = [
-  { href: "/pool", label: "Home", icon: Home },
-  { href: "/pick", label: "Pick", icon: Target },
+  { href: "/pick", label: "My pick", icon: Target },
+  { href: "/pool", label: "Selections", icon: Users },
+  { href: "/standings", label: "Leaderboard", icon: Trophy },
   { href: "/scores", label: "Scores", icon: Radio },
-  { href: "/nfl", label: "League", icon: Trophy },
-  { href: "/standings", label: "Board", icon: ListOrdered },
-  { href: "/help", label: "Help", icon: HelpCircle },
+  { href: "/schedule", label: "Schedule", icon: Calendar },
+  { href: "/nfl", label: "Standings", icon: ListOrdered },
 ];
 
 export function BottomNav({ isAdmin }: { isAdmin?: boolean }) {
   const path = usePathname();
   const nav = isAdmin
-    ? [...items.slice(0, 5), { href: "/admin", label: "Admin", icon: Shield }]
+    ? [...items, { href: "/admin", label: "Admin", icon: Shield }]
     : items;
 
   return (

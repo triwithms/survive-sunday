@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     console.error("[demo-login] ensureDemoAccount failed", error);
     return NextResponse.json({ error: "DatabaseUnavailable" }, { status: 503 });
   }
-  const result = await signInDemoCredentials(email, password, "/pool");
+  const result = await signInDemoCredentials(email, password, "/pick");
   if (!result.ok) {
     return NextResponse.json(
       { error: result.error === "CredentialsSignin" ? "Invalid credentials" : result.error },

@@ -2,7 +2,7 @@ export function HelpIntro() {
   return (
     <>
       <aside className="card-glass border border-gold-400/30 p-4 space-y-2" aria-label="Feature availability">
-        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, standings, scores and grading, League, Schedule, team research, <strong>weekly YouTube videos</strong> (header <strong>Videos</strong>), game highlights on Scores → Details, prior-pick import, Admin tools, PWA install, <strong>personal Join links</strong>, joining, email-and-password Sign in that stays on your phone, forgot-password codes, cell-number collection, <strong>notification preferences</strong> (<strong>Account → Notification preferences</strong>), and a quiet way to share Board or Scores as a picture (including a full long screenshot).</p>
+        <p className="text-[var(--text-primary)]"><strong>Wave 1 is live:</strong> picks, mulligan, lock and pick privacy, Leaderboard (pool in/out), NFL Standings, scores and grading, Schedule, team research, YouTube clips on Scores → Details, prior-pick import, Admin tools, PWA install, <strong>personal Join links</strong>, joining, email-and-password Sign in that stays on your phone, forgot-password codes, cell-number collection, <strong>notification preferences</strong> (<strong>Account → Notification preferences</strong>), and a quiet way to share Leaderboard or Scores as a picture (including a full long screenshot).</p>
         <p className="text-[var(--text-primary)]"><strong>Wave 2 — Coming soon:</strong> H2H boxing gloves, banter and mute, WhatsApp, weekly digests, and close-game alerts.</p>
       </aside>
       <section id="onboarding-first-run">
@@ -13,7 +13,7 @@ export function HelpIntro() {
           <li className="text-[var(--text-primary)]">**Lock is first kickoff** (often Thursday night). After lock, everyone’s picks go public. You can still change an existing pick until that team’s kickoff if the new game has not started. **Once your pick’s game has started, next week’s picks open for you right away** — you don’t wait for Monday Night Football. New friends who join after that week’s deadline go straight to the next week’s pick.</li>
           <li className="text-[var(--text-primary)]">**You get one mulligan** unless the administrator turns it off. Your first wrong pick (or a missed pick at lock) burns it and you’re still in with one loss. A second loss eliminates you. If the administrator switches to one-and-done, the app shows **From Week X: no mulligan / one-and-done.**</li>
           <li className="text-[var(--text-primary)]"><strong>Personal Join link</strong> from the administrator. Join <strong>once</strong> with your own email and password so your Week 1 picks stay. On that phone you stay signed in. Next time, Sign in with that <strong>email and password</strong>. If that name is already claimed, tap <strong>Sign in</strong>. Don’t use Forgot password before you Join. Returning BM Boys: <strong>Account → Change nickname</strong>. New joiners not on the list can join as a new player.</li>
-          <li className="text-[var(--text-primary)]"><strong>Live scores and standings</strong> show how the pool is progressing. Add a <strong>cell number</strong> for SMS missing-pick reminders. You can add or change it later from Account or the header. Choose what we send under <strong>Account → Notification preferences</strong>. Wave 2 social features are marked below as coming soon.</li>
+          <li className="text-[var(--text-primary)]"><strong>Live scores, Selections, and Leaderboard</strong> show how the pool is progressing. Add a <strong>cell number</strong> for SMS missing-pick reminders. You can add or change it later from Account or the header. Choose what we send under <strong>Account → Notification preferences</strong>. Wave 2 social features are marked below as coming soon.</li>
         </ul>
         <p className="text-[var(--text-muted)] mb-2">---</p>
       </section>
@@ -75,7 +75,7 @@ export function HelpIntro() {
         <h3 className="font-semibold mt-3 mb-1">D. Sign in later (same email)</h3>
         <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
           <li className="text-[var(--text-primary)]">Join <strong>once</strong> first. Forgot password only works after that.</li>
-          <li className="text-[var(--text-primary)]">On this phone you stay signed in. Open the Home Screen icon to land in the pool.</li>
+          <li className="text-[var(--text-primary)]">On this phone you stay signed in. Open the Home Screen icon to land on <strong>My pick</strong>.</li>
           <li className="text-[var(--text-primary)]">If you need Sign in: enter the <strong>same email</strong> you Joined with, your password, then tap <strong>Sign in</strong>.</li>
           <li className="text-[var(--text-primary)]"><strong>Forgot password?</strong> is the small link under Sign in — only after you Joined. Check inbox <strong>and spam/junk</strong> for the code. If you saved a cell, we text it too.</li>
         </ol>

@@ -31,8 +31,8 @@ export default async function HelpPage() {
       }
     >
       <main className="flex-1 mx-auto w-full max-w-pool px-4 py-8">
-        <Link href={membership ? "/pool" : "/"} className="text-sm text-gold-400">
-          ← {membership ? "Pool" : "Survive Sunday"}
+        <Link href={membership ? "/pick" : "/"} className="text-sm text-gold-400">
+          ← {membership ? "My pick" : "Survive Sunday"}
         </Link>
         <h1 className="font-display text-2xl text-gold-400 tracking-wide mt-6 mb-2">
           Help

@@ -8,9 +8,11 @@ What each screen is **for** (product behaviour, not files): [HOW-SCREENS-WORK.md
 
 Bottom nav vs URLs (easy to mix up):
 
-- **Home** in the nav is the **pool** screen (`/pool`)
-- **Board** is standings (`/standings`)
-- **League** is NFL W-L (`/nfl`)
+- **My pick** is `/pick` (default landing after Sign in)
+- **Selections** is the old Home URL (`/pool`) — group weekly picks
+- **Leaderboard** is the pool in/out race (`/standings`)
+- **Standings** is NFL W-L (`/nfl`)
+- Header **?** is Help (`/help`). Videos are not a tab.
 
 Checked on `main` (`26e9d35`). Do not invent paths.
 
@@ -18,14 +20,14 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 
 | What you see | Point the chat here |
 |--------------|---------------------|
-| **Home** (pool) — big pick logo, this week’s games | `src/components/features/home/` — especially `HomePickHero.tsx` (big pick logo), `HomeScreen.tsx`, `load-home.ts`. Also `HomeEmptyPick.tsx`, `HomeGameCluster.tsx`, `build-home.ts`. |
+| **Selections** (group weekly picks) | `src/components/features/home/` — `HomeScreen.tsx`, `SelectionsList.tsx`, `load-home.ts`, `sort-selections.ts`. Old Home hero / game-cluster / videos strip are unused on this screen. |
 | **Sign in / Forgot password** | `src/components/features/login/` — `LoginForm.tsx` (email + password + Forgot password only), `ForgotPasswordForm.tsx`. |
-| **Pick** | `src/components/features/pick/` — `PickScreen.tsx`, `load-pick.ts`, `PickMatchupCard.tsx` |
+| **My pick** | `src/components/features/pick/` — `PickScreen.tsx`, `load-pick.ts`, `PickMatchupCard.tsx` |
 | **Scores** | `src/components/features/scores/` — `ScoresScreen.tsx`, `load-scores.ts`, `ScoreGameCard.tsx` |
-| **Board** (standings) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `BoardParticipantRow.tsx` |
-| **League** (NFL) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
-| **Videos** | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Defaults to the same current pick week as Home/Scores. |
-| **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as Home/Scores; future weeks stay browsable. |
+| **Leaderboard** (pool in/out) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `BoardParticipantRow.tsx` |
+| **Standings** (NFL W-L) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
+| **Videos** (deep link only) | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Not a bottom tab; clips also sit in Scores/Schedule Details. |
+| **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as My pick / Selections / Scores; future weeks stay browsable. |
 | **Admin** | `src/components/features/admin/` — tab screens `UsersScreen`, `ConfigScreen`, `CommsScreen`, `SystemScreen`. Users roster: `RosterEditor.tsx`, `RosterRow.tsx`, `UserEditPanel.tsx`, `InviteJoinButtons.tsx`, `copy-join.ts`. Password: `SetMemberPasswordForm.tsx`. Phone pick entry: `EnterPickForm.tsx`. Census: `PickCensusPanel.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only: `src/lib/week-isolation.ts` forces `mode=live` **without** snapping the pool week or wiping picks. Demo vs Real toggle is gone. Join still claims `@survivesunday.demo` seats. |
 
 ## Shared buttons and cards
@@ -49,11 +51,11 @@ These files mostly load data and render the folders above. Prefer the feature fo
 
 | What you see | URL page |
 |--------------|----------|
-| Home (pool) | `src/app/(app)/pool/page.tsx` |
-| Pick | `src/app/(app)/pick/page.tsx` |
-| Board (standings) | `src/app/(app)/standings/page.tsx` |
+| Selections | `src/app/(app)/pool/page.tsx` |
+| My pick | `src/app/(app)/pick/page.tsx` |
+| Leaderboard | `src/app/(app)/standings/page.tsx` |
 | Scores | `src/app/(app)/scores/page.tsx` |
-| League (NFL) | `src/app/(app)/nfl/page.tsx` |
+| Standings (NFL) | `src/app/(app)/nfl/page.tsx` |
 | Videos | `src/app/(app)/videos/page.tsx` |
 | Schedule | `src/app/(app)/schedule/page.tsx` |
 | Admin hub | `src/app/(app)/admin/page.tsx` — Users `/admin/users`, Pool `/admin/config`, Comms `/admin/comms`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/import` stays. |

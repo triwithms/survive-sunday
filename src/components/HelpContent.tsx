@@ -4,11 +4,13 @@ import { HelpImportGlossary } from "@/components/features/help/HelpImportGlossar
 import { HelpIntro } from "@/components/features/help/HelpIntro";
 import { HelpRules } from "@/components/features/help/HelpRules";
 import { HelpScreens } from "@/components/features/help/HelpScreens";
+import { HelpWhereToTap } from "@/components/features/help/HelpWhereToTap";
 
 export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }) {
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
       <HelpIntro />
+      <HelpWhereToTap />
       <HelpRules />
       <HelpScreens />
       <HelpAccount showDemoCopy={showDemoCopy} />

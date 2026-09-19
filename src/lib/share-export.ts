@@ -88,16 +88,10 @@ export function shareOptionsFor(ctx: ShareOptionContext): ShareOption[] {
   if (ctx.surface === "board") {
     options.push({
       id: "full",
-      title: "Full Board (long picture)",
+      title: "Full Leaderboard (long picture)",
       detail:
-        "The whole Board, like a long screenshot — everyone, still in and out.",
+        "The whole Leaderboard, like a long screenshot — still in and out.",
       always: true,
-    });
-    options.push({
-      id: "picks",
-      title: "This week’s picks",
-      detail: "Everyone’s pick for this week. Status chips stay on each row.",
-      always: false,
     });
     if (ctx.stillInCount > 0) {
       options.push({
@@ -190,7 +184,7 @@ export function shareCaption(
   option: ShareOptionId
 ): string {
   const page =
-    surface === "board" ? "Board" : option === "games" ? "Scores" : "Scores";
+    surface === "board" ? "Leaderboard" : option === "games" ? "Scores" : "Scores";
   if (option === "full") return `Survive Sunday · ${weekLabel} · ${page}`;
   if (option === "picks") return `Survive Sunday · ${weekLabel} · picks`;
   if (option === "still-in") return `Survive Sunday · ${weekLabel} · still in`;

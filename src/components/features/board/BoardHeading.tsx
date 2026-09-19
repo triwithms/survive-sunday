@@ -14,7 +14,7 @@ export function BoardHeading(props: BoardHeadingProps) {
           surface="board"
           rootId="share-board"
           weekLabel={props.weekLabel}
-          titleRest=" · Survival board"
+          titleRest=" · Leaderboard"
           stillInCount={props.stillInCount}
           undefeatedCount={props.undefeatedCount}
           eliminatedCount={props.eliminatedCount}

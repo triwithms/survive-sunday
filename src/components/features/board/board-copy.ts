@@ -18,10 +18,8 @@ export function boardLockLine(
 }
 
 export function boardSortLine(revealAllPicks: boolean) {
-  return (
-    "Sorted by undefeated, then one-loss, then eliminated. Within each group: same pick (no pick last), then same game (earlier kickoff first), then nickname A–Z." +
-    (!revealAllPicks ? " Others' picks stay hidden until the deadline." : "")
-  );
+  void revealAllPicks;
+  return "In/out race: undefeated, then one-loss, then eliminated. Within each group: nickname A–Z. Weekly picks live on Selections.";
 }
 
 export function boardCta(args: {

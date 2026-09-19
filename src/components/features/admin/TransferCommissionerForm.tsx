@@ -53,8 +53,8 @@ export function TransferCommissionerForm({ members }: { members: MemberOption[] 
       setMsg(data.error || "Could not transfer.");
       return;
     }
-    setMsg(`Done. ${data.transferredTo} now runs the pool. Opening Home…`);
-    router.push("/pool");
+    setMsg(`Done. ${data.transferredTo} now runs the pool. Opening My pick…`);
+    router.push("/pick");
     router.refresh();
   }
 

@@ -14,7 +14,7 @@ Imported picks are real pool data. They affect:</h3>
           <li className="text-[var(--text-primary)]">**Grading** — wins and losses update status the same way live weeks do.</li>
           <li className="text-[var(--text-primary)]">**Mulligan** — a first wrong (or missed) imported pick still auto-burns the mulligan → **one loss**.</li>
           <li className="text-[var(--text-primary)]">**Team reuse** — imported teams are struck from that player’s list for the rest of the season.</li>
-          <li className="text-[var(--text-primary)]">**Standings** — the board sorts **undefeated**, then **one-loss**, then **eliminated**, then **same pick** (no pick last in that group), then **same game** (earlier kickoff first), then nickname A–Z, using the imported history.</li>
+          <li className="text-[var(--text-primary)]">**Leaderboard** — the in/out race sorts **undefeated**, then **one-loss**, then **eliminated**, then nickname A–Z, using the imported history.</li>
         </ul>
         <h3 className="font-semibold mt-3 mb-1">How administrators do it
 1. Open the admin **Import prior picks** flow (CSV upload or on-screen form).
@@ -32,15 +32,17 @@ You don’t need to re-pick locked weeks. After import, check your status badge 
 | **Pick deadline** | Header countdown to lock — first kickoff of the week. After that, everyone’s picks reveal. **Your next week opens when your own pick is locked** (your game started), not after Monday Night Football. |
 | **Lock** | Same moment as the pick deadline for the group board. You can still change an existing pick until that team’s kickoff. When that game starts, next week’s picks open for you. |
 | **This week’s games** | The list of matchups you pick from on the Pick screen (not “slate”). |
-| **Board** | Pool board: undefeated, then one-loss, then eliminated. Within each group: same pick (team abbr; no pick last), then same game (earlier kickoff), then nickname A–Z. After lock, Home still groups by kickoff-ordered games then away/home clusters; each cluster (and Scores’ pick list) uses that same status-then-pick order. |
-| **Share (picture)** | Board or Scores: press and hold the title, or triple-tap the week label. No Share button on the screen. Full long picture is always offered. |
+| **Leaderboard** | Pool in/out race (`/standings`): undefeated, then one-loss, then eliminated, then nickname A–Z. Weekly picks are on **Selections**. |
+| **Selections** | Everyone’s picks for the week (`/pool`). Same team together, then nickname A–Z. Not the in/out race. |
+| **Standings** | NFL W-L (`/nfl`). Not the pool Leaderboard. |
+| **Share (picture)** | Leaderboard or Scores: press and hold the title, or triple-tap the week label. No Share button on the screen. Full long picture is always offered. |
 | **2025 rank** | Last season’s composite power rank (1 = strongest). Research only. |
 | **Mulligan** | One free pass that auto-absorbs your first loss (or missed pick at lock), unless the administrator turns it off. |
 | **One-and-done** | Administrator rule: from a chosen week, one loss (or missed pick) puts you out. Banner: “From Week X: no mulligan / one-and-done.” |
 | **Hand the pool** | Current admin gives Admin to another pool member and stays as a player. Different from Make administrator (that keeps both people as Admin). |
 | **Notification preferences** | Account → Notification preferences. Toggles for which emails (and missing-pick texts) you want. |
 | **Pick backup** | Optional: copy-from-member if no pick within 30 minutes (no 💩), or best unused 2025-rank team within ~2 minutes (stamps 💩). Official winner must be 💩-free. |
-| **Auto-pick 💩** | Stamp only when the ~2-minute ranked leftover writes a pick. Shown beside the nickname on Board / Home. Clean record required to win. |
+| **Auto-pick 💩** | Stamp only when the ~2-minute ranked leftover writes a pick. Shown beside the nickname on Leaderboard / Selections. Clean record required to win. |
 | **Digest** | **Coming later:** post-lock summary of everyone’s picks. |
 | **H2H** | **Coming later:** head-to-head spotlight when two participants pick opposite sides. |
 | **en-CA** | Canadian English locale for copy, dates, and A–Z sorting. |

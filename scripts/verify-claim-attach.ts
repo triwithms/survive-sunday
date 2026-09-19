@@ -29,9 +29,9 @@ assert.equal(normalizeAuthPassword("AttachPass9! "), "AttachPass9!");
 
 assert.equal(safeAuthCallbackPath("/join?seat=abc"), "/join?seat=abc");
 assert.equal(safeAuthCallbackPath("/pool"), "/pool");
-assert.equal(safeAuthCallbackPath("https://evil.example"), "/pool");
-assert.equal(safeAuthCallbackPath("//evil.example"), "/pool");
-assert.equal(safeAuthCallbackPath(null), "/pool");
+assert.equal(safeAuthCallbackPath("https://evil.example"), "/pick");
+assert.equal(safeAuthCallbackPath("//evil.example"), "/pick");
+assert.equal(safeAuthCallbackPath(null), "/pick");
 
 assert.equal(
   shouldSkipClaimPassword({

@@ -12,11 +12,11 @@ export function HomeWeekHeader({
   return (
     <div>
       <h1 className="font-display text-2xl tracking-wide text-gold-400">
-        {label}
+        Selections
       </h1>
       <p className="text-sm text-[var(--text-muted)] mt-1">
-        Lock: {formatKickoff(lockAt)}
-        {revealAllPicks ? " · Picks revealed" : " · Others' picks hidden"}
+        {label} · Lock: {formatKickoff(lockAt)}
+        {revealAllPicks ? " · Picks revealed" : " · Others’ picks hidden"}
       </p>
     </div>
   );

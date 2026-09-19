@@ -1,3 +1,5 @@
+import { DEFAULT_SIGNED_IN_PATH } from "@/lib/app-paths";
+
 /** Plain-English login errors for the Sign in screen (owner is non-technical). */
 
 const MESSAGES: Record<string, string> = {
@@ -53,11 +55,13 @@ export function loginFailurePath(
 
 /** Same-origin relative path only — never follow a leftover localhost callback. */
 export function safeLoginCallbackPath(raw: unknown): string {
-  if (typeof raw !== "string") return "/pool";
+  if (typeof raw !== "string") return DEFAULT_SIGNED_IN_PATH;
   const path = raw.trim();
   if (!path.startsWith("/") || path.startsWith("//") || path.includes("://")) {
-    return "/pool";
+    return DEFAULT_SIGNED_IN_PATH;
   }
-  if (path.startsWith("/login") || path.startsWith("/api/")) return "/pool";
+  if (path.startsWith("/login") || path.startsWith("/api/")) {
+    return DEFAULT_SIGNED_IN_PATH;
+  }
   return path;
 }

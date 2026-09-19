@@ -33,7 +33,7 @@ export type ShareExportProps = {
   surface: ShareSurface;
   rootId: string;
   weekLabel: string;
-  /** Text after the week label in the page title, e.g. " · Survival board". */
+  /** Text after the week label in the page title, e.g. " · Leaderboard". */
   titleRest: string;
   stillInCount?: number;
   undefeatedCount?: number;
@@ -89,7 +89,7 @@ export function ShareExport({
     ]
   );
 
-  const label = surface === "board" ? "Board" : "Scores";
+  const label = surface === "board" ? "Leaderboard" : "Scores";
 
   function measureTooLong() {
     const root = document.getElementById(rootId);

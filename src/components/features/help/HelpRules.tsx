@@ -28,12 +28,12 @@ export function HelpRules() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 space-y-0">
           {[
             { src: '/help-preview/01-login.png', alt: 'Sign in screen', caption: 'Sign in (email and password)' },
-            { src: '/help-preview/02-pool-home.png', alt: 'Pool home / Board entry', caption: 'Pool home / Board entry' },
-            { src: '/help-preview/03-pick-this-weeks-games.png', alt: 'Pick — This week’s games', caption: 'Pick — This week’s games' },
+            { src: '/help-preview/02-pool-home.png', alt: 'Selections — group picks', caption: 'Selections — group picks' },
+            { src: '/help-preview/03-pick-this-weeks-games.png', alt: 'My pick — This week’s games', caption: 'My pick — This week’s games' },
             { src: '/help-preview/04-team-research.png', alt: 'Team research', caption: 'Team research' },
             { src: '/help-preview/05-team-news.png', alt: 'Team news', caption: 'Team news' },
-            { src: '/help-preview/06-league-standings.png', alt: 'League standings with 2025 rank', caption: 'League standings (with 2025 rank)' },
-            { src: '/help-preview/07-board-survival.png', alt: 'Board — survival standings', caption: 'Board — survival standings' },
+            { src: '/help-preview/06-league-standings.png', alt: 'Standings — NFL W-L with 2025 rank', caption: 'Standings — NFL W-L (with 2025 rank)' },
+            { src: '/help-preview/07-board-survival.png', alt: 'Leaderboard — pool in/out race', caption: 'Leaderboard — pool in/out race' },
             { src: '/help-preview/08-change-pick.png', alt: 'Change pick', caption: 'Change pick' },
             { src: '/help-preview/09-schedule.png', alt: 'Schedule with week dropdown', caption: 'Schedule (week dropdown)' },
           ].map((item) => (

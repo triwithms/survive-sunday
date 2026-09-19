@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { RoleView } from "@/lib/roles";
+import { DEFAULT_SIGNED_IN_PATH } from "@/lib/app-paths";
 
 export function RoleSwitcher({
   playerName,
@@ -22,7 +23,7 @@ export function RoleSwitcher({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ view }),
       });
-      window.location.assign(view === "admin" ? "/admin" : "/pool");
+      window.location.assign(view === "admin" ? "/admin" : DEFAULT_SIGNED_IN_PATH);
     } finally {
       setBusy(false);
     }

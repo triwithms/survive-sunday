@@ -105,7 +105,7 @@ export function HeaderWeekNav({
 }: {
   weeks: HeaderWeek[];
   currentWeek: number;
-  /** Default week on Home / Pick / Scores / Videos / Schedule when the URL has no ?week=. */
+  /** Default week on My pick / Selections / Scores / Videos / Schedule when the URL has no ?week=. */
   pickActionWeek?: number;
   nextOpen?: NextOpenDeadline | null;
 }) {

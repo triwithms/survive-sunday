@@ -2,15 +2,15 @@ export function HelpAccount({ showDemoCopy = false }: { showDemoCopy?: boolean }
   return (
     <>
       <section id="10-team-pages">
-        <h2 className="text-lg font-semibold text-gold-400 mb-2">10. League, Schedule &amp; team research</h2>
+        <h2 className="text-lg font-semibold text-gold-400 mb-2">10. Standings, Schedule &amp; team research</h2>
         <p className="text-[var(--text-muted)] mb-2">
-          **League** shows NFL standings (by division / overall).
+          **Standings** (bottom bar) shows NFL win-loss (by division / overall). That is not the pool **Leaderboard**.
           {showDemoCopy
             ? " Demo mode may show a practice table."
             : " **W-L** is this season from ESPN."}{" "}
           The **2025 rank** column is last season’s composite power rank by team (1 = strongest, 32 = weakest) — research only, not this year’s W-L.
         </p>
-        <p className="text-[var(--text-muted)] mb-2">**Schedule** opens on **your current pick week**, same as Home and Scores, and you can still flip to Week 1 or any future week from the dropdown. **Schedule** and **Pick** list games with kickoff (or LIVE / Final score) and an informational favourite when ESPN has a real line (for example <strong>BUF favoured by 4.5</strong>). A pick&apos;em (spread 0) shows as <strong>Even (pick&apos;em)</strong>. Home, Scores, Schedule, and Pick do <strong>not</strong> show TV stations or injury count chips. Live clock and down-and-distance stay on <strong>Scores</strong>. Open a <strong>team page</strong> for the ESPN injury list (player names). If ESPN has no line, the favourite field stays blank.</p>
+        <p className="text-[var(--text-muted)] mb-2">**Schedule** opens on **your current pick week**, same as My pick, Selections, and Scores, and you can still flip to Week 1 or any future week from the dropdown. **Schedule** and **My pick** list games with kickoff (or LIVE / Final score) and an informational favourite when ESPN has a real line (for example <strong>BUF favoured by 4.5</strong>). A pick&apos;em (spread 0) shows as <strong>Even (pick&apos;em)</strong>. Selections, Scores, Schedule, and My pick do <strong>not</strong> show TV stations or injury count chips. Live clock and down-and-distance stay on <strong>Scores</strong>. Open a <strong>team page</strong> for the ESPN injury list (player names). If ESPN has no line, the favourite field stays blank.</p>
         <p className="text-[var(--text-muted)] mb-2"><strong>Team pages</strong> start with the team&apos;s record, this week&apos;s game (kickoff and the favourite when ESPN has a line), head coach (name + ESPN / Wikipedia links), and style, then key NFL players, full roster, an ESPN injury list (Out / Doubtful / Questionable / IR / suspension names), and news headlines. Tap a <strong>player name</strong> for college, depth role, and any ESPN injury note. This is ESPN&apos;s public list, not the official NFL club report.</p>
         <p className="text-[var(--text-muted)] mb-2">From <strong>This week&apos;s games</strong>, logos and names open research; <strong>Pick</strong> stays on its own button.</p>
         <p className="text-[var(--text-muted)] mb-2">Favourites in the pick flow are informational only. If ESPN has no line, that field stays hidden — we do not guess.</p>
@@ -69,7 +69,7 @@ export function HelpAccount({ showDemoCopy = false }: { showDemoCopy?: boolean }
 | Asked to sign in again | Use the same phone/browser you signed in on. Add to Home Screen (Help §11). Session lasts about 90 days. |
 | Want to switch account | Header → Account → Sign out (also on Admin and Help). Then Sign in. |
 | Scores look wrong | Pull to refresh; if a final grade seems off, report it to your admin. |
-| Share picture failed | Press and hold the Board or Scores title (or triple-tap the week). Try a shorter option. Or take a regular screenshot. |
+| Share picture failed | Press and hold the Leaderboard or Scores title (or triple-tap the week). Try a shorter option. Or take a regular screenshot. |
 | Gloves animation missing | Wave 2 — the H2H boxing-gloves animation is coming soon. |
 | Deadline passed / empty Pick | That week’s first kickoff has gone. If **your** game has started (or you never had a pick path), open **Pick** — next week should already be available (**Week 2 is open — make your pick**). You do not wait for Monday Night Football. |
 | Can’t change my pick | You can change until your pick’s kickoff, but only onto a game that has not started. Once that game starts, the pick is locked — make next week’s pick instead. |`}</pre>

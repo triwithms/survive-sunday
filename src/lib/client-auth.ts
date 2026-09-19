@@ -1,6 +1,7 @@
 "use client";
 
 import { markAddToHomePending } from "@/components/features/a2hs/actions";
+import { DEFAULT_SIGNED_IN_PATH } from "@/lib/app-paths";
 
 export type CredentialsResult = {
   ok: boolean;
@@ -74,7 +75,7 @@ export async function signInCredentials(
         csrfToken: csrf,
         email,
         password,
-        callbackUrl: "/pool",
+        callbackUrl: DEFAULT_SIGNED_IN_PATH,
         json: "true",
       }),
     });
@@ -130,7 +131,7 @@ export function afterAuthNavigate(path: string) {
       `${window.location.origin}${u.pathname}${u.search}${u.hash}`
     );
   } catch {
-    window.location.assign("/pool");
+    window.location.assign(DEFAULT_SIGNED_IN_PATH);
   }
 }
 
@@ -141,7 +142,7 @@ export function afterAuthNavigate(path: string) {
 export function submitCredentialsLogin(
   email: string,
   password: string,
-  callbackUrl = "/pool",
+  callbackUrl = DEFAULT_SIGNED_IN_PATH,
   extras?: { otp?: string }
 ) {
   if (typeof document === "undefined") return;

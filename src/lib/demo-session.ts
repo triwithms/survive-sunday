@@ -1,5 +1,6 @@
 import { AuthError } from "next-auth";
 import { signIn } from "@/lib/auth";
+import { DEFAULT_SIGNED_IN_PATH } from "@/lib/app-paths";
 
 export type DemoSignInResult =
   | { ok: true }
@@ -28,7 +29,7 @@ function errorFromResultUrl(result: unknown): string | undefined {
 export async function signInDemoCredentials(
   email: string,
   password: string,
-  redirectTo = "/pool",
+  redirectTo = DEFAULT_SIGNED_IN_PATH,
   extras?: { otp?: string }
 ): Promise<DemoSignInResult> {
   try {

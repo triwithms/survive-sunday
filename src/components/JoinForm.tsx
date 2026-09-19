@@ -117,11 +117,11 @@ export function JoinForm({
         return;
       }
       if (signedIn) {
-        afterAuthNavigate("/pool");
+        afterAuthNavigate("/pick");
         return;
       }
       // Native /api/login POST so Safari keeps the session cookie (same as Sign in).
-      submitCredentialsLogin(claimEmail, claimPassword || password, "/pool");
+      submitCredentialsLogin(claimEmail, claimPassword || password, "/pick");
       return;
     } catch (error) {
       const msg = error instanceof Error ? error.message : "network";
