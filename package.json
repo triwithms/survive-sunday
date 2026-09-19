@@ -62,6 +62,7 @@
     "verify:auto-pick-stamps": "tsx scripts/verify-auto-pick-stamps.ts",
     "verify:share-export": "tsx scripts/verify-share-export.ts",
     "verify:team-coaches": "tsx scripts/verify-team-coaches.ts",
+    "verify:team-page": "tsx scripts/verify-team-page.ts",
     "verify:tokens": "tsx scripts/verify-tokens.ts",
     "verify:youtube-videos": "tsx scripts/verify-youtube-videos.ts",
     "verify:odds": "tsx scripts/verify-odds.ts",

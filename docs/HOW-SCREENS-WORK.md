@@ -81,6 +81,14 @@ Files: `src/components/features/league/` — [FILE-MAP](FILE-MAP.md).
 
 ---
 
+## Team research
+
+Tap a club from My pick, Schedule, Standings, or Scores. Helmet, record, this week’s matchup, **style**, then coach. **Look closer** opens Offence / Defence / Special teams (starters-only checkbox), Injuries, or News. No Key players card. No full roster dump.
+
+Files: `src/components/features/team/` — [FILE-MAP](FILE-MAP.md).
+
+---
+
 ## Nearby, not bottom nav
 
 - **Help** (`/help`) — header **?**. How-to. Not a pool screen.

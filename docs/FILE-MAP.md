@@ -30,6 +30,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Videos** (deep link only) | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Not a bottom tab; clips also sit in Scores/Schedule Details. |
 | **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as My pick / Selections / Scores; future weeks stay browsable. |
 | **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · System** (`AdminNav.tsx`). `/admin` opens Users. `/admin/comms` redirects to Users. Users: **Add user** (`AddUserForm`) + find/expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — edit nickname / full name / email / cell (`RosterContactFields`); email/cell unique vs another pool member (`src/lib/contact-taken.ts`); set password / copy text / Join; notification toggles stay disabled (`RosterNotifySoon`). No Who-are-you list. No Commissioner person. Pool: mulligan, **Make administrator**, **Hand the pool**. System: **Enter a friend’s pick** for current/past weeks (next week only after that friend’s own game starts + valid pick — `src/lib/enter-pick-week.ts`). Reset stays closed. No census / lock / grade / administrator-login panel. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
+| **Team research** | `src/components/features/team/` — `TeamScreen.tsx`, `load-team.ts`, unit / injuries / news screens. Thin pages under `src/app/(app)/team/[abbr]/`. Helmet, record, this week, **style** (above coach), coach, then **Look closer** links: Offence / Defence / Special teams (starters-only checkbox), Injuries, News. No Key players. No full roster dump. |
 
 ## Shared buttons and cards
 
@@ -61,6 +62,7 @@ These files mostly load data and render the folders above. Prefer the feature fo
 | Standings (NFL) | `src/app/(app)/nfl/page.tsx` |
 | Videos | `src/app/(app)/videos/page.tsx` |
 | Schedule | `src/app/(app)/schedule/page.tsx` |
+| Team research | `src/app/(app)/team/[abbr]/page.tsx` — units `/offence` `/defence` `/special`, plus `/injuries` and `/news`. Player detail stays `/team/[abbr]/player/[slug]`. |
 | Admin hub | `src/app/(app)/admin/page.tsx` redirects to Users. Tabs: Users `/admin/users`, Pool `/admin/config`, System `/admin/system`. Deep links: `/admin/roster` → Users, `/admin/comms` → Users, `/admin/import` stays. |
 
 Also exist (same thin-page pattern): Account, Admin, Team.
