@@ -1,3 +1,5 @@
+import { A2hsIosHint } from "@/components/features/a2hs/A2hsIosHint";
+
 export function HelpIntro() {
   return (
     <>
@@ -45,16 +47,16 @@ export function HelpIntro() {
         <p className="text-[var(--text-muted)] mb-2">
           After Sign in on a phone, we ask: <strong>Do you want to add NFL Pool
           to your Home Screen?</strong> Tap <strong>Yes</strong> to install or
-          see the Safari □↑ steps. Tap <strong>Not now</strong> to ask again next
+          see the Safari ⋯ → Share steps. Tap <strong>Not now</strong> to ask again next
           Sign in. Tap <strong>No</strong> to stop asking — then use{" "}
           <strong>Install on Home Screen</strong> at the top of Help. Opening
           from the icon does not nag. If you delete the icon and open in Safari,
           we ask again.
         </p>
         <p className="text-sm font-medium text-[var(--text-primary)] mb-1">iPhone / iPad — Safari</p>
-        <p className="text-[var(--text-muted)] mb-3">
-          Stay in <strong>Safari</strong>. Tap the box-with-arrow button (□↑) at the bottom of Safari (top on iPad) → <strong>Add to Home Screen</strong> → <strong>Add</strong>. The icon is named <strong>NFL Pool</strong>.
-        </p>
+        <div className="mb-3">
+          <A2hsIosHint />
+        </div>
         <p className="text-sm font-medium text-[var(--text-primary)] mb-1">Android — Chrome</p>
         <ol className="list-decimal pl-5 space-y-1 mb-3 text-[var(--text-muted)]">
           <li className="text-[var(--text-primary)]">Stay in <strong>Chrome</strong>.</li>
