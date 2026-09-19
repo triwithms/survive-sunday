@@ -26,7 +26,8 @@ html {
   text-size-adjust: 100%;
   /* Desktop default one step up; rem UI still follows browser/OS zoom */
   font-size: 112.5%; /* ~18px when browser default is 16px */
-  overflow-x: hidden;
+  /* clip, not hidden: hidden on html/body makes iOS treat position:fixed as absolute */
+  overflow-x: clip;
   max-width: 100%;
 }
 
@@ -34,7 +35,7 @@ body {
   background: var(--stadium-950);
   color: var(--text-primary);
   min-height: 100dvh;
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
 }
 

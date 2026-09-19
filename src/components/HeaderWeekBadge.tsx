@@ -40,7 +40,8 @@ export function WeekBadge({
 
   return (
     <span
-      className="chip chip-gold shrink-0 min-w-9 justify-center select-none whitespace-nowrap"
+      role="status"
+      className="shrink-0 select-none whitespace-nowrap text-sm font-medium text-gold-400 cursor-default"
       data-testid="header-week-badge"
       onClick={allowShareGesture ? onWeekClick : undefined}
     >
