@@ -40,7 +40,7 @@ export function TeamScheduleRow({ game }: { game: TeamScheduleItem }) {
             <Link
               href={teamHref(opp)}
               prefetch={false}
-              className="inline-flex items-center min-h-11 font-mono font-semibold text-gold-400 underline underline-offset-2"
+              className="font-mono font-semibold text-gold-400 underline underline-offset-2"
             >
               {opp}
             </Link>
