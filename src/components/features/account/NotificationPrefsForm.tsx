@@ -53,7 +53,7 @@ export function NotificationPrefsForm({
         <NotifyMasterToggle
           value={prefs.masterOn}
           disabled={busy}
-          onChange={(masterOn) => void persist({ ...prefs, masterOn })}
+          onChange={(masterOn) => void persist({ ...prefs, masterOn })} // keep type channels
         />
         {prefs.masterOn ? (
           <NotifyTypeList

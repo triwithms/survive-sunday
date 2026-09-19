@@ -38,7 +38,8 @@ export async function PATCH(req: Request) {
       ? String((body as { userId?: unknown }).userId ?? "")
       : "";
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
-  const parsed = parsePreferencePatch(body);
+  const loaded = await loadNotifyPref(userId);
+  const parsed = parsePreferencePatch(body, loaded.prefs);
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }

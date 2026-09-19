@@ -24,7 +24,8 @@ export async function PATCH(req: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const parsed = parsePreferencePatch(body);
+  const loaded = await loadNotifyPref(session.user.id);
+  const parsed = parsePreferencePatch(body, loaded.prefs);
   if (!parsed.ok) {
     return NextResponse.json({ error: parsed.error }, { status: 400 });
   }

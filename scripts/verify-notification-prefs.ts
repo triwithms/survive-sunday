@@ -76,6 +76,24 @@ if (parsed.ok) {
   assert.equal(parsed.prefs.pickConfirmed, "sms");
   assert.equal(parsed.prefs.scoreUpdates, "off");
 }
+const stored = {
+  ...DEFAULT_NOTIFICATION_PREFS,
+  scoreUpdates: "sms" as const,
+  pickConfirmed: "both" as const,
+};
+const masterOff = parsePreferencePatch({ masterOn: false }, stored);
+assert.equal(masterOff.ok, true);
+if (masterOff.ok) {
+  assert.equal(masterOff.prefs.masterOn, false);
+  assert.equal(masterOff.prefs.scoreUpdates, "sms");
+  assert.equal(masterOff.prefs.pickConfirmed, "both");
+}
+const masterOn = parsePreferencePatch({ masterOn: true }, masterOff.ok ? masterOff.prefs : stored);
+assert.equal(masterOn.ok, true);
+if (masterOn.ok) {
+  assert.equal(masterOn.prefs.masterOn, true);
+  assert.equal(masterOn.prefs.scoreUpdates, "sms");
+}
 const bad = parsePreferencePatch({ missingPickReminder: "nope" });
 assert.equal(bad.ok, false);
 console.log("PASS  merge + parse");

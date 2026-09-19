@@ -1,11 +1,15 @@
 import {
-  DEFAULT_NOTIFICATION_PREFS,
+  mergeNotificationPrefs,
   NOTIFICATION_TYPES,
   type NotificationPrefs,
 } from "./notification-types";
 import { parseTypeChannel } from "./notify-pref";
 
-export function parsePreferencePatch(body: unknown):
+/** Overlay a patch on stored prefs. Master Off must not reset type channels. */
+export function parsePreferencePatch(
+  body: unknown,
+  current?: NotificationPrefs | null
+):
   | { ok: true; prefs: NotificationPrefs }
   | { ok: false; error: string } {
   if (!body || typeof body !== "object") {
@@ -16,7 +20,7 @@ export function parsePreferencePatch(body: unknown):
     input.channels && typeof input.channels === "object"
       ? (input.channels as Record<string, unknown>)
       : input;
-  const next = { ...DEFAULT_NOTIFICATION_PREFS };
+  const next = mergeNotificationPrefs(current);
   if ("masterOn" in input) {
     if (typeof input.masterOn !== "boolean") {
       return { ok: false, error: "Notifications must be On or Off" };
