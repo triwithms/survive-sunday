@@ -1,6 +1,6 @@
 # File map (targeted fixes)
 
-Before paid coding agents: free tiers in order — **free Grok, then free Claude, then free Gemini** — + this map first (#1 cost rule). See [HANDOFF](HANDOFF.md).
+Before paid coding agents: free tiers in order — **free Grok, then free Claude, then free Gemini** — + this map first (#1 cost rule). See [HANDOFF](HANDOFF.md). Free-AI start: [FREE-AI-START-HERE.md](FREE-AI-START-HERE.md). CoS takeover: [CHIEF-OF-STAFF-TAKEOVER.md](CHIEF-OF-STAFF-TAKEOVER.md).
 
 Point a chat at the **small folder**, not the whole app.
 
@@ -14,7 +14,7 @@ Bottom nav vs URLs (easy to mix up):
 - **Standings** is NFL W-L (`/nfl`)
 - Header **?** is Help (`/help`). Videos are not a tab.
 
-Checked on `main` (`26e9d35`). Do not invent paths.
+Checked on `main` (`263b34c`, 19 Sep 2026). Do not invent paths. Team full-season schedule is **not** on `main` yet (open [PR #132](https://github.com/triwithms/survive-sunday/pull/132) — HOLD).
 
 ## Screens
 
@@ -40,7 +40,7 @@ Pool board week (header **Week N**, not a player’s next-pick week): `src/lib/p
 
 **Add to Home Screen nudge** (signed-in phones only): `src/components/features/a2hs/` — `A2hsNudge.tsx` asks Yes / No / Not now. Yes = native Install or iOS Safari … → Share □↑ steps (`A2hsIosHint`). No = opt out; Help menu → **Install on Home Screen** (`HelpInstall` + `HelpInstallLink`) reopens Yes. Not now = next Sign in. Icon deleted (`installed` + !standalone) resets to pending. Mounted in `src/app/(app)/layout.tsx`. Shortcut label is **NFL Pool** (`public/manifest.webmanifest` `name` / `short_name`). Home Screen / browser icons: `public/icons/` (PNG `any` 192/512/1024 + `maskable` 192/512 in the centre ~80% safe zone, `apple-touch-icon` 180, SVG source). Favicon: `src/app/favicon.ico` + `public/icons/icon-32.png`, wired in `src/app/layout.tsx`. Rebuild: `node scripts/export-app-icons.mjs`. No NFL marks.
 
-Team logos: `src/components/TeamLogo.tsx` + `src/lib/espn-teams.ts` / `src/lib/team-helmets.ts`. Local backups in `public/helmets/{abbr}.png` (app abbr, e.g. `was.png`). Never letter badges.
+Team logos: `src/components/TeamLogo.tsx` + `src/lib/team-helmets.ts` (`resolveTeamLogoSrc`). **Local-only** transparent helmets at `public/helmets/{abbr}.png` (app abbr, e.g. `was.png`). No white plates. No ESPN CDN / stored `Team.logoUrl` in the UI. Never letter badges. (`src/lib/espn-teams.ts` still has ESPN id helpers; `TeamLogo` ignores `logoUrl`.)
 
 ## Server actions (save a pick / issue an invite)
 
@@ -96,4 +96,4 @@ Same role. No new role. User-facing copy says **Admin** (screen/nav) or **Admini
 
 ## ESPN last-good cache (slice 1)
 
-TTLs: `src/lib/static-cache-ttl.ts`. **Week slate / kickoffs** — last-good 6h (20s while live or in the kickoff window); refresh on TTL or slate hash change; Scores/Schedule skip ESPN refetch inside TTL (`espn-scoreboard.ts`, `week-espn-refresh.ts`, schedule/scores loaders). **Injuries** — last-good 24h, keep the last good list while refresh runs, replace only when the hash changes (`injury-cache.ts`, `live-injuries.ts`). Not frozen: live scores in a live window, picks, leaderboard, auth, Admin writes. Logos are a separate local-helmets PR.
+TTLs: `src/lib/static-cache-ttl.ts`. **Week slate / kickoffs** — last-good 6h (20s while live or in the kickoff window); refresh on TTL or slate hash change; Scores/Schedule skip ESPN refetch inside TTL (`espn-scoreboard.ts`, `week-espn-refresh.ts`, schedule/scores loaders). **Injuries** — last-good 24h, keep the last good list while refresh runs, replace only when the hash changes (`injury-cache.ts`, `live-injuries.ts`). Not frozen: live scores in a live window, picks, leaderboard, auth, Admin writes. Logos are local-only (`public/helmets/{abbr}.png`).
