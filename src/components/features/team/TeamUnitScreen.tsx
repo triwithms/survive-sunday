@@ -1,7 +1,7 @@
-import { NflPlayerRows } from "@/components/NflPlayerRows";
-import { splitRosterPlayers } from "@/lib/team-research";
+import { splitUnitPlayers } from "./order-unit-players";
 import { TeamBack } from "./TeamBack";
 import { TeamStartersToggle } from "./TeamStartersToggle";
+import { TeamUnitBlocks } from "./TeamUnitBlocks";
 import { unitTitle } from "./team-paths";
 import type { NflPlayerView } from "@/lib/team-research";
 import type { TeamPageData, TeamUnitKey } from "./types";
@@ -22,9 +22,10 @@ export function TeamUnitScreen({
   showAll: boolean;
 }) {
   const players = playersFor(data, unit);
-  const { starters } = splitRosterPlayers(players);
-  const hasStarters = starters.length > 0;
-  const shown = hasStarters && !showAll ? starters : players;
+  const { healthyStarters, injuredStarters, depth } = splitUnitPlayers(players);
+  const starterCount = healthyStarters.length + injuredStarters.length;
+  const hasStarters = starterCount > 0;
+  const extra = !hasStarters || showAll ? depth : [];
   const title = unitTitle(unit);
 
   return (
@@ -41,17 +42,22 @@ export function TeamUnitScreen({
         {hasStarters && (
           <TeamStartersToggle
             startersOnly={!showAll}
-            starterCount={starters.length}
+            starterCount={starterCount}
           />
         )}
-        {shown.length === 0 ? (
+        {starterCount + extra.length === 0 ? (
           <p className="text-base text-[var(--text-muted)]">
             {unit === "special-teams"
               ? "None listed. ESPN often skips returners as their own spots."
               : "None listed yet."}
           </p>
         ) : (
-          <NflPlayerRows teamAbbr={data.abbr} players={shown} />
+          <TeamUnitBlocks
+            teamAbbr={data.abbr}
+            healthyStarters={healthyStarters}
+            injuredStarters={injuredStarters}
+            depth={extra}
+          />
         )}
       </section>
     </div>
