@@ -15,8 +15,8 @@ export function TeamLogo({
   logoUrl: string | null;
   size?: number;
 }) {
-  const [broken, setBroken] = useState<string | null>(null);
-  const src = resolveTeamLogoSrc(abbr, logoUrl, broken);
+  const [failed, setFailed] = useState<string[]>([]);
+  const src = resolveTeamLogoSrc(abbr, logoUrl, failed);
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -25,9 +25,11 @@ export function TeamLogo({
       alt=""
       width={size}
       height={size}
-      className="shrink-0 rounded-md object-contain bg-white"
+      className="shrink-0 rounded-md object-contain bg-stadium-800"
       style={{ width: size, height: size }}
-      onError={() => setBroken(src)}
+      onError={() => {
+        setFailed((prev) => (prev.includes(src) ? prev : [...prev, src]));
+      }}
     />
   );
 }
