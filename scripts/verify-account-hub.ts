@@ -28,14 +28,15 @@ const links = src("src/components/features/account/AccountHubLinks.tsx");
 assert.match(links, /\/account\/notifications/);
 assert.match(links, /\/account\/mirror/);
 assert.match(links, /\/help/);
-assert.match(links, /FEEDBACK_MAILTO/);
+assert.match(links, /FEEDBACK_PATH/);
 assert.match(links, /Report a bug or idea/);
-assert.doesNotMatch(links, /Commissioner/);
+assert.doesNotMatch(links, /mailto:|Commissioner/);
 const row = src("src/components/features/account/account-row.ts");
-assert.match(
-  row,
-  /mailto:robertgama@gmail.com\?subject=Survive%20Sunday%20feedback/
-);
+assert.match(row, /\/account\/report/);
+assert.doesNotMatch(row, /mailto:|robertgama@gmail.com/);
+const report = src("src/app/(app)/account/report/page.tsx");
+assert.match(report, /ReportBugForm/);
+assert.match(report, /every Administrator/);
 
 const install = src("src/components/features/account/AccountInstallLink.tsx");
 assert.match(install, /\/help#install/);

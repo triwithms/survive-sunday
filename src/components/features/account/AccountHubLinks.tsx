@@ -1,6 +1,6 @@
 import { AccountInstallLink } from "./AccountInstallLink";
 import { AccountRow } from "./AccountRow";
-import { FEEDBACK_MAILTO } from "./account-row";
+import { FEEDBACK_PATH } from "./account-row";
 
 export function AccountHubLinks({
   showAdmin,
@@ -22,7 +22,7 @@ export function AccountHubLinks({
       {showAdmin ? <AccountRow href="/admin">Admin</AccountRow> : null}
       <AccountInstallLink />
       <AccountRow href="/help">Help</AccountRow>
-      <AccountRow href={FEEDBACK_MAILTO} external testId="account-feedback">
+      <AccountRow href={FEEDBACK_PATH} testId="account-feedback">
         Report a bug or idea
       </AccountRow>
     </div>

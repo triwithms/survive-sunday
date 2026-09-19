@@ -27,6 +27,10 @@ export function HelpAccount() {
           icon opens logged-out, Sign in once inside that icon.
         </li>
         <li className="text-[var(--text-primary)]">
+          <strong>Account → Report a bug or idea</strong> sends your note to
+          every Administrator in the pool.
+        </li>
+        <li className="text-[var(--text-primary)]">
           Stuck? Ask an administrator to set a temporary password and text it
           to you.
         </li>
