@@ -169,6 +169,14 @@ console.log("PASS  missing-schema detector");
 const accountMenu = readFileSync("src/components/AccountMenu.tsx", "utf8");
 assert.match(accountMenu, /href="\/account\/notifications"/);
 assert.match(accountMenu, /Notification preferences/);
+const helpPage = readFileSync("src/app/help/page.tsx", "utf8");
+assert.doesNotMatch(helpPage, /href="\/account\/notifications"/);
+assert.doesNotMatch(helpPage, /SignOutButton/);
+assert.match(helpPage, /safe-area-inset-top/);
+assert.match(
+  readFileSync("src/components/features/help/HelpScreens.tsx", "utf8"),
+  /Account → Notification preferences/
+);
 assert.match(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
   /ensureNotificationPrefsSafe/
