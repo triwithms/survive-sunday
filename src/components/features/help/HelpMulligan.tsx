@@ -13,8 +13,8 @@ export function HelpMulligan() {
         scent.
       </p>
       <p className="text-[var(--text-primary)]">
-        You can still change your own pick until your game kicks off. Auto
-        never overwrites a pick you already made.
+        You can still change your own pick until your game kicks off.{" "}
+        Auto never overwrites a pick you already made.
       </p>
     </div>
   );
