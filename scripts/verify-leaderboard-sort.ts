@@ -5,6 +5,10 @@
  */
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import {
+  isLeaderboardPath,
+  weekAllowsShare,
+} from "../src/components/HeaderWeekBadge";
 import { sortBoard } from "../src/components/features/board/sort-board";
 import {
   pickWinMargin,
@@ -32,6 +36,10 @@ mustInclude("src/components/features/board/board-copy.ts", [
 mustInclude("src/components/HeaderWeekBadge.tsx", [
   "isLeaderboardPath",
 ]);
+assert.equal(isLeaderboardPath("/standings"), true);
+assert.equal(isLeaderboardPath("/scores"), false);
+assert.equal(weekAllowsShare("/standings"), false);
+assert.equal(weekAllowsShare("/scores"), true);
 assert.doesNotMatch(
   readFileSync("src/components/features/board/BoardScreen.tsx", "utf8"),
   /points|fantasy/i,
