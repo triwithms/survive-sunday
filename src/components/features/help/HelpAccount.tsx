@@ -9,8 +9,8 @@ export function HelpAccount() {
           <strong>Account</strong> is in the header (top right). It opens{" "}
           <strong>Settings</strong>. Change nickname, add a cell, Sign out.{" "}
           <strong>Account → Notification preferences</strong> stays on its own
-          screen — not on Help. Choose SMS, Email, both, or none.
-          Password-reset codes always send when you ask.
+          screen — not on Help. Master On or Off, then Email, SMS, both, or
+          Off for each type. Password-reset codes always send when you ask.
         </li>
         <li className="text-[var(--text-primary)]">
           Sign in is email (or username) and password. We do not ask for a code

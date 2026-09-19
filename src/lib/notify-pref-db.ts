@@ -1,5 +1,13 @@
 import { prisma } from "./db";
-import { defaultNotifyPref, parseNotifyPref, type NotifyPref } from "./notify-pref";
+import { ensureNotificationPrefs } from "./notification-prefs";
+import type { NotificationType } from "./notification-types";
+import { channelsOf } from "./notify-pref-columns";
+import {
+  defaultNotifyPref,
+  parseNotifyPref,
+  type NotifyPref,
+  type TypeChannel,
+} from "./notify-pref";
 import { ensureUserNotifyPref } from "./notify-pref-schema";
 
 export type HydratedTarget = {
@@ -7,28 +15,30 @@ export type HydratedTarget = {
   email?: string | null;
   phoneE164?: string | null;
   notifyPref: NotifyPref;
+  masterOn: boolean;
+  channels: Record<NotificationType, TypeChannel>;
 };
 
-export async function loadNotifyPref(userId: string): Promise<{
-  pref: NotifyPref;
-  email: string | null;
-  phoneE164: string | null;
-}> {
+export async function loadNotifyPref(userId: string) {
+  const prefs = await ensureNotificationPrefs(userId);
   try {
     const row = await prisma.user.findUnique({
       where: { id: userId },
       select: { notifyPref: true, email: true, phoneE164: true },
     });
-    if (!row) return { pref: "none", email: null, phoneE164: null };
+    if (!row) {
+      return { pref: "none" as const, email: null, phoneE164: null, prefs };
+    }
     return {
       pref: parseNotifyPref(row.notifyPref) ?? defaultNotifyPref(row),
       email: row.email,
       phoneE164: row.phoneE164,
+      prefs,
     };
   } catch (error) {
     console.error("[notify] load pref failed", error);
     await ensureUserNotifyPref(prisma).catch(() => undefined);
-    return { pref: "none", email: null, phoneE164: null };
+    return { pref: "none" as const, email: null, phoneE164: null, prefs };
   }
 }
 
@@ -44,18 +54,7 @@ export async function hydrateNotifyTarget(target: {
     email: target.email ?? stored.email,
     phoneE164: target.phoneE164 ?? stored.phoneE164,
     notifyPref: parseNotifyPref(target.notifyPref) ?? stored.pref,
+    masterOn: stored.prefs.masterOn,
+    channels: channelsOf(stored.prefs),
   };
-}
-
-export async function saveNotifyPref(
-  userId: string,
-  pref: NotifyPref
-): Promise<NotifyPref> {
-  await ensureUserNotifyPref(prisma);
-  const row = await prisma.user.update({
-    where: { id: userId },
-    data: { notifyPref: pref },
-    select: { notifyPref: true },
-  });
-  return parseNotifyPref(row.notifyPref) ?? pref;
 }

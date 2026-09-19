@@ -44,7 +44,7 @@ function isMissingMembershipColumn(error: unknown): boolean {
     if (code === "P2022") return true;
   }
   const msg = error instanceof Error ? error.message : String(error ?? "");
-  return /autoPickStamps|pickBackup|mirrorFromMembershipId|isParticipant|playingFromWeek|singleEliminationFromWeek|notifyPref|does not exist in the current database/i.test(
+  return /autoPickStamps|pickBackup|mirrorFromMembershipId|isParticipant|playingFromWeek|singleEliminationFromWeek|notifyPref|masterOn|channelsJson|does not exist in the current database/i.test(
     msg
   );
 }

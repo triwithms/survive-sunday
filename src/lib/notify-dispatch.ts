@@ -9,6 +9,7 @@ import { planNotice, type ChannelPlan } from "./notify-plan";
 import type { NotifyCategory, NotifyPerson } from "./notify-channels";
 import { hydrateNotifyTarget } from "./notify-pref-db";
 import type { NotifyChannel } from "./notify-pref";
+import { withGameSmsFooter } from "./notify-sms-footer";
 
 export type DispatchTarget = NotifyPerson & { userId: string };
 
@@ -32,6 +33,7 @@ export async function dispatchNotice(opts: {
     user: target,
     category: opts.category,
     requested: opts.requested,
+    type: opts.type,
   });
   let emailed = false;
   let texted = false;
@@ -50,7 +52,7 @@ export async function dispatchNotice(opts: {
       skipped = skipped ?? plan.outcome;
       continue;
     }
-    const ok = await sendPlanned(plan, opts.content);
+    const ok = await sendPlanned(plan, opts.content, opts.category);
     if (plan.channel === "email") emailed = ok;
     if (plan.channel === "sms") texted = ok;
     if (!ok) skipped = skipped ?? "error";
@@ -59,7 +61,11 @@ export async function dispatchNotice(opts: {
   return { emailed, texted, skipped, outcomes: plans };
 }
 
-async function sendPlanned(plan: ChannelPlan, content: NotifyContent) {
+async function sendPlanned(
+  plan: ChannelPlan,
+  content: NotifyContent,
+  category: NotifyCategory
+) {
   if (!plan.dest) return false;
   if (plan.channel === "email") {
     const result = await sendResendMessage({
@@ -74,7 +80,8 @@ async function sendPlanned(plan: ChannelPlan, content: NotifyContent) {
     if (!result.ok) console.warn("[notify] email failed", result.error);
     return result.ok;
   }
-  const body = (content.smsBody ?? content.text).slice(0, 1500);
+  const raw = content.smsBody ?? content.text;
+  const body = (category === "game" ? withGameSmsFooter(raw) : raw).slice(0, 1500);
   const result = await sendTwilioMessage({ to: plan.dest, body });
   if (!result.ok) console.warn("[notify] SMS failed", result.error);
   return result.ok;

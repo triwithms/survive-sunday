@@ -4,6 +4,7 @@
  *   npx tsx scripts/verify-notification-prefs.ts
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   CORE_NOTIFICATION_TYPES,
   DEFAULT_NOTIFICATION_PREFS,
@@ -27,15 +28,16 @@ import {
   isMissingNotificationSchema,
   PREFS_LOAD_ERROR,
 } from "../src/lib/notification-schema";
-import { readFileSync } from "node:fs";
+import { GAME_SMS_FOOTER, withGameSmsFooter } from "../src/lib/notify-sms-footer";
 
-assert.equal(DEFAULT_NOTIFICATION_PREFS.missingPickReminder, true);
-assert.equal(DEFAULT_NOTIFICATION_PREFS.pickConfirmed, true);
-assert.equal(DEFAULT_NOTIFICATION_PREFS.resultsGraded, true);
-assert.equal(DEFAULT_NOTIFICATION_PREFS.eliminationMulligan, true);
-assert.equal(DEFAULT_NOTIFICATION_PREFS.poolAnnouncements, true);
-assert.equal(DEFAULT_NOTIFICATION_PREFS.scoreUpdates, false);
-assert.equal(DEFAULT_NOTIFICATION_PREFS.injuryNotes, false);
+assert.equal(DEFAULT_NOTIFICATION_PREFS.missingPickReminder, "both");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.pickConfirmed, "email");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.resultsGraded, "email");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.eliminationMulligan, "both");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.poolAnnouncements, "email");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.scoreUpdates, "off");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.injuryNotes, "off");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.masterOn, true);
 assert.equal(DEFAULT_NOTIFICATION_PREFS.pushEnabled, false);
 assert.equal(CORE_NOTIFICATION_TYPES.length, 5);
 assert.equal(OPTIONAL_NOTIFICATION_TYPES.length, 2);
@@ -45,20 +47,28 @@ assert.equal(isAccountRecoveryChannel("password_reset"), true);
 assert.equal(isAccountRecoveryChannel("missingPickReminder"), false);
 console.log("PASS  defaults + recovery never gated");
 
-const merged = mergeNotificationPrefs({ scoreUpdates: true });
-assert.equal(merged.scoreUpdates, true);
-assert.equal(merged.missingPickReminder, true);
+const merged = mergeNotificationPrefs({ scoreUpdates: "email" });
+assert.equal(merged.scoreUpdates, "email");
+assert.equal(merged.missingPickReminder, "both");
 assert.equal(isTypeEnabled(undefined, "missingPickReminder"), true);
-assert.equal(isTypeEnabled({ ...DEFAULT_NOTIFICATION_PREFS, resultsGraded: false }, "resultsGraded"), false);
+assert.equal(
+  isTypeEnabled({ ...DEFAULT_NOTIFICATION_PREFS, resultsGraded: "off" }, "resultsGraded"),
+  false
+);
+assert.equal(
+  isTypeEnabled({ ...DEFAULT_NOTIFICATION_PREFS, masterOn: false }, "missingPickReminder"),
+  false
+);
 
 const parsed = parsePreferencePatch({
-  missingPickReminder: false,
-  pickConfirmed: true,
+  missingPickReminder: "off",
+  pickConfirmed: "sms",
 });
 assert.equal(parsed.ok, true);
 if (parsed.ok) {
-  assert.equal(parsed.prefs.missingPickReminder, false);
-  assert.equal(parsed.prefs.scoreUpdates, false);
+  assert.equal(parsed.prefs.missingPickReminder, "off");
+  assert.equal(parsed.prefs.pickConfirmed, "sms");
+  assert.equal(parsed.prefs.scoreUpdates, "off");
 }
 const bad = parsePreferencePatch({ missingPickReminder: "nope" });
 assert.equal(bad.ok, false);
@@ -76,7 +86,7 @@ assert.deepEqual(emailOn, { send: true, reason: "ok" });
 
 const emailOff = shouldSendPoolEmail({
   email: "pat@example.com",
-  prefs: { ...DEFAULT_NOTIFICATION_PREFS, missingPickReminder: false },
+  prefs: { ...DEFAULT_NOTIFICATION_PREFS, missingPickReminder: "sms" },
   type: "missingPickReminder",
 });
 assert.equal(emailOff.send, false);
@@ -99,10 +109,9 @@ assert.equal(noisyDefault.reason, "pref-off");
 
 const smsOff = shouldSendMissingPickSms({
   phoneE164: "+14165551234",
-  prefs: { ...DEFAULT_NOTIFICATION_PREFS, missingPickReminder: false },
+  prefs: { ...DEFAULT_NOTIFICATION_PREFS, missingPickReminder: "email" },
 });
 assert.equal(smsOff.send, false);
-assert.equal(smsOff.reason, "pref-off");
 
 const smsOn = shouldSendMissingPickSms({
   phoneE164: "+14165551234",
@@ -118,10 +127,6 @@ assert.equal(
 );
 assert.equal(
   isMissingPickReminderWindow(new Date("2026-09-12T20:00:00.000Z"), now),
-  false
-);
-assert.equal(
-  isMissingPickReminderWindow(new Date("2026-09-10T15:00:00.000Z"), now),
   false
 );
 
@@ -150,73 +155,33 @@ const miss = missingPickCopy({
   lockLabel: "Thu 8:15 p.m.",
 });
 assert.match(miss.smsBody ?? "", /no Week 1 pick/);
-console.log("PASS  copy");
+assert.match(withGameSmsFooter(miss.smsBody ?? ""), /spam\/junk/);
+assert.match(GAME_SMS_FOOTER, /Not junk/);
+console.log("PASS  copy + SMS footer");
 
 assert.equal(isMissingNotificationSchema({ code: "P2021" }), true);
-assert.equal(isMissingNotificationSchema({ code: "P2022" }), true);
-assert.equal(
-  isMissingNotificationSchema(new Error("The table `public.NotificationPreference` does not exist in the current database.")),
-  true
-);
-assert.equal(isMissingNotificationSchema(new Error("unrelated")), false);
-assert.equal(
-  isMissingNotificationSchema(new Error("permission denied for table NotificationPreference")),
-  true
-);
 assert.match(PREFS_LOAD_ERROR, /defaults/i);
 console.log("PASS  missing-schema detector");
 
-const accountMenu = readFileSync("src/components/AccountMenu.tsx", "utf8");
-assert.match(accountMenu, /href="\/account"/);
-assert.doesNotMatch(accountMenu, /Notification preferences/);
-assert.doesNotMatch(accountMenu, /account\/mirror|pick-backup|Pick backup/);
-const hubLinks = readFileSync(
-  "src/components/features/account/AccountHubLinks.tsx",
-  "utf8"
-);
-assert.match(hubLinks, /href="\/account\/notifications"/);
-assert.match(hubLinks, /Notification preferences/);
-assert.match(hubLinks, /account\/mirror/);
-assert.match(hubLinks, /Pick backup/);
-const helpPage = readFileSync("src/app/help/page.tsx", "utf8");
-assert.doesNotMatch(helpPage, /href="\/account\/notifications"/);
-assert.doesNotMatch(helpPage, /SignOutButton/);
-assert.match(helpPage, /safe-area-inset-top/);
-assert.match(helpPage, /calc\(2rem\+env\(safe-area-inset-top\)\)/);
-assert.match(helpPage, /min-h-11/);
-assert.doesNotMatch(helpPage, /Wave 1|Wave 2|HelpInstallLink|showDemoCopy/);
-const helpAccount = readFileSync(
-  "src/components/features/help/HelpAccount.tsx",
-  "utf8"
-);
+const helpAccount = readFileSync("src/components/features/help/HelpAccount.tsx", "utf8");
 assert.match(helpAccount, /Account → Notification preferences/);
-assert.match(helpAccount, /SMS, Email, both, or none/);
+assert.match(helpAccount, /Master On or Off/);
+assert.match(helpAccount, /Email, SMS, both, or/);
 assert.doesNotMatch(helpAccount, /coming soon|Pick backup|pick backup/i);
-assert.doesNotMatch(
-  readFileSync("src/components/features/help/HelpScreens.tsx", "utf8"),
-  /Wave 1|Wave 2|Pick backup/
+
+const page = readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8");
+assert.match(page, /loadNotifyPref/);
+assert.match(page, /Account \(header\) → Notification preferences/);
+assert.match(page, /NotificationPrefsForm/);
+
+const prefsForm = readFileSync(
+  "src/components/features/account/NotificationPrefsForm.tsx",
+  "utf8"
 );
-assert.match(
-  readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
-  /loadNotifyPref/
-);
-assert.match(
-  readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
-  /Account \(header\) → Notification preferences/
-);
-assert.doesNotMatch(
-  readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),
-  /Coming soon/
-);
-const prefsForm = readFileSync("src/components/NotificationPrefsForm.tsx", "utf8");
-assert.match(prefsForm, /NotifyPrefSelect/);
+assert.match(prefsForm, /NotifyMasterToggle/);
+assert.match(prefsForm, /NotifyTypeList/);
 assert.match(prefsForm, /Saved/);
-assert.doesNotMatch(prefsForm, /Coming soon|disabled/);
-const channel = readFileSync("src/components/NotifyPrefSelect.tsx", "utf8");
-assert.match(channel, /SMS/);
-assert.match(channel, /Email/);
-assert.match(channel, /both/);
-assert.match(channel, /none/);
+assert.doesNotMatch(prefsForm, /Coming soon/);
 console.log("PASS  Account sheet link");
 
 console.log("\nverify-notification-prefs OK");

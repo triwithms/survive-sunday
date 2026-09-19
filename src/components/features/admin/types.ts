@@ -13,7 +13,16 @@ export type MemberRow = {
   isParticipant?: boolean;
   pickBackup: string | null;
   mirrorFromMembershipId: string | null;
-  user: { email: string | null; phoneE164: string | null; notifyPref?: string | null };
+  user: {
+    email: string | null;
+    phoneE164: string | null;
+    notifyPref?: string | null;
+    notificationPreference?: {
+      masterOn: boolean;
+      channelsJson: string;
+      pushEnabled: boolean;
+    } | null;
+  };
 };
 
 export type RemoveMember = {

@@ -1,4 +1,5 @@
 import type { MirrorOption } from "@/components/MirrorPicksForm";
+import type { NotificationPrefs } from "@/lib/notification-types";
 
 export type RosterMember = {
   id: string;
@@ -10,6 +11,7 @@ export type RosterMember = {
   email: string | null;
   phoneE164: string | null;
   notifyPref: string | null;
+  notifyPrefs?: NotificationPrefs;
   mirrorFromMembershipId: string | null;
   pickBackup: string | null;
 };

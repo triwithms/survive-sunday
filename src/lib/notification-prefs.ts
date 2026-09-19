@@ -12,13 +12,16 @@ import {
   mergeNotificationPrefs,
   type NotificationPrefs,
 } from "./notification-types";
+import { preferenceColumns, prefsFromRow } from "./notify-pref-columns";
 
 export type NotificationPrefsResult = {
   prefs: NotificationPrefs;
   error: string | null;
 };
 
-async function withNotificationTables<T>(fn: () => Promise<T>): Promise<T> {
+export { prefsFromRow };
+
+async function withTables<T>(fn: () => Promise<T>): Promise<T> {
   try {
     await ensureNotificationTables(prisma);
     return await fn();
@@ -33,38 +36,32 @@ export async function getNotificationPrefs(
   userId: string
 ): Promise<NotificationPrefs> {
   try {
-    const row = await withNotificationTables(() =>
-      prisma.notificationPreference.findUnique({
-        where: { userId },
-      })
+    const row = await withTables(() =>
+      prisma.notificationPreference.findUnique({ where: { userId } })
     );
-    return mergeNotificationPrefs(row);
+    return prefsFromRow(row);
   } catch (error) {
     console.error("[notifications] get prefs failed", error);
     return DEFAULT_NOTIFICATION_PREFS;
   }
 }
 
-/** Never throws — missing table / RLS / any DB error returns defaults. */
-export async function ensureNotificationPrefs(
-  userId: string
-): Promise<NotificationPrefs> {
-  const loaded = await ensureNotificationPrefsSafe(userId);
-  return loaded.prefs;
+export async function ensureNotificationPrefs(userId: string) {
+  return (await ensureNotificationPrefsSafe(userId)).prefs;
 }
 
 export async function ensureNotificationPrefsSafe(
   userId: string
 ): Promise<NotificationPrefsResult> {
   try {
-    const row = await withNotificationTables(() =>
+    const row = await withTables(() =>
       prisma.notificationPreference.upsert({
         where: { userId },
-        create: { userId, ...DEFAULT_NOTIFICATION_PREFS },
+        create: { userId, ...preferenceColumns(DEFAULT_NOTIFICATION_PREFS) },
         update: {},
       })
     );
-    return { prefs: mergeNotificationPrefs(row), error: null };
+    return { prefs: prefsFromRow(row), error: null };
   } catch (error) {
     console.error("[notifications] ensure prefs failed", error);
     return { prefs: DEFAULT_NOTIFICATION_PREFS, error: PREFS_LOAD_ERROR };
@@ -75,14 +72,15 @@ export async function saveNotificationPrefs(
   userId: string,
   prefs: NotificationPrefs
 ): Promise<NotificationPrefs> {
-  const row = await withNotificationTables(() =>
+  const columns = preferenceColumns(mergeNotificationPrefs(prefs));
+  const row = await withTables(() =>
     prisma.notificationPreference.upsert({
       where: { userId },
-      create: { userId, ...prefs },
-      update: { ...prefs },
+      create: { userId, ...columns },
+      update: columns,
     })
   );
-  return mergeNotificationPrefs(row);
+  return prefsFromRow(row);
 }
 
 export async function saveNotificationPrefsSafe(
@@ -90,8 +88,7 @@ export async function saveNotificationPrefsSafe(
   prefs: NotificationPrefs
 ): Promise<NotificationPrefsResult> {
   try {
-    const saved = await saveNotificationPrefs(userId, prefs);
-    return { prefs: saved, error: null };
+    return { prefs: await saveNotificationPrefs(userId, prefs), error: null };
   } catch (error) {
     console.error("[notifications] save prefs failed", error);
     return { prefs: mergeNotificationPrefs(prefs), error: PREFS_SAVE_ERROR };

@@ -20,8 +20,9 @@ export function HelpForAdmins() {
           you can text. They Sign in — no people list.
         </li>
         <li className="text-[var(--text-primary)]">
-          Notifications on Users use the same SMS / Email / both / none
-          dropdown as Account. System has <strong>Send test to me</strong>.
+          Notifications on Users use the same master On/Off and per-type
+          Email / SMS / both / Off as Account. System has{" "}
+          <strong>Send test to me</strong>.
         </li>
         <li className="text-[var(--text-primary)]">
           Personal Join links: one Copy per friend on their Users row. Do not

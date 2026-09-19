@@ -259,6 +259,10 @@ model NotificationPreference {
   injuryNotes          Boolean  @default(false)
   /// Stored only — PWA web push is not wired yet.
   pushEnabled          Boolean  @default(false)
+  /// GAME master. Off skips player notices. SECURITY still sends.
+  masterOn             Boolean  @default(true)
+  /// JSON { type: email|sms|both|off }. Empty → product defaults.
+  channelsJson         String   @default("{}")
   updatedAt            DateTime @updatedAt
 }
 

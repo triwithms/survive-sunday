@@ -26,9 +26,15 @@ export function planNotice(opts: {
   user: NotifyPerson;
   category: NotifyCategory;
   requested?: NotifyChannel[];
+  type?: string;
   env?: Record<string, string | undefined>;
 }): ChannelPlan[] {
-  const wanted = resolveChannels(opts.user, opts.category, opts.requested);
+  const wanted = resolveChannels(
+    opts.user,
+    opts.category,
+    opts.requested,
+    opts.type
+  );
   if (wanted.length === 0) {
     return [{ channel: "none", outcome: "skipped_pref" }];
   }

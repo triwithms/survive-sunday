@@ -14,6 +14,8 @@ import {
   isMissingNotificationSchema,
 } from "../src/lib/notification-schema";
 import { DEFAULT_NOTIFICATION_PREFS } from "../src/lib/notification-types";
+import { preferenceColumns } from "../src/lib/notify-pref-columns";
+import { ensureTypeChannelPrefs } from "../src/lib/notify-type-schema";
 
 assert.equal(isMissingNotificationSchema({ code: "P2021" }), true);
 assert.equal(isMissingNotificationSchema({ code: "P2022" }), true);
@@ -61,6 +63,7 @@ async function main() {
     );
 
     await ensureNotificationTables(prisma);
+    await ensureTypeChannelPrefs(prisma);
     assert.equal(
       await columnExists(prisma, "NotificationPreference", "pushEnabled"),
       true
@@ -73,17 +76,27 @@ async function main() {
       await columnExists(prisma, "NotificationPreference", "scoreUpdates"),
       true
     );
+    assert.equal(
+      await columnExists(prisma, "NotificationPreference", "masterOn"),
+      true
+    );
+    assert.equal(
+      await columnExists(prisma, "NotificationPreference", "channelsJson"),
+      true
+    );
 
     const user = await prisma.user.create({
       data: { email, name: "Verify Notif Schema" },
     });
     const row = await prisma.notificationPreference.upsert({
       where: { userId: user.id },
-      create: { userId: user.id, ...DEFAULT_NOTIFICATION_PREFS },
+      create: { userId: user.id, ...preferenceColumns(DEFAULT_NOTIFICATION_PREFS) },
       update: {},
     });
     assert.equal(row.missingPickReminder, true);
+    assert.equal(row.masterOn, true);
     assert.equal(row.pushEnabled, false);
+    assert.match(row.channelsJson, /missingPickReminder/);
     await prisma.notificationPreference.delete({ where: { id: row.id } });
     await prisma.user.delete({ where: { id: user.id } });
     console.log("PASS  stub table + missing columns recover; upsert works");

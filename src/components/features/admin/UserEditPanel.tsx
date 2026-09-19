@@ -50,7 +50,7 @@ export function UserEditPanel(p: Props) {
       >
         {p.busy ? "Saving…" : "Save this person"}
       </Button>
-      <RosterNotifyPref userId={member.userId} initial={member.notifyPref} />
+      <RosterNotifyPref userId={member.userId} initial={member.notifyPrefs} />
       {claimed && player ? (
         <SetMemberPasswordForm
           members={[rosterToPasswordMember(member)]}

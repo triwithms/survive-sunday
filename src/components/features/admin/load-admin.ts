@@ -20,7 +20,18 @@ export async function loadAdminGate() {
 export async function loadPoolMembers(poolId: string) {
   return prisma.membership.findMany({
     where: { poolId },
-    include: { user: { select: { email: true, phoneE164: true, notifyPref: true } } },
+    include: {
+      user: {
+        select: {
+          email: true,
+          phoneE164: true,
+          notifyPref: true,
+          notificationPreference: {
+            select: { masterOn: true, channelsJson: true, pushEnabled: true },
+          },
+        },
+      },
+    },
     orderBy: { nickname: "asc" },
   });
 }
