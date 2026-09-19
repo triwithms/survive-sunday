@@ -29,7 +29,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **Standings** (NFL W-L) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
 | **Videos** (deep link only) | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Not a bottom tab; clips also sit in Scores/Schedule Details. |
 | **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as My pick / Selections / Scores; future weeks stay browsable. |
-| **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · System** (`AdminNav.tsx`). `/admin` opens Users. `/admin/comms` redirects to Users. Users: **Add user** (`AddUserForm`) + find/expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — edit nickname / full name / email / cell (`RosterContactFields`); set password / copy text / Join; notification toggles stay disabled (`RosterNotifySoon`). No Who-are-you list. No Commissioner person. Pool: mulligan, **Make administrator**, **Hand the pool**. System: **Enter a friend’s pick** for current/past weeks (next week only after that friend’s own game starts + valid pick — `src/lib/enter-pick-week.ts`). Reset stays closed. No census / lock / grade / administrator-login panel. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
+| **Admin** | `src/components/features/admin/` — phone tabs **Users · Pool · System** (`AdminNav.tsx`). `/admin` opens Users. `/admin/comms` redirects to Users. Users: **Add user** (`AddUserForm`) + find/expand roster (`RosterEditor`, `RosterRow`, `UserEditPanel`) — edit nickname / full name / email / cell (`RosterContactFields`); email/cell unique vs another pool member (`src/lib/contact-taken.ts`); set password / copy text / Join; notification toggles stay disabled (`RosterNotifySoon`). No Who-are-you list. No Commissioner person. Pool: mulligan, **Make administrator**, **Hand the pool**. System: **Enter a friend’s pick** for current/past weeks (next week only after that friend’s own game starts + valid pick — `src/lib/enter-pick-week.ts`). Reset stays closed. No census / lock / grade / administrator-login panel. Password: `SetMemberPasswordForm.tsx`. Thin pages under `src/app/(app)/admin/`. Live-only (`src/lib/week-isolation.ts`). Join still claims `@survivesunday.demo` seats. |
 
 ## Shared buttons and cards
 
@@ -45,7 +45,8 @@ Team logos: `src/components/TeamLogo.tsx` + `src/lib/espn-teams.ts` / `src/lib/t
 |------|------|
 | Submit pick | `src/app/actions/submit-pick.ts` |
 | Issue invite | `src/app/actions/issue-invite-token.ts` |
-| Add user | `src/app/api/admin/add-user/route.ts` + `src/lib/add-user.ts` |
+| Add user | `src/app/api/admin/add-user/route.ts` + `src/lib/add-user.ts` — unique email/cell: `src/lib/contact-taken.ts` |
+| Save this person | `src/app/api/admin/roster/route.ts` + `src/lib/roster-profile.ts` — same uniqueness helpers |
 
 ## Thin route pages
 

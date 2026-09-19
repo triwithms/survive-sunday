@@ -8,10 +8,14 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "fs";
 import { join } from "path";
 import {
+  CELL_ALREADY_USED,
+  EMAIL_ALREADY_USED,
+  isCellTakenByOther,
   isEmailTakenByOther,
   nicknameTaken,
   parseRosterProfile,
 } from "../src/lib/roster-profile";
+import { uniqueContactFail } from "../src/lib/contact-taken";
 import { rosterDraftDirty } from "../src/components/features/admin/use-roster-edit";
 import { rosterMatches } from "../src/components/features/admin/roster-row-meta";
 import {
@@ -51,6 +55,8 @@ function main() {
   assertCap("src/components/features/admin");
   assert.ok(lineCount("src/lib/roster-profile.ts") <= 100);
   assert.ok(lineCount("src/lib/roster-profile-db.ts") <= 100);
+  assert.ok(lineCount("src/lib/contact-taken.ts") <= 100);
+  assert.ok(lineCount("src/lib/contact-taken-db.ts") <= 100);
   assert.ok(lineCount("src/app/api/admin/roster/route.ts") <= 100);
 
   const empty = parseRosterProfile({});
@@ -98,6 +104,38 @@ function main() {
   assert.equal(
     isEmailTakenByOther("u1", "paul@example.com", "other@example.com", { id: "u2" }),
     true
+  );
+  assert.equal(
+    isCellTakenByOther("u1", "+14165551234", "+14165551234", { id: "u1" }),
+    false
+  );
+  assert.equal(
+    isCellTakenByOther("u1", "+14165551234", "+14165550000", { id: "u2" }),
+    true
+  );
+  assert.equal(isCellTakenByOther("u1", "+14165551234", null, { id: "u2" }), false);
+  assert.equal(isCellTakenByOther("u1", null, "+14165551234", { id: "u1" }), false);
+  assert.equal(isCellTakenByOther("", null, "+14165551234", { id: "u2" }), true);
+  assert.equal(EMAIL_ALREADY_USED, "That email is already used");
+  assert.equal(CELL_ALREADY_USED, "That cell is already used.");
+  assert.equal(
+    uniqueContactFail(new Error("Unique constraint failed on the fields: (`User_email`)"))
+      ?.error,
+    EMAIL_ALREADY_USED
+  );
+
+  assert.match(
+    readFileSync("src/lib/roster-profile-db.ts", "utf8"),
+    /rosterContactClash/
+  );
+  assert.match(readFileSync("src/lib/add-user-db.ts", "utf8"), /addUserContactClash/);
+  assert.doesNotMatch(
+    readFileSync("src/lib/roster-profile-db.ts", "utf8"),
+    /already has an account/
+  );
+  assert.doesNotMatch(
+    readFileSync("src/lib/add-user-db.ts", "utf8"),
+    /already has an account/
   );
 
   assert.equal(rosterMatches(member, "416"), true);

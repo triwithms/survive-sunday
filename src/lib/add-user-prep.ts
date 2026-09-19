@@ -73,28 +73,4 @@ export function createdUserRow(
   };
 }
 
-export async function emailHasPlayerSeat(poolId: string, email: string) {
-  const existing = await prisma.user.findUnique({
-    where: { email },
-    select: { id: true },
-  });
-  if (!existing) return { existing: null as { id: string } | null, taken: false };
-  const seats = await prisma.membership.findMany({
-    where: { poolId, userId: existing.id },
-    select: { role: true },
-  });
-  return { existing, taken: seats.some((s) => s.role !== "admin") };
-}
-
-export function uniqueAddUserFail(err: unknown): AddUserResult | null {
-  const msg = err instanceof Error ? err.message : "";
-  if (/User_email/i.test(msg)) {
-    return { ok: false, error: "That email already has an account", status: 409 };
-  }
-  if (/Unique constraint|UNIQUE/.test(msg)) {
-    return { ok: false, error: "That nickname is already taken in this pool", status: 409 };
-  }
-  return null;
-}
-
 export { joinUrl };
