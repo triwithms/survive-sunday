@@ -20,6 +20,13 @@ export type ParseRosterProfile =
   | { ok: true; value: RosterProfileValue }
   | { ok: false; error: string; status: number };
 
+export {
+  CELL_ALREADY_USED,
+  EMAIL_ALREADY_USED,
+  isCellTakenByOther,
+  isEmailTakenByOther,
+} from "./contact-taken";
+
 export function nicknameTaken(
   members: { id: string; nickname: string }[],
   targetId: string,
@@ -27,16 +34,6 @@ export function nicknameTaken(
 ): boolean {
   const key = nickname.toLowerCase();
   return members.some((m) => m.id !== targetId && m.nickname.toLowerCase() === key);
-}
-
-export function isEmailTakenByOther(
-  currentUserId: string,
-  currentEmail: string,
-  nextEmail: string,
-  existing: { id: string } | null
-): boolean {
-  if (normalizeEmail(currentEmail) === nextEmail) return false;
-  return Boolean(existing && existing.id !== currentUserId);
 }
 
 function fail(error: string): ParseRosterProfile {
