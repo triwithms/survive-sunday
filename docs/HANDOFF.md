@@ -1,6 +1,6 @@
 # Survive Sunday — owner handoff
 
-**New Chief of Staff / crash recovery:** [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md) — how a new CoS takes over if Grok Bot freezes. Then this file + [`docs/FILE-MAP.md`](FILE-MAP.md).
+**Chief of Staff takeover:** [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md) (bare checklist). Product detail stays in this file and [`docs/FILE-MAP.md`](FILE-MAP.md).
 
 ## Agent cost / how to work
 
@@ -16,11 +16,11 @@ Paste-ready brief: [`docs/FREE-GROK.md`](FREE-GROK.md) (**free AI first** — Gr
 
 ## Multi-bot control (Chief of Staff)
 
-**Chief of Staff (Grok Bot)** is the lead director. Takeover playbook: [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md). Specialists work **on assignment only** (not a discovery swarm): Safety/DB, Docs Sync, Codebase Audit, QA.
+**Chief of Staff (Grok Bot)** is the lead director. Specialists work **on assignment only** (not a discovery swarm): Safety/DB, Docs Sync, Codebase Audit, QA.
 
 Chief of Staff turns friend-language product asks into small ordered jobs, enforces the **#1 cost rule** (free Grok → free Claude → free Gemini → paid only for code PRs), and stops duplicate PRs / credit burn. Specialists critique or ship in their lane when asked or on a clear trigger.
 
-Free-AI drafting: [`docs/FREE-GROK.md`](FREE-GROK.md). Start here: [`docs/FREE-AI-START-HERE.md`](FREE-AI-START-HERE.md).
+Free-AI drafting: [`docs/FREE-GROK.md`](FREE-GROK.md).
 
 This is the **keep-up guide** for the pool app. It is written for a **non-coder**. Use **click-by-click** steps here, then paste a starter prompt into a **new chat** when something breaks or you want a small change.
 
@@ -477,7 +477,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | YOU'RE OUT overlay | [#128](https://github.com/triwithms/survive-sunday/pull/128) | Eliminated players get a near-full overlay on My pick; no picks. Admin elimination alerts. |
 | Invite sign-in prefill | [#130](https://github.com/triwithms/survive-sunday/pull/130) | `/login?invite=` peeks hashed token (email + nickname only). Partial Admin player profiles. |
 | Account notifyPref + NOTIFY_MODE | [#133](https://github.com/triwithms/survive-sunday/pull/133) | Email / SMS / both / none on Account; Admin **Send test to me**; `NOTIFY_MODE` `dryrun` \| `allowlist` \| `live`. |
-| Chief of Staff takeover doc | [#135](https://github.com/triwithms/survive-sunday/pull/135) | [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md) — crash-recovery playbook for a new CoS. |
+| Chief of Staff takeover doc | [#135](https://github.com/triwithms/survive-sunday/pull/135) | [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md) — bare takeover checklist + pointers. Product detail stays in this file / FILE-MAP. |
 
 ### Open — not on `main` yet
 

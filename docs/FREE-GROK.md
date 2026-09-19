@@ -10,8 +10,6 @@ Filename stays `docs/FREE-GROK.md` so existing links keep working.
 
 **Docs freshness:** When any free or included usage allotment is near empty (owner flags Usage low, or it is known to be low), refresh HANDOFF / FREE-GROK.md / FILE-MAP with shipped changes **before** starting more work — so the next session (next free tier, or next week’s included Grok Bot / Cursor usage) starts from current docs. Applies to free Grok → free Claude → free Gemini **and** to Grok Bot / Cursor included weekly usage. Help only if a user/admin process changed. Do not wait until quota is fully gone.
 
-**AI split:** Free Grok (and the free cascade) for planning, research, copy, and checklists. **Paid Cursor / Grok Bot for actual code PRs only.** Start: [`docs/FREE-AI-START-HERE.md`](FREE-AI-START-HERE.md).
-
 This brief is for **free** chats in that order. It is **not** paid Grok Bot, Cursor desktop agents, or other expensive coding bots.
 
 ## Where to look (paste these, not the whole repo)
