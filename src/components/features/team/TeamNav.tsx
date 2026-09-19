@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { teamHref } from "./team-paths";
 
-export function TeamNav() {
+export function TeamNav({ abbr }: { abbr: string }) {
   return (
     <div className="flex flex-wrap gap-3 text-base">
       <Link
@@ -18,7 +19,7 @@ export function TeamNav() {
         This week&apos;s games
       </Link>
       <Link
-        href="/schedule"
+        href={teamHref(abbr, "schedule")}
         prefetch={false}
         className="text-[var(--text-muted)] underline underline-offset-2 hover:text-gold-400"
       >

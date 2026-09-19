@@ -1,8 +1,10 @@
 export { loadTeamPage } from "./load-team";
 export { loadTeamUnit } from "./load-team-unit";
+export { loadTeamSchedule } from "./load-team-schedule";
 export { TeamScreen } from "./TeamScreen";
 export { TeamUnitScreen } from "./TeamUnitScreen";
 export { TeamInjuriesScreen } from "./TeamInjuriesScreen";
 export { TeamNewsScreen } from "./TeamNewsScreen";
+export { TeamScheduleScreen } from "./TeamScheduleScreen";
 export { isTeamSection, isTeamUnit } from "./team-paths";
 export type { TeamPageData, TeamSection, TeamUnitKey } from "./types";
