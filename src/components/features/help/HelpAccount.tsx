@@ -1,3 +1,5 @@
+import { A2hsIosHint } from "@/components/features/a2hs/A2hsIosHint";
+
 export function HelpAccount({ showDemoCopy = false }: { showDemoCopy?: boolean }) {
   return (
     <>
@@ -20,8 +22,11 @@ export function HelpAccount({ showDemoCopy = false }: { showDemoCopy?: boolean }
         <h2 className="text-lg font-semibold text-gold-400 mb-2">11. Install the app (PWA)</h2>
         <p className="text-[var(--text-muted)] mb-2">Survive Sunday works in a phone browser, on a computer, or as a Home Screen app. After you Join or Sign in once, you stay signed in on that device — open the icon and you’re in the pool. We do not ask for a code every time.</p>
         <p className="text-[var(--text-muted)] mb-2">After Sign in on a phone, we ask if you want to add <strong>NFL Pool</strong> to the Home Screen. <strong>Yes</strong> / <strong>No</strong> / <strong>Not now</strong>. Not now asks again next Sign in. No stops asking — Help → <strong>Install on Home Screen</strong> (top of Help) shows the same Yes steps. If you already open the Home Screen icon, we do not nag. If you delete the icon and open in Safari, we ask again.</p>
+        <p className="text-sm font-medium text-[var(--text-primary)] mb-1">iPhone / iPad — Safari</p>
+        <div className="mb-2">
+          <A2hsIosHint />
+        </div>
         <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
-          <li className="text-[var(--text-primary)]"><strong>iPhone / iPad (Safari):</strong> stay in Safari (not Chrome, and not the browser inside Messages). Tap the box-with-arrow (□↑) at the bottom of Safari (top on iPad) → <strong>Add to Home Screen</strong> → <strong>Add</strong>.</li>
           <li className="text-[var(--text-primary)]"><strong>Android (Chrome):</strong> stay in Chrome. If you see <strong>Install</strong>, tap it. Or the three-dot menu → <strong>Install app</strong> or <strong>Add to Home screen</strong>.</li>
           <li className="text-[var(--text-primary)]"><strong>Computer:</strong> any modern browser works. Bookmark the pool if you like.</li>
         </ul>
