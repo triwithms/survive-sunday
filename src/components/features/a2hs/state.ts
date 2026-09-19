@@ -70,9 +70,19 @@ export function shouldShowA2hs(input: {
   now?: number;
 }): boolean {
   if (input.standalone || !input.mobile) return false;
-  if (input.status === "installed" || input.status === "optout") return false;
+  if (input.status === "optout") return false;
   if (input.status === "snoozed") {
     return (input.snoozeUntil ?? 0) <= (input.now ?? Date.now());
   }
   return true;
+}
+
+/** Icon removed: browser again, so ask again. Opt-out stays quiet. */
+export function reconcileA2hs(
+  rec: A2hsRecord,
+  standalone: boolean
+): A2hsRecord {
+  if (standalone) return { status: "installed" };
+  if (rec.status === "installed") return { status: "pending" };
+  return rec;
 }

@@ -31,7 +31,6 @@ export function A2hsCard({
       className="fixed inset-x-0 z-50 mx-auto max-w-pool px-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))]"
     >
       <div className="card-glass space-y-3 border border-stadium-border p-4 shadow-lg">
-        <h2 className="font-display text-lg text-gold-400">Add to Home Screen</h2>
         <A2hsCopy
           variant={variant}
           canPrompt={canPrompt}

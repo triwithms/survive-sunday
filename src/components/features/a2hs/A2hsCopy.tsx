@@ -19,37 +19,24 @@ export function A2hsCopy({
   if (variant === "inapp") {
     return (
       <>
-        <p className="text-sm text-[var(--text-muted)]">
-          This in-app browser can&apos;t add the icon. Open this link in{" "}
-          <strong className="text-[var(--text-primary)]">Safari</strong> first
-          (Chrome on Android).
-        </p>
+        <p className="text-sm text-[var(--text-muted)]">Open in Safari first.</p>
         <button type="button" className="btn-primary w-full" onClick={onCopy}>
           {copied ? "Link copied" : "Copy link"}
         </button>
       </>
     );
   }
-
-  if (variant === "ios") {
-    return <A2hsIosHint />;
+  if (variant === "ios") return <A2hsIosHint />;
+  if (canPrompt) {
+    return (
+      <button type="button" className="btn-primary w-full" onClick={onInstall}>
+        Install
+      </button>
+    );
   }
-
   return (
-    <>
-      <p className="text-sm text-[var(--text-muted)]">
-        Add NFL Pool to your Home Screen.
-      </p>
-      {canPrompt ? (
-        <button type="button" className="btn-primary w-full" onClick={onInstall}>
-          Install
-        </button>
-      ) : (
-        <p className="text-sm text-[var(--text-muted)]">
-          Chrome menu (⋮) →{" "}
-          <strong className="text-[var(--text-primary)]">Install app</strong>
-        </p>
-      )}
-    </>
+    <p className="text-sm text-[var(--text-muted)]">
+      Chrome (⋮) → <strong className="text-[var(--text-primary)]">Install</strong>
+    </p>
   );
 }

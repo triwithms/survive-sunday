@@ -48,7 +48,8 @@ function main() {
     loginEmailQueryValue("RobertGama@gmail.com") === "robertgama@gmail.com",
     "email kept and lowercased"
   );
-  assert(loginEmailQueryValue("not-an-email") === "", "reject non-email");
+  assert(loginEmailQueryValue("Gams") === "Gams", "keep username");
+  assert(loginEmailQueryValue("https://evil") === "", "reject urls");
   assert(
     loginFailurePath("CredentialsSignin", "robertgama@gmail.com") ===
       "/login?error=CredentialsSignin&email=robertgama%40gmail.com",

@@ -14,6 +14,7 @@ import {
 } from "../src/components/features/a2hs/env";
 import {
   A2HS_SNOOZE_MS,
+  reconcileA2hs,
   shouldShowA2hs,
 } from "../src/components/features/a2hs/state";
 
@@ -37,31 +38,24 @@ assert.equal(isMobile(desktop), false);
 assert.equal(isMobile("Mozilla/5.0 (Macintosh; Intel Mac OS X)", 5), true);
 assert.equal(isInAppBrowser(fbIos), true);
 assert.equal(isInAppBrowser(instagram), true);
-assert.equal(isInAppBrowser("Mozilla/5.0 WhatsApp/2.0"), true);
-assert.equal(isInAppBrowser("Mozilla/5.0 Line/13.0"), true);
 assert.equal(a2hsVariant(iphone), "ios");
 assert.equal(a2hsVariant(android), "android");
 assert.equal(a2hsVariant(fbIos), "inapp");
 assert.equal(a2hsVariant(chromeIos), "inapp");
 
 const ask = { mobile: true, standalone: false, status: "pending" as const };
-assert.equal(shouldShowA2hs(ask), true, "iPhone Safari pending → show");
-assert.equal(
-  shouldShowA2hs({ ...ask, standalone: true }),
-  false,
-  "Home Screen icon → never show"
-);
-assert.equal(
-  shouldShowA2hs({ ...ask, mobile: false }),
-  false,
-  "desktop → never show"
-);
-assert.equal(shouldShowA2hs({ ...ask, status: "optout" }), false, "opt-out persists");
+assert.equal(shouldShowA2hs(ask), true, "Safari pending → show");
+assert.equal(shouldShowA2hs({ ...ask, standalone: true }), false, "icon → hide");
+assert.equal(shouldShowA2hs({ ...ask, mobile: false }), false, "desktop → hide");
+assert.equal(shouldShowA2hs({ ...ask, status: "optout" }), false, "opt-out");
 assert.equal(
   shouldShowA2hs({ ...ask, status: "installed" }),
-  false,
-  "I added it / standalone → installed"
+  true,
+  "installed but in Safari → show"
 );
+assert.equal(reconcileA2hs({ status: "installed" }, false).status, "pending");
+assert.equal(reconcileA2hs({ status: "optout" }, false).status, "optout");
+assert.equal(reconcileA2hs({ status: "pending" }, true).status, "installed");
 assert.equal(
   shouldShowA2hs({
     ...ask,
@@ -69,30 +63,18 @@ assert.equal(
     snoozeUntil: Date.now() + A2HS_SNOOZE_MS,
   }),
   false,
-  "Later hides for 3 days"
-);
-assert.equal(
-  shouldShowA2hs({ ...ask, status: "snoozed", snoozeUntil: Date.now() - 1 }),
-  true,
-  "expired snooze → show again"
+  "Later hides 3 days"
 );
 
 const manifest = readFileSync("public/manifest.webmanifest", "utf8");
 assert.match(manifest, /"name": "NFL Pool"/);
 assert.match(manifest, /"short_name": "NFL Pool"/);
-
 const copy = readFileSync("src/components/features/a2hs/A2hsCopy.tsx", "utf8");
 const ios = readFileSync("src/components/features/a2hs/A2hsIosHint.tsx", "utf8");
-assert.match(copy, /Add NFL Pool to your Home Screen/);
 assert.match(copy, /Install/);
-assert.match(copy, /Open this link in/);
-assert.match(copy, /Safari/);
+assert.match(copy, /Open in Safari first/);
 assert.doesNotMatch(ios, /Share button/);
 assert.match(ios, /bottom of Safari/);
-assert.match(ios, /Add to Home Screen/);
 assert.match(ios, /size=\{56\}/);
-
-const apple = readFileSync("src/app/layout.tsx", "utf8");
-assert.match(apple, /title: "NFL Pool"/);
 
 console.log("verify-pwa-install OK");

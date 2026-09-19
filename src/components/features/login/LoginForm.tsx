@@ -18,23 +18,21 @@ export function LoginForm() {
   const callbackUrl = safeLoginCallbackPath(params.get("callbackUrl"));
 
   return (
-    <main className="min-h-dvh mx-auto max-w-sheet px-4 py-12">
-      <h1 className="font-display text-4xl text-gold-400 mb-8">Sign in</h1>
-
+    <main className="min-h-dvh mx-auto max-w-sheet px-5 py-16">
+      <h1 className="font-display text-4xl text-gold-400 mb-10">Sign in</h1>
       {err && (
         <p
-          className="mb-4 card-glass p-4 text-crimson-400 text-sm font-medium"
+          className="mb-5 text-crimson-400 text-base font-medium"
           role="alert"
           data-testid="login-error"
         >
           {err}
         </p>
       )}
-
       <form
         action="/api/login"
         method="post"
-        className="space-y-5 card-glass p-5"
+        className="space-y-6"
         onSubmit={() => {
           markAddToHomePending();
           setBusy(true);
@@ -42,7 +40,7 @@ export function LoginForm() {
       >
         <input type="hidden" name="callbackUrl" value={callbackUrl} />
         <label className="block text-base">
-          <span className="text-[var(--text-muted)]">Email or username</span>
+          <span className="text-[var(--text-primary)]">Email or username</span>
           <input
             type="text"
             name="email"
@@ -50,26 +48,30 @@ export function LoginForm() {
             defaultValue={emailPrefill}
             autoComplete="username"
             inputMode="email"
-            className="mt-1 min-h-12 text-base"
+            className="mt-2 min-h-14 text-lg"
           />
         </label>
         <label className="block text-base">
-          <span className="text-[var(--text-muted)]">Password</span>
+          <span className="text-[var(--text-primary)]">Password</span>
           <input
             type="password"
             name="password"
             required
             autoComplete="current-password"
-            className="mt-1 min-h-12 text-base"
+            className="mt-2 min-h-14 text-lg"
           />
         </label>
-        <button type="submit" className="btn-primary w-full min-h-12" disabled={busy}>
+        <button
+          type="submit"
+          className="btn-primary w-full min-h-14 text-lg"
+          disabled={busy}
+        >
           {busy ? "Signing in…" : "Sign in"}
         </button>
-        <p className="text-base text-center">
+        <p className="text-center">
           <Link
             href="/login/forgot"
-            className="text-[var(--text-muted)] underline underline-offset-2 min-h-11 inline-flex items-center"
+            className="text-[var(--text-muted)] underline underline-offset-2 min-h-12 inline-flex items-center text-base"
           >
             Forgot password?
           </Link>

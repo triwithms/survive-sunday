@@ -18,14 +18,14 @@ export function ProfileField({
   placeholder,
 }: Props) {
   return (
-    <label className="block text-sm">
-      <span className="text-[var(--text-muted)]">{label}</span>
+    <label className="block text-base">
+      <span className="text-[var(--text-primary)]">{label}</span>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required
         maxLength={maxLength}
-        className="mt-1"
+        className="mt-2 min-h-14 text-lg"
         autoComplete={autoComplete}
         inputMode={inputMode}
         placeholder={placeholder}

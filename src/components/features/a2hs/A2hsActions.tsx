@@ -5,19 +5,17 @@ type Props = {
 };
 
 export function A2hsActions({ onAdded, onLater, onOptOut }: Props) {
+  const link =
+    "block w-full text-center text-sm text-[var(--text-muted)] underline underline-offset-2 min-h-11";
   return (
-    <div className="space-y-2">
-      <button type="button" className="btn-secondary w-full" onClick={onAdded}>
-        I added it
-      </button>
-      <button type="button" className="btn-secondary w-full" onClick={onLater}>
+    <div className="space-y-1">
+      <button type="button" className={link} onClick={onLater}>
         Later
       </button>
-      <button
-        type="button"
-        className="block w-full text-center text-xs text-[var(--text-muted)] underline underline-offset-2 min-h-11"
-        onClick={onOptOut}
-      >
+      <button type="button" className={link} onClick={onAdded}>
+        I added it
+      </button>
+      <button type="button" className={link} onClick={onOptOut}>
         Don&apos;t ask again
       </button>
     </div>

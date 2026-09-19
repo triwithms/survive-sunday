@@ -8,13 +8,13 @@ export function ForgotCodeStep({
   info, err, busy, cooldown, onReset, onResend,
 }: ForgotCodeStepProps) {
   return (
-    <form onSubmit={onReset} className="space-y-4 card-glass p-5">
+    <form onSubmit={onReset} className="space-y-6">
       <p className="text-sm text-[var(--text-muted)]">
         Code sent to {view?.destinationMasked ?? email}. Expires in about 10
         minutes.
       </p>
-      <label className="block text-sm">
-        <span className="text-[var(--text-muted)]">One-time code</span>
+      <label className="block text-base">
+        <span className="text-[var(--text-primary)]">One-time code</span>
         <input
           inputMode="numeric"
           autoComplete="one-time-code"
@@ -23,13 +23,13 @@ export function ForgotCodeStep({
           maxLength={6}
           value={code}
           onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-          className="mt-1 text-center font-mono tracking-[0.35em] text-2xl"
+          className="mt-2 min-h-14 text-center font-mono tracking-[0.35em] text-2xl"
           placeholder="000000"
           required
         />
       </label>
-      <label className="block text-sm">
-        <span className="text-[var(--text-muted)]">New password</span>
+      <label className="block text-base">
+        <span className="text-[var(--text-primary)]">New password</span>
         <input
           type="password"
           required
@@ -37,11 +37,11 @@ export function ForgotCodeStep({
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="new-password"
-          className="mt-1"
+          className="mt-2 min-h-14 text-lg"
         />
       </label>
-      <label className="block text-sm">
-        <span className="text-[var(--text-muted)]">Confirm password</span>
+      <label className="block text-base">
+        <span className="text-[var(--text-primary)]">Confirm password</span>
         <input
           type="password"
           required
@@ -49,7 +49,7 @@ export function ForgotCodeStep({
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
           autoComplete="new-password"
-          className="mt-1"
+          className="mt-2 min-h-14 text-lg"
         />
       </label>
       {info && !err && <p className="text-sm text-field-400">{info}</p>}

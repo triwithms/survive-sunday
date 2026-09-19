@@ -23,11 +23,11 @@ export default async function WelcomePage() {
 
   return (
     <main className="min-h-dvh mx-auto max-w-sheet px-4 py-10">
-      <h1 className="font-display text-3xl text-gold-400 mb-2">
-        Almost in
+      <h1 className="font-display text-4xl text-gold-400 mb-3">
+        Your details
       </h1>
-      <p className="text-sm text-[var(--text-muted)] mb-6">
-        One time — add what’s missing, then you’re in the pool.
+      <p className="text-base text-[var(--text-muted)] mb-8">
+        Fill in what’s missing. Once is enough.
       </p>
       <CompleteProfileForm
         missing={missing}

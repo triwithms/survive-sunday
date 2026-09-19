@@ -46,7 +46,7 @@ export function CompleteProfileForm({ missing, nickname, fullName }: Props) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4 card-glass p-5">
+    <form onSubmit={onSubmit} className="space-y-6">
       {needNick && (
         <ProfileField
           label="Nickname"
@@ -80,7 +80,7 @@ export function CompleteProfileForm({ missing, nickname, fullName }: Props) {
           {err}
         </p>
       )}
-      <button type="submit" className="btn-primary w-full" disabled={busy}>
+      <button type="submit" className="btn-primary w-full min-h-14 text-lg" disabled={busy}>
         {busy ? "Saving…" : "Continue"}
       </button>
     </form>

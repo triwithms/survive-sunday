@@ -15,7 +15,7 @@ import {
   isStandalone,
   type A2hsVariant,
 } from "./env";
-import { readA2hsState, shouldShowA2hs } from "./state";
+import { readA2hsState, reconcileA2hs, shouldShowA2hs, writeA2hsState } from "./state";
 import { useInstallPrompt } from "./useInstallPrompt";
 
 export function A2hsNudge() {
@@ -25,14 +25,15 @@ export function A2hsNudge() {
   const { canPrompt, promptInstall } = useInstallPrompt();
 
   const refresh = useCallback(() => {
-    if (isStandalone()) {
-      markInstalled();
+    const standalone = isStandalone();
+    const rec = reconcileA2hs(readA2hsState(), standalone);
+    writeA2hsState(rec);
+    if (standalone) {
       setOpen(false);
       return;
     }
     const { ua, touch } = clientUa();
     setVariant(a2hsVariant(ua, touch));
-    const rec = readA2hsState();
     setOpen(
       shouldShowA2hs({
         mobile: isMobile(ua, touch),
