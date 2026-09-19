@@ -1,4 +1,3 @@
-import { A2hsActions } from "./A2hsActions";
 import { A2hsCopy } from "./A2hsCopy";
 import type { A2hsVariant } from "./env";
 
@@ -6,22 +5,24 @@ type Props = {
   variant: A2hsVariant;
   canPrompt: boolean;
   copied: boolean;
+  yesMode: boolean;
+  onYes: () => void;
+  onNo: () => void;
+  onNotNow: () => void;
   onInstall: () => void;
   onCopy: () => void;
-  onAdded: () => void;
-  onLater: () => void;
-  onOptOut: () => void;
 };
 
 export function A2hsCard({
   variant,
   canPrompt,
   copied,
+  yesMode,
+  onYes,
+  onNo,
+  onNotNow,
   onInstall,
   onCopy,
-  onAdded,
-  onLater,
-  onOptOut,
 }: Props) {
   return (
     <aside
@@ -31,18 +32,30 @@ export function A2hsCard({
       className="fixed inset-x-0 z-50 mx-auto max-w-pool px-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))]"
     >
       <div className="card-glass space-y-3 border border-stadium-border p-4 shadow-lg">
-        <A2hsCopy
-          variant={variant}
-          canPrompt={canPrompt}
-          copied={copied}
-          onInstall={onInstall}
-          onCopy={onCopy}
-        />
-        <A2hsActions
-          onAdded={onAdded}
-          onLater={onLater}
-          onOptOut={onOptOut}
-        />
+        {yesMode ? (
+          <A2hsCopy
+            variant={variant}
+            canPrompt={canPrompt}
+            copied={copied}
+            onInstall={onInstall}
+            onCopy={onCopy}
+          />
+        ) : (
+          <>
+            <p className="text-base text-[var(--text-primary)]">
+              Do you want to add NFL Pool to your Home Screen?
+            </p>
+            <button type="button" className="btn-primary w-full min-h-14 text-lg" onClick={onYes}>
+              Yes
+            </button>
+            <button type="button" className="btn-secondary w-full min-h-14 text-lg" onClick={onNo}>
+              No
+            </button>
+            <button type="button" className="btn-secondary w-full min-h-14 text-lg" onClick={onNotNow}>
+              Not now
+            </button>
+          </>
+        )}
       </div>
     </aside>
   );

@@ -39,13 +39,16 @@ export function HelpIntro() {
           <li className="text-[var(--text-primary)]">Text them that email + password. They Sign in — they do not pick from a people list.</li>
         </ol>
 
-        <h3 className="font-semibold mt-3 mb-1">C. Add to Home Screen (make it an app)</h3>
+        <h3 id="install-home-screen" className="font-semibold mt-3 mb-1">
+          C. Add to Home Screen (make it an app)
+        </h3>
         <p className="text-[var(--text-muted)] mb-2">
-          After Sign in on a phone browser, we may ask to add <strong>NFL Pool</strong>{" "}
-          (the Home Screen icon name). Tap <strong>I added it</strong>,{" "}
-          <strong>Later</strong>, or <strong>Don&apos;t ask again</strong>. Account →{" "}
-          <strong>Add to Home Screen</strong> brings the card back. If you
-          already open the Home Screen icon, we do not nag.
+          After Sign in on a phone, we ask: <strong>Do you want to add NFL Pool
+          to your Home Screen?</strong> <strong>Yes</strong> installs (or shows
+          the Safari □↑ steps). <strong>Not now</strong> asks again next Sign in.
+          <strong>No</strong> stops asking — use <strong>Install on Home Screen</strong>{" "}
+          at the top of Help. Opening from the icon does not nag. If you delete
+          the icon and open in Safari, we ask again.
         </p>
         <p className="text-sm font-medium text-[var(--text-primary)] mb-1">iPhone / iPad — Safari</p>
         <p className="text-[var(--text-muted)] mb-3">
