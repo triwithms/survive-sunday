@@ -44,6 +44,9 @@ function main() {
   assert(login.includes("Forgot password?"), "Forgot password link");
   assert(login.includes('name="email"'), "email field");
   assert(login.includes('name="password"'), "password field");
+  assert(login.includes("Email or username"), "email or username label");
+  assert(!login.includes("← Survive Sunday"), "no back-link chrome");
+  assert(!/Join the pool|Who are you/i.test(login), "no Join CTA");
   assert(login.includes("Sign in"), "Sign in button");
   assert(!/Google|Continue with/i.test(login), "no Google on Sign in");
   assert(!login.includes("SignInCodeForm"), "no OTP form");

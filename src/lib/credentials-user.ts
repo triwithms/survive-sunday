@@ -29,6 +29,18 @@ export async function lookupUserByEmail(email: string): Promise<CredentialRecord
   return null;
 }
 
+/** Email, or pool nickname when the friend types a username. */
+export async function lookupUserByLogin(login: string): Promise<CredentialRecord | null> {
+  const trimmed = login.trim();
+  if (!trimmed) return null;
+  if (trimmed.includes("@")) return lookupUserByEmail(trimmed);
+  const member = await prisma.membership.findFirst({
+    where: { nickname: { equals: trimmed, mode: "insensitive" } },
+    select: { user: true },
+  });
+  return member?.user ?? null;
+}
+
 /**
  * Resolve a credentials login. Must not throw — Auth.js wraps authorize
  * exceptions as CallbackRouteError (HTTP path shows Configuration).
@@ -41,7 +53,7 @@ export async function lookupUserByEmail(email: string): Promise<CredentialRecord
 export async function userFromCredentials(
   email: string,
   password: string,
-  lookup: (email: string) => Promise<CredentialRecord | null> = lookupUserByEmail
+  lookup: (email: string) => Promise<CredentialRecord | null> = lookupUserByLogin
 ): Promise<AuthorizedUser | null> {
   try {
     const user = await lookup(email);

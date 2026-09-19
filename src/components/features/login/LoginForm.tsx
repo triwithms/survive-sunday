@@ -18,11 +18,8 @@ export function LoginForm() {
   const callbackUrl = safeLoginCallbackPath(params.get("callbackUrl"));
 
   return (
-    <main className="min-h-dvh mx-auto max-w-sheet px-4 py-10">
-      <Link href="/" className="text-sm text-gold-400">
-        ← Survive Sunday
-      </Link>
-      <h1 className="font-display text-3xl text-gold-400 mt-6 mb-6">Sign in</h1>
+    <main className="min-h-dvh mx-auto max-w-sheet px-4 py-12">
+      <h1 className="font-display text-4xl text-gold-400 mb-8">Sign in</h1>
 
       {err && (
         <p
@@ -37,41 +34,42 @@ export function LoginForm() {
       <form
         action="/api/login"
         method="post"
-        className="space-y-4 card-glass p-5"
+        className="space-y-5 card-glass p-5"
         onSubmit={() => {
           markAddToHomePending();
           setBusy(true);
         }}
       >
         <input type="hidden" name="callbackUrl" value={callbackUrl} />
-        <label className="block text-sm">
-          <span className="text-[var(--text-muted)]">Email</span>
+        <label className="block text-base">
+          <span className="text-[var(--text-muted)]">Email or username</span>
           <input
-            type="email"
+            type="text"
             name="email"
             required
             defaultValue={emailPrefill}
-            autoComplete="email"
-            className="mt-1"
+            autoComplete="username"
+            inputMode="email"
+            className="mt-1 min-h-12 text-base"
           />
         </label>
-        <label className="block text-sm">
+        <label className="block text-base">
           <span className="text-[var(--text-muted)]">Password</span>
           <input
             type="password"
             name="password"
             required
             autoComplete="current-password"
-            className="mt-1"
+            className="mt-1 min-h-12 text-base"
           />
         </label>
-        <button type="submit" className="btn-primary w-full" disabled={busy}>
+        <button type="submit" className="btn-primary w-full min-h-12" disabled={busy}>
           {busy ? "Signing in…" : "Sign in"}
         </button>
-        <p className="text-sm text-center">
+        <p className="text-base text-center">
           <Link
             href="/login/forgot"
-            className="text-[var(--text-muted)] underline underline-offset-2"
+            className="text-[var(--text-muted)] underline underline-offset-2 min-h-11 inline-flex items-center"
           >
             Forgot password?
           </Link>
