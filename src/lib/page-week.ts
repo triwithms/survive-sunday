@@ -5,7 +5,8 @@ import {
   resolvePlayerPickWeekFromLoaded,
   type PlayerPickWeek,
 } from "@/lib/next-week-picks";
-import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
+import { resolvedPoolWeek } from "@/lib/pool-current-week-db";
+import { weeksForParticipants } from "@/lib/pool-mode";
 import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import type { ExistingPickBits } from "@/lib/pick-change";
 
@@ -33,7 +34,6 @@ type MemberForDecision = {
 };
 
 export async function loadParticipantWeeks(me: MemberForDecision) {
-  const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
   const weeks = weeksForParticipants(
     me.pool.mode,
     await prisma.week.findMany({
@@ -42,6 +42,7 @@ export async function loadParticipantWeeks(me: MemberForDecision) {
       include: { games: { select: weekGameSelect } },
     })
   ) as PageWeekRow[];
+  const { currentWeek } = resolvedPoolWeek(me.pool.mode, me.pool.currentWeek, weeks);
   return { currentWeek, weeks };
 }
 

@@ -550,6 +550,11 @@ mustInclude("src/lib/header-week-selection.ts", [
 mustInclude("src/components/AppHeader.tsx", [
   "weekNumber={data.currentWeek}",
 ]);
+mustInclude("src/app/(app)/load-app-header.ts", [
+  "resolvedPoolWeek",
+  "persistPoolWeekAdvance",
+]);
+mustInclude("src/lib/page-week.ts", ["resolvedPoolWeek"]);
 mustInclude("src/components/HeaderWeekBadge.tsx", [
   "headerPoolWeekLabel",
   'role="status"',

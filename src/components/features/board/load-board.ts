@@ -2,7 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/db";
 import { requireMembership } from "@/lib/require-membership";
 import { ensureWeekLockedEffects, isWeekLocked, MISSED_TEAM } from "@/lib/grading";
-import { effectiveCurrentWeek } from "@/lib/pool-mode";
+import { resolvedPoolWeek } from "@/lib/pool-current-week-db";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { assembleBoardPage } from "./assemble-board";
@@ -12,7 +12,18 @@ import type { BoardScreenProps } from "./types";
 
 export async function loadBoardPage(): Promise<BoardScreenProps> {
   const me = await requireMembership();
-  const currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
+  const slate = await prisma.week.findMany({
+    where: { poolId: me.poolId },
+    select: {
+      number: true,
+      games: { select: { status: true, kickoff: true } },
+    },
+  });
+  const { currentWeek } = resolvedPoolWeek(
+    me.pool.mode,
+    me.pool.currentWeek,
+    slate
+  );
   const weekRef = await prisma.week.findFirst({
     where: { poolId: me.poolId, number: currentWeek },
     select: { id: true },
