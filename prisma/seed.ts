@@ -397,27 +397,6 @@ async function main() {
 
   const passwordHash = await bcrypt.hash("demo1234", 10);
 
-  // Admin user (Robert / commissioner)
-  const adminUser = await prisma.user.create({
-    data: {
-      email: "admin@survivesunday.demo",
-      name: "Commissioner",
-      passwordHash,
-    },
-  });
-  await prisma.membership.create({
-    data: {
-      poolId: pool.id,
-      userId: adminUser.id,
-      nickname: "Commissioner",
-      realName: "Robert Gama",
-      role: "admin",
-      status: "undefeated",
-      mulliganRemaining: true,
-      isParticipant: false,
-    },
-  });
-
   for (const p of demo.participants) {
     const email = `${demoEmailLocal(p.nickname)}@survivesunday.demo`;
     const user = await prisma.user.create({
@@ -438,6 +417,7 @@ async function main() {
         nickname: p.nickname,
         realName: p.realName,
         role: "member",
+        isAdmin: p.nickname === "Gams",
         status: p.status,
         mulliganRemaining: p.mulliganRemaining,
         losses,
@@ -536,7 +516,7 @@ async function main() {
   await prisma.auditLog.create({
     data: {
       poolId: pool.id,
-      actorId: adminUser.id,
+      actorId: gamsMem?.userId,
       action: "seed",
       details: JSON.stringify({
         note: "Seed: full 2026 schedule weeks 1–18; Week 1 historical + Week 2 current; W1 picks imported",
@@ -565,7 +545,7 @@ async function main() {
   console.log("   Demo password: demo1234");
   console.log("   Default seat: gams@survivesunday.demo (Robert Gama)");
   console.log("   Demo emails: black-cobra@… cannoli-stuffer@… … steve@survivesunday.demo");
-  console.log("   Admin: admin@survivesunday.demo");
+  console.log("   Admin tools: Gams (Player + Administrator)");
 }
 
 main()

@@ -34,7 +34,7 @@ export function toRoleMembers(
   adminUserIds: Set<string>,
   sessionUserId: string
 ) {
-  return members.map((m) => ({
+  return members.filter(isPlayerSeat).map((m) => ({
     id: m.id,
     nickname: m.nickname,
     realName: m.realName,

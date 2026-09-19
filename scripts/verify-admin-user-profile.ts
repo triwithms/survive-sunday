@@ -14,7 +14,9 @@ import {
 } from "../src/lib/roster-profile";
 import { rosterDraftDirty } from "../src/components/features/admin/use-roster-edit";
 import { rosterMatches } from "../src/components/features/admin/roster-row-meta";
+import { toRosterMembers } from "../src/components/features/admin/map-roster";
 import type { RosterMember } from "../src/components/features/admin/roster-types";
+import type { MemberRow } from "../src/components/features/admin/types";
 
 function lineCount(path: string): number {
   const text = readFileSync(path, "utf8");
@@ -116,6 +118,37 @@ function main() {
 
   const fields = readFileSync("src/components/features/admin/RosterCardFields.tsx", "utf8");
   assert.match(fields, /Full name/);
+
+  const spectator: MemberRow = {
+    id: "admin-1",
+    userId: "u-admin",
+    nickname: "Commissioner",
+    realName: "Robert Gama",
+    status: "undefeated",
+    role: "admin",
+    pickBackup: null,
+    mirrorFromMembershipId: null,
+    user: { email: "admin@survivesunday.demo", phoneE164: null },
+  };
+  const gams: MemberRow = {
+    ...spectator,
+    id: "gams-1",
+    userId: "u-gams",
+    nickname: "Gams",
+    role: "member",
+    user: { email: "gams@survivesunday.demo", phoneE164: null },
+  };
+  const roster = toRosterMembers([spectator, gams]);
+  assert.equal(roster.length, 1);
+  assert.equal(roster[0].nickname, "Gams");
+  assert.doesNotMatch(
+    readFileSync("src/lib/demo-account.ts", "utf8"),
+    /nickname: "Commissioner"/
+  );
+  assert.doesNotMatch(
+    readFileSync("prisma/seed.ts", "utf8"),
+    /nickname: "Commissioner"/
+  );
 
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
     scripts: { build: string };

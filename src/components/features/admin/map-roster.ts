@@ -1,8 +1,9 @@
 import { formatSeatLabel } from "@/lib/claim-seat";
+import { isPlayerSeat } from "@/lib/roles";
 import type { MemberRow } from "./types";
 
 export function toRosterMembers(members: MemberRow[]) {
-  return members.map((m) => ({
+  return members.filter(isPlayerSeat).map((m) => ({
     id: m.id,
     nickname: m.nickname,
     realName: m.realName,
@@ -26,7 +27,7 @@ export function toMirrorOptions(members: MemberRow[]) {
 }
 
 export function toRemoveMembers(members: MemberRow[]) {
-  return members.map((m) => ({
+  return members.filter(isPlayerSeat).map((m) => ({
     id: m.id,
     nickname: m.nickname,
     realName: m.realName,
