@@ -7,11 +7,11 @@ export function ScoresHeading(
 ) {
   return (
     <div
-      className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"
+      className="space-y-1"
       data-share-chunk=""
       data-share-section="heading"
     >
-      <div className="min-w-0">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <ShareExport
           surface="scores"
           rootId="share-scores"
@@ -21,31 +21,31 @@ export function ScoresHeading(
           liveGameCount={props.liveCount}
           pickRowCount={props.pickRowCount}
         />
+        <div className="shrink-0" data-share-chrome="">
+          <LiveScoresRefresh
+            weekNumber={props.weekNumber}
+            poll={props.poll}
+            showRefresh
+          />
+        </div>
+      </div>
+      <p className="text-sm text-[var(--text-muted)] mt-1">
+        Live scores from ESPN. Team logos sit beside the abbreviations.
+        Logos open team pages. Finals auto-grade picks.
+      </p>
+      <p className="text-sm text-[var(--text-muted)] mt-1" data-share-chrome="">
+        Tap Details on a game for more, including a YouTube preview
+        (before kickoff) or highlights (after the game) as a thumbnail
+        you open on YouTube.
+      </p>
+      {props.liveCount > 0 ? (
         <p className="text-sm text-[var(--text-muted)] mt-1">
-          Live scores from ESPN. Team logos sit beside the abbreviations.
-          Logos open team pages. Finals auto-grade picks.
+          {props.liveCount} live now
         </p>
-        <p className="text-sm text-[var(--text-muted)] mt-1" data-share-chrome="">
-          Tap Details on a game for more, including a YouTube preview
-          (before kickoff) or highlights (after the game) as a thumbnail
-          you open on YouTube.
-        </p>
-        {props.liveCount > 0 ? (
-          <p className="text-sm text-[var(--text-muted)] mt-1">
-            {props.liveCount} live now
-          </p>
-        ) : null}
-        {props.espnSyncError ? (
-          <p className="text-xs text-crimson-400 mt-1">{props.espnSyncError}</p>
-        ) : null}
-      </div>
-      <div className="shrink-0" data-share-chrome="">
-        <LiveScoresRefresh
-          weekNumber={props.weekNumber}
-          poll={props.poll}
-          showRefresh
-        />
-      </div>
+      ) : null}
+      {props.espnSyncError ? (
+        <p className="text-xs text-crimson-400 mt-1">{props.espnSyncError}</p>
+      ) : null}
     </div>
   );
 }

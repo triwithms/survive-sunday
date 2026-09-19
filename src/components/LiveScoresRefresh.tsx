@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 export function LiveScoresRefresh({
   weekNumber,
   poll,
-  intervalMs = 600000, // ~10 min
+  intervalMs = 600_000, // ~10 min
   showRefresh = false,
 }: {
   weekNumber: number;
