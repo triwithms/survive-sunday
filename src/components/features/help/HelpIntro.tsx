@@ -44,11 +44,12 @@ export function HelpIntro() {
         </h3>
         <p className="text-[var(--text-muted)] mb-2">
           After Sign in on a phone, we ask: <strong>Do you want to add NFL Pool
-          to your Home Screen?</strong> <strong>Yes</strong> installs (or shows
-          the Safari □↑ steps). <strong>Not now</strong> asks again next Sign in.
-          <strong>No</strong> stops asking — use <strong>Install on Home Screen</strong>{" "}
-          at the top of Help. Opening from the icon does not nag. If you delete
-          the icon and open in Safari, we ask again.
+          to your Home Screen?</strong> Tap <strong>Yes</strong> to install or
+          see the Safari □↑ steps. Tap <strong>Not now</strong> to ask again next
+          Sign in. Tap <strong>No</strong> to stop asking — then use{" "}
+          <strong>Install on Home Screen</strong> at the top of Help. Opening
+          from the icon does not nag. If you delete the icon and open in Safari,
+          we ask again.
         </p>
         <p className="text-sm font-medium text-[var(--text-primary)] mb-1">iPhone / iPad — Safari</p>
         <p className="text-[var(--text-muted)] mb-3">
