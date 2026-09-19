@@ -6,6 +6,7 @@ import {
   isPlayerSeat,
   POOL_ROLES,
 } from "@/lib/roles";
+import { isVisibleAdminPerson } from "./map-roster";
 import type { MemberRow } from "./types";
 
 export function adminUserIdSet(
@@ -19,7 +20,7 @@ export function adminUserIdSet(
 }
 
 export function toPasswordMembers(members: MemberRow[]) {
-  return members.filter(isPlayerSeat).map((m) => ({
+  return members.filter(isVisibleAdminPerson).map((m) => ({
     id: m.id,
     nickname: m.nickname,
     realName: m.realName,
@@ -34,7 +35,7 @@ export function toRoleMembers(
   adminUserIds: Set<string>,
   sessionUserId: string
 ) {
-  return members.filter(isPlayerSeat).map((m) => ({
+  return members.filter(isVisibleAdminPerson).map((m) => ({
     id: m.id,
     nickname: m.nickname,
     realName: m.realName,

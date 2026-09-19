@@ -2,8 +2,17 @@ import { formatSeatLabel } from "@/lib/claim-seat";
 import { isPlayerSeat } from "@/lib/roles";
 import type { MemberRow } from "./types";
 
+/** No spectator admin seat, and no leftover person named Commissioner. */
+export function isVisibleAdminPerson(member: {
+  role: string;
+  nickname: string;
+}): boolean {
+  if (!isPlayerSeat(member)) return false;
+  return member.nickname.trim().toLowerCase() !== "commissioner";
+}
+
 export function toRosterMembers(members: MemberRow[]) {
-  return members.filter(isPlayerSeat).map((m) => ({
+  return members.filter(isVisibleAdminPerson).map((m) => ({
     id: m.id,
     nickname: m.nickname,
     realName: m.realName,
@@ -18,7 +27,7 @@ export function toRosterMembers(members: MemberRow[]) {
 
 export function toMirrorOptions(members: MemberRow[]) {
   return members
-    .filter((m) => m.role !== "admin")
+    .filter(isVisibleAdminPerson)
     .map((m) => ({
       id: m.id,
       nickname: m.nickname,
@@ -27,7 +36,7 @@ export function toMirrorOptions(members: MemberRow[]) {
 }
 
 export function toRemoveMembers(members: MemberRow[]) {
-  return members.filter(isPlayerSeat).map((m) => ({
+  return members.filter(isVisibleAdminPerson).map((m) => ({
     id: m.id,
     nickname: m.nickname,
     realName: m.realName,

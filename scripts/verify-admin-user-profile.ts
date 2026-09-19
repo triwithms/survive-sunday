@@ -14,7 +14,10 @@ import {
 } from "../src/lib/roster-profile";
 import { rosterDraftDirty } from "../src/components/features/admin/use-roster-edit";
 import { rosterMatches } from "../src/components/features/admin/roster-row-meta";
-import { toRosterMembers } from "../src/components/features/admin/map-roster";
+import {
+  isVisibleAdminPerson,
+  toRosterMembers,
+} from "../src/components/features/admin/map-roster";
 import type { RosterMember } from "../src/components/features/admin/roster-types";
 import type { MemberRow } from "../src/components/features/admin/types";
 
@@ -141,6 +144,12 @@ function main() {
   const roster = toRosterMembers([spectator, gams]);
   assert.equal(roster.length, 1);
   assert.equal(roster[0].nickname, "Gams");
+  assert.equal(isVisibleAdminPerson(spectator), false);
+  assert.equal(isVisibleAdminPerson(gams), true);
+  assert.equal(
+    isVisibleAdminPerson({ role: "member", nickname: "Commissioner" }),
+    false
+  );
   assert.doesNotMatch(
     readFileSync("src/lib/demo-account.ts", "utf8"),
     /nickname: "Commissioner"/
@@ -148,6 +157,10 @@ function main() {
   assert.doesNotMatch(
     readFileSync("prisma/seed.ts", "utf8"),
     /nickname: "Commissioner"/
+  );
+  assert.match(
+    readFileSync("src/lib/reset-pool.ts", "utf8"),
+    /if \(m\.role === "admin"\) continue/
   );
 
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
