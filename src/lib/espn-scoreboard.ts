@@ -47,6 +47,16 @@ export function isWeekScoreboardFresh(weekNumber: number, year = 2026, now = Dat
   return isLastGoodFresh(hit, now, ttlFor(hit.value, now));
 }
 
+/** In-memory last-good only — never fetches ESPN. */
+export function peekCachedWeekScoreboard(
+  weekNumber: number,
+  year = 2026
+): EspnGameSnapshot[] | null {
+  const hit = byWeek.get(weekKey(weekNumber, year));
+  if (!hit || hit.failed) return null;
+  return hit.value;
+}
+
 async function loadWeekScoreboard(weekNumber: number, year: number): Promise<EspnGameSnapshot[]> {
   const key = weekKey(weekNumber, year);
   const now = Date.now();
