@@ -16,7 +16,7 @@ export default async function NotificationPrefsPage() {
     <div className="space-y-5">
       <div>
         <p className="text-xs text-[var(--text-muted)]">
-          <Link href="/help#8-notifications" className="text-gold-400">
+          <Link href="/help#account" className="text-gold-400">
             Help
           </Link>
           {" · "}

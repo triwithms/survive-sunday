@@ -36,7 +36,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 
 `src/components/ui/` — `Button.tsx`, `Card.tsx`, `Chip.tsx`, `StatusBadge.tsx`, `index.ts`
 
-**Add to Home Screen nudge** (signed-in phones only): `src/components/features/a2hs/` — `A2hsNudge.tsx` asks Yes / No / Not now. Yes = native Install or iOS □↑ steps. No = opt out; Help top **Install on Home Screen** (`HelpInstallLink.tsx`) reopens Yes. Not now = next Sign in. Icon deleted (`installed` + !standalone) resets to pending. Mounted in `src/app/(app)/layout.tsx`. Shortcut label is **NFL Pool** (`public/manifest.webmanifest` `name` / `short_name`).
+**Add to Home Screen nudge** (signed-in phones only): `src/components/features/a2hs/` — `A2hsNudge.tsx` asks Yes / No / Not now. Yes = native Install or iOS Safari … → Share □↑ steps (`A2hsIosHint`). No = opt out; Help menu → **Install on Home Screen** (`HelpInstall` + `HelpInstallLink`) reopens Yes. Not now = next Sign in. Icon deleted (`installed` + !standalone) resets to pending. Mounted in `src/app/(app)/layout.tsx`. Shortcut label is **NFL Pool** (`public/manifest.webmanifest` `name` / `short_name`).
 
 Team logos: `src/components/TeamLogo.tsx` + `src/lib/espn-teams.ts` / `src/lib/team-helmets.ts`. Local backups in `public/helmets/{abbr}.png` (app abbr, e.g. `was.png`). Never letter badges.
 
@@ -69,7 +69,7 @@ Also exist (same thin-page pattern): Account, Admin, Team.
 
 Also: Sign in `src/app/login/page.tsx`, Forgot password `src/app/login/forgot/page.tsx`. Landing `src/app/page.tsx` redirects to Sign in (or `/welcome` / `/pick` if already signed in). No people-list / Who are you? screen.
 
-Help still gates leftover Demo copy with `showDemoCopy={false}` (`src/components/HelpContent.tsx` + `src/components/features/help/`). Docs Sync if rewriting Help.
+Help topics: `src/components/HelpContent.tsx` + `src/components/features/help/` — `/help` is a short topic menu (not a stacked page). Tap a topic or a hash (`#install`, `#account`, …) to see only that section + **Back to Help topics**. **Install on Home Screen** first (`HelpInstall` + `HelpInstallLink` → A2HS Yes; iOS steps via `A2hsIosHint`), then Sign in, Pick, Tabs (`HelpScreens`), Rules, Account, Administrators. Header **?** is Help (`/help`). Each file ≤100 lines. No Wave wall, no notification prefs UI on Help.
 
 ## Flagged internals (Commissioner → Admin copy)
 

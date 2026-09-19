@@ -98,6 +98,18 @@ function main() {
     homeScreenStatusLine("optout"),
     "This phone will not ask again."
   );
+  assert.equal(
+    homeScreenStatusLine("not_now"),
+    "This phone said Not now — will ask again next sign-in."
+  );
+  assert.equal(
+    homeScreenStatusLine("pending"),
+    "This phone will ask to add NFL Pool."
+  );
+  assert.doesNotMatch(
+    homeScreenStatusLine("pending") + homeScreenStatusLine("not_now"),
+    /snoozed|Survive Sunday|Later/
+  );
 
   const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
     scripts: { build: string };

@@ -1,24 +1,58 @@
-import { HelpAccount } from "@/components/features/help/HelpAccount";
-import { HelpForAdmins } from "@/components/features/help/HelpForAdmins";
-import { HelpImportGlossary } from "@/components/features/help/HelpImportGlossary";
-import { HelpIntro } from "@/components/features/help/HelpIntro";
-import { HelpRules } from "@/components/features/help/HelpRules";
-import { HelpScreens } from "@/components/features/help/HelpScreens";
-import { HelpWhereToTap } from "@/components/features/help/HelpWhereToTap";
+"use client";
 
-export function HelpContent({ showDemoCopy = false }: { showDemoCopy?: boolean }) {
+import { useEffect, useState } from "react";
+import { HelpTopicMenu } from "@/components/features/help/HelpTopicMenu";
+import { topicForHash } from "@/components/features/help/topics";
+
+function currentHash(): string {
+  if (typeof window === "undefined") return "";
+  return window.location.hash.replace(/^#/, "");
+}
+
+/** Menu first. One topic after a tap or hash. Never stack every section. */
+export function HelpContent() {
+  const [hash, setHash] = useState("");
+
+  useEffect(() => {
+    const sync = () => setHash(currentHash());
+    sync();
+    window.addEventListener("hashchange", sync);
+    window.addEventListener("popstate", sync);
+    return () => {
+      window.removeEventListener("hashchange", sync);
+      window.removeEventListener("popstate", sync);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [hash]);
+
+  const topic = topicForHash(hash);
+  const Topic = topic?.Component;
+
+  if (!Topic) {
+    return (
+      <article className="prose-survive text-sm leading-relaxed max-w-[68ch]">
+        <HelpTopicMenu />
+      </article>
+    );
+  }
+
   return (
     <article className="prose-survive space-y-6 text-sm leading-relaxed max-w-[68ch]">
-      <HelpIntro />
-      <HelpWhereToTap />
-      <HelpRules />
-      <HelpScreens />
-      <HelpAccount showDemoCopy={showDemoCopy} />
-      <HelpForAdmins showDemoCopy={showDemoCopy} />
-      <HelpImportGlossary />
-      <p className="text-xs text-[var(--text-muted)] pt-4 border-t border-stadium-border">
-        For entertainment among friends. Not a gambling service. Spreads and moneylines are informational only.
-      </p>
+      <a
+        href="/help"
+        className="inline-flex min-h-11 items-center text-sm text-gold-400"
+        onClick={(e) => {
+          e.preventDefault();
+          window.history.pushState(null, "", "/help");
+          setHash("");
+        }}
+      >
+        ← Back to Help topics
+      </a>
+      <Topic />
     </article>
   );
 }
