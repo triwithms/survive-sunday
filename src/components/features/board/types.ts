@@ -35,7 +35,6 @@ export type BoardHeadingProps = {
 };
 
 export type BoardTiebreakProps = {
-  weekLabel: string;
   soleNickname: string | null;
   sharedNicknames: string[];
   showNoOfficial: boolean;

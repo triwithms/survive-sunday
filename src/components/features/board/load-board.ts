@@ -2,12 +2,12 @@ import "server-only";
 import { prisma } from "@/lib/db";
 import { requireMembership } from "@/lib/require-membership";
 import { ensureWeekLockedEffects, isWeekLocked, MISSED_TEAM } from "@/lib/grading";
-import { sortParticipants, boardPickFields } from "@/lib/tiebreak";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
-import { resolvePlayerPickWeek } from "@/lib/next-week-picks";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { assembleBoardPage } from "./assemble-board";
+import { sortBoard } from "./sort-board";
+import { winMarginByMember } from "./win-margin";
 import type { BoardScreenProps } from "./types";
 
 export async function loadBoardPage(): Promise<BoardScreenProps> {
@@ -27,12 +27,33 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
         include: { picks: { include: { game: true } }, games: true },
       })
     : null;
-  const members = await prisma.membership.findMany({ where: { poolId: me.poolId } });
+  const [members, seasonPicks] = await Promise.all([
+    prisma.membership.findMany({ where: { poolId: me.poolId } }),
+    prisma.pick.findMany({
+      where: { membership: { poolId: me.poolId } },
+      select: {
+        membershipId: true,
+        teamAbbr: true,
+        result: true,
+        game: {
+          select: {
+            awayAbbr: true,
+            homeAbbr: true,
+            scoreAway: true,
+            scoreHome: true,
+            status: true,
+          },
+        },
+      },
+    }),
+  ]);
+  const margins = winMarginByMember(seasonPicks);
   const pickByMember = new Map((week?.picks ?? []).map((p) => [p.membershipId, p]));
   const participants = members.filter((m) => isPoolParticipant(m)).map((m) => ({
-    ...m, ...boardPickFields(pickByMember.get(m.id), week?.games ?? []),
+    ...m,
+    winMargin: margins.get(m.id) ?? 0,
   }));
-  const sorted = sortParticipants(participants);
+  const sorted = sortBoard(participants);
   const locked = week ? isWeekLocked(week) : true;
   const playing = isPoolParticipant(me);
   const myBoardPick = week ? pickByMember.get(me.id) : undefined;
@@ -44,14 +65,6 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
         existingGame: gameForPick(myBoardPick, week.games),
       })
     : false;
-  const nextWeek = await prisma.week.findUnique({
-    where: { poolId_number: { poolId: me.poolId, number: currentWeek + 1 } },
-    include: {
-      games: { select: { id: true, status: true, kickoff: true, awayAbbr: true, homeAbbr: true } },
-      picks: { where: { membershipId: me.id } },
-    },
-  });
-  const myNextPick = nextWeek?.picks[0] ?? null;
   const teamAbbrs = [...new Set((week?.picks ?? [])
     .filter((p) => p.source !== "missed" && p.teamAbbr !== MISSED_TEAM)
     .map((p) => p.teamAbbr))];
@@ -62,16 +75,6 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
   );
   return assembleBoardPage({
     me, currentWeek, week, sorted, participants, pickByMember, logoByAbbr,
-    locked, playing, canChangePick,
-    decision: resolvePlayerPickWeek({
-      poolCurrentWeek: currentWeek, currentWeekLocked: locked,
-      existingCurrentPick: myBoardPick ?? null,
-      existingCurrentGame: gameForPick(myBoardPick, week?.games ?? []),
-      playingFromWeek: me.playingFromWeek,
-      nextWeekHasGames: (nextWeek?.games.length ?? 0) > 0,
-      nextWeekLocked: nextWeek ? isWeekLocked(nextWeek) : false,
-      existingNextPick: myNextPick,
-      existingNextGame: gameForPick(myNextPick, nextWeek?.games ?? []),
-    }),
+    locked, canChangePick,
   });
 }

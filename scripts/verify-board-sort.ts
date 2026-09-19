@@ -1,7 +1,7 @@
 /**
- * Survival board / standings list order (no database).
- * Home/Pool week pick clusters, Scores “Participants’ picks”, and GET /api/picks
- * reuse sortParticipants — do not add a second comparator.
+ * Weekly pick-list order (no database).
+ * Selections, Scores “Participants’ picks”, and GET /api/picks reuse
+ * sortParticipants. Leaderboard uses sortBoard (see verify-leaderboard-sort).
  *
  *   npx tsx scripts/verify-board-sort.ts
  */
@@ -17,7 +17,11 @@ function assertUsesSharedSort(path: string, extra: string[]) {
   }
 }
 
-assertUsesSharedSort("src/components/features/board/load-board.ts", []);
+assert.doesNotMatch(
+  readFileSync("src/components/features/board/load-board.ts", "utf8"),
+  /sortParticipants/,
+  "Leaderboard must use sortBoard, not the weekly pick-list sort"
+);
 assertUsesSharedSort("src/components/features/home/load-home.ts", [
   "buildHomeRows(sorted)",
 ]);

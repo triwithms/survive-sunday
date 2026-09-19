@@ -8,12 +8,14 @@ import {
   SHARE_OPEN_EVENT,
 } from "@/lib/share-export";
 
+export function isLeaderboardPath(path: string): boolean {
+  return path === "/standings" || path.startsWith("/standings/");
+}
+
 export function weekAllowsShare(path: string): boolean {
   return (
-    path === "/standings" ||
-    path.startsWith("/standings/") ||
-    path === "/scores" ||
-    path.startsWith("/scores/")
+    !isLeaderboardPath(path) &&
+    (path === "/scores" || path.startsWith("/scores/"))
   );
 }
 
@@ -49,6 +51,9 @@ export function WeekBadge({
 
 export function HeaderWeekBadge({ weekNumber }: { weekNumber: number }) {
   const pathname = usePathname();
+  if (isLeaderboardPath(pathname)) {
+    return <div className="min-w-0 flex-1" aria-hidden />;
+  }
   return (
     <div className="flex items-center gap-1.5 sm:gap-2 text-sm min-w-0 flex-1 justify-center overflow-hidden">
       <WeekBadge

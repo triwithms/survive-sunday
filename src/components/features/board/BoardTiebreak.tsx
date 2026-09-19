@@ -1,10 +1,8 @@
 export function BoardTiebreak({
-  weekLabel,
   soleNickname,
   sharedNicknames,
   showNoOfficial,
 }: {
-  weekLabel: string;
   soleNickname: string | null;
   sharedNicknames: string[];
   showNoOfficial: boolean;
@@ -46,7 +44,7 @@ export function BoardTiebreak({
         data-share-stamp=""
         className="text-[11px] text-[var(--text-muted)] pt-1"
       >
-        Survive Sunday · {weekLabel} · for friends, not betting
+        Survive Sunday · for friends, not betting
       </p>
     </>
   );

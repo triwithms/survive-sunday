@@ -35,6 +35,8 @@ export type ShareExportProps = {
   weekLabel: string;
   /** Text after the week label in the page title, e.g. " · Leaderboard". */
   titleRest: string;
+  /** Leaderboard is a season race — hide week words in the page title. */
+  showWeekInTitle?: boolean;
   stillInCount?: number;
   undefeatedCount?: number;
   eliminatedCount?: number;
@@ -48,6 +50,7 @@ export function ShareExport({
   rootId,
   weekLabel,
   titleRest,
+  showWeekInTitle = true,
   stillInCount = 0,
   undefeatedCount = 0,
   eliminatedCount = 0,
@@ -186,31 +189,33 @@ export function ShareExport({
       <h1
         className="font-display text-2xl text-gold-400 tracking-wide select-none"
         data-testid="share-export-title"
-        aria-label={`${weekLabel}${titleRest}. Press and hold to share as a picture.`}
+        aria-label={`${showWeekInTitle ? `${weekLabel}${titleRest}` : titleRest}. Press and hold to share as a picture.`}
         onPointerDown={onTitlePointerDown}
         onPointerUp={clearHold}
         onPointerCancel={clearHold}
         onPointerLeave={clearHold}
         onContextMenu={(e) => e.preventDefault()}
       >
-        <span
-          role="button"
-          tabIndex={0}
-          className="cursor-default"
-          data-testid="share-export-week"
-          onClick={(e) => {
-            e.stopPropagation();
-            onWeekTap();
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
+        {showWeekInTitle ? (
+          <span
+            role="button"
+            tabIndex={0}
+            className="cursor-default"
+            data-testid="share-export-week"
+            onClick={(e) => {
+              e.stopPropagation();
               onWeekTap();
-            }
-          }}
-        >
-          {weekLabel}
-        </span>
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onWeekTap();
+              }
+            }}
+          >
+            {weekLabel}
+          </span>
+        ) : null}
         {titleRest}
       </h1>
       <button

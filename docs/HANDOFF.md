@@ -40,7 +40,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
 - **Week 2 schedule restored** in Real/live (viewable; Demo isolation is practice UX only — it does **not** hide the Week 2 slate) — merged [PR #22](https://github.com/triwithms/survive-sunday/pull/22)
 - **Next-week picks unlock per player** as soon as *their* current-week game has started (not after Monday Night Football). Week 2 pick UI is live for those players and for new joiners who missed a Week 1 pick path. Friends still waiting on their own Week 1 kickoff keep the normal Week 1 change-pick flow.
-- Leaderboard (pool in/out): **undefeated → one-loss → eliminated**, then nickname A–Z. Selections is the weekly pick list. **My pick**, **Selections**, and **Scores** open on your current pick week; future weeks are on **Schedule**.
+- Leaderboard (pool in/out): **still in → out**, then fewest losses / most weeks survived; among equals clean record (no 💩) → live win margin of finished picks → nickname. No week chip (season race). Selections is the weekly pick list. **My pick**, **Selections**, and **Scores** open on your current pick week; future weeks are on **Schedule**.
 - ESPN live scores + injuries; **Standings (NFL W-L) syncs from ESPN** (not the demo `week2-standings` seed); no player-facing demo League copy in Real mode
 - Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **DAL** (Dallas — not Gams’ KC). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
 - **Pick backup:** Off by default. Optional copy-from-member within **30 minutes** of lock (no 💩). Optional ranked leftover (~**2 minutes** before lock) stamps 💩 and that player cannot be the official winner. Server jobs apply this — opening the app is not required. Keep Help general; do not name a specific friend.
@@ -306,7 +306,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 ### Standings / in vs out
 
-- **Leaderboard** (`/standings`) and Scores **Participants’ picks** / `GET /api/picks`: undefeated → one-loss → eliminated, then same pick / same game / nickname A–Z on pick lists. **Selections** (`/pool`) is the weekly pick list (same team, then A–Z) — not the in/out race.
+- **Leaderboard** (`/standings`): still in → out, then fewest losses / most weeks survived; among equals clean record → live win margin of finished picks → nickname. Scores **Participants’ picks** / `GET /api/picks`: undefeated → one-loss → eliminated, then same pick / same game / nickname A–Z. **Selections** (`/pool`) is the weekly pick list (same team, then A–Z) — not the in/out race.
 - You can open My pick, Selections, Scores, Standings, Leaderboard, Help, and team pages **without** making a pick. If lock hits and a player still has no pick, the app records a **missed pick** (loss / mulligan), except a spectator administrator. Players see a gold banner when the administrator has turned the mulligan off: **From Week X: no mulligan / one-and-done.**
 
 ### Scores, League, team pages

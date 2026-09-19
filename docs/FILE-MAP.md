@@ -25,7 +25,7 @@ Checked on `main` (`26e9d35`). Do not invent paths.
 | **First-run profile** | `src/components/features/profile/` + `src/app/welcome/page.tsx` — after Sign in, ask only for missing nickname / full name / cell, then My pick. |
 | **My pick** | `src/components/features/pick/` — `PickScreen.tsx`, `load-pick.ts`, `PickMatchupCard.tsx` |
 | **Scores** | `src/components/features/scores/` — `ScoresScreen.tsx`, `load-scores.ts`, `ScoreGameCard.tsx` |
-| **Leaderboard** (pool in/out) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `BoardParticipantRow.tsx` |
+| **Leaderboard** (pool in/out) | `src/components/features/board/` — `BoardScreen.tsx`, `load-board.ts`, `sort-board.ts`, `win-margin.ts`, `BoardParticipantRow.tsx` |
 | **Standings** (NFL W-L) | `src/components/features/league/` — `LeagueScreen.tsx`, `load-league.ts` |
 | **Videos** (deep link only) | `src/components/features/videos/` — `VideosScreen.tsx`, `load-videos.ts`. Not a bottom tab; clips also sit in Scores/Schedule Details. |
 | **Schedule** | `src/components/features/schedule/` — `ScheduleScreen.tsx`, `load-schedule.ts`. Defaults to the same current pick week as My pick / Selections / Scores; future weeks stay browsable. |

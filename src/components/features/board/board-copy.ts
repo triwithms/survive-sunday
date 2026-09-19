@@ -17,9 +17,8 @@ export function boardLockLine(
   return `Lock: ${formatKickoff(effectiveLockAt(week))}${suffix}`;
 }
 
-export function boardSortLine(revealAllPicks: boolean) {
-  void revealAllPicks;
-  return "In/out race: undefeated, then one-loss, then eliminated. Within each group: nickname A–Z. Weekly picks live on Selections.";
+export function boardSortLine() {
+  return "Season race: still in, then out. Then fewest losses and most weeks survived. Among equals: clean record (no 💩), then win margin of finished picks, then nickname. Weekly picks live on Selections.";
 }
 
 export function boardCta(args: {
