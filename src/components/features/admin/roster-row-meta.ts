@@ -21,10 +21,7 @@ export function claimShortLabel(member: RosterMember): string {
   return isSeatClaimed(member.email) ? "Joined" : "Unclaimed";
 }
 
-export function backupShortLabel(
-  member: RosterMember,
-  sourceNickname?: string | null
-): string {
+export function backupShortLabel(member: RosterMember): string {
   if (member.role === "admin") return "—";
   const mode = resolvePickBackupMode(
     member.pickBackup,
@@ -34,11 +31,8 @@ export function backupShortLabel(
   return "Off";
 }
 
-export function rosterRowSubtitle(
-  member: RosterMember,
-  sourceNickname?: string | null
-): string {
-  return `${claimShortLabel(member)} · ${backupShortLabel(member, sourceNickname)}`;
+export function rosterRowSubtitle(member: RosterMember): string {
+  return `${claimShortLabel(member)} · ${backupShortLabel(member)}`;
 }
 
 export function needsEmailToLogIn(member: RosterMember): boolean {

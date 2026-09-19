@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui";
 import { rosterMatches } from "./roster-row-meta";
 import { RosterCard } from "./RosterCard";
-import type { RosterMember, RosterMirrorOption } from "./roster-types";
+import type { RosterMember } from "./roster-types";
 
 export type { RosterMember, RosterMirrorOption } from "./roster-types";
 
