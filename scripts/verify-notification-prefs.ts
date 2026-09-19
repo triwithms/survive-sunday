@@ -174,13 +174,19 @@ const helpPage = readFileSync("src/app/help/page.tsx", "utf8");
 assert.doesNotMatch(helpPage, /href="\/account\/notifications"/);
 assert.doesNotMatch(helpPage, /SignOutButton/);
 assert.match(helpPage, /safe-area-inset-top/);
-assert.match(
-  readFileSync("src/components/features/help/HelpScreens.tsx", "utf8"),
-  /Account → Notification preferences/
+assert.match(helpPage, /calc\(2rem\+env\(safe-area-inset-top\)\)/);
+assert.match(helpPage, /min-h-11/);
+assert.doesNotMatch(helpPage, /Wave 1|Wave 2|HelpInstallLink|showDemoCopy/);
+const helpAccount = readFileSync(
+  "src/components/features/help/HelpAccount.tsx",
+  "utf8"
 );
+assert.match(helpAccount, /Account → Notification preferences/);
+assert.match(helpAccount, /SMS \/ Email \/ both \/ none/);
+assert.doesNotMatch(helpAccount, /Pick backup|pick backup/);
 assert.doesNotMatch(
   readFileSync("src/components/features/help/HelpScreens.tsx", "utf8"),
-  /Account → <strong>Pick backup/
+  /Wave 1|Wave 2|Pick backup/
 );
 assert.match(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8"),

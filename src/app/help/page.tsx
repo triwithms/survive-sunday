@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { getUserPoolContext } from "@/lib/session";
 import { ROLE_VIEW_COOKIE, resolveRoleView } from "@/lib/roles";
 import { HelpContent } from "@/components/HelpContent";
-import { A2hsNudge, HelpInstallLink } from "@/components/features/a2hs";
+import { A2hsNudge } from "@/components/features/a2hs";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { BottomNav } from "@/components/BottomNav";
 
@@ -37,19 +37,13 @@ export default async function HelpPage() {
         >
           ← {membership ? "My pick" : "Survive Sunday"}
         </Link>
-        <h1 className="font-display text-2xl text-gold-400 tracking-wide mt-6 mb-2">
+        <h1 className="font-display text-2xl text-gold-400 tracking-wide mt-6 mb-6">
           Help
         </h1>
-        <p className="mb-3">
-          <HelpInstallLink />
-        </p>
-        <p className="text-sm text-[var(--text-muted)] mb-4">
-          Canadian English · 2026/27 · Wave 1 live / Wave 2 coming soon
-        </p>
-        <HelpContent showDemoCopy={false} />
+        <HelpContent />
       </main>
       <FooterDisclaimer />
-      {membership && <A2hsNudge />}
+      <A2hsNudge />
       {membership && <BottomNav isAdmin={roleView === "admin"} />}
     </div>
   );

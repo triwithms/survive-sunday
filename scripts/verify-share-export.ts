@@ -4,7 +4,8 @@
  *   npx tsx scripts/verify-share-export.ts
  */
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   alwaysIncludesFull,
   isComfortablyLong,
@@ -215,12 +216,19 @@ assert.equal(
   false
 );
 
-const help = readFileSync("src/components/HelpContent.tsx", "utf8");
-assert.doesNotMatch(
-  help,
-  /JaJa|sister|Gams for later/i,
-  "Help must not name JaJa / sister auto-pick examples"
-);
+const helpFiles = [
+  "src/components/HelpContent.tsx",
+  ...readdirSync("src/components/features/help")
+    .filter((name) => /\.(ts|tsx)$/.test(name))
+    .map((name) => join("src/components/features/help", name)),
+];
+for (const path of helpFiles) {
+  assert.doesNotMatch(
+    readFileSync(path, "utf8"),
+    /JaJa|sister|Gams for later|Commissioner/i,
+    `${path} must not name JaJa / Commissioner`
+  );
+}
 
 const pickSrc = readFileSync("src/app/api/picks/route.ts", "utf8");
 assert.match(pickSrc, /export async function POST/);
