@@ -134,13 +134,12 @@ model Membership {
   losses            Int              @default(0)
   weeksSurvived     Int              @default(0)
   usedTeamsJson     String           @default("[]") // JSON string[] of abbrs
-  /// off | mirror | ranked. Default off. JaJa uses mirror (Gams).
-  pickBackup        String           @default("off")
-  /// Ranked leftover auto-picks (~2 min) this season. Official winner
-  /// must stay 0. Copy-from-member and manual / import never increment.
+  /// off | ranked. Default ranked. Leftover “mirror” reads as ranked.
+  pickBackup        String           @default("ranked")
+  /// Ranked leftover auto-picks (~5 min) this season. Official winner
+  /// must stay 0. Manual / import never increment.
   autoPickStamps    Int              @default(0)
-  /// If pickBackup=mirror, copy that member’s pick when this seat still
-  /// has none within 30 minutes of the relevant kickoff / week lock.
+  /// Leftover copy-from pointer. Unused. Do not drop (shared Neon).
   mirrorFromMembershipId String?
   createdAt         DateTime         @default(now())
   pool              Pool             @relation(fields: [poolId], references: [id], onDelete: Cascade)

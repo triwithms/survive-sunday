@@ -3,7 +3,7 @@ import { isOfficialWinnerEligible } from "./auto-pick-stamps";
 /**
  * Season-end tiebreak helpers (en-CA).
  * Official winner must have a clean season (no ranked auto-pick 💩).
- * Copy-from-member does not stamp. Prefer sole survivor among eligible
+ * Prefer sole survivor among eligible
  * players. If multiple remain eligible after Week 18:
  * 1. Fewest losses
  * 2. Most weeks survived

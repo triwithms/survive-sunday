@@ -68,9 +68,10 @@ function main() {
 
   const radios = readFileSync("src/components/MirrorBackupRadios.tsx", "utf8");
   assert.match(radios, /Off — I’ll pick myself/);
-  assert.match(radios, /Copy from a pool member/);
-  assert.match(radios, /Auto ranked/);
+  assert.match(radios, /Ranked auto/);
+  assert.match(radios, /about 5 min/);
   assert.match(radios, /BackupRadioRow/);
+  assert.doesNotMatch(radios, /Copy from a pool member|within 2 min|30 min/);
 
   const backupRow = readFileSync("src/components/BackupRadioRow.tsx", "utf8");
   assert.match(backupRow, /!w-4/);
@@ -81,6 +82,8 @@ function main() {
   assert.match(form, /Never overwrites/);
   assert.match(form, /💩/);
   assert.match(form, /cannot win the pool officially/);
+  assert.match(form, /5 minutes before kickoff or lock/);
+  assert.doesNotMatch(form, /Copy-from|30 minutes|2 minutes/);
 
   const users = readFileSync(
     "src/components/features/admin/UsersScreen.tsx",
@@ -148,21 +151,22 @@ function main() {
     claimShortLabel(member({ email: "jaja@survivesunday.demo" })),
     "Unclaimed"
   );
-  assert.equal(backupShortLabel(member({})), "Off");
+  assert.equal(backupShortLabel(member({})), "Ranked");
   assert.equal(
     backupShortLabel(
       member({ pickBackup: "mirror", mirrorFromMembershipId: "gams" }),
       "Gams"
     ),
-    "Copy Gams"
+    "Ranked"
   );
   assert.equal(
     backupShortLabel(member({ pickBackup: "ranked" })),
     "Ranked"
   );
+  assert.equal(backupShortLabel(member({ pickBackup: "off" })), "Off");
   assert.equal(
     rosterRowSubtitle(member({ email: "jaja@survivesunday.demo" })),
-    "Unclaimed · Off"
+    "Unclaimed · Ranked"
   );
   assert.match(
     memberCopyJoinUrl("seat-1", "JaJa", ["JaJa", "Gams"]),

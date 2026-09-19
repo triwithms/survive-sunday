@@ -1,17 +1,13 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/session";
 import { isPickBackupMode, setMembershipPickBackup } from "@/lib/pick-mirror-db";
-import { PICK_BACKUP_MIRROR, PICK_BACKUP_OFF } from "@/lib/pick-mirror";
+import { PICK_BACKUP_RANKED, resolvePickBackupMode } from "@/lib/pick-mirror";
 
 export async function POST(req: Request) {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  let body: {
-    membershipId?: unknown;
-    mode?: unknown;
-    sourceMembershipId?: unknown;
-  };
+  let body: { membershipId?: unknown; mode?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -24,27 +20,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "membershipId required" }, { status: 400 });
   }
 
-  const raw = body.sourceMembershipId;
-  const sourceMembershipId =
-    raw === null || raw === "" || raw === undefined
-      ? null
-      : typeof raw === "string"
-        ? raw
-        : null;
-  let mode = isPickBackupMode(body.mode) ? body.mode : null;
-  if (!mode) {
-    mode = sourceMembershipId ? PICK_BACKUP_MIRROR : PICK_BACKUP_OFF;
-  }
-  if (mode === PICK_BACKUP_MIRROR && !sourceMembershipId) {
-    return NextResponse.json({ error: "Choose a player to copy from" }, { status: 400 });
-  }
+  const mode = isPickBackupMode(body.mode)
+    ? body.mode
+    : resolvePickBackupMode(typeof body.mode === "string" ? body.mode : null);
 
   try {
     const updated = await setMembershipPickBackup({
       poolId: admin.membership.poolId,
       membershipId,
-      mode,
-      sourceMembershipId,
+      mode: mode === "off" ? "off" : PICK_BACKUP_RANKED,
       actorId: admin.user.id,
     });
     return NextResponse.json({ ok: true, ...updated });

@@ -96,6 +96,19 @@ assert.match(helpAdmins, /Send test to me/);
 assert.doesNotMatch(helpAdmins, /Coming soon/);
 assert.match(helpAdmins, /must be unique/);
 assert.doesNotMatch(helpAdmins, /Commissioner|Users → Edit|Comms|Pick backup/);
+const helpMulligan = readFileSync(
+  "src/components/features/help/HelpMulligan.tsx",
+  "utf8"
+);
+assert.match(helpMulligan, /Mulligan vs 💩/);
+assert.match(helpMulligan, /made a pick and lost/);
+assert.match(helpMulligan, /Auto never overwrites/);
+assert.doesNotMatch(helpMulligan, /copy from|JaJa|Gams/i);
+const helpRules = readFileSync(
+  "src/components/features/help/HelpRules.tsx",
+  "utf8"
+);
+assert.match(helpRules, /HelpMulligan/);
 assert.doesNotMatch(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8") +
     readFileSync("src/app/(app)/account/mirror/page.tsx", "utf8"),

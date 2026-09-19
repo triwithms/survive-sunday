@@ -16,7 +16,7 @@ import {
 import { resolveSeasonWinners } from "../src/lib/tiebreak";
 
 assert.equal(shouldStampAutoPick(RANKED_PICK_SOURCE), true);
-assert.equal(shouldStampAutoPick(MIRROR_PICK_SOURCE), false);
+assert.equal(shouldStampAutoPick(MIRROR_PICK_SOURCE), false, "historic copy-from never stamped");
 assert.equal(shouldStampAutoPick("imported"), false);
 assert.equal(shouldStampAutoPick("user"), false);
 assert.equal(shouldStampAutoPick("missed"), false);

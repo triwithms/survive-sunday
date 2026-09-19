@@ -8,7 +8,6 @@ type Props = {
   member: RosterMember;
   open: boolean;
   onToggle: () => void;
-  backupSourceNickname?: string | null;
   children: React.ReactNode;
 };
 
@@ -16,7 +15,6 @@ export function RosterRow({
   member,
   open,
   onToggle,
-  backupSourceNickname,
   children,
 }: Props) {
   const editorId = `roster-editor-${member.id}`;
@@ -36,7 +34,7 @@ export function RosterRow({
             {member.nickname}
           </span>
           <span className="block text-xs text-[var(--text-muted)] break-words whitespace-normal">
-            {rosterRowSubtitle(member, backupSourceNickname).split(" · ")[0]}
+            {rosterRowSubtitle(member).split(" · ")[0]}
           </span>
         </button>
         <InviteJoinButtons membershipId={member.id} nickname={member.nickname} />

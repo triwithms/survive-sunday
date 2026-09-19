@@ -27,10 +27,10 @@ export function BoardTiebreak({
         </summary>
         <p className="text-[var(--text-muted)]">
           Official winner must have a <strong>clean</strong> season — no
-          ranked auto-pick 💩. Copy-from-member and manual / imported picks
-          do not stamp. Auto-pick is for staying in for fun when busy. Among
-          eligible players: fewest losses → most weeks survived → shared win
-          if still tied.
+          ranked auto-pick 💩. Manual / imported picks do not stamp. Auto-pick
+          is for staying in for fun when you left it too late. Among eligible
+          players: fewest losses → most weeks survived → shared win if still
+          tied.
         </p>
         {soleNickname ? (
           <p className="break-words">
@@ -45,7 +45,7 @@ export function BoardTiebreak({
         ) : null}
         {showNoOfficial ? (
           <p className="text-[var(--text-muted)]">
-            No official leader — remaining players used the ~2-minute
+            No official leader — remaining players used the ~5-minute
             best-ranked auto-pick (💩).
           </p>
         ) : null}

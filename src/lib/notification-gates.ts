@@ -49,6 +49,7 @@ export function shouldSendMissingPickSms(opts: {
   return { send: true, reason: "ok" };
 }
 
+/** 24h — must stay earlier than ranked auto (~5 min). */
 export const MISSING_PICK_REMIND_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 /** True when lock is in the future and within the reminder window. */

@@ -16,16 +16,14 @@ export function AccountMirrorScreen(p: AccountMirrorProps) {
           Pick backup
         </h1>
         <p className="text-sm text-[var(--text-muted)] mt-2">
-          Off, copy from a member, or auto best remaining 2025 rank team. Path:
-          Account (header) → Pick backup.
+          Off, or ranked auto — best remaining 2025 rank team about 5 minutes
+          before kickoff or lock. Path: Account (header) → Pick backup.
         </p>
       </div>
       <Card className="p-4">
         <MirrorPicksForm
           membershipId={p.membershipId}
           initialMode={p.initialMode}
-          initialSourceId={p.initialSourceId}
-          options={p.options}
         />
       </Card>
     </div>

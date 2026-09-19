@@ -1,7 +1,7 @@
 /**
- * Season “💩” stamps for the ~2-minute best-ranked leftover auto-pick.
- * Copy-from-member, user picks, missed picks, and administrator
- * import / fix-pick (including JaJa Week 1 DAL) never increment this.
+ * Season “💩” stamps for the ~5-minute best-ranked leftover auto-pick.
+ * User picks, missed picks, and administrator import / fix-pick
+ * (including Week 1 imported seats) never increment this.
  */
 
 import { RANKED_PICK_SOURCE } from "./pick-mirror";
@@ -45,5 +45,5 @@ export function autoPickStampsTitle(
   const n = autoPickStampCount(stamps);
   if (n <= 0) return "";
   const times = n === 1 ? "once" : `${n} times`;
-  return `Best-ranked auto-pick used ${times} this season. A clean record (no 💩) is required to win the pool officially. Copy-from-member does not stamp.`;
+  return `Best-ranked auto-pick used ${times} this season. A clean record (no 💩) is required to win the pool officially.`;
 }

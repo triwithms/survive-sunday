@@ -1,4 +1,5 @@
 import type { RoleView } from "@/lib/roles";
+import type { PickBackupMode } from "@/lib/pick-mirror";
 
 export type AccountScreenProps = {
   nickname: string;
@@ -12,7 +13,5 @@ export type AccountScreenProps = {
 
 export type AccountMirrorProps = {
   membershipId: string;
-  initialMode: import("@/lib/pick-mirror").PickBackupMode;
-  initialSourceId: string | null;
-  options: { id: string; nickname: string; label: string }[];
+  initialMode: PickBackupMode;
 };
