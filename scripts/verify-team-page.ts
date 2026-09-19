@@ -2,12 +2,17 @@
  * Team research hub: style above coach, unit + injuries + news links,
  * no Key players / roster dump. Feature files stay ≤100 lines.
  * Each Look closer item is its own route/page.
+ * Unit lists: healthy starters, then injured starters.
  *
  *   npx tsx scripts/verify-team-page.ts
  */
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
+import {
+  listUnitPlayers,
+  splitUnitPlayers,
+} from "../src/components/features/team/order-unit-players";
 import {
   isTeamSection,
   isTeamUnit,
@@ -73,6 +78,53 @@ function main() {
   const toggle = read(`${dir}/TeamStartersToggle.tsx`);
   assert.match(toggle, /Starters only/);
   assert.match(toggle, /type="checkbox"/);
+
+  const unit = read(`${dir}/TeamUnitScreen.tsx`);
+  assert.match(unit, /TeamStartersToggle/);
+  assert.match(unit, /splitUnitPlayers/);
+  assert.match(unit, /TeamUnitBlocks/);
+  const blocks = read(`${dir}/TeamUnitBlocks.tsx`);
+  assert.match(blocks, /heading="Injured"/);
+  assert.match(blocks, /"Depth"/);
+  const injuries = read(`${dir}/TeamInjuriesScreen.tsx`);
+  assert.match(injuries, />Injuries</);
+  assert.doesNotMatch(unit, />Injuries</);
+
+  const sample = [
+    { name: "Injured starter", role: "starter", injury: { status: "Out" } },
+    { name: "Healthy starter", role: "starter", injury: null },
+    { name: "Depth", role: "depth", injury: null },
+    { name: "Injured depth", role: "depth", injury: { status: "Questionable" } },
+  ];
+  assert.deepEqual(
+    listUnitPlayers(sample, false).map((p) => p.name),
+    ["Healthy starter", "Injured starter"]
+  );
+  const showAll = listUnitPlayers(sample, true).map((p) => p.name);
+  assert.deepEqual(showAll, [
+    "Healthy starter",
+    "Injured starter",
+    "Depth",
+    "Injured depth",
+  ]);
+  assert.ok(showAll.indexOf("Healthy starter") < showAll.indexOf("Injured starter"));
+  const groups = splitUnitPlayers(sample);
+  assert.deepEqual(
+    groups.healthyStarters.map((p) => p.name),
+    ["Healthy starter"]
+  );
+  assert.deepEqual(
+    groups.injuredStarters.map((p) => p.name),
+    ["Injured starter"]
+  );
+  const noStarters = [
+    { name: "A", role: "depth", injury: { status: "Out" } },
+    { name: "B", role: "roster", injury: null },
+  ];
+  assert.deepEqual(
+    listUnitPlayers(noStarters, false).map((p) => p.name),
+    ["A", "B"]
+  );
 
   assert.equal(isTeamSection("offence"), true);
   assert.equal(isTeamSection("special-teams"), true);
