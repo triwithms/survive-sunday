@@ -1,17 +1,34 @@
 /** Display-mode and UA helpers for the Home Screen nudge. */
 
+const INSTALLED_MODES = [
+  "(display-mode: standalone)",
+  "(display-mode: fullscreen)",
+  "(display-mode: minimal-ui)",
+  "(display-mode: window-controls-overlay)",
+];
+
+/** Standalone, related display-modes, or iOS Home Screen (`navigator.standalone`). */
+export function isInstalledDisplay(
+  matchMedia: ((query: string) => { matches: boolean }) | undefined,
+  navigatorStandalone = false
+): boolean {
+  for (const query of INSTALLED_MODES) {
+    try {
+      if (matchMedia?.(query)?.matches) return true;
+    } catch {
+      /* ignore */
+    }
+  }
+  return navigatorStandalone === true;
+}
+
 export function isStandalone(
   win: Pick<Window, "matchMedia" | "navigator"> | null | undefined =
     typeof window === "undefined" ? null : window
 ): boolean {
   if (!win) return false;
-  try {
-    if (win.matchMedia?.("(display-mode: standalone)")?.matches) return true;
-  } catch {
-    /* ignore */
-  }
   const nav = win.navigator as Navigator & { standalone?: boolean };
-  return nav.standalone === true;
+  return isInstalledDisplay(win.matchMedia?.bind(win), nav.standalone === true);
 }
 
 export function isMobile(userAgent: string, maxTouchPoints = 0): boolean {

@@ -1,6 +1,7 @@
 import {
   A2HS_OPEN_EVENT,
   readA2hsState,
+  statusAfterHelpReopen,
   statusAfterLogin,
   writeA2hsState,
 } from "./state";
@@ -21,9 +22,9 @@ export function markAddToHomePending(): void {
   writeA2hsState(statusAfterLogin(readA2hsState()));
 }
 
-/** Help / Account: open the Yes instructions. Clears opt-out for this path. */
+/** Help / Account: open the Yes instructions. Clears opt-out; keeps installed. */
 export function reopenA2hsNudge(yes = false): void {
-  writeA2hsState({ status: "pending" });
+  writeA2hsState(statusAfterHelpReopen(readA2hsState()));
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent(A2HS_OPEN_EVENT, { detail: { yes } }));
   }

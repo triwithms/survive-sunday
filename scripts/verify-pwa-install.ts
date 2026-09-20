@@ -10,12 +10,14 @@ import {
   a2hsVariant,
   isAndroid,
   isInAppBrowser,
+  isInstalledDisplay,
   isIOS,
   isMobile,
 } from "../src/components/features/a2hs/env";
 import {
   reconcileA2hs,
   shouldShowA2hs,
+  statusAfterHelpReopen,
   statusAfterLogin,
 } from "../src/components/features/a2hs/state";
 
@@ -51,20 +53,32 @@ assert.equal(shouldShowA2hs({ ...ask, mobile: false }), false, "desktop → hide
 assert.equal(shouldShowA2hs({ ...ask, status: "optout" }), false, "No → hide");
 assert.equal(shouldShowA2hs({ ...ask, status: "not_now" }), false, "Not now → hide");
 assert.equal(shouldShowA2hs({ ...ask, status: "installed" }), false, "installed");
-assert.equal(reconcileA2hs({ status: "installed" }, false).status, "pending");
+assert.equal(reconcileA2hs({ status: "installed" }, false).status, "installed");
 assert.equal(reconcileA2hs({ status: "optout" }, false).status, "optout");
 assert.equal(reconcileA2hs({ status: "not_now" }, false).status, "not_now");
 assert.equal(reconcileA2hs({ status: "pending" }, true).status, "installed");
 assert.equal(statusAfterLogin({ status: "not_now" }).status, "pending");
 assert.equal(statusAfterLogin({ status: "optout" }).status, "optout");
 assert.equal(statusAfterLogin({ status: "pending" }).status, "pending");
+assert.equal(statusAfterLogin({ status: "installed" }).status, "installed");
+assert.equal(statusAfterHelpReopen({ status: "installed" }).status, "installed");
+assert.equal(statusAfterHelpReopen({ status: "optout" }).status, "pending");
+assert.equal(isInstalledDisplay(() => ({ matches: false }), false), false);
+assert.equal(isInstalledDisplay(() => ({ matches: false }), true), true);
+assert.equal(
+  isInstalledDisplay((q) => ({ matches: q.includes("minimal-ui") }), false),
+  true
+);
 
 const card = readFileSync("src/components/features/a2hs/A2hsCard.tsx", "utf8");
 assert.match(card, /Do you want to add NFL Pool to your Home Screen\?/);
 assert.match(card, />\s*Yes\s*</);
-assert.match(card, />\s*No\s*</);
+assert.match(card, /No — don.?t ask again/);
 assert.match(card, />\s*Not now\s*</);
-assert.doesNotMatch(card, /Later|I added it|Don.?t ask again/);
+assert.match(card, />\s*Close\s*</);
+assert.match(card, />\s*Done\s*</);
+assert.match(card, /onBackdropClick/);
+assert.doesNotMatch(card, /Later|I added it/);
 const helpPage = readFileSync("src/app/help/page.tsx", "utf8");
 assert.match(helpPage, /HelpContent/);
 assert.match(helpPage, /safe-area-inset-top/);
@@ -83,6 +97,7 @@ assert.match(helpInstall, /A2hsIosHint/);
 assert.match(helpInstall, /id="install-home-screen"/);
 assert.match(helpInstall, /Yes/);
 assert.match(helpInstall, /Not now/);
+assert.match(helpInstall, /don.?t ask again/);
 assert.doesNotMatch(helpInstall, /bottom of Safari/);
 const helpAdmins = readFileSync(
   "src/components/features/help/HelpForAdmins.tsx",

@@ -60,9 +60,15 @@ export function readA2hsState(): A2hsRecord {
   }
 }
 
-/** Login resets Not now so the card can ask again. No stays quiet. */
+/** Login resets Not now so the card can ask again. No and installed stay quiet. */
 export function statusAfterLogin(rec: A2hsRecord): A2hsRecord {
-  if (rec.status === "optout") return rec;
+  if (rec.status === "optout" || rec.status === "installed") return rec;
+  return { status: "pending" };
+}
+
+/** Help reopens Yes. Keep installed so Safari shared links stay quiet. */
+export function statusAfterHelpReopen(rec: A2hsRecord): A2hsRecord {
+  if (rec.status === "installed") return rec;
   return { status: "pending" };
 }
 
@@ -75,12 +81,11 @@ export function shouldShowA2hs(input: {
   return input.status === "pending";
 }
 
-/** Icon removed: browser again, so ask again. Opt-out stays quiet. */
+/** Standalone (or related display-mode) marks installed. Safari does not undo it. */
 export function reconcileA2hs(
   rec: A2hsRecord,
   standalone: boolean
 ): A2hsRecord {
   if (standalone) return { status: "installed" };
-  if (rec.status === "installed") return { status: "pending" };
   return rec;
 }

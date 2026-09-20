@@ -79,6 +79,10 @@ export function A2hsNudge() {
         setOpen(false);
       }}
       onInstall={onYes}
+      onClose={() => {
+        setOpen(false);
+        setYesMode(false);
+      }}
       onCopy={() => {
         void navigator.clipboard
           .writeText(location.href)
