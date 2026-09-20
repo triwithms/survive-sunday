@@ -20,10 +20,12 @@ Until the videos exist, this is a **docs note only**. Do not change Help screens
 
 ## Two tours
 
-| Tour | Length | What it is |
-|------|--------|------------|
-| **Quick** | ~60–90 seconds | Immersive Apple-style **live demo**. Viewer is a **player in the pool**. Questions drive taps — not a manual. |
-| **Full** | ~3–5 minutes | Comprehensive **feature pass** (screens, Share, Help, light Admin). Do not film Full in the same first-person POV. |
+Do **not** hard-restrict how long either tour runs. Record a natural pass. A shorter WhatsApp cut (if you want one) is an **edit** later — not a script constraint.
+
+| Tour | Pace (optional — not a cap) | What it is |
+|------|-----------------------------|------------|
+| **Quick** | However long a natural player-POV pass takes. Often lands around a minute or two. | Immersive Apple-style **live demo**. Viewer is a **player in the pool**. Questions drive taps — not a manual. |
+| **Full** | However long a comprehensive pass takes. Often lands around a few minutes. | Comprehensive **feature pass** (screens, Share, Help, light Admin). Do not film Full in the same first-person POV. |
 
 Keep tap ripples and highlights if your recorder offers them. They help. Captions: see **Recording notes** — closed captions, not burned in by default.
 
@@ -35,6 +37,7 @@ Keep tap ripples and highlights if your recorder offers them. They help. Caption
 - Sign in as a player who is **still in**. If you are out, My pick is a huge **YOU’RE OUT** cover (show that in Full if you can; skip it in Quick).
 - You do **not** need to submit a new pick on camera. If you already picked, show the cards and **Game details ›**. Do not mess with a friend’s pick.
 - **Quick filming:** prefer **live or relevant game context** (your pick’s matchup, a game that’s on). The viewer should feel like they are *in* the pool this week — not watching a labelled tour of tabs.
+- **Duration:** no clock. Let Quick and Full run as long as a natural pass takes. Do not cut a question short to hit 60–90 seconds or 3–5 minutes. Optional shorter WhatsApp cut = **edit**, not a filming constraint.
 - Voice-over: generic **excited sports-announcer** energy — funny, a bit emotional, group-chat. **Not** a real celebrity voice clone. No Madden. No named-announcer imitation. **Quick** is in-the-moment (you’re the player). **Full** can name screens; it is the feature pass.
 - **Captions:** use **closed captions** (friends can toggle them on/off) via a sidecar file (WebVTT / `.vtt`) or the host’s CC track. **Do not** burn captions into the picture by default. An optional separate silent burn-in cut can come later if a chat app strips CC. When Help video links exist, they can mention CC.
 - Do not invent extra bottom tabs. Do not deep-dive Admin on Quick. On Full, Admin is a wave, not a training video.
@@ -140,9 +143,9 @@ Bottom-nav **Admin** for Administrators. Three phone tabs: **Users · Pool · Sy
 
 ---
 
-## Quick tour (~60–90 seconds)
+## Quick tour
 
-Immersive Apple-style **live demo**. The viewer is a **player in the pool**, not someone reading a manual. Do not parade every tab. Do not narrate “this is the Scores screen.” Let **questions** drive the taps.
+Immersive Apple-style **live demo**. The viewer is a **player in the pool**, not someone reading a manual. Do not parade every tab. Do not narrate “this is the Scores screen.” Let **questions** drive the taps. Run as long as that natural pass takes (often around a minute or two — optional, not a cap).
 
 Skip Admin, Standings, Account, Help, and Share unless a question honestly leads there (Full covers those). Skip Selections / Leaderboard — those are the feature pass.
 
@@ -158,7 +161,7 @@ UI after [#148](https://github.com/triwithms/survive-sunday/pull/148). Keep the 
 2. **What’s the score?** Tap gold **Details ›** on that game card. Peek the sheet (live, preview, or highlights). Don’t tour every clip.
 3. **Close** the sheet. **Who’s hurt / who’s starting?** Tap that team’s **logo or name** (Scores card — logos still open research). Glance injuries / starters. Don’t open every Look closer page.
 4. **Bottom nav → My pick.** **What’s my pick?** Scroll to that matchup card (away @ home). **Pick** sits on each team — don’t need to confirm a new pick on camera.
-5. One more look if you have seconds: centred **Game details ›** under the matchup header (middle of the card, not on a team). Same sheet as Scores. **Close** lands you back on My pick. Hold on the pick. End.
+5. One more look: centred **Game details ›** under the matchup header (middle of the card, not on a team). Same sheet as Scores. **Close** lands you back on My pick. Hold on the pick. End.
 
 If you are already locked on a team, still do steps 4–5 — live with the pick; don’t unpick for the video.
 
@@ -174,9 +177,9 @@ Sparse. Present tense. You’re in it. Punch up later with [`APP-TOUR-FREE-AI.md
 
 ---
 
-## Full demo (~3–5 minutes)
+## Full demo
 
-Comprehensive **feature pass**. Name the screens. Show Share, Selections, Leaderboard, Schedule, Standings, Account, Help, and a polite Admin wave. **Do not** rewrite this as the Quick live-demo POV — friends who want every control watch Full.
+Comprehensive **feature pass**. Name the screens. Show Share, Selections, Leaderboard, Schedule, Standings, Account, Help, and a polite Admin wave. **Do not** rewrite this as the Quick live-demo POV — friends who want every control watch Full. Run as long as that pass takes (often around a few minutes — optional, not a cap).
 
 ### Steps (click intents)
 
@@ -221,8 +224,9 @@ Punch up later with [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md). Keep this orde
 ## After you record
 
 1. Save the Quick file and the Full file somewhere Robert can find them, plus a **CC sidecar** (VTT) or host CC track — not a burned-in default.
-2. When both exist, a later **Help** change can add the two links at the **top** of Help (separate PR — not this docs file). Those links can mention CC.
-3. If the app UI moved, update **this** script first, then re-record. Do not “fix it in the edit” forever.
+2. Optional: a shorter WhatsApp cut is an **edit** of the natural recording — do not re-script Quick/Full to fit a clock.
+3. When both exist, a later **Help** change can add the two links at the **top** of Help (separate PR — not this docs file). Those links can mention CC.
+4. If the app UI moved, update **this** script first, then re-record. Do not “fix it in the edit” forever.
 
 ---
 

@@ -42,8 +42,9 @@ Rewrite the **Voice-over (source draft)** lines so they are funnier and more emo
 - Nicknames only if they already appear in APP-TOUR.md (they mostly should not). No emails, phones, passwords, invite codes.
 
 ### Keep fixed
-- Quick: ~60–90 seconds when read aloud (short lines; fewer words than Full)
-- Full: ~3–5 minutes (still punchy; do not write an essay per step)
+- **No duration cap.** Quick and Full run as long as a natural pass takes. Do not squeeze lines to hit 60–90 seconds or 3–5 minutes. A shorter WhatsApp cut is an **edit**, not a VO constraint. (Soft: Quick often lands shorter than Full.)
+- Quick stays sparser than Full (player-POV questions, not a labelled feature list)
+- Full stays punchy; do not write an essay per step
 - Button names and screen names exactly as APP-TOUR.md: **My pick**, **Selections**, **Leaderboard**, **Scores**, **Schedule**, **Standings**, **Game details ›**, **Details ›**, **Share**, **Copy**, **Send**, **Close**, **Account**, **Help** (**?**), **YOU’RE OUT**, **Season-end tiebreak**, Admin tabs **Users · Pool · System**
 - Header Share = this **page**. Sheet Share = this **matchup**. Installed app has **no address bar**.
 - Help video links: you may keep the one line that *when videos exist* they sit at the **top of Help**. Those links can mention CC. Do not invent URLs. Do not spec Help UI.
@@ -66,7 +67,7 @@ App code, coach marks, HelpContent, HANDOFF rewrites, pick-backup docs, Join/Sig
 (same step count as APP-TOUR.md Full)
 
 ## Notes
-(anything you refused to invent, or a line that is too long to speak)
+(anything you refused to invent, or a line that is too long to speak — length is not a cap)
 ```
 
 Paste-ready. No preamble about being an AI.
