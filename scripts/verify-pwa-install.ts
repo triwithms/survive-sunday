@@ -124,6 +124,7 @@ const helpRules = readFileSync(
   "utf8"
 );
 assert.match(helpRules, /HelpMulligan/);
+assert.match(helpRules, /HelpFoxEgg/);
 assert.doesNotMatch(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8") +
     readFileSync("src/app/(app)/account/mirror/page.tsx", "utf8"),
@@ -149,7 +150,11 @@ const helpMenu = readFileSync(
   "utf8"
 );
 assert.match(helpMenu, /HELP_TOPICS/);
-assert.match(helpMenu, /HelpFoxEgg/);
+assert.doesNotMatch(
+  helpMenu,
+  /HelpFoxEgg/,
+  "Fox belongs on Help → Rules, not the topic hub"
+);
 assert.doesNotMatch(
   helpMenu,
   /topic\.Component|<HelpInstall|<HelpSignIn/,
@@ -160,12 +165,21 @@ const helpFox = readFileSync(
   "utf8"
 );
 assert.match(helpFox, /https:\/\/youtu\.be\/6GWTb8Fs9g0/);
+assert.match(helpFox, /src=\{FOX_SRC\}|src=["']\/help\/silver-fox\.png["']/);
+assert.match(helpFox, /\/help\/silver-fox\.png/);
 assert.match(helpFox, /target="_blank"/);
 assert.match(helpFox, /rel="noopener noreferrer"/);
 assert.match(helpFox, /aria-label="Fox"/);
 assert.match(helpFox, /min-h-11/);
-assert.match(helpFox, /🦊/);
-assert.doesNotMatch(helpFox, /Easter egg|Silver Fox|Colin/i);
+assert.match(helpFox, /<img/);
+assert.match(helpFox, /FOX_SIZE_PX = 64|width=\{64\}/);
+assert.doesNotMatch(helpFox, /🦊/);
+assert.doesNotMatch(helpFox, /width=\{48\}|h-12 w-12/);
+assert.doesNotMatch(helpFox, /Easter egg|reunion|Silver Fox|Colin/i);
+assert.ok(
+  existsSync("public/help/silver-fox.png"),
+  "missing public/help/silver-fox.png"
+);
 const helpTopics = readFileSync(
   "src/components/features/help/topics.ts",
   "utf8"
