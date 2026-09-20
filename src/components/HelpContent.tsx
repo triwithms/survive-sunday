@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { HelpQuickTour } from "@/components/features/help/HelpQuickTour";
 import { HelpTopicMenu } from "@/components/features/help/HelpTopicMenu";
 import { topicForHash } from "@/components/features/help/topics";
 
@@ -9,7 +10,7 @@ function currentHash(): string {
   return window.location.hash.replace(/^#/, "");
 }
 
-/** Menu first. One topic after a tap or hash. Never stack every section. */
+/** Quick tour, then topic menu. One topic after a tap or hash. Never stack. */
 export function HelpContent() {
   const [hash, setHash] = useState("");
 
@@ -34,6 +35,7 @@ export function HelpContent() {
   if (!Topic) {
     return (
       <article className="prose-survive text-sm leading-relaxed max-w-[68ch]">
+        <HelpQuickTour />
         <HelpTopicMenu />
       </article>
     );

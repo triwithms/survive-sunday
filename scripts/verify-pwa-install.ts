@@ -134,6 +134,13 @@ const helpContent = readFileSync("src/components/HelpContent.tsx", "utf8");
 assert.match(helpContent, /["']use client["']/);
 assert.match(helpContent, /Back to Help topics/);
 assert.match(helpContent, /HelpTopicMenu/);
+assert.match(helpContent, /HelpQuickTour/);
+const tourIdx = helpContent.indexOf("<HelpQuickTour");
+const menuIdx = helpContent.indexOf("<HelpTopicMenu");
+assert.ok(
+  tourIdx >= 0 && menuIdx > tourIdx,
+  "Quick tour sits above the topic menu on /help"
+);
 assert.doesNotMatch(
   helpContent,
   /<HelpInstall \/>|<HelpSignIn \/>|<HelpPick \/>/,
@@ -152,8 +159,22 @@ const helpMenu = readFileSync(
 assert.match(helpMenu, /HELP_TOPICS/);
 assert.doesNotMatch(
   helpMenu,
-  /HelpFoxEgg/,
-  "Fox belongs on Help → Rules, not the topic hub"
+  /HelpFoxEgg|HelpQuickTour|youtu\.be\/VlcYAX34_L8/,
+  "Fox belongs on Help → Rules; Quick tour is above the menu, not in it"
+);
+const helpTour = readFileSync(
+  "src/components/features/help/HelpQuickTour.tsx",
+  "utf8"
+);
+assert.match(helpTour, /https:\/\/youtu\.be\/VlcYAX34_L8/);
+assert.match(helpTour, /target="_blank"/);
+assert.match(helpTour, /rel="noopener noreferrer"/);
+assert.match(helpTour, /Quick tour/);
+assert.doesNotMatch(helpTour, /iframe|YouTubeEmbed|<video/);
+assert.doesNotMatch(
+  helpTour,
+  /HelpFoxEgg|silver-fox|Easter egg/i,
+  "Fox stays on Help → Rules, not the Quick tour callout"
 );
 assert.doesNotMatch(
   helpMenu,

@@ -12,9 +12,9 @@ Punch-up for voice-over lines only: [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md)
 
 ## When the videos exist (Help)
 
-After the **Quick tour** and **Full demo** videos are recorded, put **two video links near the top of Help** — not buried inside a Help topic. Help is the friend-facing home for those links.
+**Quick tour** is live at the top of Help (`/help`) — YouTube `https://youtu.be/VlcYAX34_L8` (new tab; no embed). Topic menu stays below. Fox stays at the bottom of Rules.
 
-Until the videos exist, this is a **docs note only**. Do not change Help screens or app code just to reserve a spot. When those links exist, they can mention **closed captions** (toggle on/off).
+**Full demo** is still pending. When it exists, add a second link next to Quick tour — not buried inside a topic. Links can mention **closed captions** (toggle on/off).
 
 ---
 
