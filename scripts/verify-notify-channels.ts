@@ -38,6 +38,7 @@ const libFiles = [
   "src/lib/otp-notify.ts",
   "src/lib/notify-test-copy.ts",
   "src/lib/elimination-admin-alert.ts",
+  "src/lib/feedback-admin-alert.ts",
   "src/lib/password-reset-alert.ts",
   "src/lib/password-reset-deliver.ts",
 ];
@@ -183,6 +184,7 @@ assert.match(dispatch, /withGameEmailText/);
 assert.match(dispatch, /withGameEmailHtml/);
 assert.doesNotMatch(readFileSync("src/lib/otp-notify.ts", "utf8"), /withGameSmsFooter|withGameEmailText/);
 assert.doesNotMatch(readFileSync("src/lib/elimination-admin-alert.ts", "utf8"), /sendResendMessage/);
+assert.doesNotMatch(readFileSync("src/lib/feedback-admin-alert.ts", "utf8"), /sendResendMessage/);
 assert.doesNotMatch(readFileSync("src/lib/password-reset-alert.ts", "utf8"), /sendResendMessage/);
 assert.match(readFileSync("src/lib/password-reset-deliver.ts", "utf8"), /dispatchOtp/);
 assert.match(readFileSync("src/lib/signin-otp.ts", "utf8"), /dispatchOtp/);

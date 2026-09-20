@@ -2,5 +2,4 @@
 export const ACCOUNT_ROW =
   "btn-secondary w-full inline-flex items-center justify-center text-center min-h-11";
 
-export const FEEDBACK_MAILTO =
-  "mailto:robertgama@gmail.com?subject=Survive%20Sunday%20feedback";
+export const FEEDBACK_PATH = "/account/report";
