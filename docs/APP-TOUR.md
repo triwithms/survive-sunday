@@ -14,7 +14,7 @@ Punch-up for voice-over lines only: [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md)
 
 After the **Quick tour** and **Full demo** videos are recorded, put **two video links near the top of Help** — not buried inside a Help topic. Help is the friend-facing home for those links.
 
-Until the videos exist, this is a **docs note only**. Do not change Help screens or app code just to reserve a spot.
+Until the videos exist, this is a **docs note only**. Do not change Help screens or app code just to reserve a spot. When those links exist, they can mention **closed captions** (toggle on/off).
 
 ---
 
@@ -25,7 +25,7 @@ Until the videos exist, this is a **docs note only**. Do not change Help screens
 | **Quick** | ~60–90 seconds | Natural Sunday use. Make a pick, peek a game, see the group, see who’s still in. |
 | **Full** | ~3–5 minutes | Same journey, then Schedule, Scores share, Standings, Account, Help, and a light Admin glance. |
 
-Keep tap ripples, highlights, and captions if your recorder offers them. They help.
+Keep tap ripples and highlights if your recorder offers them. They help. Captions: see **Recording notes** — closed captions, not burned in by default.
 
 ---
 
@@ -35,6 +35,7 @@ Keep tap ripples, highlights, and captions if your recorder offers them. They he
 - Sign in as a player who is **still in**. If you are out, My pick is a huge **YOU’RE OUT** cover (show that in Full if you can; skip it in Quick).
 - You do **not** need to submit a new pick on camera. If you already picked, show the cards and **Game details ›**. Do not mess with a friend’s pick.
 - Voice-over: generic **excited sports-announcer** — funny, a bit emotional, group-chat energy. **Not** a real celebrity voice clone. No Madden. No named-announcer imitation.
+- **Captions:** use **closed captions** (friends can toggle them on/off) via a sidecar file (WebVTT / `.vtt`) or the host’s CC track. **Do not** burn captions into the picture by default. An optional separate silent burn-in cut can come later if a chat app strips CC. When Help video links exist, they can mention CC.
 - Do not invent extra bottom tabs. Do not deep-dive Admin on Quick. On Full, Admin is a wave, not a training video.
 - Re-run this whole script when the UI changes.
 
@@ -216,6 +217,16 @@ Punch up later with [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md). Keep this orde
 
 ## After you record
 
-1. Save the Quick file and the Full file somewhere Robert can find them.
-2. When both exist, a later **Help** change can add the two links at the **top** of Help (separate PR — not this docs file).
+1. Save the Quick file and the Full file somewhere Robert can find them, plus a **CC sidecar** (VTT) or host CC track — not a burned-in default.
+2. When both exist, a later **Help** change can add the two links at the **top** of Help (separate PR — not this docs file). Those links can mention CC.
 3. If the app UI moved, update **this** script first, then re-record. Do not “fix it in the edit” forever.
+
+---
+
+## Future / Phase 2 — Join / Sign-in tour
+
+**Not in scope** for the first Quick and Full in-app tours.
+
+A separate short video for **WhatsApp invites**: invite link → claim the seat → set a password → optional Add to Home Screen → first pick. Same pattern as above: write the script here (or a sibling doc) → record → **closed captions** (sidecar/VTT or host CC, not burned in by default).
+
+Do not fold Join / Sign-in into Quick or Full. Those two stay signed-in, in-app.

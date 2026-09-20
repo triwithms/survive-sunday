@@ -11,7 +11,8 @@
 ## Product notes (do not implement)
 
 - These tours are **recording checklists**, not in-app coach marks.
-- **When the Quick tour and Full demo videos exist**, two video links belong **near the top of Help** (not buried in a topic). Help is the friend-facing home for those links. Until then, docs only — **do not** write HelpContent or reserve UI in this pass.
+- **When the Quick tour and Full demo videos exist**, two video links belong **near the top of Help** (not buried in a topic). Help is the friend-facing home for those links. Until then, docs only — **do not** write HelpContent or reserve UI in this pass. Those links can mention **closed captions**.
+- Captions on the recordings: **closed captions** (toggle on/off via sidecar/VTT or host CC). Do not assume captions are burned into the frame. Do not write a Join/Sign-in tour in this pass (Phase 2).
 - Say **Admin** / **Administrator** only. Never Commissioner.
 
 ---
@@ -40,10 +41,11 @@ Rewrite the **Voice-over (source draft)** lines so they are funnier and more emo
 - Full: ~3–5 minutes (still punchy; do not write an essay per step)
 - Button names and screen names exactly as APP-TOUR.md: **My pick**, **Selections**, **Leaderboard**, **Scores**, **Schedule**, **Standings**, **Game details ›**, **Details ›**, **Share**, **Copy**, **Send**, **Close**, **Account**, **Help** (**?**), **YOU’RE OUT**, **Season-end tiebreak**, Admin tabs **Users · Pool · System**
 - Header Share = this **page**. Sheet Share = this **matchup**. Installed app has **no address bar**.
-- Help video links: you may keep the one line that *when videos exist* they sit at the **top of Help**. Do not invent URLs. Do not spec Help UI.
+- Help video links: you may keep the one line that *when videos exist* they sit at the **top of Help**. Those links can mention CC. Do not invent URLs. Do not spec Help UI.
+- Captions are closed (toggle on/off). Do not write VO that tells the editor to burn text into the video.
 
 ### Out of scope
-App code, coach marks, HelpContent, HANDOFF rewrites, pick-backup docs, new features.
+App code, coach marks, HelpContent, HANDOFF rewrites, pick-backup docs, Join/Sign-in tour (Phase 2), new features.
 
 ### Output format (exactly)
 
