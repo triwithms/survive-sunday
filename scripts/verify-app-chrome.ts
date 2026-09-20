@@ -60,6 +60,7 @@ assert.match(help, /<BottomNav/);
 
 const header = src("src/components/AppHeader.tsx");
 assert.match(header, /weekNumber=\{data\.currentWeek\}/);
+assert.match(header, /HeaderShareButton/);
 assert.doesNotMatch(
   header,
   /HeaderWeekNav|pickActionWeek|ChevronLeft|<select|<button/,
@@ -76,6 +77,8 @@ for (const file of [
   "src/components/BottomNav.tsx",
   "src/components/HeaderWeekBadge.tsx",
   "src/components/AppHeader.tsx",
+  "src/components/HeaderShareButton.tsx",
+  "src/components/HeaderHelpLink.tsx",
   "src/app/(app)/layout.tsx",
 ]) {
   const lines = src(file).split("\n").length;

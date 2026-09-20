@@ -5,8 +5,10 @@ export function HelpScreens() {
       <p className="text-[var(--text-muted)] mb-2">
         Bottom bar: <strong>My pick</strong> · <strong>Selections</strong> ·{" "}
         <strong>Leaderboard</strong> · <strong>Scores</strong> ·{" "}
-        <strong>Schedule</strong> · <strong>Standings</strong>. Help is{" "}
-        <strong>?</strong> in the header — not a tab.
+        <strong>Schedule</strong> · <strong>Standings</strong>. Header{" "}
+        <strong>Share</strong> (square with an arrow, beside <strong>?</strong>)
+        sends this page’s link. Help is <strong>?</strong> — not a tab.
+        Share is hidden on Admin and Settings.
       </p>
       <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
         <li className="text-[var(--text-primary)]">
@@ -46,7 +48,7 @@ export function HelpScreens() {
           Share Leaderboard &amp; Scores as a picture
         </h3>
         <p className="text-[var(--text-muted)]">
-          No Share button. On Leaderboard,{" "}
+          Header Share sends a link, not a picture. On Leaderboard,{" "}
           <strong>press and hold the page title</strong> (no week chip). On
           Scores, press and hold the title, or{" "}
           <strong>tap the week label three times</strong> (gold{" "}

@@ -4,7 +4,7 @@ Short product cheat sheet for a **non-coder** (or free AI first: Grok → Claude
 
 File paths for a targeted fix: [`docs/FILE-MAP.md`](FILE-MAP.md). Keep-up / deploy: [`docs/HANDOFF.md`](HANDOFF.md).
 
-Checked against live bottom nav (`src/components/BottomNav.tsx`): **My pick · Selections · Leaderboard · Scores · Schedule · Standings**. Header has **Account** + **?** (Help). Do not invent extra tabs. No Home / Pool / Board / League / Videos / Help in the bottom bar.
+Checked against live bottom nav (`src/components/BottomNav.tsx`): **My pick · Selections · Leaderboard · Scores · Schedule · Standings**. Header has **Share** (current page URL) + **?** (Help) + **Account**. Share is hidden on Admin and Settings. Do not invent extra tabs. No Home / Pool / Board / League / Videos / Help in the bottom bar.
 
 ---
 
@@ -21,7 +21,7 @@ The bar at the **bottom** uses friendly names. The address bar uses different wo
 | **Schedule** | `/schedule` | On the bottom bar |
 | **Standings** | `/nfl` | NFL win-loss. Not the pool Leaderboard |
 
-Header **?** opens Help (`/help`). Videos stay inside game **Details** (Scores / Schedule). `/videos` may still open if bookmarked.
+Header **Share** sends this page’s link (team schedule, Scores week, and so on). Header **?** opens Help (`/help`). Videos stay inside game **Details** (Scores / Schedule). `/videos` may still open if bookmarked.
 
 ---
 
@@ -95,6 +95,7 @@ Files: `src/components/features/team/` — [FILE-MAP](FILE-MAP.md).
 
 - **Help** (`/help`) — header **?**. Topic menu: tap one topic (or a hash) to see only that section + **Back to Help topics**. How-to. Not a pool screen.
 - **Videos** (`/videos`) — leftover deep link. Clips also sit in Scores / Schedule **Details**.
+- **Share** (header, beside Help) — sends the current page URL. Hidden on Admin and Account/settings.
 - **Account** (top right) — opens **Settings** (`/account`). Notify prefs, pick backup, install, Help, report a bug or idea, sign out.
 
 Do not invent Admin tabs or admin click-paths in this file. Admin tools are a separate topic (`HANDOFF` §8).
