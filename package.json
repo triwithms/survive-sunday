@@ -24,7 +24,6 @@
     "verify:invite-links": "tsx scripts/verify-invite-links.ts",
     "verify:invite-prefill": "tsx scripts/verify-invite-prefill.ts",
     "verify:pwa-install": "tsx scripts/verify-pwa-install.ts",
-    "verify:signin-otp": "tsx scripts/verify-signin-otp.ts",
     "verify:password-reset-flow": "node scripts/verify-password-reset-flow.mjs",
     "verify:ensure-db": "tsx scripts/_dangerous/verify-ensure-production-db.ts",
     "verify:db-guard": "tsx scripts/verify-db-mutation-guard.ts",

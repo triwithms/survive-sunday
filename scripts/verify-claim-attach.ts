@@ -10,7 +10,6 @@ import {
   normalizeAuthPassword,
   passwordsMatch,
   safeAuthCallbackPath,
-  shouldSkipClaimPassword,
 } from "../src/lib/auth-credentials";
 import { CLAIM_ERRORS, decideClaim } from "../src/lib/claim-seat";
 import { userFromCredentials } from "../src/lib/credentials-user";
@@ -32,33 +31,6 @@ assert.equal(safeAuthCallbackPath("/pool"), "/pool");
 assert.equal(safeAuthCallbackPath("https://evil.example"), "/pick");
 assert.equal(safeAuthCallbackPath("//evil.example"), "/pick");
 assert.equal(safeAuthCallbackPath(null), "/pick");
-
-assert.equal(
-  shouldSkipClaimPassword({
-    sessionUserId: "u-admin",
-    sessionEmail: "robertgama@gmail.com",
-    ownerUserId: "u-admin",
-    claimEmail: "RobertGama@gmail.com",
-  }),
-  true
-);
-assert.equal(
-  shouldSkipClaimPassword({
-    sessionUserId: "u-admin",
-    sessionEmail: "other@example.com",
-    ownerUserId: "u-admin",
-    claimEmail: "robertgama@gmail.com",
-  }),
-  false
-);
-assert.equal(
-  shouldSkipClaimPassword({
-    sessionUserId: undefined,
-    ownerUserId: "u-admin",
-    claimEmail: "robertgama@gmail.com",
-  }),
-  false
-);
 
 const commishEmail = decideClaim({
   seat: { role: "member", userId: "u-gams", email: "gams@survivesunday.demo" },
@@ -288,8 +260,7 @@ async function main() {
         assert.equal(attachedSpace.userId, adminSpace.id);
       }
 
-      // Fresh admin-only login: session match skips password (cannot reuse
-      // `admin` here — that user already holds a player seat after attach).
+      // Session alone cannot claim — password is always required.
       const admin2Email = `verify-attach-admin2-${stamp}@example.com`;
       const admin2 = await prisma.user.create({
         data: {
@@ -326,11 +297,23 @@ async function main() {
         email: admin2Email,
         password: "",
         membershipId: seat2.id,
-        sessionUserId: admin2.id,
-        sessionEmail: admin2Email,
       });
-      assert.equal(skipped.ok, true, skipped.ok ? "skip ok" : skipped.error);
-      if (skipped.ok) {
+      assert.equal(skipped.ok, false, "empty password must fail even if signed in");
+      if (!skipped.ok) {
+        assert.equal(skipped.status, 400);
+      }
+      const withPassword = await joinOrClaimSeat({
+        inviteCode: INVITE_CODE,
+        email: admin2Email,
+        password,
+        membershipId: seat2.id,
+      });
+      assert.equal(
+        withPassword.ok,
+        true,
+        withPassword.ok ? "password attach ok" : withPassword.error
+      );
+      if (withPassword.ok) {
         const attached2 = await prisma.membership.findUniqueOrThrow({
           where: { id: seat2.id },
         });

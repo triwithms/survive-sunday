@@ -165,7 +165,7 @@ export function readEmailDeliveryStatus(): EmailDeliveryStatus {
   let message: string;
   if (ready) {
     message =
-      "Email sending is configured. Forgot password and sign-in codes should arrive. If a friend still gets nothing, check spam and Resend → Logs.";
+      "Email sending is configured. Forgot-password codes should arrive. If a friend still gets nothing, check spam and Resend → Logs.";
   } else if (canStubDelivery()) {
     message =
       "This is a local/dev server. Codes are shown on the page instead of emailed.";

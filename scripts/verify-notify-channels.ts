@@ -187,7 +187,6 @@ assert.doesNotMatch(readFileSync("src/lib/elimination-admin-alert.ts", "utf8"), 
 assert.doesNotMatch(readFileSync("src/lib/feedback-admin-alert.ts", "utf8"), /sendResendMessage/);
 assert.doesNotMatch(readFileSync("src/lib/password-reset-alert.ts", "utf8"), /sendResendMessage/);
 assert.match(readFileSync("src/lib/password-reset-deliver.ts", "utf8"), /dispatchOtp/);
-assert.match(readFileSync("src/lib/signin-otp.ts", "utf8"), /dispatchOtp/);
 console.log("PASS  send paths go through the gatekeeper");
 
 console.log("\nverify-notify-channels OK");

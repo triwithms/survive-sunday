@@ -14,7 +14,6 @@ import {
   normalizeAuthEmail,
   normalizeAuthPassword,
   passwordsMatch,
-  shouldSkipClaimPassword,
 } from "./auth-credentials";
 import {
   ensureDualMembershipIndex,
@@ -60,9 +59,6 @@ export type JoinOrClaimInput = {
   membershipId?: string;
   nickname?: string;
   realName?: string;
-  /** Signed-in user claiming their own player seat (skip password re-check). */
-  sessionUserId?: string;
-  sessionEmail?: string;
 };
 
 export type JoinOrClaimResult =
@@ -82,10 +78,6 @@ function normalizeJoinFields(input: JoinOrClaimInput) {
     // Keep the pasted password intact (iOS often adds a trailing \n).
     // Attach compares via passwordsMatch(); new hashes use the normalized form.
     password: typeof input.password === "string" ? input.password : "",
-    sessionUserId:
-      typeof input.sessionUserId === "string" ? input.sessionUserId : "",
-    sessionEmail:
-      typeof input.sessionEmail === "string" ? input.sessionEmail : "",
     membershipId:
       typeof input.membershipId === "string" ? input.membershipId.trim() : "",
     nickname: typeof input.nickname === "string" ? input.nickname.trim() : "",
@@ -139,8 +131,6 @@ async function claimPracticeSeat(args: {
   membershipId: string;
   email: string;
   password: string;
-  sessionUserId?: string;
-  sessionEmail?: string;
 }): Promise<JoinOrClaimResult> {
   const seatPreview = await prisma.membership.findFirst({
     where: { id: args.membershipId, poolId: args.poolId },
@@ -161,24 +151,16 @@ async function claimPracticeSeat(args: {
   if (!previewDecision.ok) return previewDecision;
 
   if (previewDecision.action === "attach-to-existing") {
-    const signedInOwner = shouldSkipClaimPassword({
-      sessionUserId: args.sessionUserId,
-      sessionEmail: args.sessionEmail,
-      ownerUserId: previewDecision.userId,
-      claimEmail: args.email,
-    });
-    if (!signedInOwner) {
-      const hash = ownerPreview?.passwordHash;
-      const passwordOk = hash
-        ? await passwordsMatch(args.password, hash)
-        : false;
-      if (!passwordOk) {
-        return {
-          ok: false,
-          status: 401,
-          error: CLAIM_ERRORS.emailPasswordMismatch,
-        };
-      }
+    const hash = ownerPreview?.passwordHash;
+    const passwordOk = hash
+      ? await passwordsMatch(args.password, hash)
+      : false;
+    if (!passwordOk) {
+      return {
+        ok: false,
+        status: 401,
+        error: CLAIM_ERRORS.emailPasswordMismatch,
+      };
     }
     // Neon may still have main's @@unique([poolId, userId]). Drop before write.
     await ensureDualMembershipIndex(prisma);
@@ -445,15 +427,13 @@ export async function joinOrClaimSeat(
     membershipId,
     nickname,
     realName,
-    sessionUserId,
-    sessionEmail,
   } = normalizeJoinFields(input);
 
   if (!inviteCode || !email) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.missingFields };
   }
   const passwordNormalized = normalizeAuthPassword(password);
-  if (!passwordNormalized && !sessionUserId) {
+  if (!passwordNormalized) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.missingFields };
   }
   if (passwordNormalized && passwordNormalized.length < CLAIM_PASSWORD_MIN) {
@@ -481,8 +461,6 @@ export async function joinOrClaimSeat(
       membershipId,
       email,
       password,
-      sessionUserId: sessionUserId || undefined,
-      sessionEmail: sessionEmail || undefined,
     });
   }
 

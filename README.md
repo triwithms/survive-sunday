@@ -1,7 +1,7 @@
 # Survive Sunday — Wave 1
 
 Private NFL survivor / elimination pool PWA for the **2026/27** season.  
-Locale: **en-CA**. Stack: Next.js App Router, Prisma + **Neon Postgres** (production), Auth.js (credentials + optional Google).
+Locale: **en-CA**. Stack: Next.js App Router, Prisma + **Neon Postgres** (production), Auth.js (email/username + password).
 
 ## Owner / keep-up
 
@@ -49,17 +49,6 @@ Live roster names (Long Snapper → John Stilo, Steve → Steve Venerus) are pat
 - Landing → **Who are you?** from the Admin roster (nickname + real name). Friends then set their own email and password to claim that seat. Already-claimed seats point them to Sign in.
 - Open seats keep a practice `@survivesunday.demo` address until claimed. That is not a Demo-mode picker.
 
-## Google auth (optional)
-
-Set in `.env`:
-
-```
-AUTH_GOOGLE_ID=...
-AUTH_GOOGLE_SECRET=...
-```
-
-Demo credentials work without Google keys.
-
 ## Forgot password (email or text)
 
 Friends stay signed in on their phone / Home Screen app. We do **not** ask for a code at every login.
@@ -72,7 +61,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 
 ## Wave 1 features
 
-- Invite code join + live-roster **Who are you?** claim (own email/password on an existing seat) + credentials/demo login + Google-ready Auth.js
+- Invite code join + live-roster **Who are you?** claim (own email/password on an existing seat) + credentials login
 - Forgot-password one-time code (email / SMS); sessions stay signed in (~90 days)
 - **Notification preferences** (Account): each user chooses alert types. Core on, live scores / injury notes off. Email via Resend; missing-pick SMS follows the same switch. Password-reset codes are never gated.
 - Nickname + optional real name; pool membership; admin/member roles

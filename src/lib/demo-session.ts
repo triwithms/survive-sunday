@@ -29,14 +29,12 @@ function errorFromResultUrl(result: unknown): string | undefined {
 export async function signInDemoCredentials(
   email: string,
   password: string,
-  redirectTo = DEFAULT_SIGNED_IN_PATH,
-  extras?: { otp?: string }
+  redirectTo = DEFAULT_SIGNED_IN_PATH
 ): Promise<DemoSignInResult> {
   try {
-    const otp = extras?.otp?.trim() ?? "";
     const result = await signIn("credentials", {
       email,
-      ...(otp && !password.trim() ? { otp } : { password }),
+      password,
       redirect: false,
       redirectTo,
     });
