@@ -21,6 +21,7 @@ Chief of Staff (Grok Bot) owns when to surface these. **Never auto-paste a stale
 | 2 | [Team schedule coding brief](./TEAM-SCHEDULE-FREE-AI.md) | After icons + Admin invite | **done** (#132 merged) — do not re-run |
 | 3 | [Docs refresh](./DOCS-REFRESH-FREE-AI.md) | Free quota available; HANDOFF/FILE-MAP lag | optional anytime |
 | 4 | [Pick backup + 💩 docs](./PICK-BACKUP-DOCS-FREE-AI.md) | After pick-backup 5-min / no-copy PR merges | **waiting** (code not shipped) |
+| 5 | [App tour VO punch-up](./APP-TOUR-FREE-AI.md) | After game-sheet Share / Schedule Details / centred My pick Game details **#148** | **optional/ready** (#148 merged) — copy only, not required |
 
 ## Triggers
 

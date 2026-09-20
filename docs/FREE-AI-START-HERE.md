@@ -64,6 +64,23 @@ https://github.com/triwithms/survive-sunday/blob/main/docs/DOCS-REFRESH-FREE-AI.
 
 ---
 
+## E) App tour voice-over (optional)
+
+**Use when:** Recording Quick / Full demo videos; #148 UI is on `main`. Copy only.
+
+```
+Do ONE job only: punch up the Survive Sunday Quick + Full tour voice-over.
+Do NOT write app code or Help UI. Keep steps and order fixed.
+
+Read and follow:
+https://github.com/triwithms/survive-sunday/blob/main/docs/APP-TOUR-FREE-AI.md
+
+Source of truth for taps:
+https://github.com/triwithms/survive-sunday/blob/main/docs/APP-TOUR.md
+```
+
+---
+
 ## Queue index
 
 https://github.com/triwithms/survive-sunday/blob/main/docs/FREE-AI-QUEUE.md

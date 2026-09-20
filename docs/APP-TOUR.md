@@ -1,0 +1,221 @@
+# Survive Sunday — recording tours
+
+Re-runnable **demo checklists** for screen recording. Not live in-app coach marks. Not a product tour that ships in the app.
+
+**This script is the source of truth.** When the UI changes, re-record against this file (and update the steps here first). Names match [`HOW-SCREENS-WORK.md`](HOW-SCREENS-WORK.md) and [`FILE-MAP.md`](FILE-MAP.md): **My pick · Selections · Leaderboard · Scores · Schedule · Standings**. Header has **Share** + **?** (Help) + **Account**. Say **Admin** / **Administrator** only — never Commissioner.
+
+Canadian English. Audience: friends on WhatsApp.
+
+Punch-up for voice-over lines only: [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md).
+
+---
+
+## When the videos exist (Help)
+
+After the **Quick tour** and **Full demo** videos are recorded, put **two video links near the top of Help** — not buried inside a Help topic. Help is the friend-facing home for those links.
+
+Until the videos exist, this is a **docs note only**. Do not change Help screens or app code just to reserve a spot.
+
+---
+
+## Two tours
+
+| Tour | Length | What it is |
+|------|--------|------------|
+| **Quick** | ~60–90 seconds | Natural Sunday use. Make a pick, peek a game, see the group, see who’s still in. |
+| **Full** | ~3–5 minutes | Same journey, then Schedule, Scores share, Standings, Account, Help, and a light Admin glance. |
+
+Keep tap ripples, highlights, and captions if your recorder offers them. They help.
+
+---
+
+## Recording notes
+
+- **Phone, portrait.** Prefer the **Home Screen** icon (NFL Pool) so header **Share** makes sense — the installed app has no address bar.
+- Sign in as a player who is **still in**. If you are out, My pick is a huge **YOU’RE OUT** cover (show that in Full if you can; skip it in Quick).
+- You do **not** need to submit a new pick on camera. If you already picked, show the cards and **Game details ›**. Do not mess with a friend’s pick.
+- Voice-over: generic **excited sports-announcer** — funny, a bit emotional, group-chat energy. **Not** a real celebrity voice clone. No Madden. No named-announcer imitation.
+- Do not invent extra bottom tabs. Do not deep-dive Admin on Quick. On Full, Admin is a wave, not a training video.
+- Re-run this whole script when the UI changes.
+
+### Don’t mix these up (on camera)
+
+| This | Is not that |
+|------|-------------|
+| **Leaderboard** (`/standings`) | Pool in/out **season race** |
+| **Standings** (`/nfl`) | NFL win-loss research |
+| **Selections** (`/pool`) | Everyone’s **weekly** picks (after lock) |
+| Header **Share** / sheet **Share** | Short-lived **link** panel (full URL, Copy, Send) |
+| Press-and-hold title / triple-tap week | **Picture** share of Leaderboard or Scores — different gesture; skip unless you have time in Full |
+
+---
+
+## Per-screen features (journey order)
+
+How people actually use the app — not an importance ranking. UI after merged [#148](https://github.com/triwithms/survive-sunday/pull/148).
+
+### My pick (`/pick`)
+
+You land here after Sign in. This is “what am I riding this week?”
+
+- Eligible teams sit on **matchup cards** (away @ home).
+- **Pick** is on **each team**. Tapping the card does not open Details.
+- Centred **Game details ›** under the matchup header (middle of the card, not on each team). Same game sheet as Scores.
+- Sheet **Share** sits beside **Close**.
+- Logos still open team pages.
+- Change your pick until **your** kickoff (if the new game has not started). No slate-wide countdown.
+- If you are **out** for the season: huge **YOU’RE OUT** overlay. Pick controls off. Bottom nav still works.
+- Header **Week N** is the **pool** week (read-only). Your personal next-pick week can differ.
+
+### Schedule (`/schedule`)
+
+Browse the slate — including **future** weeks (Scores will not).
+
+- Opens on your current pick week. Past and future weeks are here.
+- Gold **Details ›** on rows. Same game sheet as Scores (Share in the sheet header).
+- Team names still open research.
+
+### Scores (`/scores`)
+
+This week’s scoreboard (your current pick week). Not a season browser.
+
+- Gold **Details ›** on a game. Same sheet: preview before kickoff, highlights after; **Participants’ picks** after lock.
+- Share the matchup URL `{origin}/scores?week={N}&game={gameId}` from the **sheet Share** (and you can still use header Share for the Scores page itself).
+- Opening that link selects that week when Scores allows it and opens that game’s sheet.
+
+### Share (header + sheet)
+
+Not a screen — a short-lived panel.
+
+- Header **Share** (square with an arrow, beside **?**) = **this page’s** link.
+- Sheet **Share** (beside Close on game details) = **that matchup’s** link.
+- Panel shows the **full URL**, **Copy**, and **Send** (Web Share when the phone offers it).
+- No permanent address bar in the installed app — that is why the URL is on the panel.
+- Hidden on Admin and Account/settings.
+
+### Selections (`/pool`)
+
+The group’s weekly picks. Not the season race.
+
+- Opens on your current pick week. You can look back. Future weeks stay on Schedule.
+- Flat list: same team together, then nickname A–Z.
+- Before lock: other friends stay hidden.
+
+### Leaderboard (`/standings`)
+
+Pool **season race**. Not NFL W-L. No week chip.
+
+- Still in, then out; then fewest losses / most weeks survived (mulligan).
+- Among equals: clean record, live win margin of finished picks, nickname.
+- **Season-end tiebreak** sits behind a tap at the bottom (starts collapsed).
+
+### Standings (`/nfl`)
+
+NFL win-loss research. Not the pool Leaderboard.
+
+- Tap a team for the team page.
+- A line on this screen links to the pool Leaderboard.
+
+### Account (top right)
+
+Opens **Settings** (`/account`).
+
+- Notification preferences, pick backup, install, Help, report a bug or idea, sign out.
+- Administrators also see **Admin** / **Playing as …** here.
+- Header Share is hidden on this screen.
+
+### Help (header **?**)
+
+`/help` is a **topic menu**, not a stacked wall of text.
+
+- Tap one topic (or a hash) to see only that section + **Back to Help topics**.
+- Topics include Install, Sign in, Making / changing a pick, The tabs, Rules, Account, For Administrators.
+- **When the Quick + Full videos exist:** two links near the **top** of Help (see above). Not inside a topic.
+
+### Admin (Full tour only)
+
+Bottom-nav **Admin** for Administrators. Three phone tabs: **Users · Pool · System**. Wave at them. Do not teach every control on camera.
+
+---
+
+## Quick tour (~60–90 seconds)
+
+Natural use order. Skip Admin. Skip Standings. Skip Account unless you have seconds left.
+
+### Steps (click intents)
+
+1. **Start signed in on My pick.** Show the header (SURVIVE, Week N, Share, **?**, Account) and the bottom bar.
+2. **Scroll the matchup cards.** Point at **Pick** on a team — do not need to confirm a new pick.
+3. **Tap centred Game details ›** on a card (middle of the matchup, not on a team).
+4. **Peek the game sheet.** Tap **Share** beside **Close**.
+5. **Show the Share panel** — full URL, **Copy**, **Send** if it appears. Close the panel, then **Close** the sheet.
+6. **Bottom nav → Selections.** Pause on the group list (after lock you see everyone; before lock you mostly see you).
+7. **Bottom nav → Leaderboard.** Pause on who’s still in.
+8. **Bottom nav → Scores.** Tap **Details ›** on a game. Optional: sheet Share once, then Close.
+9. **Header ? → Help.** Land on the topic menu. Stop. (No video links until they exist.)
+
+### Voice-over (source draft)
+
+Punch up later with [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md). Keep this order.
+
+1. “Sunday’s here and Survive Sunday is loaded. One pick. One life. Let’s go.”
+2. “This is My pick. Every game sits on a matchup card. **Pick** lives on the team you want — not the whole card.”
+3. “Need the rest of the story? **Game details**, right in the middle of the matchup.”
+4. “Same sheet you’ll see on Scores. **Share** sits beside Close — send this game to the chat.”
+5. “Home Screen has no address bar, so here’s the full link. Copy it, or Send it. Then we’re back to picking.”
+6. “**Selections** — that’s the group board. After lock, everybody’s cards are on the table.”
+7. “**Leaderboard.** Season race. Who’s still in, who’s out. Not the NFL table — that’s a different tab.”
+8. “**Scores** is this week’s scoreboard. **Details** opens the same sheet. Share it if the chat is yelling.”
+9. “Questions? Hit the **question mark**. Help is a topic list — tap one, don’t drown. That’s the tour. Make your pick.”
+
+---
+
+## Full demo (~3–5 minutes)
+
+Same journey, then the rest of the bar, Account, Help, and a polite Admin wave.
+
+### Steps (click intents)
+
+1. **My pick.** Header + bottom nav. Scroll matchup cards. Point at **Pick** on a team.
+2. **Lock rule (say it, don’t wait for kickoff):** you can change until *your* game starts; next week opens for you then — not after Monday Night Football.
+3. **OUT (only if you can show it, or say it):** eliminated players get a huge **YOU’RE OUT** cover; picks off; nav still works.
+4. **Tap centred Game details ›.** Peek preview or highlights. Logos still go to team pages — don’t follow a logo unless you have time.
+5. **Sheet Share** beside Close → full matchup URL, Copy / Send → close panel → **Close** sheet.
+6. **Header Share** on My pick → same panel, but this time it is the **page** link, not the matchup. Close it.
+7. **Bottom nav → Schedule.** Flip a week if you can (future weeks live here). Tap gold **Details ›** on a row. Same sheet. Close.
+8. **Bottom nav → Scores.** Tap **Details ›**. Mention the share link looks like `/scores?week=N&game=…`. Sheet Share once. If it is after lock, glance at **Participants’ picks**. Close.
+9. **Bottom nav → Selections.** Same-team clusters, then nicknames. Before lock, other friends stay hidden.
+10. **Bottom nav → Leaderboard.** Still in / out. Scroll to **Season-end tiebreak** and tap it open, then collapse.
+11. **Bottom nav → Standings.** NFL W-L. Optional: tap a team, see the research page, go back. Point at the line that leads to the pool Leaderboard if it is on screen.
+12. **Header Account** (top right). Glance: notification preferences, pick backup, Help, report a bug or idea, sign out. Do not sign out on camera.
+13. **Header ? → Help.** Topic menu. Tap one topic (The tabs is a good demo), then **Back to Help topics**. Mention: when the videos exist, two links will sit **near the top of Help**.
+14. **Admin (Administrators only).** Bottom nav **Admin**. Show the three tabs **Users · Pool · System**. Do not open every tool. Back to My pick.
+
+Optional extra (only if time): on Leaderboard or Scores, press-and-hold the title (or triple-tap the week on Scores) for **picture** share — say it is different from header Share.
+
+### Voice-over (source draft)
+
+Punch up later with [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md). Keep this order.
+
+1. “Welcome to Survive Sunday — private pool, friends only. You land on **My pick**. Matchup cards. **Pick** on the team. **Game details** in the middle.”
+2. “You can change until *your* kickoff. When that game starts, next week opens for you. We do not wait for Monday Night Football.”
+3. “If you’re eliminated, this whole screen becomes **YOU’RE OUT**. No more picks. You can still watch the chaos on the other tabs.”
+4. “**Game details** — same sheet as Scores. Preview before kickoff, highlights after. Close brings you right back to the pick.”
+5. “Sheet **Share** is beside Close. That’s the matchup link for the group chat.”
+6. “Header **Share** is the page you’re on. Same panel: full URL, Copy, Send. No address bar on the Home Screen icon — that’s why we show the link.”
+7. “**Schedule** is the whole slate. Future weeks live here. Gold **Details** — same sheet again.”
+8. “**Scores** is *this* pick week. **Details**, then Share, and the link looks like Scores, week, and game. After lock you’ll see who picked whom.”
+9. “**Selections** is the weekly pick list. Same team together, then nicknames. Not the season race.”
+10. “**Leaderboard** *is* the season race. Still in, then out. Tiebreak at the bottom starts folded — tap it if you like rules.”
+11. “**Standings** — that’s NFL win-loss. Research. Tap a club if you want the helmet and the rest. The pool race stays on Leaderboard.”
+12. “Top right is **Account**. Notices, pick backup, Help, report a bug. Administrators switch Playing as / Admin tools here.”
+13. “Header **question mark** is Help. Topic menu. One topic at a time. When we have the tour videos, two links will sit right at the top of Help — not buried.”
+14. “Administrators get **Admin**: Users, Pool, System. That’s the office. Friends don’t need it on Sunday. Back to My pick — go win a week.”
+
+---
+
+## After you record
+
+1. Save the Quick file and the Full file somewhere Robert can find them.
+2. When both exist, a later **Help** change can add the two links at the **top** of Help (separate PR — not this docs file).
+3. If the app UI moved, update **this** script first, then re-record. Do not “fix it in the edit” forever.
