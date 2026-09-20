@@ -1,6 +1,8 @@
 const FOX_WATCH_URL = "https://youtu.be/6GWTb8Fs9g0";
+const FOX_SRC = "/help/silver-fox.png";
+const FOX_SIZE_PX = 64;
 
-/** Tiny muted fox under the Help topic list. Opens YouTube in a new tab. */
+/** Quiet fox under the Help topic list. Opens YouTube in a new tab. */
 export function HelpFoxEgg() {
   return (
     <div className="mt-10 flex justify-center">
@@ -10,11 +12,18 @@ export function HelpFoxEgg() {
         rel="noopener noreferrer"
         title="Fox"
         aria-label="Fox"
-        className="inline-flex min-h-11 min-w-11 items-center justify-center no-underline opacity-35 hover:opacity-55 active:opacity-70"
+        className="inline-flex min-h-11 min-w-11 items-center justify-center no-underline opacity-80 hover:opacity-95 active:opacity-100"
       >
-        <span className="text-[16px] leading-none grayscale" aria-hidden>
-          🦊
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={FOX_SRC}
+          alt=""
+          width={FOX_SIZE_PX}
+          height={FOX_SIZE_PX}
+          className="object-contain"
+          style={{ width: FOX_SIZE_PX, height: FOX_SIZE_PX }}
+          aria-hidden
+        />
       </a>
     </div>
   );

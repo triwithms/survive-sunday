@@ -79,7 +79,7 @@ These files mostly load data and render the folders above. Prefer the feature fo
 
 Also: Sign in `src/app/login/page.tsx`, Forgot password `src/app/login/forgot/page.tsx`. Landing `src/app/page.tsx` redirects to Sign in (or `/welcome` / `/pick` if already signed in). No people-list / Who are you? screen.
 
-Help topics: `src/components/HelpContent.tsx` + `src/components/features/help/` — `/help` is a short topic menu (not a stacked page). Tap a topic or a hash (`#install`, `#account`, …) to see only that section + **Back to Help topics**. **Install on Home Screen** first (`HelpInstall` + `HelpInstallLink` → A2HS Yes; iOS steps via `A2hsIosHint`), then Sign in, Pick, Tabs (`HelpScreens` — header Share + picture-share gesture), Rules (includes Mulligan vs 💩 in `HelpMulligan`), Account, Administrators. Tiny fox at the bottom of the topic menu (`HelpFoxEgg`) opens an external YouTube clip. Header **?** is Help (`/help`). Each file ≤100 lines. No Wave wall, no notification prefs UI on Help.
+Help topics: `src/components/HelpContent.tsx` + `src/components/features/help/` — `/help` is a short topic menu (not a stacked page). Tap a topic or a hash (`#install`, `#account`, …) to see only that section + **Back to Help topics**. **Install on Home Screen** first (`HelpInstall` + `HelpInstallLink` → A2HS Yes; iOS steps via `A2hsIosHint`), then Sign in, Pick, Tabs (`HelpScreens` — header Share + picture-share gesture), Rules (includes Mulligan vs 💩 in `HelpMulligan`), Account, Administrators. Quiet fox image at the bottom of the topic menu (`HelpFoxEgg`, `/help/silver-fox.png`) opens an external YouTube clip. Header **?** is Help (`/help`). Each file ≤100 lines. No Wave wall, no notification prefs UI on Help.
 
 ## Flagged internals (Commissioner → Admin copy)
 
