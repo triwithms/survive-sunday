@@ -101,6 +101,8 @@ const files = [
   "src/components/ScoreGameShareButton.tsx",
   "src/components/ScoreGameSheetBar.tsx",
   "src/components/HeaderShareButton.tsx",
+  "src/components/ShareLinkButton.tsx",
+  "src/components/ShareLinkPanel.tsx",
   "src/components/features/schedule/ScheduleDetailsButton.tsx",
   "src/components/features/schedule/ScheduleGameRow.tsx",
 ];
@@ -116,16 +118,18 @@ const sheet = src("src/components/ScoreGameDetailSheet.tsx");
 assert.match(sheet, /ScoreGameSheetBar/);
 assert.match(sheet, /weekNumber/);
 const shareBtn = src("src/components/ScoreGameShareButton.tsx");
-assert.match(shareBtn, /from "lucide-react"/);
-assert.match(shareBtn, /\{ Share \}/);
-assert.match(shareBtn, /data-testid="game-sheet-share"/);
+assert.match(shareBtn, /ShareLinkButton/);
+assert.match(shareBtn, /testId="game-sheet-share"/);
 assert.match(shareBtn, /min-h-11 min-w-11/);
-assert.match(shareBtn, /PAGE_SHARE_COPIED/);
 assert.match(shareBtn, /matchupShareHref/);
 assert.doesNotMatch(shareBtn, /Share2/);
+const panel = src("src/components/ShareLinkPanel.tsx");
+assert.match(panel, /data-testid="share-link-url"/);
+assert.match(panel, />\s*Copy\s*</);
+assert.match(panel, /z-\[120\]/);
 const header = src("src/components/HeaderShareButton.tsx");
 assert.match(header, /window\.location\.href/);
-assert.match(header, /data-testid="header-share"/);
+assert.match(header, /testId="header-share"/);
 const schedule = src("src/components/features/schedule/ScheduleGameRow.tsx");
 assert.match(schedule, /ScheduleDetailsButton/);
 assert.match(schedule, /ScoreGameDetailSheet/);

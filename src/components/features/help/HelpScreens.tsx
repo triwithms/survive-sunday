@@ -7,7 +7,8 @@ export function HelpScreens() {
         <strong>Leaderboard</strong> · <strong>Scores</strong> ·{" "}
         <strong>Schedule</strong> · <strong>Standings</strong>. Header{" "}
         <strong>Share</strong> (square with an arrow, beside <strong>?</strong>)
-        sends this page’s link. Help is <strong>?</strong> — not a tab.
+        shows this page’s link so you can Copy or Send (the installed icon
+        has no address bar). Help is <strong>?</strong> — not a tab.
         Share is hidden on Admin and Settings.
       </p>
       <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
@@ -49,7 +50,9 @@ export function HelpScreens() {
           Share Leaderboard &amp; Scores as a picture
         </h3>
         <p className="text-[var(--text-muted)]">
-          Header Share sends a link, not a picture. On Leaderboard,{" "}
+          Header Share sends a link, not a picture. It shows the full URL
+          so you can <strong>Copy</strong> (the installed icon has no
+          address bar). On Leaderboard,{" "}
           <strong>press and hold the page title</strong> (no week chip). On
           Scores, press and hold the title, or{" "}
           <strong>tap the week label three times</strong> (gold{" "}

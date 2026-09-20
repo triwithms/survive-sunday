@@ -13,7 +13,7 @@ Bottom nav vs URLs (easy to mix up):
 - **Leaderboard** is the pool in/out race (`/standings`)
 - **Standings** is NFL W-L (`/nfl`)
 - Header **?** is Help (`/help`). Videos are not a tab.
-- Header **Share** (square-with-arrow, beside Help / Account) sends the **current page URL**. Hidden on Admin, Account/settings, Sign in, Join. Not centred — Week N stays in the middle.
+- Header **Share** (square-with-arrow, beside Help / Account) opens a short-lived panel with the **current page URL**, **Copy**, and Send (Web Share) when the phone offers it. Hidden on Admin, Account/settings, Sign in, Join. Not centred — Week N stays in the middle.
 
 Checked on `main` (`66a474b`). Do not invent paths.
 
@@ -40,7 +40,7 @@ Pool board week (header **Week N**, not a player’s next-pick week): `src/lib/p
 
 `src/components/ui/` — `Button.tsx`, `Card.tsx`, `Chip.tsx`, `StatusBadge.tsx`, `index.ts`
 
-**Header chrome:** `src/components/AppHeader.tsx` — SURVIVE, Week N (centre), **Share** + **?** Help + **Account**. Share: `HeaderShareButton.tsx` + `src/lib/page-share.ts` (Web Share API, else copy + “Link copied”). Hidden on `/admin`, `/account`, `/login`, `/join`. Game sheet Share reuses those helpers via `ScoreGameShareButton.tsx` + `src/lib/matchup-share.ts` (`/scores?week=N&game=`). Picture share for Leaderboard/Scores is still the long-press / triple-tap gesture (`ShareExport.tsx`), not this button.
+**Header chrome:** `src/components/AppHeader.tsx` — SURVIVE, Week N (centre), **Share** + **?** Help + **Account**. Share: `HeaderShareButton.tsx` + `ShareLinkButton.tsx` + `ShareLinkPanel.tsx` + `src/lib/page-share.ts` (shows the full URL; **Copy**; Web Share **Send** when available; else copy + “Link copied”). Hidden on `/admin`, `/account`, `/login`, `/join`. Game sheet Share reuses the same panel via `ScoreGameShareButton.tsx` + `src/lib/matchup-share.ts` (`/scores?week=N&game=`). Picture share for Leaderboard/Scores is still the long-press / triple-tap gesture (`ShareExport.tsx`), not this button.
 
 **Add to Home Screen nudge** (signed-in phones only): `src/components/features/a2hs/` — `A2hsNudge.tsx` asks Yes / No / Not now. Yes = native Install or iOS Safari … → Share □↑ steps (`A2hsIosHint`). No = opt out; Help menu → **Install on Home Screen** (`HelpInstall` + `HelpInstallLink`) reopens Yes. Not now = next Sign in. Icon deleted (`installed` + !standalone) resets to pending. Mounted in `src/app/(app)/layout.tsx`. Shortcut label is **NFL Pool** (`public/manifest.webmanifest` `name` / `short_name`). Home Screen / browser icons: `public/icons/` (PNG `any` 192/512/1024 + `maskable` 192/512 in the centre ~80% safe zone, `apple-touch-icon` 180, SVG source). Favicon: `src/app/favicon.ico` + `public/icons/icon-32.png`, wired in `src/app/layout.tsx`. Rebuild: `node scripts/export-app-icons.mjs`. No NFL marks.
 
