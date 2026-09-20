@@ -17,9 +17,9 @@ export function HelpInstall() {
         </p>
         <p className="text-[var(--text-muted)]">
           Tap that link to re-open the Yes steps. After Sign in we may ask{" "}
-          <strong>Yes</strong> / <strong>No</strong> / <strong>Not now</strong>.
-          Not now asks again next Sign in. No stops the prompt; this link still
-          opens Yes.
+          <strong>Yes</strong> / <strong>No — don’t ask again</strong> /{" "}
+          <strong>Not now</strong>. Not now asks again next Sign in. No never
+          auto-asks; this link still opens Yes.
         </p>
         <A2hsIosHint />
         <p className="text-[var(--text-muted)]">
