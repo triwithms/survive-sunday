@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AccountMenu } from "@/components/AccountMenu";
 import { HeaderHelpLink } from "@/components/HeaderHelpLink";
+import { HeaderShareButton } from "@/components/HeaderShareButton";
 import { HeaderWeekBadge } from "@/components/HeaderWeekBadge";
 import { PoolRulesBanner } from "@/components/PoolRulesBanner";
 import { DEFAULT_SIGNED_IN_PATH } from "@/lib/app-paths";
@@ -22,6 +23,7 @@ export function AppHeader(data: AppHeaderData) {
         </Link>
         <HeaderWeekBadge weekNumber={data.currentWeek} />
         <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+          <HeaderShareButton />
           <HeaderHelpLink />
           <AccountMenu
             userId={data.userId}
