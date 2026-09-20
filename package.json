@@ -28,6 +28,7 @@
     "verify:password-reset-flow": "node scripts/verify-password-reset-flow.mjs",
     "verify:ensure-db": "tsx scripts/_dangerous/verify-ensure-production-db.ts",
     "verify:db-guard": "tsx scripts/verify-db-mutation-guard.ts",
+    "verify:function-tracing": "tsx scripts/verify-function-tracing.ts",
     "verify:pool-mode": "tsx scripts/verify-pool-mode.ts",
     "verify:roster-names": "tsx scripts/verify-roster-name-patch.ts",
     "verify:admin-roster": "tsx scripts/verify-admin-roster-ux.ts",

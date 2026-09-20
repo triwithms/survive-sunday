@@ -94,6 +94,7 @@ Same role. No new role. User-facing copy says **Admin** (screen/nav) or **Admini
 | Production build | `package.json` → `scripts.build` is **`next build` only**. Never attach `db push`, seed, or `ensure-production-db`. |
 | Seed / setup / db:push refuse Production | `scripts/assert-not-production.ts` — stops those commands from changing the live database. `db:push` / `setup` go through this guard. Emergency only: `ALLOW_PROD_DB_MUTATION=1`. **Vercel is always refused** (even with that break-glass). |
 | Dangerous one-off DB helper | Live helper: `scripts/_dangerous/ensure-production-db.ts`. Old `scripts/ensure-production-db.ts` prints “Moved…” and **exits 1**. **Must never run from a Vercel build.** |
+| Vercel Functions Storage | `next.config.ts` — keep `serverExternalPackages: ["@prisma/client"]` so the query engine loads (auth CallbackRouteError). Do **not** `outputFileTracingIncludes` the whole `@prisma/client/**` tree on `/*`; that copies every engine + WASM into every function. Include only the RHEL engine on `/api/` (+ instrumentation). Exclude debian engines, WASM, and the Prisma CLI. |
 
 ## ESPN last-good cache (slice 1)
 
