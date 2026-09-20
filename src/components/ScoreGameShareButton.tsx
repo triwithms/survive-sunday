@@ -54,7 +54,7 @@ export function ScoreGameShareButton({
           role="status"
           aria-live="polite"
           data-testid="game-sheet-share-toast"
-          className="absolute right-0 top-full z-20 mt-1 w-max max-w-[11rem] rounded-md bg-stadium-800 px-2 py-1 text-xs text-field-400 shadow-lg"
+          className="fixed left-1/2 top-[max(1rem,env(safe-area-inset-top))] z-[110] w-max max-w-[11rem] -translate-x-1/2 rounded-md bg-stadium-800 px-3 py-1.5 text-xs text-field-400 shadow-lg"
         >
           {toast}
         </p>
