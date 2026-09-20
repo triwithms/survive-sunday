@@ -35,7 +35,7 @@ The list is the **live Admin roster** (current nicknames + real names), not a ha
 3. That login attaches to the existing membership. Week 1 picks stay with that person — you do not get a second “Gams”.
 4. If that seat already has a real (non-practice) email: **already claimed — Sign in instead** (or ask the administrator).
 5. Practice `@survivesunday.demo` seats (and leftover `@pending.survivesunday.local` placeholders) **are** claimable by the real person.
-6. **One user, more than one role.** There is no separate “admin account.” If you already sign in with `robertgama@gmail.com` (Administrator), pick **Gams** on Join and use that same email and the password you already sign in with. That adds the **Player** role to the same user. Or **Sign in first**, then Join — you’ll see **You’re signed in — claim with one tap**. Then switch **Playing as Gams** | **Admin tools**. Do not invent a second email. If Join says the email already has an account, tap **I already have this login — Sign in to claim**.
+6. **One user, more than one role.** There is no separate “admin account.” If you already sign in with `robertgama@gmail.com` (Administrator), pick **Gams** on Join and use that same email and the password you already sign in with. That adds the **Player** role to the same user. Or **Sign in first**, then Join — email is prefilled, and you still type the password. Then switch **Playing as Gams** | **Admin tools**. Do not invent a second email. If Join says the email already has an account, tap **I already have this login — Sign in to claim**.
 7. When you have both roles, switch in **Account** (top right): **Playing as Gams** | **Admin tools**. That switch is not on League or other main screens. Player view hides Admin. Admin view shows Admin. Friends who are only players never see Admin tools.
 8. On **Admin**, you can **Make administrator** for someone already in the pool (confirm first). They stay on the board. You can remove Admin later if at least one administrator remains. Roles live on a user↔roles list so a later **Watcher** (follow the board, no picks) can be added without starting over. Watcher is **not** in the app yet.
 9. Nicknames still change on **Admin → Roster** or **Change nickname**. The list always shows the current names.
@@ -72,7 +72,7 @@ Real mode already uses Week 1. Use reset when you want a **clean** board before 
 
 ### What reset does **not** do
 
-- It does **not** delete the website, password settings, or Google login.
+- It does **not** delete the website or password settings.
 - It does **not** remove your administrator account.
 - It does **not** remove friends who joined with a real email.
 

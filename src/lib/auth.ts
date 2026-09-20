@@ -1,11 +1,9 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import Google from "next-auth/providers/google";
 import type { NextAuthConfig } from "next-auth";
 import type { NextRequest } from "next/server";
 import type { Provider } from "next-auth/providers";
 import { userFromCredentials } from "./credentials-user";
-import { userFromSignInOtp } from "./signin-otp";
 import {
   isIgnoredAuthHost,
   requestPublicOrigin,
@@ -19,34 +17,15 @@ const providers: Provider[] = [
     credentials: {
       email: { label: "Email", type: "email" },
       password: { label: "Password", type: "password" },
-      otp: { label: "Sign-in code", type: "text" },
     },
     async authorize(credentials) {
       const email = credentials?.email as string | undefined;
       const password = credentials?.password as string | undefined;
-      const otp = credentials?.otp as string | undefined;
-      if (!email) return null;
-      const hasPassword = Boolean(password && password.trim());
-      const hasOtp = Boolean(otp && otp.trim());
-      // Password path stays the default. OTP is only used when no password
-      // was posted — never a second factor on every login.
-      if (hasOtp && !hasPassword) {
-        return userFromSignInOtp(email, otp);
-      }
-      if (!hasPassword || !password) return null;
+      if (!email || !password?.trim()) return null;
       return userFromCredentials(email, password);
     },
   }),
 ];
-
-if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
-  providers.push(
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-    })
-  );
-}
 
 /**
  * Auth.js pins AUTH_URL as the request origin (reqWithEnvURL + createActionURL).

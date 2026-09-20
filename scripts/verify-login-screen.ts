@@ -40,6 +40,8 @@ function main() {
     join("src/components/features/login/ForgotCodeActions.tsx"),
     "utf8"
   );
+  const auth = readFileSync(join("src/lib/auth.ts"), "utf8");
+  const loginApi = readFileSync(join("src/app/api/login/route.ts"), "utf8");
 
   assert(login.includes("Forgot password?"), "Forgot password link");
   assert(login.includes('name="email"'), "email field");
@@ -59,15 +61,32 @@ function main() {
   assert(!page.includes("demoMode"), "login page does not load demo picker");
   assert(/spam\/junk/.test(copy), "forgot copy mentions spam/junk");
   assert(!/Send to my phone/i.test(actions), "no SMS-first toggle on Forgot");
+  assert(!/Google|userFromSignInOtp|\botp\b/.test(auth), "auth is password-only");
+  assert(!/\botp\b/.test(loginApi), "login API does not accept OTP");
+  assert(
+    !existsSync(join("src/components/SignInCodeForm.tsx")),
+    "SignInCodeForm removed"
+  );
+  assert(
+    !existsSync(join("src/app/api/login/code/route.ts")),
+    "sign-in OTP API removed"
+  );
+  assert(!existsSync(join("src/lib/signin-otp.ts")), "signin-otp module removed");
   const landing = readFileSync(join("src/app/page.tsx"), "utf8");
   const joinPage = readFileSync(join("src/app/join/page.tsx"), "utf8");
-  const joinForm = readFileSync(join("src/components/JoinForm.tsx"), "utf8");
+  const joinDir = "src/components/features/join";
+  const joinSrc = readdirSync(joinDir)
+    .filter((name) => /\.(ts|tsx)$/.test(name))
+    .map((name) => readFileSync(join(joinDir, name), "utf8"))
+    .join("\n");
 
   assert(landing.includes('redirect("/login")'), "cold / goes to Sign in");
   assert(!/WhoAreYou|Who are you/.test(landing), "no people list on /");
   assert(joinPage.includes('redirect("/login")'), "signed-out /join → Sign in");
-  assert(!joinForm.includes("WhoAreYouSelect"), "Join has no roster picker");
-  assert(!joinForm.includes("roster list"), "Join has no roster-list toggle");
+  assert(!joinSrc.includes("WhoAreYouSelect"), "Join has no roster picker");
+  assert(!joinSrc.includes("roster list"), "Join has no roster-list toggle");
+  assert(!joinSrc.includes("oneTapClaim"), "Join has no one-tap claim");
+  assert(!/one tap|with one tap/i.test(joinSrc), "Join copy is not passwordless");
   assert(
     !existsSync(join("src/components/WhoAreYouCard.tsx")),
     "WhoAreYouCard removed"
@@ -77,6 +96,7 @@ function main() {
     "WhoAreYouSelect removed"
   );
   assertCap("src/components/features/login");
+  assertCap(joinDir);
   assertCap("src/lib", 100, /^password-reset/);
   console.log("PASS  Sign in is email + password + Forgot password");
 }

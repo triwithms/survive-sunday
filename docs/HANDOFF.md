@@ -59,7 +59,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **My pick Details ›** — gold **Details ›** on each team (same sheet as Scores: preview before kickoff, highlights after). **Pick** stays the main action; the row does not open Details. Close returns you to My pick. Hidden when that team has no Week-N matchup we can resolve.
 - **Videos** — merged [PR #51](https://github.com/triwithms/survive-sunday/pull/51). Not a bottom tab. Clips live in Scores / Schedule → **Details**. **This 2026/27 season only** — [PR #52](https://github.com/triwithms/survive-sunday/pull/52). **Previews until kickoff, then highlights** — [PR #54](https://github.com/triwithms/survive-sunday/pull/54). **No in-app YouTube player** — thumbnail + title + **Watch on YouTube** (NFL blocks embeds). Role switch is in **Account** only. **Scores** opens on your pick week and will not open future weeks (browse those on Schedule).
 - **Spreads and logos:** real ESPN favourites written **“BUF favoured by 4.5”**. Team marks are **local-only** transparent helmets at `public/helmets/{abbr}.png` — no white plates, no ESPN CDN ([#119](https://github.com/triwithms/survive-sunday/pull/119), [#124](https://github.com/triwithms/survive-sunday/pull/124)). Never letter badges.
-- **Notifications:** Account **notifyPref** is Email / SMS / both / none (`NotificationPrefsForm`). Admin **Send test to me**. Production `NOTIFY_MODE` is **`allowlist`** (`NOTIFY_ALLOWLIST` working) — **keep allowlist** until Robert says **`live`** ([#133](https://github.com/triwithms/survive-sunday/pull/133)). Password-reset and sign-in codes are **not** gated by prefs. Ops notes (Resend From, Twilio, US Email, no Admin CC): **section 4**. The first-run prompt still asks friends to **add their cell for SMS reminders** (**Not now** is fine).
+- **Notifications:** Account **notifyPref** is Email / SMS / both / none (`NotificationPrefsForm`). Admin **Send test to me**. Production `NOTIFY_MODE` is **`allowlist`** (`NOTIFY_ALLOWLIST` working) — **keep allowlist** until Robert says **`live`** ([#133](https://github.com/triwithms/survive-sunday/pull/133)). Password-reset codes are **not** gated by prefs. Ops notes (Resend From, Twilio, US Email, no Admin CC): **section 4**. The first-run prompt still asks friends to **add their cell for SMS reminders** (**Not now** is fine).
 - **Eliminated:** My pick shows a near-full **YOU'RE OUT** overlay; pick controls off; server still refuses ([#128](https://github.com/triwithms/survive-sunday/pull/128)).
 - **Icons / PWA** — NFL Pool football mark for Home Screen and browser ([#127](https://github.com/triwithms/survive-sunday/pull/127)).
 - **Invite sign-in** — `/login?invite=` peeks email + nickname only (no session) ([#130](https://github.com/triwithms/survive-sunday/pull/130)).
@@ -152,9 +152,7 @@ Open: [vercel.com](https://vercel.com) → team **nfl-pool** → project **survi
 
 ### Optional (not required for demo)
 
-| Name | What it does |
-|------|----------------|
-| `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` | Google login exists in the server config but is **hidden on Sign in** (it was flaky). Demo picker works without these. |
+Leftover `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` on Vercel can be deleted — Google is not a login method.
 
 Live scores and injuries use **ESPN public JSON** — no Vercel key. See [DEPLOY.md](../DEPLOY.md).
 
@@ -195,7 +193,7 @@ Friends add their cell for SMS reminders on the first-run prompt, or later from 
 Standing facts for a CoS / free AI. Do **not** invent extra env values or flip modes. Account **Notification preferences** (Email / SMS / both / none) and Admin **Send test to me** are shipped ([#133](https://github.com/triwithms/survive-sunday/pull/133)). Click-by-click Resend setup stays in [DEPLOY.md](../DEPLOY.md) §3b — this is not a second deploy guide.
 
 - **Resend:** Domain **triwithms.com** is **verified**. Production `RESEND_FROM_EMAIL` is `Survive Sunday <noreply@triwithms.com>`. New-domain mail may land in **spam** — friends should check junk.
-- **`NOTIFY_MODE`:** Production uses **`allowlist`**. **`NOTIFY_ALLOWLIST`** is working. **Keep allowlist** until Robert explicitly says switch to **`live`**. Do not document as live-to-everyone yet. Password-reset and sign-in codes ignore this gate (SECURITY).
+- **`NOTIFY_MODE`:** Production uses **`allowlist`**. **`NOTIFY_ALLOWLIST`** is working. **Keep allowlist** until Robert explicitly says switch to **`live`**. Do not document as live-to-everyone yet. Password-reset codes ignore this gate (SECURITY).
 - **Twilio:** Spell the names **`TWILIO_ACCOUNT_SID`**, **`TWILIO_AUTH_TOKEN`**, **`TWILIO_FROM_NUMBER`**. SMS works for Robert’s **CA** cell. Trial messages carry a trial prefix. TwiML noreply bin is set.
 - **US friends** (e.g. Pauli / Paul NJ, Go Giants / Carson CO): prefer **Email** until Twilio is upgraded / 10DLC or Verified Caller IDs cover them — SMS may fail or be unreliable for US numbers on trial.
 - **Admin CC on player notices:** **Not building.** Password-reset Administrator alert is already shipped (leave it).
@@ -292,7 +290,7 @@ Unclaimed seats still use practice `@survivesunday.demo` emails so Join can clai
 
 ### Real login / join
 
-- **Sign in** (`/login`): **email + password + Sign in**, plus a **Forgot password?** link. Safari still POSTs `/api/login`. Google is not on this screen (it was flaky). This is **not** a code at every login. Stay signed in on this phone.
+- **Sign in** (`/login`): **email + password + Sign in**, plus a **Forgot password?** link. Safari still POSTs `/api/login`. No Google. No sign-in code. Stay signed in on this phone.
 - **Join** (`/join`): personal link from Admin (`/join?who=` / `?seat=`), or hashed invite sign-in (`/login?invite=` — email + nickname only). Then your own email and password (min 6 characters). That claims the existing seat so Week 1 picks stay. Invite code **`SUNDAY26`** is filled in. If the seat already has a real email, the page says it is claimed and links to Sign in. Practice `@survivesunday.demo` seats (and leftover `@pending.survivesunday.local` placeholders) are claimable. **One user, more than one role** (merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)): there is **no special admin account**. The same email can be **Player + Administrator**. Switch **Playing as …** / **Admin tools** from **Account** (top right) — not on League or other main screens. Administrator email can claim a player seat (Gams). People not on the list can still join as a new player.
 - **Forgot password?** is the small link on Sign in: we email a 6-digit code (and text it if a cell is saved). Check inbox and spam/junk (new-domain mail may land there). Then new password → signed back in. Administrators get a notify that someone asked (no code in that email). Only after that friend has Joined with that email. This is **not** a code at every login. Production Resend is set — **section 4** notification ops.
 - **Sign out:** header **Account** (top right) opens **Settings** (`/account`) → **Sign out** (merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)). Also on Admin and Help.
@@ -414,7 +412,7 @@ Labelled so a basic Grok chat does **not** wander into extras. **MUST** means ke
 
 ### Do not build (already decided)
 
-- **A code after every sign-in (2FA).** Closed [PR #5](https://github.com/triwithms/survive-sunday/pull/5). That would block “tap the Home Screen icon and you’re in.” Password-reset and optional sign-in codes are only when the friend asks, not every login.
+- **A code after every sign-in (2FA).** Closed [PR #5](https://github.com/triwithms/survive-sunday/pull/5). That would block “tap the Home Screen icon and you’re in.” Password-reset codes are only when the friend asks, not every login. Sign-in is email/username + password only.
 - **Admin CC on player notices.** Not building. Password-reset Administrator alert is already shipped.
 
 ### BONUS (do not start unless you ask)
@@ -644,6 +642,7 @@ Then only these paths unless a listed open PR is the task:
 - src/app/api/join/route.ts
 - src/app/api/join/seats/route.ts
 - src/components/JoinForm.tsx
+- src/components/features/join/
 - src/components/WhoAreYouSelect.tsx
 - src/components/WhoAreYouCard.tsx
 - docs/REAL-MODE.md

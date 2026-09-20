@@ -24,19 +24,6 @@ export async function passwordsMatch(
   return false;
 }
 
-export function shouldSkipClaimPassword(args: {
-  sessionUserId?: string | null;
-  sessionEmail?: string | null;
-  ownerUserId: string;
-  claimEmail: string;
-}): boolean {
-  if (!args.sessionUserId || args.sessionUserId !== args.ownerUserId) {
-    return false;
-  }
-  if (!args.sessionEmail) return true;
-  return normalizeAuthEmail(args.sessionEmail) === normalizeAuthEmail(args.claimEmail);
-}
-
 export function safeAuthCallbackPath(
   raw: string | null | undefined,
   fallback = DEFAULT_SIGNED_IN_PATH

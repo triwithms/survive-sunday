@@ -142,8 +142,7 @@ export function afterAuthNavigate(path: string) {
 export function submitCredentialsLogin(
   email: string,
   password: string,
-  callbackUrl = DEFAULT_SIGNED_IN_PATH,
-  extras?: { otp?: string }
+  callbackUrl = DEFAULT_SIGNED_IN_PATH
 ) {
   if (typeof document === "undefined") return;
   markAddToHomePending();
@@ -151,16 +150,11 @@ export function submitCredentialsLogin(
   form.method = "POST";
   form.action = "/api/login";
   form.style.display = "none";
-  const otp = extras?.otp?.trim() ?? "";
   const fields: Array<[string, string]> = [
     ["email", email],
+    ["password", password],
     ["callbackUrl", callbackUrl],
   ];
-  if (otp && !password.trim()) {
-    fields.push(["otp", otp]);
-  } else {
-    fields.push(["password", password]);
-  }
   for (const [name, value] of fields) {
     const input = document.createElement("input");
     input.name = name;

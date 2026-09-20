@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { INVITE_CODE } from "@/lib/constants";
 import { joinOrClaimSeat } from "@/lib/claim-seat-db";
 import { consumeInviteToken, peekInviteToken } from "@/lib/invite-token-db";
@@ -30,7 +29,6 @@ export async function POST(req: Request) {
     inviteCode = INVITE_CODE;
   }
 
-  const session = await auth();
   const result = await joinOrClaimSeat({
     inviteCode,
     email: typeof body.email === "string" ? body.email : "",
@@ -38,8 +36,6 @@ export async function POST(req: Request) {
     membershipId,
     nickname: typeof body.nickname === "string" ? body.nickname : "",
     realName: typeof body.realName === "string" ? body.realName : "",
-    sessionUserId: session?.user?.id,
-    sessionEmail: session?.user?.email ?? undefined,
   });
 
   if (!result.ok) {
