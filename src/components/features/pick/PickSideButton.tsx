@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { Button } from "@/components/ui";
 import { formatCurrentStanding, formatPriorYearRank } from "@/lib/matchup-meta";
+import { PickGameDetailsButton } from "./PickGameDetailsButton";
 import { PickSideTeamLink } from "./PickSideTeamLink";
 import type { PickSide } from "./types";
 
@@ -11,6 +11,8 @@ export function PickSideButton({
   gameClosed,
   align,
   onPick,
+  onDetails,
+  detailsAria,
 }: {
   side: PickSide;
   selected: boolean;
@@ -18,6 +20,8 @@ export function PickSideButton({
   gameClosed?: boolean;
   align: "away" | "home";
   onPick: () => void;
+  onDetails?: () => void;
+  detailsAria?: string;
 }) {
   const disabled = readOnly || side.alreadyUsed || !!gameClosed;
   const isAway = align === "away";
@@ -68,15 +72,13 @@ export function PickSideButton({
       ) : selected ? (
         <div className="text-[10px] font-medium text-gold-400">Your pick</div>
       ) : null}
-      <Link
-        href={`/team/${side.abbr}`}
-        prefetch={false}
-        onClick={(e) => e.stopPropagation()}
-        aria-label={`Team details for ${side.name}`}
-        className="inline-flex items-center justify-center min-h-11 w-full rounded-md border border-sky-400/40 px-3 py-2 text-sm font-medium text-sky-300 hover:bg-sky-400/10 active:bg-sky-400/20"
-      >
-        Team details
-      </Link>
+      {onDetails && detailsAria ? (
+        <PickGameDetailsButton
+          label={detailsAria}
+          align={align}
+          onOpen={onDetails}
+        />
+      ) : null}
     </div>
   );
 }

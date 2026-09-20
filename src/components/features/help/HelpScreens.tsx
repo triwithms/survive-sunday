@@ -11,6 +11,8 @@ export function HelpScreens() {
       <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
         <li className="text-[var(--text-primary)]">
           <strong>My pick</strong> — your card. After Sign in you land here.
+          Tap Details on a team for that week&apos;s game sheet; Close keeps
+          you on My pick. Pick stays the main action.
         </li>
         <li className="text-[var(--text-primary)]">
           <strong>Selections</strong> — everyone’s picks this week. Hidden
