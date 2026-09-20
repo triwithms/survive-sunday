@@ -5,9 +5,10 @@ import type { PickMatchup } from "./types";
 export function pickSheetGame(
   matchup: PickMatchup | null | undefined
 ): ScoreGameCardGame | null {
-  const id = matchup?.id?.trim();
-  const awayAbbr = matchup?.away?.abbr?.trim();
-  const homeAbbr = matchup?.home?.abbr?.trim();
+  if (!matchup) return null;
+  const id = matchup.id?.trim();
+  const awayAbbr = matchup.away?.abbr?.trim();
+  const homeAbbr = matchup.home?.abbr?.trim();
   if (!id || !awayAbbr || !homeAbbr) return null;
   return {
     id,
