@@ -74,6 +74,7 @@
     "verify:youtube-videos": "tsx scripts/verify-youtube-videos.ts",
     "verify:odds": "tsx scripts/verify-odds.ts",
     "verify:pick-save": "tsx scripts/verify-pick-save.ts",
+    "verify:pick-details": "tsx scripts/verify-pick-details.ts",
     "verify:pick-out": "tsx scripts/verify-pick-out.ts",
     "verify:elimination-admin": "tsx scripts/verify-elimination-admin.ts",
     "repair:week1": "tsx scripts/repair-week1-survival.ts"

@@ -30,6 +30,7 @@ Header **?** opens Help (`/help`). Videos stay inside game **Details** (Scores /
 Today’s pick screen at `/pick`. After Join or Sign in, you land here.
 
 - Your card plus change / make pick until **your** kickoff. Header shows the week badge only — no slate-wide countdown or “Deadline passed.”
+- Tap **Details ›** on a team for that week’s game sheet (same as Scores: preview, highlights, leaders). Close returns you to My pick. **Pick** stays the main action — the row does not open Details. Logos still open team pages.
 - If you’re **out** for the season, My pick is covered with a huge **YOU’RE OUT** overlay (not a chip). Pick controls are off; the bottom nav still works.
 - Opens on **your** open week. The header **Week N** badge is the **pool’s** current week from the slate (read-only) — it can differ from your personal next-pick week. Browse other weeks on **Schedule** or **Scores**.
 - Used teams and bye-week teams are off the board.

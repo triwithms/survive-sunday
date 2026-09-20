@@ -1,7 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { Card, Chip } from "@/components/ui";
+import { ScoreGameDetailSheet } from "@/components/ScoreGameDetailSheet";
 import { formatKickoff } from "@/lib/utils";
 import { formatMatchupListLine } from "@/lib/game-display";
 import { matchupFavourite } from "./pick-format";
+import { pickDetailsAria, pickSheetGame } from "./pick-sheet-game";
 import { PickSideButton } from "./PickSideButton";
 import type { PickMatchup, PickSide } from "./types";
 
@@ -18,7 +23,10 @@ export function PickMatchupCard({
   gameClosed: boolean;
   onPick: (side: PickSide) => void;
 }) {
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const fav = matchupFavourite(matchup);
+  const sheetGame = pickSheetGame(matchup);
+  const openDetails = sheetGame ? () => setDetailsOpen(true) : undefined;
 
   return (
     <Card as="li" className="overflow-hidden">
@@ -50,6 +58,8 @@ export function PickMatchupCard({
           gameClosed={gameClosed}
           align="away"
           onPick={() => onPick(matchup.away)}
+          onDetails={openDetails}
+          detailsAria={pickDetailsAria(matchup, matchup.away.name)}
         />
         <div className="flex flex-col items-center justify-center gap-1 px-1">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
@@ -63,8 +73,16 @@ export function PickMatchupCard({
           gameClosed={gameClosed}
           align="home"
           onPick={() => onPick(matchup.home)}
+          onDetails={openDetails}
+          detailsAria={pickDetailsAria(matchup, matchup.home.name)}
         />
       </div>
+      {detailsOpen && sheetGame ? (
+        <ScoreGameDetailSheet
+          game={sheetGame}
+          onClose={() => setDetailsOpen(false)}
+        />
+      ) : null}
     </Card>
   );
 }
