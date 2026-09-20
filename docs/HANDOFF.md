@@ -8,7 +8,7 @@
 
 **AI split:** **Free Grok** (and the free cascade: Grok → Claude → Gemini) for planning, research, copy, and checklists. **Paid Cursor / Grok Bot for actual code PRs only.** Details: [`docs/FREE-GROK.md`](FREE-GROK.md).
 
-**Free-AI entry (copy-paste prompts):** [`docs/FREE-AI-START-HERE.md`](FREE-AI-START-HERE.md) · [`docs/FREE-AI-QUEUE.md`](FREE-AI-QUEUE.md) · [`docs/MNF-WRAP-FREE-AI.md`](MNF-WRAP-FREE-AI.md) · [`docs/DOCS-REFRESH-FREE-AI.md`](DOCS-REFRESH-FREE-AI.md).
+**Free-AI entry (copy-paste prompts):** [`docs/FREE-AI-START-HERE.md`](FREE-AI-START-HERE.md) · [`docs/FREE-AI-QUEUE.md`](FREE-AI-QUEUE.md) · [`docs/MNF-WRAP-FREE-AI.md`](MNF-WRAP-FREE-AI.md) · [`docs/DOCS-REFRESH-FREE-AI.md`](DOCS-REFRESH-FREE-AI.md). Demo recording checklists: [`docs/APP-TOUR.md`](APP-TOUR.md) (VO punch-up: [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md)).
 
 **Docs freshness:** When any free or included usage allotment is near empty (owner flags Usage low, or it is known to be low), refresh HANDOFF / FREE-GROK.md / FILE-MAP with shipped changes **before** starting more work — so the next session (next free tier, or next week’s included Grok Bot / Cursor usage) starts from current docs. Applies to free Grok → free Claude → free Gemini **and** to Grok Bot / Cursor included weekly usage. Help only if a user/admin process changed. Do not wait until quota is fully gone.
 

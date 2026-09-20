@@ -4,7 +4,7 @@ Before paid coding agents: free tiers in order — **free Grok, then free Claude
 
 Point a chat at the **small folder**, not the whole app.
 
-What each screen is **for** (product behaviour, not files): [HOW-SCREENS-WORK.md](HOW-SCREENS-WORK.md).
+What each screen is **for** (product behaviour, not files): [HOW-SCREENS-WORK.md](HOW-SCREENS-WORK.md). Recording demo checklists (not in-app coach marks): [APP-TOUR.md](APP-TOUR.md).
 
 Bottom nav vs URLs (easy to mix up):
 
