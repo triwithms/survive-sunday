@@ -16,6 +16,8 @@ type GameBits = {
   mlAway: number | null;
   scoreAway: number | null;
   scoreHome: number | null;
+  note: string | null;
+  network: string | null;
 };
 
 export function mapScheduleGames(
@@ -36,6 +38,11 @@ export function mapScheduleGames(
       awayAbbr: game.awayAbbr,
       homeAbbr: game.homeAbbr,
       status: game.status,
+      scoreAway: game.scoreAway,
+      scoreHome: game.scoreHome,
+      note: game.note,
+      kickoff: game.kickoff,
+      network: game.network,
       scoreLine: formatMatchupListLine(game) || formatKickoff(game.kickoff),
       favouriteLabel: fav?.label ?? null,
       awayLogoUrl: teamLogoUrl(game.awayAbbr, logoByAbbr.get(game.awayAbbr)),

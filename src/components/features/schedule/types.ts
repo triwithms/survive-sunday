@@ -1,14 +1,9 @@
 import type { WeekNavOption } from "@/lib/weeks";
+import type { ScoreGameCardGame } from "@/components/features/scores/types";
 
-export type ScheduleGame = {
-  id: string;
-  awayAbbr: string;
-  homeAbbr: string;
-  status: string;
+export type ScheduleGame = ScoreGameCardGame & {
   scoreLine: string;
   favouriteLabel: string | null;
-  awayLogoUrl: string;
-  homeLogoUrl: string;
 };
 
 export type ScheduleScreenProps = {
@@ -21,4 +16,5 @@ export type ScheduleScreenProps = {
   lockLabel: string;
   locked: boolean;
   games: ScheduleGame[];
+  openGameId: string | null;
 };

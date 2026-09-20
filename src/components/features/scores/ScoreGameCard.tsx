@@ -11,8 +11,16 @@ import type { ScoreGameCardGame } from "./types";
 
 export type { ScoreGameCardGame };
 
-export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
-  const [open, setOpen] = useState(false);
+export function ScoreGameCard({
+  game,
+  weekNumber,
+  startOpen = false,
+}: {
+  game: ScoreGameCardGame;
+  weekNumber: number;
+  startOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(startOpen);
   const isLive = isLiveGame(game.status);
   const meta = scoreGameMeta(game);
 
@@ -61,7 +69,11 @@ export function ScoreGameCard({ game }: { game: ScoreGameCardGame }) {
         </div>
       </div>
       {open ? (
-        <ScoreGameDetailSheet game={game} onClose={() => setOpen(false)} />
+        <ScoreGameDetailSheet
+          game={game}
+          weekNumber={weekNumber}
+          onClose={() => setOpen(false)}
+        />
       ) : null}
     </Card>
   );

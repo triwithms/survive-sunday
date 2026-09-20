@@ -6,18 +6,21 @@ import { ScoreGameDetailSheet } from "@/components/ScoreGameDetailSheet";
 import { formatKickoff } from "@/lib/utils";
 import { formatMatchupListLine } from "@/lib/game-display";
 import { matchupFavourite } from "./pick-format";
+import { PickGameDetailsButton } from "./PickGameDetailsButton";
 import { pickDetailsAria, pickSheetGame } from "./pick-sheet-game";
 import { PickSideButton } from "./PickSideButton";
 import type { PickMatchup, PickSide } from "./types";
 
 export function PickMatchupCard({
   matchup,
+  weekNumber,
   selectedAbbr,
   readOnly,
   gameClosed,
   onPick,
 }: {
   matchup: PickMatchup;
+  weekNumber: number;
   selectedAbbr: string | null;
   readOnly: boolean;
   gameClosed: boolean;
@@ -50,6 +53,12 @@ export function PickMatchupCard({
           )}
         </span>
       </div>
+      {openDetails ? (
+        <PickGameDetailsButton
+          label={pickDetailsAria(matchup)}
+          onOpen={openDetails}
+        />
+      ) : null}
       <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-1 p-2 sm:gap-2 sm:p-3">
         <PickSideButton
           side={matchup.away}
@@ -58,8 +67,6 @@ export function PickMatchupCard({
           gameClosed={gameClosed}
           align="away"
           onPick={() => onPick(matchup.away)}
-          onDetails={openDetails}
-          detailsAria={pickDetailsAria(matchup, matchup.away.name)}
         />
         <div className="flex flex-col items-center justify-center gap-1 px-1">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
@@ -73,13 +80,12 @@ export function PickMatchupCard({
           gameClosed={gameClosed}
           align="home"
           onPick={() => onPick(matchup.home)}
-          onDetails={openDetails}
-          detailsAria={pickDetailsAria(matchup, matchup.home.name)}
         />
       </div>
       {detailsOpen && sheetGame ? (
         <ScoreGameDetailSheet
           game={sheetGame}
+          weekNumber={weekNumber}
           onClose={() => setDetailsOpen(false)}
         />
       ) : null}

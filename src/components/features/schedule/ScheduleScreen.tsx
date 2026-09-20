@@ -56,7 +56,12 @@ export function ScheduleScreen(props: ScheduleScreenProps) {
         ) : (
           <ul className="space-y-2">
             {props.games.map((game) => (
-              <ScheduleGameRow key={game.id} game={game} />
+            <ScheduleGameRow
+              key={game.id}
+              game={game}
+              weekNumber={props.selectedWeek}
+              startOpen={game.id === props.openGameId}
+            />
             ))}
           </ul>
         )}

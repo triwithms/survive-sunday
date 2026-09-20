@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui";
 import { formatCurrentStanding, formatPriorYearRank } from "@/lib/matchup-meta";
-import { PickGameDetailsButton } from "./PickGameDetailsButton";
 import { PickSideTeamLink } from "./PickSideTeamLink";
 import type { PickSide } from "./types";
 
@@ -11,8 +10,6 @@ export function PickSideButton({
   gameClosed,
   align,
   onPick,
-  onDetails,
-  detailsAria,
 }: {
   side: PickSide;
   selected: boolean;
@@ -20,8 +17,6 @@ export function PickSideButton({
   gameClosed?: boolean;
   align: "away" | "home";
   onPick: () => void;
-  onDetails?: () => void;
-  detailsAria?: string;
 }) {
   const disabled = readOnly || side.alreadyUsed || !!gameClosed;
   const isAway = align === "away";
@@ -71,13 +66,6 @@ export function PickSideButton({
         </Button>
       ) : selected ? (
         <div className="text-[10px] font-medium text-gold-400">Your pick</div>
-      ) : null}
-      {onDetails && detailsAria ? (
-        <PickGameDetailsButton
-          label={detailsAria}
-          align={align}
-          onOpen={onDetails}
-        />
       ) : null}
     </div>
   );

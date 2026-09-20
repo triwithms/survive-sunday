@@ -7,7 +7,7 @@ import {
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-type ScheduleSearchParams = { week?: string | string[] };
+type ScheduleSearchParams = { week?: string | string[]; game?: string | string[] };
 
 export default async function SchedulePage({
   searchParams,

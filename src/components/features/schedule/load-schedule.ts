@@ -10,18 +10,23 @@ import {
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
+import { matchupGameParam, weekQueryForGame } from "@/lib/matchup-share";
 import { formatKickoff } from "@/lib/utils";
 import { mapScheduleGames } from "./schedule-games";
 import type { ScheduleScreenProps } from "./types";
 
 export async function loadSchedulePage(searchParams?: {
   week?: string | string[];
+  game?: string | string[];
 }): Promise<ScheduleScreenProps | null> {
   const me = await requireMembership();
   const { currentWeek, weeks } = await loadParticipantWeeks(me);
   const decision = playerPickDecision(me, weeks, currentWeek);
+  const openGameId = matchupGameParam(searchParams?.game);
   const selectedRef = selectPageWeek({
-    weeks, requested: searchParams?.week, basePath: "/schedule",
+    weeks,
+    requested: searchParams?.week ?? weekQueryForGame(weeks, openGameId),
+    basePath: "/schedule",
     currentWeek, actionWeek: decision.actionWeek,
     allowFuture: true, fallbackFirst: true,
   });
@@ -56,5 +61,6 @@ export async function loadSchedulePage(searchParams?: {
     lockLabel: formatKickoff(effectiveLockAt(week)),
     locked: isWeekLocked(week),
     games: mapScheduleGames(week.games, logoByAbbr),
+    openGameId,
   };
 }

@@ -11,6 +11,7 @@ import {
 } from "@/lib/game-display";
 import type { GameDetailDto } from "@/lib/espn-game-detail-parse";
 import { GameHighlights } from "@/components/GameHighlights";
+import { ScoreGameSheetBar } from "@/components/ScoreGameSheetBar";
 
 type SheetGame = {
   id: string;
@@ -49,9 +50,11 @@ function Empty({ children }: { children: string }) {
 
 export function ScoreGameDetailSheet({
   game,
+  weekNumber,
   onClose,
 }: {
   game: SheetGame;
+  weekNumber: number;
   onClose: () => void;
 }) {
   const titleId = useId();
@@ -102,18 +105,14 @@ export function ScoreGameDetailSheet({
 
   return (
     <ModalDialog labelledBy={titleId} placement="sheet" onBackdropClick={onClose}>
-      <div className="flex items-start justify-between gap-3">
-        <h2 id={titleId} className="font-display text-lg text-gold-400 tracking-wide">
-          {game.awayAbbr} @ {game.homeAbbr}
-        </h2>
-        <button
-          type="button"
-          className="text-sm text-gold-400 min-h-11 px-2"
-          onClick={onClose}
-        >
-          Close
-        </button>
-      </div>
+      <ScoreGameSheetBar
+        titleId={titleId}
+        awayAbbr={game.awayAbbr}
+        homeAbbr={game.homeAbbr}
+        gameId={game.id}
+        weekNumber={weekNumber}
+        onClose={onClose}
+      />
 
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
