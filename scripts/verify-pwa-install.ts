@@ -149,11 +149,23 @@ const helpMenu = readFileSync(
   "utf8"
 );
 assert.match(helpMenu, /HELP_TOPICS/);
+assert.match(helpMenu, /HelpFoxEgg/);
 assert.doesNotMatch(
   helpMenu,
   /topic\.Component|<HelpInstall|<HelpSignIn/,
   "The Help menu must be links only"
 );
+const helpFox = readFileSync(
+  "src/components/features/help/HelpFoxEgg.tsx",
+  "utf8"
+);
+assert.match(helpFox, /https:\/\/youtu\.be\/6GWTb8Fs9g0/);
+assert.match(helpFox, /target="_blank"/);
+assert.match(helpFox, /rel="noopener noreferrer"/);
+assert.match(helpFox, /aria-label="Fox"/);
+assert.match(helpFox, /min-h-11/);
+assert.match(helpFox, /🦊/);
+assert.doesNotMatch(helpFox, /Easter egg|Silver Fox|Colin/i);
 const helpTopics = readFileSync(
   "src/components/features/help/topics.ts",
   "utf8"
