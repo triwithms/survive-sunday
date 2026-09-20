@@ -33,7 +33,12 @@ export function ScoresScreen(props: ScoresScreenProps) {
       ) : (
         <ul className="space-y-2" data-share-section="games">
           {props.games.map((game) => (
-            <ScoreGameCard key={game.id} game={game} />
+            <ScoreGameCard
+              key={game.id}
+              game={game}
+              weekNumber={props.selectedWeek}
+              startOpen={game.id === props.openGameId}
+            />
           ))}
         </ul>
       )}

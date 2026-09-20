@@ -5,7 +5,7 @@ import { loadScoresPage } from "@/components/features/scores/load-scores";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-type ScoresSearchParams = { week?: string | string[] };
+type ScoresSearchParams = { week?: string | string[]; game?: string | string[] };
 
 export default async function ScoresPage({
   searchParams,

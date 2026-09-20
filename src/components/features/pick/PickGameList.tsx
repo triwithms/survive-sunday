@@ -33,6 +33,7 @@ export function PickGameList({
             <PickMatchupCard
               key={m.id}
               matchup={m}
+              weekNumber={weekNumber}
               selectedAbbr={selectedAbbr}
               readOnly={readOnly}
               gameClosed={lockStarted && isGameStarted(m)}

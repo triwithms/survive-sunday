@@ -12,17 +12,22 @@ import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { matchupGameParam, weekQueryForGame } from "@/lib/matchup-share";
 import { scoreCardGames, scoresPickRows, sortScoreGames } from "./score-view";
 import type { ScoresScreenProps } from "./screen-types";
 
 export async function loadScoresPage(searchParams?: {
   week?: string | string[];
+  game?: string | string[];
 }): Promise<ScoresScreenProps | null> {
   const me = await requireMembership();
   const { currentWeek, weeks } = await loadParticipantWeeks(me);
   const decision = playerPickDecision(me, weeks, currentWeek);
+  const openGameId = matchupGameParam(searchParams?.game);
   const selectedRef = selectPageWeek({
-    weeks, requested: searchParams?.week, basePath: "/scores",
+    weeks,
+    requested: searchParams?.week ?? weekQueryForGame(weeks, openGameId),
+    basePath: "/scores",
     currentWeek, actionWeek: decision.actionWeek,
     allowFuture: false, fallbackFirst: true,
   });
@@ -73,6 +78,7 @@ export async function loadScoresPage(searchParams?: {
     focusWeek: decision.actionWeek,
     poll: shouldPollLiveScores(games),
     games: scoreCardGames(games, logoByAbbr),
+    openGameId,
     revealAllPicks,
     rows: scoresPickRows(participants, me.id, revealAllPicks, logoByAbbr),
   };

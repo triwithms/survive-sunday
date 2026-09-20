@@ -25,6 +25,6 @@ export function pickSheetGame(
   };
 }
 
-export function pickDetailsAria(matchup: PickMatchup, sideName: string) {
-  return `Details for ${sideName}, ${matchup.away.abbr} at ${matchup.home.abbr}`;
+export function pickDetailsAria(matchup: PickMatchup) {
+  return `Game details for ${matchup.away.abbr} at ${matchup.home.abbr}`;
 }

@@ -17,9 +17,10 @@ export function HelpPick() {
           the board.
         </li>
         <li className="text-[var(--text-primary)]">
-          Tap <strong>Details</strong> on a team for that week&apos;s matchup
+          Tap <strong>Game details</strong> in the middle of a matchup
           (preview before kickoff, highlights after). Close to stay on My pick
-          and keep choosing. Logos still open team pages.
+          and keep choosing. Pick stays on each team. Logos still open team
+          pages.
         </li>
         <li className="text-[var(--text-primary)]">
           Change until <strong>your</strong> kickoff — and only onto a game that

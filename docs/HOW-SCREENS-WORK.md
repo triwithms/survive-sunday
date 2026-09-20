@@ -30,7 +30,7 @@ Header **Share** sends this page’s link (team schedule, Scores week, and so on
 Today’s pick screen at `/pick`. After Join or Sign in, you land here.
 
 - Your card plus change / make pick until **your** kickoff. Header shows the week badge only — no slate-wide countdown or “Deadline passed.”
-- Tap **Details ›** on a team for that week’s game sheet (same as Scores: preview, highlights, leaders). Close returns you to My pick. **Pick** stays the main action — the row does not open Details. Logos still open team pages.
+- Eligible teams sit on **matchup cards** (away @ home). Tap **Game details ›** in the middle of a card for that week’s game sheet (same as Scores: preview, highlights, leaders). Close returns you to My pick. **Pick** stays on each team — the card does not open Details. Logos still open team pages.
 - If you’re **out** for the season, My pick is covered with a huge **YOU’RE OUT** overlay (not a chip). Pick controls are off; the bottom nav still works.
 - Opens on **your** open week. The header **Week N** badge is the **pool’s** current week from the slate (read-only) — it can differ from your personal next-pick week. Browse other weeks on **Schedule** or **Scores**.
 - Used teams and bye-week teams are off the board.
@@ -59,7 +59,9 @@ Files: `src/components/features/board/` — [FILE-MAP](FILE-MAP.md).
 
 ## Scores
 
-Live and final games for **your current pick week** (ESPN). Tap **Details ›** on a card for more (including clips). After lock it also lists **Participants’ picks**.
+Live and final games for **your current pick week** (ESPN). Tap **Details ›** on a card for more (including clips). The sheet header has **Share** (matchup link) beside **Close**. After lock it also lists **Participants’ picks**.
+
+A shared matchup URL is `/scores?week=N&game={id}` (existing Scores route + `week` + `game`). Opening it selects that week when Scores allows it and opens that game’s sheet.
 
 This is **not** a full-season schedule browser. Future weeks stay on **Schedule**.
 
@@ -69,7 +71,7 @@ Files: `src/components/features/scores/` — [FILE-MAP](FILE-MAP.md).
 
 ## Schedule
 
-Browse the slate by week (`/schedule`). Opens on **your current pick week**. You can still look at past and **future** weeks here.
+Browse the slate by week (`/schedule`). Opens on **your current pick week**. You can still look at past and **future** weeks here. Tap **Details ›** on a row for the same game sheet as Scores (Share in the sheet header sends `/scores?week=N&game=id`). Team names still open research.
 
 Files: `src/components/features/schedule/` — [FILE-MAP](FILE-MAP.md).
 
@@ -95,7 +97,7 @@ Files: `src/components/features/team/` — [FILE-MAP](FILE-MAP.md).
 
 - **Help** (`/help`) — header **?**. Topic menu: tap one topic (or a hash) to see only that section + **Back to Help topics**. How-to. Not a pool screen.
 - **Videos** (`/videos`) — leftover deep link. Clips also sit in Scores / Schedule **Details**.
-- **Share** (header, beside Help) — sends the current page URL. Hidden on Admin and Account/settings.
+- **Share** (header, beside Help) — opens a short-lived panel with this page’s full URL (the installed icon has no address bar), **Copy**, and Send when the phone can share. Hidden on Admin and Account/settings. Game **Details** sheets use the same panel for the matchup URL.
 - **Account** (top right) — opens **Settings** (`/account`). Notify prefs, pick backup, install, Help, report a bug or idea, sign out.
 
 Do not invent Admin tabs or admin click-paths in this file. Admin tools are a separate topic (`HANDOFF` §8).

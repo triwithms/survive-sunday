@@ -7,14 +7,15 @@ export function HelpScreens() {
         <strong>Leaderboard</strong> · <strong>Scores</strong> ·{" "}
         <strong>Schedule</strong> · <strong>Standings</strong>. Header{" "}
         <strong>Share</strong> (square with an arrow, beside <strong>?</strong>)
-        sends this page’s link. Help is <strong>?</strong> — not a tab.
+        shows this page’s link so you can Copy or Send (the installed icon
+        has no address bar). Help is <strong>?</strong> — not a tab.
         Share is hidden on Admin and Settings.
       </p>
       <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)] mb-2">
         <li className="text-[var(--text-primary)]">
           <strong>My pick</strong> — your card. After Sign in you land here.
-          Tap Details on a team for that week&apos;s game sheet; Close keeps
-          you on My pick. Pick stays the main action.
+          Tap Game details in the middle of a matchup for that week&apos;s
+          game sheet; Close keeps you on My pick. Pick stays the main action.
         </li>
         <li className="text-[var(--text-primary)]">
           <strong>Selections</strong> — everyone’s picks this week. Hidden
@@ -31,7 +32,8 @@ export function HelpScreens() {
           <strong>your current pick week</strong>. Tap Details for clips.
         </li>
         <li className="text-[var(--text-primary)]">
-          <strong>Schedule</strong> — browse any week.{" "}
+          <strong>Schedule</strong> — browse any week. Tap Details for the
+          same game sheet as Scores.{" "}
           <strong>Future weeks stay on</strong> Schedule.
         </li>
         <li className="text-[var(--text-primary)]">
@@ -48,7 +50,9 @@ export function HelpScreens() {
           Share Leaderboard &amp; Scores as a picture
         </h3>
         <p className="text-[var(--text-muted)]">
-          Header Share sends a link, not a picture. On Leaderboard,{" "}
+          Header Share sends a link, not a picture. It shows the full URL
+          so you can <strong>Copy</strong> (the installed icon has no
+          address bar). On Leaderboard,{" "}
           <strong>press and hold the page title</strong> (no week chip). On
           Scores, press and hold the title, or{" "}
           <strong>tap the week label three times</strong> (gold{" "}

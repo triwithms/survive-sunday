@@ -118,6 +118,8 @@ async function main() {
 const files = [
   "src/lib/page-share.ts",
   "src/components/HeaderShareButton.tsx",
+  "src/components/ShareLinkButton.tsx",
+  "src/components/ShareLinkPanel.tsx",
   "src/components/AppHeader.tsx",
   "src/components/HeaderHelpLink.tsx",
 ];
@@ -133,19 +135,34 @@ assert.match(header, /AccountMenu/);
 assert.match(header, /<HeaderShareButton \/>\s*<HeaderHelpLink \/>/);
 
 const btn = src("src/components/HeaderShareButton.tsx");
-assert.match(btn, /from "lucide-react"/);
-assert.match(btn, /\{ Share \}/);
-assert.match(btn, /min-h-11 min-w-11/);
-assert.match(btn, /data-testid="header-share"/);
-assert.match(btn, /PAGE_SHARE_COPIED/);
+assert.match(btn, /ShareLinkButton/);
+assert.match(btn, /data-testid="header-share"|testId="header-share"/);
 assert.match(btn, /window\.location\.href/);
 assert.match(btn, /shouldShowHeaderShare/);
 assert.doesNotMatch(btn, /Share2/);
+
+const sharedBtn = src("src/components/ShareLinkButton.tsx");
+assert.match(sharedBtn, /from "lucide-react"/);
+assert.match(sharedBtn, /\{ Share \}/);
+assert.match(sharedBtn, /ShareLinkPanel/);
+assert.match(sharedBtn, /shareCurrentPage/);
+assert.match(sharedBtn, /PAGE_SHARE_COPIED/);
+
+const panel = src("src/components/ShareLinkPanel.tsx");
+assert.match(panel, /data-testid="share-link-panel"/);
+assert.match(panel, /data-testid="share-link-url"/);
+assert.match(panel, /data-testid="share-link-copy"/);
+assert.match(panel, />\s*Copy\s*</);
+assert.match(panel, /Home Screen has no address bar/);
+assert.match(panel, /PAGE_SHARE_COPIED/);
+assert.match(panel, /canUseWebShare/);
+assert.doesNotMatch(panel, /permanent|address bar stays/i);
 
 const help = src("src/components/features/help/HelpScreens.tsx");
 assert.match(help, /Header Share sends a link/);
 assert.match(help, /hidden on Admin and Settings/);
 assert.match(help, /press and hold the page title/);
+assert.match(help, /installed icon[\s\S]*has no address bar/);
 
 const login = src("src/app/login/page.tsx");
 assert.doesNotMatch(login, /HeaderShareButton|AppHeader/);

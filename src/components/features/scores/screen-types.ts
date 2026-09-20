@@ -28,6 +28,7 @@ export type ScoresScreenProps = {
   focusWeek: number;
   poll: boolean;
   games: import("./types").ScoreGameCardGame[];
+  openGameId: string | null;
   revealAllPicks: boolean;
   rows: ScoresPickRowData[];
 };

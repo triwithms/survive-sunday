@@ -61,6 +61,7 @@
     "verify:weeks": "tsx scripts/verify-weeks.ts",
     "verify:app-chrome": "tsx scripts/verify-app-chrome.ts",
     "verify:header-share": "tsx scripts/verify-header-share.ts",
+    "verify:matchup-share": "tsx scripts/verify-matchup-share.ts",
     "verify:account-hub": "tsx scripts/verify-account-hub.ts",
     "verify:feedback-admin": "tsx scripts/verify-feedback-admin.ts",
     "verify:notification-prefs": "tsx scripts/verify-notification-prefs.ts",
