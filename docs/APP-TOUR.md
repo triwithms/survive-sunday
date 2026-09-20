@@ -22,8 +22,8 @@ Until the videos exist, this is a **docs note only**. Do not change Help screens
 
 | Tour | Length | What it is |
 |------|--------|------------|
-| **Quick** | ~60–90 seconds | Natural Sunday use. Make a pick, peek a game, see the group, see who’s still in. |
-| **Full** | ~3–5 minutes | Same journey, then Schedule, Scores share, Standings, Account, Help, and a light Admin glance. |
+| **Quick** | ~60–90 seconds | Immersive Apple-style **live demo**. Viewer is a **player in the pool**. Questions drive taps — not a manual. |
+| **Full** | ~3–5 minutes | Comprehensive **feature pass** (screens, Share, Help, light Admin). Do not film Full in the same first-person POV. |
 
 Keep tap ripples and highlights if your recorder offers them. They help. Captions: see **Recording notes** — closed captions, not burned in by default.
 
@@ -34,7 +34,8 @@ Keep tap ripples and highlights if your recorder offers them. They help. Caption
 - **Phone, portrait.** Prefer the **Home Screen** icon (NFL Pool) so header **Share** makes sense — the installed app has no address bar.
 - Sign in as a player who is **still in**. If you are out, My pick is a huge **YOU’RE OUT** cover (show that in Full if you can; skip it in Quick).
 - You do **not** need to submit a new pick on camera. If you already picked, show the cards and **Game details ›**. Do not mess with a friend’s pick.
-- Voice-over: generic **excited sports-announcer** — funny, a bit emotional, group-chat energy. **Not** a real celebrity voice clone. No Madden. No named-announcer imitation.
+- **Quick filming:** prefer **live or relevant game context** (your pick’s matchup, a game that’s on). The viewer should feel like they are *in* the pool this week — not watching a labelled tour of tabs.
+- Voice-over: generic **excited sports-announcer** energy — funny, a bit emotional, group-chat. **Not** a real celebrity voice clone. No Madden. No named-announcer imitation. **Quick** is in-the-moment (you’re the player). **Full** can name screens; it is the feature pass.
 - **Captions:** use **closed captions** (friends can toggle them on/off) via a sidecar file (WebVTT / `.vtt`) or the host’s CC track. **Do not** burn captions into the picture by default. An optional separate silent burn-in cut can come later if a chat app strips CC. When Help video links exist, they can mention CC.
 - Do not invent extra bottom tabs. Do not deep-dive Admin on Quick. On Full, Admin is a wave, not a training video.
 - Re-run this whole script when the UI changes.
@@ -141,39 +142,41 @@ Bottom-nav **Admin** for Administrators. Three phone tabs: **Users · Pool · Sy
 
 ## Quick tour (~60–90 seconds)
 
-Natural use order. Skip Admin. Skip Standings. Skip Account unless you have seconds left.
+Immersive Apple-style **live demo**. The viewer is a **player in the pool**, not someone reading a manual. Do not parade every tab. Do not narrate “this is the Scores screen.” Let **questions** drive the taps.
+
+Skip Admin, Standings, Account, Help, and Share unless a question honestly leads there (Full covers those). Skip Selections / Leaderboard — those are the feature pass.
+
+**Film with live or relevant games when you can** (your pick’s matchup; a game that’s on). If nothing is live, still use this week’s real slate — not a fake walkthrough of empty chrome.
+
+Questions, in this order: **What’s the score? Who’s hurt / who’s starting? What’s my pick?**
 
 ### Steps (click intents)
 
-1. **Start signed in on My pick.** Show the header (SURVIVE, Week N, Share, **?**, Account) and the bottom bar.
-2. **Scroll the matchup cards.** Point at **Pick** on a team — do not need to confirm a new pick.
-3. **Tap centred Game details ›** on a card (middle of the matchup, not on a team).
-4. **Peek the game sheet.** Tap **Share** beside **Close**.
-5. **Show the Share panel** — full URL, **Copy**, **Send** if it appears. Close the panel, then **Close** the sheet.
-6. **Bottom nav → Selections.** Pause on the group list (after lock you see everyone; before lock you mostly see you).
-7. **Bottom nav → Leaderboard.** Pause on who’s still in.
-8. **Bottom nav → Scores.** Tap **Details ›** on a game. Optional: sheet Share once, then Close.
-9. **Header ? → Help.** Land on the topic menu. Stop. (No video links until they exist.)
+UI after [#148](https://github.com/triwithms/survive-sunday/pull/148). Keep the taps honest even if VO stays sparse.
+
+1. **Already signed in.** Open from the Home Screen if you can. Cut to **Scores** on your current pick week. Find the relevant game (the one you picked, or the one you’re about to).
+2. **What’s the score?** Tap gold **Details ›** on that game card. Peek the sheet (live, preview, or highlights). Don’t tour every clip.
+3. **Close** the sheet. **Who’s hurt / who’s starting?** Tap that team’s **logo or name** (Scores card — logos still open research). Glance injuries / starters. Don’t open every Look closer page.
+4. **Bottom nav → My pick.** **What’s my pick?** Scroll to that matchup card (away @ home). **Pick** sits on each team — don’t need to confirm a new pick on camera.
+5. One more look if you have seconds: centred **Game details ›** under the matchup header (middle of the card, not on a team). Same sheet as Scores. **Close** lands you back on My pick. Hold on the pick. End.
+
+If you are already locked on a team, still do steps 4–5 — live with the pick; don’t unpick for the video.
 
 ### Voice-over (source draft)
 
-Punch up later with [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md). Keep this order.
+Sparse. Present tense. You’re in it. Punch up later with [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md). Keep this order. Do not turn these lines into a labelled feature list.
 
-1. “Sunday’s here and Survive Sunday is loaded. One pick. One life. Let’s go.”
-2. “This is My pick. Every game sits on a matchup card. **Pick** lives on the team you want — not the whole card.”
-3. “Need the rest of the story? **Game details**, right in the middle of the matchup.”
-4. “Same sheet you’ll see on Scores. **Share** sits beside Close — send this game to the chat.”
-5. “Home Screen has no address bar, so here’s the full link. Copy it, or Send it. Then we’re back to picking.”
-6. “**Selections** — that’s the group board. After lock, everybody’s cards are on the table.”
-7. “**Leaderboard.** Season race. Who’s still in, who’s out. Not the NFL table — that’s a different tab.”
-8. “**Scores** is this week’s scoreboard. **Details** opens the same sheet. Share it if the chat is yelling.”
-9. “Questions? Hit the **question mark**. Help is a topic list — tap one, don’t drown. That’s the tour. Make your pick.”
+1. “Sunday. You’re in. What’s the score?”
+2. “There it is. **Details.**”
+3. “Okay — who’s actually starting? Who’s hurt?”
+4. “That’s enough. What’s my pick?”
+5. “Matchup card. **Game details** in the middle if you need one more look. **Pick** lives on the team. That’s yours. Ride it.”
 
 ---
 
 ## Full demo (~3–5 minutes)
 
-Same journey, then the rest of the bar, Account, Help, and a polite Admin wave.
+Comprehensive **feature pass**. Name the screens. Show Share, Selections, Leaderboard, Schedule, Standings, Account, Help, and a polite Admin wave. **Do not** rewrite this as the Quick live-demo POV — friends who want every control watch Full.
 
 ### Steps (click intents)
 

@@ -11,6 +11,7 @@
 ## Product notes (do not implement)
 
 - These tours are **recording checklists**, not in-app coach marks.
+- **Quick** is an immersive Apple-style **live demo** (viewer is a player; questions drive taps). **Full** is the comprehensive feature pass — do not rewrite Full into the Quick POV.
 - **When the Quick tour and Full demo videos exist**, two video links belong **near the top of Help** (not buried in a topic). Help is the friend-facing home for those links. Until then, docs only — **do not** write HelpContent or reserve UI in this pass. Those links can mention **closed captions**.
 - Captions on the recordings: **closed captions** (toggle on/off via sidecar/VTT or host CC). Do not assume captions are burned into the frame. Do not write a Join/Sign-in tour in this pass (Phase 2).
 - Say **Admin** / **Administrator** only. Never Commissioner.
@@ -27,17 +28,21 @@ https://github.com/triwithms/survive-sunday/blob/main/docs/APP-TOUR.md
 That file is the source of truth for **steps and order**. Keep every step, in that order. Do not add screens, do not drop Admin from Full, do not add Admin to Quick, do not invent extra bottom tabs.
 
 ### Job
-Rewrite the **Voice-over (source draft)** lines so they are funnier and more emotional, still a **generic excited sports announcer** talking to friends on WhatsApp.
+Rewrite the **Voice-over (source draft)** lines so they are funnier and more emotional, still a **generic excited sports announcer** talking to friends on WhatsApp — with **two different jobs**:
+
+- **Quick:** immersive Apple-style **live demo**. Viewer is a **player in the pool**. Questions drive the lines (what’s the score? who’s hurt / starting? what’s my pick?). Sparse. Present tense. Do **not** narrate tab names like a manual. Do **not** turn Quick into Full.
+- **Full:** comprehensive **feature pass**. Naming screens is fine. Do **not** rewrite Full into the Quick first-person live-demo POV.
 
 ### Tone
 - Canadian English (`en-CA`): centred, favourite, colour
 - Funny, warm, light roast OK — not mean, no real-life/health jokes
 - Generic announcer energy (crowd, kickoff, “the chat is losing it”)
+- **Quick** feels in-the-moment on a live / relevant game; **Full** can teach.
 - **Do NOT** clone John Madden or any real named announcer / celebrity. No “doink,” no trademark catchphrases, no “this is [famous person].” Invented booth character is fine if it stays generic.
 - Nicknames only if they already appear in APP-TOUR.md (they mostly should not). No emails, phones, passwords, invite codes.
 
 ### Keep fixed
-- Quick: ~60–90 seconds when read aloud at a brisk booth pace (short lines)
+- Quick: ~60–90 seconds when read aloud (short lines; fewer words than Full)
 - Full: ~3–5 minutes (still punchy; do not write an essay per step)
 - Button names and screen names exactly as APP-TOUR.md: **My pick**, **Selections**, **Leaderboard**, **Scores**, **Schedule**, **Standings**, **Game details ›**, **Details ›**, **Share**, **Copy**, **Send**, **Close**, **Account**, **Help** (**?**), **YOU’RE OUT**, **Season-end tiebreak**, Admin tabs **Users · Pool · System**
 - Header Share = this **page**. Sheet Share = this **matchup**. Installed app has **no address bar**.
