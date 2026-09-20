@@ -2,7 +2,7 @@ const FOX_WATCH_URL = "https://youtu.be/6GWTb8Fs9g0";
 const FOX_SRC = "/help/silver-fox.png";
 const FOX_SIZE_PX = 64;
 
-/** Quiet fox under the Help topic list. Opens YouTube in a new tab. */
+/** Quiet fox at the bottom of Help → Rules. Opens YouTube in a new tab. */
 export function HelpFoxEgg() {
   return (
     <div className="mt-10 flex justify-center">

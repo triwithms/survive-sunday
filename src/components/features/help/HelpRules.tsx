@@ -1,4 +1,5 @@
 import { HelpMulligan } from "./HelpMulligan";
+import { HelpFoxEgg } from "./HelpFoxEgg";
 
 export function HelpRules() {
   return (
@@ -31,6 +32,7 @@ export function HelpRules() {
         </li>
       </ul>
       <HelpMulligan />
+      <HelpFoxEgg />
     </section>
   );
 }

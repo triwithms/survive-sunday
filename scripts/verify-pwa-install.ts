@@ -124,6 +124,7 @@ const helpRules = readFileSync(
   "utf8"
 );
 assert.match(helpRules, /HelpMulligan/);
+assert.match(helpRules, /HelpFoxEgg/);
 assert.doesNotMatch(
   readFileSync("src/app/(app)/account/notifications/page.tsx", "utf8") +
     readFileSync("src/app/(app)/account/mirror/page.tsx", "utf8"),
@@ -149,7 +150,11 @@ const helpMenu = readFileSync(
   "utf8"
 );
 assert.match(helpMenu, /HELP_TOPICS/);
-assert.match(helpMenu, /HelpFoxEgg/);
+assert.doesNotMatch(
+  helpMenu,
+  /HelpFoxEgg/,
+  "Fox belongs on Help → Rules, not the topic hub"
+);
 assert.doesNotMatch(
   helpMenu,
   /topic\.Component|<HelpInstall|<HelpSignIn/,
