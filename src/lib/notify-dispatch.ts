@@ -93,7 +93,7 @@ async function sendPlanned(
     return result.ok;
   }
   const raw = content.smsBody ?? content.text;
-  const body = (category === "game" ? withGameSmsFooter(raw) : raw).slice(0, 1500);
+  const body = category === "game" ? withGameSmsFooter(raw) : raw;
   const result = await sendTwilioMessage({ to: plan.dest, body });
   if (!result.ok) console.warn("[notify] SMS failed", result.error);
   return result.ok;

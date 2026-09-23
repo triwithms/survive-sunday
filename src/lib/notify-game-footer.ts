@@ -1,11 +1,12 @@
-/** GAME notice tips. SMS is plain text only — no font sizes. */
+/** GAME notice tips. SMS is plain GSM-7 — no font sizes. */
 
 import { PUBLIC_APP_ORIGIN } from "./invite-link";
+import { fitTrialSms, TRIAL_SMS_MAX, toGsm7 } from "./sms-gsm";
 
 export const PREFS_URL = `${PUBLIC_APP_ORIGIN}/account/notifications`;
 
-export const GAME_SMS_FOOTER =
-  `If you also get email, check spam/junk and mark Not junk.\n${PREFS_URL}`;
+/** Short on purpose so a notice can keep this line inside one trial segment. */
+export const GAME_SMS_FOOTER = `Prefs: ${PREFS_URL}`;
 
 export const GAME_EMAIL_FOOTER =
   `If this is in spam or junk, mark Not junk so the next one reaches you.\nPreferences: ${PREFS_URL}`;
@@ -16,10 +17,12 @@ export function hasGameNoticeTip(text: string): boolean {
 }
 
 export function withGameSmsFooter(body: string): string {
-  const text = (body ?? "").trim();
-  if (!text) return GAME_SMS_FOOTER;
-  if (hasGameNoticeTip(text)) return text;
-  return `${text}\n${GAME_SMS_FOOTER}`;
+  const text = toGsm7(body ?? "").trim();
+  if (!text) return fitTrialSms(GAME_SMS_FOOTER);
+  if (hasGameNoticeTip(text)) return fitTrialSms(text);
+  const combined = `${text}\n${GAME_SMS_FOOTER}`;
+  if (combined.length <= TRIAL_SMS_MAX) return combined;
+  return fitTrialSms(text);
 }
 
 export function withGameEmailText(body: string): string {

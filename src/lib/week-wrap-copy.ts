@@ -1,21 +1,18 @@
 import type { NotifyContent } from "./notification-copy";
 import {
-  GAME_SMS_FOOTER,
   withGameEmailHtml,
   withGameEmailText,
   withGameSmsFooter,
 } from "./notify-game-footer";
+import { TRIAL_SMS_MAX, toGsm7 } from "./sms-gsm";
 import { sectionLines, weekWrapShortText } from "./week-wrap-sections";
 import { WEEK_WRAP_DRAMA_PLACEHOLDER, weekWrapIntro, weekWrapSubject } from "./week-wrap-tone";
 import type { TouchdownClip } from "./week-wrap-touchdown";
 import {
   emailTextWithTouchdown,
-  smsWithTouchdown,
   touchdownEmailHtml,
 } from "./week-wrap-touchdown-html";
 import type { WeekWrapBlocks, WeekWrapFacts, WeekWrapTone } from "./week-wrap-types";
-
-const SMS_LIMIT = 1500;
 
 function escapeHtml(value: string): string {
   return value
@@ -44,12 +41,11 @@ function toHtml(text: string): string {
 }
 
 function smsWithPrefs(body: string, clip: TouchdownClip | null): string {
-  const withClip = smsWithTouchdown(body, clip);
-  const full = withGameSmsFooter(withClip);
-  if (full.length <= SMS_LIMIT) return full;
-  const tip = `\n${GAME_SMS_FOOTER}`;
-  const room = Math.max(0, SMS_LIMIT - tip.length);
-  return `${withClip.slice(0, room).trimEnd()}${tip}`;
+  const base = toGsm7(body).trim();
+  const link = clip ? toGsm7(clip.shortUrl).trim() : "";
+  const withClip =
+    link && `${base}\n${link}`.length <= TRIAL_SMS_MAX ? `${base}\n${link}` : base;
+  return withGameSmsFooter(withClip);
 }
 
 /** Template copy. SMS is short facts. No live model. */

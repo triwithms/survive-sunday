@@ -35,6 +35,7 @@ import {
   withGameEmailText,
   withGameSmsFooter,
 } from "../src/lib/notify-game-footer";
+import { fitTrialSms, gsm7Length, toGsm7 } from "../src/lib/sms-gsm";
 
 assert.equal(DEFAULT_NOTIFICATION_PREFS.missingPickReminder, "both");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.pickConfirmed, "email");
@@ -180,9 +181,21 @@ const miss = missingPickCopy({
   lockLabel: "Thu 8:15 p.m.",
 });
 assert.match(miss.smsBody ?? "", /no Week 1 pick/);
-assert.match(withGameSmsFooter(miss.smsBody ?? ""), /spam\/junk/);
-assert.match(GAME_SMS_FOOTER, /Not junk/);
+const sms = withGameSmsFooter(miss.smsBody ?? "");
+assert.ok(sms.length <= 160, `sms ${sms.length}`);
+assert.match(sms, /account\/notifications/);
+assert.match(GAME_SMS_FOOTER, /Prefs:/);
 assert.match(GAME_SMS_FOOTER, /https:\/\/survive-sunday\.vercel\.app\/account\/notifications/);
+const crowded = withGameSmsFooter(`${"Week wrap facts. ".repeat(12)}x`);
+assert.ok(crowded.length <= 160);
+assert.doesNotMatch(crowded, /account\/notifications/);
+assert.match(crowded, /\.\.\.$/);
+assert.equal(toGsm7("It’s a win — go"), "It's a win - go");
+assert.doesNotMatch(toGsm7("Go 🏈 now"), /🏈/);
+assert.equal(gsm7Length("Go now"), "Go now".length);
+const fitted = fitTrialSms("a ".repeat(120));
+assert.ok(fitted.length <= 160);
+assert.match(fitted, /\.\.\.$/);
 assert.match(withGameEmailText(pick.text), /spam or junk/);
 const foot = withGameEmailHtml("<p>hi</p>");
 assert.match(foot, /font-size:12px/);

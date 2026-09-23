@@ -39,11 +39,21 @@ assert.match(funny.htmlBody, /font-size:12px/);
 assert.match(funny.htmlBody, /account\/notifications/);
 assert.doesNotMatch(funny.smsBody ?? "", /Drama placeholder|Funny placeholder/);
 assert.match(funny.smsBody ?? "", /Still in: Ada, Bea/);
-assert.match(funny.smsBody ?? "", /account\/notifications/);
+assert.ok((funny.smsBody ?? "").length <= 160);
+assert.match(funny.text, /account\/notifications/);
 assert.doesNotMatch(factsCopy.text, /Funny placeholder|Drama placeholder/);
 assert.match(short.text, /Preferences:/);
-assert.match(short.smsBody ?? "", /account\/notifications/);
+assert.ok((short.smsBody ?? "").length <= 160);
 assert.equal(short.smsBody, funny.smsBody);
+const brief = weekWrapContent({
+  tone: "short",
+  blocks,
+  facts,
+  smsOverride: "Week 3 wrap",
+});
+assert.match(brief.smsBody ?? "", /Week 3 wrap/);
+assert.match(brief.smsBody ?? "", /Prefs:/);
+assert.ok((brief.smsBody ?? "").length <= 160);
 const quiet = weekWrapContent({
   tone: "funny",
   blocks: { roster: false, picks: false, board: false, drama: false },
@@ -62,8 +72,8 @@ assert.match(withClip.text, /Every Touchdown of Week 3/);
 assert.match(withClip.text, /Preferences:/);
 assert.match(withClip.htmlBody, /<img/);
 assert.match(withClip.htmlBody, /font-size:12px/);
-assert.match(withClip.smsBody ?? "", /youtu\.be\/abc123/);
-assert.match(withClip.smsBody ?? "", /account\/notifications/);
+assert.ok((withClip.smsBody ?? "").length <= 160);
+assert.match(withClip.text, /account\/notifications/);
 const longSms = "x".repeat(470);
 const omitted = weekWrapContent({
   tone: "facts",
@@ -73,7 +83,9 @@ const omitted = weekWrapContent({
   touchdown: clip,
 });
 assert.doesNotMatch(omitted.smsBody ?? "", /youtu\.be/);
-assert.match(omitted.smsBody ?? "", /account\/notifications/);
+assert.doesNotMatch(omitted.smsBody ?? "", /account\/notifications/);
+assert.ok((omitted.smsBody ?? "").length <= 160);
+assert.match(omitted.smsBody ?? "", /\.\.\.$/);
 const custom = weekWrapContent({
   tone: "facts",
   blocks,

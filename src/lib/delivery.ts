@@ -1,4 +1,5 @@
 import { hasGameNoticeTip } from "./notify-game-footer";
+import { fitTrialSms } from "./sms-gsm";
 
 export type DeliverResult =
   | { ok: true; stubbed: boolean }
@@ -240,9 +241,10 @@ export async function sendTwilioMessage(opts: {
   to: string;
   body: string;
 }): Promise<DeliverResult> {
+  const body = fitTrialSms(opts.body);
   if (!smsProviderReady()) {
     if (canStubDelivery()) {
-      console.info(`[delivery] SMS stub → ${opts.to}: ${opts.body}`);
+      console.info(`[delivery] SMS stub → ${opts.to}: ${body}`);
       return { ok: true, stubbed: true };
     }
     return {
@@ -266,7 +268,7 @@ export async function sendTwilioMessage(opts: {
         body: new URLSearchParams({
           From: from,
           To: opts.to,
-          Body: opts.body,
+          Body: body,
         }),
       }
     );
