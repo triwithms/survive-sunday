@@ -35,17 +35,19 @@ import {
   withGameEmailText,
   withGameSmsFooter,
 } from "../src/lib/notify-game-footer";
+import { fitTrialSms, gsm7Length, toGsm7 } from "../src/lib/sms-gsm";
 
 assert.equal(DEFAULT_NOTIFICATION_PREFS.missingPickReminder, "both");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.pickConfirmed, "email");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.resultsGraded, "email");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.weekWrap, "email");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.eliminationMulligan, "both");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.poolAnnouncements, "email");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.scoreUpdates, "off");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.injuryNotes, "off");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.masterOn, true);
 assert.equal(DEFAULT_NOTIFICATION_PREFS.pushEnabled, false);
-assert.equal(CORE_NOTIFICATION_TYPES.length, 5);
+assert.equal(CORE_NOTIFICATION_TYPES.length, 6);
 assert.equal(OPTIONAL_NOTIFICATION_TYPES.length, 2);
 assert.equal(isNotificationType("missingPickReminder"), true);
 assert.equal(isNotificationType("password_reset"), false);
@@ -179,13 +181,28 @@ const miss = missingPickCopy({
   lockLabel: "Thu 8:15 p.m.",
 });
 assert.match(miss.smsBody ?? "", /no Week 1 pick/);
-assert.match(withGameSmsFooter(miss.smsBody ?? ""), /spam\/junk/);
-assert.match(GAME_SMS_FOOTER, /Not junk/);
+const sms = withGameSmsFooter(miss.smsBody ?? "");
+assert.ok(sms.length <= 160, `sms ${sms.length}`);
+assert.match(sms, /account\/notifications/);
+assert.match(GAME_SMS_FOOTER, /Prefs:/);
 assert.match(GAME_SMS_FOOTER, /https:\/\/survive-sunday\.vercel\.app\/account\/notifications/);
+const crowded = withGameSmsFooter(`${"Week wrap facts. ".repeat(12)}x`);
+assert.ok(crowded.length <= 160);
+assert.doesNotMatch(crowded, /account\/notifications/);
+assert.match(crowded, /\.\.\.$/);
+assert.equal(toGsm7("It’s a win — go"), "It's a win - go");
+assert.doesNotMatch(toGsm7("Go 🏈 now"), /🏈/);
+assert.equal(gsm7Length("Go now"), "Go now".length);
+const fitted = fitTrialSms("a ".repeat(120));
+assert.ok(fitted.length <= 160);
+assert.match(fitted, /\.\.\.$/);
 assert.match(withGameEmailText(pick.text), /spam or junk/);
-assert.match(withGameEmailHtml("<p>hi</p>"), /font-size:12px/);
+const foot = withGameEmailHtml("<p>hi</p>");
+assert.match(foot, /font-size:12px/);
+assert.match(foot, /color:#9aa5b5/);
+assert.match(foot, /<a [^>]*font-size:12px/);
 assert.match(
-  withGameEmailHtml("<p>hi</p>"),
+  foot,
   /href="https:\/\/survive-sunday\.vercel\.app\/account\/notifications"/
 );
 assert.match(GAME_EMAIL_FOOTER, /Not junk/);

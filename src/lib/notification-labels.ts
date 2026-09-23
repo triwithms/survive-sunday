@@ -2,6 +2,7 @@ export const CORE_NOTIFICATION_TYPES = [
   "missingPickReminder",
   "pickConfirmed",
   "resultsGraded",
+  "weekWrap",
   "eliminationMulligan",
   "poolAnnouncements",
 ] as const;
@@ -23,6 +24,10 @@ export const NOTIFICATION_COPY = {
   resultsGraded: {
     label: "Results",
     hint: "When your pick wins or loses, or the week is graded.",
+  },
+  weekWrap: {
+    label: "Week wrap",
+    hint: "Noon Toronto the day after that week’s last game is final.",
   },
   eliminationMulligan: {
     label: "You’re out / mulligan used",

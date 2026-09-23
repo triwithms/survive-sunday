@@ -16,6 +16,7 @@ export async function register() {
       "@/lib/notification-schema"
     );
     const { ensureUserNotifyPref } = await import("@/lib/notify-pref-schema");
+    const { ensureWeekWrapTable } = await import("@/lib/week-wrap-schema");
     const { ensurePickMirrorColumn } = await import(
       "@/lib/pick-mirror-schema"
     );
@@ -23,6 +24,7 @@ export async function register() {
     await ensurePickMirrorColumn(prisma);
     await ensureNotificationTables(prisma);
     await ensureUserNotifyPref(prisma);
+    await ensureWeekWrapTable(prisma);
     console.log(
       `[boot] schema ready${result.droppedUnique ? " (dropped leftover unique)" : ""}`
     );

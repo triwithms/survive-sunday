@@ -28,6 +28,7 @@ const libFiles = [
   "src/lib/notify-pref-save.ts",
   "src/lib/notify-pref-columns.ts",
   "src/lib/notify-game-footer.ts",
+  "src/lib/sms-gsm.ts",
   "src/lib/notify-type-schema.ts",
   "src/lib/notification-types.ts",
   "src/lib/notification-parse.ts",
@@ -180,6 +181,7 @@ assert.match(dispatch, /planNotice/);
 assert.match(dispatch, /sendResendMessage/);
 assert.match(dispatch, /sendTwilioMessage/);
 assert.match(dispatch, /withGameSmsFooter/);
+assert.match(readFileSync("src/lib/delivery.ts", "utf8"), /fitTrialSms\(opts\.body\)/);
 assert.match(dispatch, /withGameEmailText/);
 assert.match(dispatch, /withGameEmailHtml/);
 assert.doesNotMatch(readFileSync("src/lib/otp-notify.ts", "utf8"), /withGameSmsFooter|withGameEmailText/);

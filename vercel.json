@@ -19,6 +19,14 @@
     {
       "path": "/api/cron/pick-backup",
       "schedule": "10 0 * * *"
+    },
+    {
+      "path": "/api/cron/week-wrap",
+      "schedule": "0 16 * * *"
+    },
+    {
+      "path": "/api/cron/week-wrap",
+      "schedule": "0 17 * * *"
     }
   ]
 }

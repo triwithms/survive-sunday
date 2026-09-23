@@ -1,3 +1,4 @@
+import type { WeekWrapPanelData } from "@/lib/week-wrap-types";
 import type { EnterPickData } from "./enter-pick-types";
 import type { AdminRoleRow } from "./admin-role-types";
 import type { RosterMember } from "./roster-types";
@@ -61,5 +62,6 @@ export type AuditLogRow = {
 export type SystemScreenProps = {
   weekNumber: number;
   enterPick: EnterPickData;
+  weekWrap: WeekWrapPanelData;
   logs: AuditLogRow[];
 };
