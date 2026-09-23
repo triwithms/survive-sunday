@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { PREFS_URL } from "../../src/lib/notify-game-footer";
 import { WEEK_WRAP_BOARD_URL } from "../../src/lib/week-wrap-sections";
-import { WEEK_WRAP_DRAMA_PLACEHOLDER } from "../../src/lib/week-wrap-tone";
+import { WEEK_WRAP_FUNNY_DRAMA } from "../../src/lib/week-wrap-tone";
 import { weekWrapContent } from "../../src/lib/week-wrap-copy";
 import { weekWrapPlayers } from "../../src/lib/week-wrap-players";
 
@@ -30,10 +30,21 @@ const blocks = { roster: true, picks: true, board: true, drama: true };
 const funny = weekWrapContent({ tone: "funny", blocks, facts });
 const factsCopy = weekWrapContent({ tone: "facts", blocks, facts });
 const short = weekWrapContent({ tone: "short", blocks, facts });
-assert.match(funny.text, /Funny placeholder/);
-assert.match(funny.text, new RegExp(WEEK_WRAP_DRAMA_PLACEHOLDER));
+const autoIntro = "Week 3 wrap: 2 still in, 1 took a hit, 1 eliminated.";
+assert.equal(factsCopy.subject, "Week 3 wrap");
+assert.ok(factsCopy.text.startsWith(`${autoIntro}\n`), "Straight intro is automatic from facts");
+assert.match(factsCopy.htmlBody, new RegExp(autoIntro.replace(/[.]/g, "\\.")));
+assert.equal(funny.subject, factsCopy.subject, "Funny uses the Straight copy until a paste");
+assert.equal(funny.text, factsCopy.text);
+assert.equal(funny.html, factsCopy.html);
+assert.equal(WEEK_WRAP_FUNNY_DRAMA, "", "no invented drama line");
+assert.ok(short.text.startsWith(`${autoIntro}\n`));
+assert.equal(short.subject, "Wk 3 wrap");
+for (const c of [funny, factsCopy, short]) {
+  assert.doesNotMatch(`${c.subject}\n${c.text}\n${c.html}`, /placeholder/i);
+}
 assert.match(funny.text, /Won this week\n- Ada BUF/);
-assert.match(funny.text, /Lost this week\n- Bea KC \(still in\)\n- Cal DAL\n/);
+assert.match(funny.text, /Lost this week\n- Cal DAL\n- Bea KC \(still in\)\n/, "grouped by team");
 assert.match(funny.text, /Eliminated this week\n- Cal DAL/);
 assert.doesNotMatch(funny.text, /Dee/, "out before this week: no ghost row");
 assert.match(funny.text, /Board: .*\/standings/);
@@ -43,10 +54,10 @@ assert.match(funny.htmlBody, /font-size:12px/);
 assert.match(funny.htmlBody, /account\/notifications/);
 assert.match(funny.html ?? "", /^<!doctype html>/);
 assert.equal((funny.html ?? "").match(/account\/notifications/g)?.length, 1, "one prefs footer");
-assert.doesNotMatch(funny.smsBody ?? "", /Drama placeholder|Funny placeholder|<|helmets/);
+assert.doesNotMatch(funny.smsBody ?? "", /placeholder|<|helmets/i);
 assert.match(funny.smsBody ?? "", /Still in: Ada, Bea/);
+assert.match(funny.smsBody ?? "", /Picks: BUF won \(Ada\); DAL lost \(Cal\); KC lost \(Bea\)/);
 assert.ok((funny.smsBody ?? "").length <= 160);
-assert.doesNotMatch(factsCopy.text, /Funny placeholder|Drama placeholder/);
 assert.match(short.text, /Preferences:/);
 assert.match(short.text, /Won this week/);
 assert.ok((short.smsBody ?? "").length <= 160);
@@ -65,7 +76,8 @@ const quiet = weekWrapContent({
   blocks: { roster: false, picks: false, board: false, drama: false },
   facts,
 });
-assert.doesNotMatch(quiet.text, /Won this week|Lost this week|Pool leaderboard|Board:|Drama placeholder/);
+assert.doesNotMatch(quiet.text, /Won this week|Lost this week|Pool leaderboard|Board:|placeholder/i);
+assert.ok(quiet.text.startsWith(autoIntro), "intro stays when every block is off");
 assert.doesNotMatch(quiet.htmlBody, /Won this week|Pool leaderboard|Open the board/);
 const clip = {
   videoId: "abc123",
@@ -101,6 +113,8 @@ const custom = weekWrapContent({
   touchdown: clip,
 });
 assert.match(custom.text, /^Custom email/);
+assert.doesNotMatch(custom.text, /still in, 1 took a hit/, "override replaces the auto intro");
+assert.equal(custom.subject, factsCopy.subject, "override leaves the subject");
 assert.match(custom.text, /Won this week/, "override replaces only the intro");
 assert.match(custom.text, /watch\?v=abc123/);
 assert.match(custom.htmlBody, /Custom email/);

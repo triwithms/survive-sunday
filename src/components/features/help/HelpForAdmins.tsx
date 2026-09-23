@@ -27,8 +27,12 @@ export function HelpForAdmins() {
           picks Funny, Straight facts, or Short, then previews,{" "}
           <strong>Send now</strong>, or <strong>Skip this week</strong>. The
           automatic note goes out at noon (Toronto) the day after the last
-          game is final. The email shows Won, Lost, and Eliminated (only if
-          someone went out) with team helmets, then the pool leaderboard and
+          game is final. The opening line is automatic from the week’s
+          results (who is still in, who took a hit, who went out); Funny uses
+          the same line for now, and the email override box swaps in your own
+          intro. The email shows Won, Lost, and Eliminated (only if someone
+          went out) with team helmets, friends on the same team listed
+          together, then the pool leaderboard and
           NFL division standings, plus the NFL Every Touchdown video when
           that post exists, and a small preferences link. Texts stay short.{" "}
           <strong>Missing picks</strong> lists who is still blank, sends

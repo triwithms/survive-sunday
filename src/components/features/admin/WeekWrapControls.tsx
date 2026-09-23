@@ -10,7 +10,7 @@ const BLOCKS: { key: keyof WeekWrapBlocks; label: string }[] = [
   { key: "roster", label: "Won / lost / eliminated this week" },
   { key: "picks", label: "Each player's team helmet + pick" },
   { key: "board", label: "Pool leaderboard, NFL divisions, board link" },
-  { key: "drama", label: "One-line drama (Funny email)" },
+  { key: "drama", label: "One-line drama (Funny email, once a banter paste exists)" },
 ];
 
 const field =

@@ -1,6 +1,7 @@
 import { STATUS_LABELS } from "./constants";
 import { isWrapLoss } from "./week-wrap-players";
 import type { WeekWrapNflTeam } from "./week-wrap-rich-types";
+import { sortByTeam } from "./week-wrap-team-order";
 import type { WeekWrapBlocks, WeekWrapPlayer } from "./week-wrap-types";
 
 export type WrapResultGroups = {
@@ -22,6 +23,7 @@ function outEarlier(player: WeekWrapPlayer): boolean {
   return player.status === "eliminated" && !player.eliminatedThisWeek;
 }
 
+/** Each list is grouped by team (`sortByTeam`), nicknames A–Z within a team. */
 export function wrapResultGroups(players: WeekWrapPlayer[]): WrapResultGroups {
   const active = players.filter((player) => !outEarlier(player));
   const won = active.filter(
@@ -30,10 +32,10 @@ export function wrapResultGroups(players: WeekWrapPlayer[]): WrapResultGroups {
   const lost = active.filter((player) => isWrapLoss(player.teamAbbr, player.result));
   const done = new Set([...won, ...lost]);
   return {
-    won,
-    lost,
-    out: players.filter((player) => player.eliminatedThisWeek),
-    pending: active.filter((player) => !done.has(player)),
+    won: sortByTeam(won),
+    lost: sortByTeam(lost),
+    out: sortByTeam(players.filter((player) => player.eliminatedThisWeek)),
+    pending: sortByTeam(active.filter((player) => !done.has(player))),
   };
 }
 

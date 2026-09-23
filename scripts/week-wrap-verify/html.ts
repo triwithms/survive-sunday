@@ -33,7 +33,7 @@ const board = [
 const facts = { weekNumber: 3, players: wrapPlayers, boardUrl: WEEK_WRAP_BOARD_URL, board, nfl };
 const rich = weekWrapContent({ tone: "funny", blocks, facts });
 const html = rich.html ?? "";
-const order = ["Won this week", "Lost this week", "Eliminated this week", "Pool leaderboard", "NFL division standings", "Drama placeholder", "Open the board", "account/notifications"];
+const order = ["Won this week", "Lost this week", "Eliminated this week", "Pool leaderboard", "NFL division standings", "Open the board", "account/notifications"];
 let last = -1;
 for (const label of order) {
   const at = html.indexOf(label);
