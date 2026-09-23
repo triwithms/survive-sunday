@@ -13,8 +13,7 @@ import {
   ensureWeekLockedEffects,
   isWeekLocked,
 } from "@/lib/grading";
-import { shouldPollLiveScores } from "@/lib/live-scores";
-import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
+import { shouldPollLiveScores, syncWeekScoresFromEspn } from "@/lib/live-scores";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { buildHomeRows } from "./build-home-rows";
 import type { HomeScreenProps } from "./types";
@@ -33,7 +32,7 @@ export async function loadHomePage(searchParams?: {
   if (!selectedRef) return null;
 
   await ensureWeekLockedEffects(selectedRef.id);
-  try { await syncWeekEspnForPage(selectedRef.id); }
+  try { await syncWeekScoresFromEspn(selectedRef.id); }
   catch (e) { console.error("pool espn score sync skipped", e); }
 
   const week = await prisma.week.findUniqueOrThrow({

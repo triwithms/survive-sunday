@@ -52,13 +52,11 @@ export function ScheduleGameRow({
           </Chip>
         )}
       </div>
-      <div className="mt-1 flex items-start justify-between gap-2">
-        <div className="min-w-0 text-xs text-[var(--text-muted)]">
-          <p className="break-words">{game.scoreLine}</p>
+      <div className="mt-1 flex items-center justify-between gap-2">
+        <div className="min-w-0 text-xs text-[var(--text-muted)] flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span>{game.scoreLine}</span>
           {game.favouriteLabel && (
-            <p className="mt-0.5 break-words text-[var(--text-primary)]">
-              {game.favouriteLabel}
-            </p>
+            <span className="text-[var(--text-primary)]">{game.favouriteLabel}</span>
           )}
         </div>
         <ScheduleDetailsButton

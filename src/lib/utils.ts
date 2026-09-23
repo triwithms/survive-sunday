@@ -1,17 +1,20 @@
 import { clsx, type ClassValue } from "clsx";
-import { formatEasternDateTime } from "@/lib/eastern-time";
 
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
 
 export function formatKickoff(d: Date | string | null | undefined) {
-  return formatEasternDateTime(d, {
+  if (d == null) return "";
+  const date = typeof d === "string" ? new Date(d) : d;
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+  return date.toLocaleString("en-CA", {
     weekday: "short",
     month: "short",
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
+    timeZoneName: "short",
   });
 }
 

@@ -35,7 +35,7 @@ export function PickMatchupCard({
     <Card as="li" className="overflow-hidden">
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-[var(--stadium-border)] px-3 py-2 text-[11px] text-[var(--text-muted)]">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <span>
+          <span className="font-mono">
             {formatMatchupListLine(matchup) || formatKickoff(matchup.kickoff)}
           </span>
           {fav && (
