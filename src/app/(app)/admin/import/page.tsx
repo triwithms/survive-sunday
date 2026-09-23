@@ -22,7 +22,7 @@ export default async function ImportPicksPage() {
       <AdminHeading title="Import week picks">
         Import picks made outside Survive Sunday. Source is marked{" "}
         <span className="font-mono">imported</span> and every change is audited.
-        If the board still has old picks, use System → Reset pool first. After
+        If the board still has old picks, use Pool → Reset pool first. After
         import, open Pool or Scores for that week.
       </AdminHeading>
       <ImportPicksForm defaultWeek={suggestedWeek} />

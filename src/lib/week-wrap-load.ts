@@ -5,8 +5,9 @@ import { weekWrapPlayers } from "./week-wrap-players";
 import { WEEK_WRAP_BOARD_URL } from "./week-wrap-sections";
 import { loadWeekWrapSettings } from "./week-wrap-settings";
 import { preferredWrapWeek } from "./week-wrap-status";
+import { emptyWeekWrapPanel } from "./week-wrap-empty";
+import { loadWrapAudience } from "./week-wrap-audience";
 import {
-  DEFAULT_WEEK_WRAP_SETTINGS,
   type WeekWrapPanelData,
   type WeekWrapWeekOption,
 } from "./week-wrap-types";
@@ -20,17 +21,7 @@ export async function loadWeekWrapPanel(
     return await loadWeekWrapPanelUnsafe(poolId, now);
   } catch (error) {
     console.error("[week-wrap] load failed", error);
-    return {
-      boardUrl: WEEK_WRAP_BOARD_URL,
-      selectedWeek: 1,
-      tone: DEFAULT_WEEK_WRAP_SETTINGS.tone,
-      blocks: { ...DEFAULT_WEEK_WRAP_SETTINGS.blocks },
-      emailOverride: "",
-      smsOverride: "",
-      weeks: [],
-      board: [],
-      nfl: null,
-    };
+    return emptyWeekWrapPanel();
   }
 }
 
@@ -94,5 +85,6 @@ async function loadWeekWrapPanelUnsafe(
     weeks: options,
     board,
     nfl,
+    audience: await loadWrapAudience(poolId),
   };
 }

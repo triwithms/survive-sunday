@@ -6,10 +6,10 @@ export function HelpForAdmins() {
       </h2>
       <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)]">
         <li className="text-[var(--text-primary)]">
-          Admin is in the header. Users · Pool · System.
+          Admin is in the header. Players · This Week · Pool.
         </li>
         <li className="text-[var(--text-primary)]">
-          <strong>Add user</strong> on Users: fill name, nickname, cell, email,
+          <strong>Add user</strong> on Players: fill name, nickname, cell, email,
           and a password you can text — or send a Join invite. Email and cell
           must be unique. Welcome asks for anything still missing. We do not
           email the password.
@@ -20,10 +20,10 @@ export function HelpForAdmins() {
           you can text. They Sign in — no people list.
         </li>
         <li className="text-[var(--text-primary)]">
-          Notifications on Users use the same master On/Off and per-type
-          Email / SMS / both / Off as Account. System has{" "}
+          Notifications on Players use the same master On/Off and per-type
+          Email / SMS / both / Off as Account. This Week has{" "}
           <strong>Send test to me</strong> (it arrives marked ADMIN TEST, not a
-          real pool alert). System → <strong>Week wrap</strong>{" "}
+          real pool alert). This Week → <strong>Week wrap</strong>{" "}
           picks Funny, Straight facts, or Short, then previews,{" "}
           <strong>Send now</strong>, or <strong>Skip this week</strong>. The
           automatic note goes out at noon (Toronto) the day after the last
@@ -35,16 +35,19 @@ export function HelpForAdmins() {
           together, then the pool leaderboard and
           NFL division standings, plus the NFL Every Touchdown video when
           that post exists, and a small preferences link. Texts stay short.{" "}
-          <strong>Missing picks</strong> lists who is still blank, sends
-          reminders, or copies a group-chat list while the week is open. The
-          daily reminder is only the last 24 hours before lock.
+          <strong>Missing picks</strong> lists who is still blank.{" "}
+          <strong>Remind all</strong> confirms email, SMS, and who is skipped
+          before it sends. Copy text stays. The daily reminder is only the
+          last 24 hours before lock. Week wrap sits above those tools.
         </li>
         <li className="text-[var(--text-primary)]">
-          Personal Join links: one Copy per friend on their Users row. Do not
-          paste one link in the group chat.
+          Personal Join links: <strong>Copy join link</strong> on each Players
+          row. Do not paste one link in the group chat. Filters: All, No pick,
+          One loss, Out. Pool → <strong>Reset pool</strong> is last and needs
+          RESET typed.
         </li>
         <li className="text-[var(--text-primary)]">
-          System → <strong>Enter a friend’s pick</strong> for this week or a
+          This Week → <strong>Enter a friend’s pick</strong> for this week or a
           past week. Next week opens for them after their own game starts.
           Changes are audit-logged.
         </li>
@@ -53,9 +56,9 @@ export function HelpForAdmins() {
           Already-scored weeks stay.
         </li>
         <li className="text-[var(--text-primary)]">
-          <strong>Make administrator</strong> adds Admin tools.{" "}
-          <strong>Hand the pool</strong> gives Admin to someone else and you
-          stay as a player.
+          On a player’s record, <strong>Make administrator</strong> adds Admin
+          tools. Pool lists administrators. <strong>Hand the pool</strong>{" "}
+          gives Admin to someone else and you stay as a player.
         </li>
       </ul>
     </section>

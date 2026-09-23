@@ -56,17 +56,12 @@ export function EnterPickForm({ data, lockMember = false }: Props) {
 
   if (lockMember) {
     return (
-      <section
-        id="member-pick"
-        data-testid="member-pick"
-        className="rounded-md border border-stadium-border p-3 space-y-2"
-      >
-        <h3 className="text-sm font-semibold">Pick</h3>
+      <div className="space-y-2">
         <p className="text-xs text-[var(--text-muted)]">
           Choose an open week. Saving replaces that week’s pick.
         </p>
         {body}
-      </section>
+      </div>
     );
   }
 
@@ -77,7 +72,7 @@ export function EnterPickForm({ data, lockMember = false }: Props) {
         <p className="text-sm text-[var(--text-muted)] mt-1">
           They called or texted. Current or past weeks only. Next week
           opens after their own game starts and they have a pick. The same
-          pick is on that person’s Users row.
+          pick is on that person’s Players row.
         </p>
       </div>
       {body}

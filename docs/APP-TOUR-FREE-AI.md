@@ -45,7 +45,7 @@ Rewrite the **Voice-over (source draft)** lines so they are funnier and more emo
 - **No duration cap.** Quick and Full run as long as a natural pass takes. Do not squeeze lines to hit 60–90 seconds or 3–5 minutes. A shorter WhatsApp cut is an **edit**, not a VO constraint. (Soft: Quick often lands shorter than Full.)
 - Quick stays sparser than Full (player-POV questions, not a labelled feature list)
 - Full stays punchy; do not write an essay per step
-- Button names and screen names exactly as APP-TOUR.md: **My pick**, **Selections**, **Leaderboard**, **Scores**, **Schedule**, **Standings**, **Game details ›**, **Details ›**, **Share**, **Copy**, **Send**, **Close**, **Account**, **Help** (**?**), **YOU’RE OUT**, **Season-end tiebreak**, Admin tabs **Users · Pool · System**
+- Button names and screen names exactly as APP-TOUR.md: **My pick**, **Selections**, **Leaderboard**, **Scores**, **Schedule**, **Standings**, **Game details ›**, **Details ›**, **Share**, **Copy**, **Send**, **Close**, **Account**, **Help** (**?**), **YOU’RE OUT**, **Season-end tiebreak**, Admin tabs **Players · This Week · Pool**
 - Header Share = this **page**. Sheet Share = this **matchup**. Installed app has **no address bar**.
 - Help video links: you may keep the one line that *when videos exist* they sit at the **top of Help**. Those links can mention CC. Do not invent URLs. Do not spec Help UI.
 - Captions are closed (toggle on/off). Do not write VO that tells the editor to burn text into the video.

@@ -62,7 +62,9 @@ export function RosterRow({
             </StatusBadge>
           ) : null}
         </button>
-        <InviteJoinButtons membershipId={member.id} nickname={member.nickname} />
+        {open ? null : (
+          <InviteJoinButtons membershipId={member.id} nickname={member.nickname} />
+        )}
         <button
           type="button"
           className="min-h-11 px-2 shrink-0 text-xs text-gold-400"

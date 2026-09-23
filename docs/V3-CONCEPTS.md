@@ -1,6 +1,6 @@
 # Survive Sunday — v3 concepts (planning only)
 
-> Status: planning only. Nothing here is built or live. Today Survive Sunday is one private pool (SUNDAY26), Admin phone tabs Users / Pool / System, email + Twilio SMS notifications, Neon Postgres, Vercel.
+> Status: planning only. Nothing here is built or live. Today Survive Sunday is one private pool (SUNDAY26), Admin phone tabs Players / This Week / Pool, email + Twilio SMS notifications, Neon Postgres, Vercel.
 > Prices are rough, in USD unless marked CAD, checked September 2026. Re-check before any decision.
 
 ## Goals

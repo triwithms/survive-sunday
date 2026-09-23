@@ -10,6 +10,8 @@ export async function sendMissingPickReminders(opts?: {
   now?: Date;
   mode?: RemindMode;
   actorId?: string | null;
+  /** When set, remind only this seat. Omit to remind every blank. */
+  membershipId?: string;
 }): Promise<{
   reminded: number;
   skipped: number;
@@ -33,6 +35,7 @@ export async function sendMissingPickReminders(opts?: {
 
   for (const week of weeks) {
     for (const seat of week.blanks) {
+      if (opts?.membershipId && seat.membershipId !== opts.membershipId) continue;
       const exists = await membershipHasPick(seat.membershipId, week.id);
       if (!remindAfterRecheck(exists)) {
         alreadyPicked += 1;

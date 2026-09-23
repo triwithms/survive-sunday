@@ -62,7 +62,8 @@ function main() {
     "utf8"
   );
   assert.match(editor, /openId/);
-  assert.match(editor, /id === m\.id \? null : m\.id/);
+  assert.match(editor, /cur === id/);
+  assert.match(editor, /return null/);
   assert.match(editor, /Tap a person/);
   assert.match(editor, /roster-search/);
   assert.match(editor, /Find a friend/);
@@ -105,7 +106,8 @@ function main() {
   assert.match(invite, /issueInviteToken/);
   assert.match(invite, /Copied invite link/);
   assert.match(invite, /shareOrCopy/);
-  assert.match(invite, /Share2/);
+  assert.match(invite, /Copy join link/);
+  assert.doesNotMatch(invite, /Share2/);
   assert.match(invite, /role="status"/);
 
   const row = readFileSync(

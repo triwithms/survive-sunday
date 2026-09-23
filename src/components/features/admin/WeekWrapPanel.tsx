@@ -55,6 +55,8 @@ export function WeekWrapPanel({ data }: { data: WeekWrapPanelData }) {
             />
           ) : null}
           <WeekWrapActions
+            weekNumber={w.week.number}
+            audience={data.audience}
             busy={w.busy}
             msg={w.msg}
             err={w.err}

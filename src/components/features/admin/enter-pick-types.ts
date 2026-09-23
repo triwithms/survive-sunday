@@ -17,6 +17,8 @@ export type EnterPickWeek = {
 
 export type EnterPickData = {
   currentWeek: number;
+  /** False when the current week is locked, graded, or past lock time. */
+  currentWeekOpen?: boolean;
   members: EnterPickMember[];
   weeks: EnterPickWeek[];
 };
