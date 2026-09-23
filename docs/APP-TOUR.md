@@ -139,7 +139,7 @@ Opens **Settings** (`/account`).
 
 ### Admin (Full tour only)
 
-Bottom-nav **Admin** for Administrators. Three phone tabs: **Users · Pool · System**. Wave at them. Do not teach every control on camera.
+Bottom-nav **Admin** for Administrators. Three phone tabs: **Players · This Week · Pool**. Wave at them. Do not teach every control on camera.
 
 ---
 
@@ -196,7 +196,7 @@ Comprehensive **feature pass**. Name the screens. Show Share, Selections, Leader
 11. **Bottom nav → Standings.** NFL W-L. Optional: tap a team, see the research page, go back. Point at the line that leads to the pool Leaderboard if it is on screen.
 12. **Header Account** (top right). Glance: notification preferences, pick backup, Help, report a bug or idea, sign out. Do not sign out on camera.
 13. **Header ? → Help.** Topic menu. Tap one topic (The tabs is a good demo), then **Back to Help topics**. Mention: when the videos exist, two links will sit **near the top of Help**.
-14. **Admin (Administrators only).** Bottom nav **Admin**. Show the three tabs **Users · Pool · System**. Do not open every tool. Back to My pick.
+14. **Admin (Administrators only).** Bottom nav **Admin**. Show the three tabs **Players · This Week · Pool**. Do not open every tool. Back to My pick.
 
 Optional extra (only if time): on Leaderboard or Scores, press-and-hold the title (or triple-tap the week on Scores) for **picture** share — say it is different from header Share.
 

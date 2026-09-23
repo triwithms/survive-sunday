@@ -11,6 +11,7 @@ import {
   remindConfirmLine,
   wrapConfirmLine,
 } from "../src/lib/notice-audience";
+import { stampRosterAdmins } from "../src/components/features/admin/roster-admin";
 import {
   compareNeedsYou,
   needsYouRank,
@@ -149,6 +150,30 @@ assert.match(reminders, /opts\?\.membershipId && seat\.membershipId !== opts\.me
 assert.match(readFileSync("src/components/features/admin/MissingPickRemind.tsx", "utf8"), /Remind all/);
 assert.match(readFileSync("src/components/features/admin/WeekWrapSend.tsx", "utf8"), /Who gets this/);
 assert.doesNotMatch(readFileSync("src/components/features/admin/WeekWrapSend.tsx", "utf8"), /email@|phoneE164/);
-assert.match(readFileSync("src/components/features/admin/admin-tabs.ts", "utf8"), /label: "System"/);
+const stamped = stampRosterAdmins(
+  [
+    {
+      id: "a",
+      userId: "u",
+      nickname: "Amina",
+      realName: null,
+      status: "undefeated",
+      role: "member",
+      email: null,
+      phoneE164: null,
+      notifyPref: null,
+      mirrorFromMembershipId: null,
+      pickBackup: null,
+    },
+  ],
+  [{ id: "a", isAdmin: true }],
+  []
+);
+assert.equal(stamped[0]?.isPoolAdmin, true);
+assert.equal(stamped[0]?.canChangeAdmin, false);
+
+assert.match(readFileSync("src/components/features/admin/admin-tabs.ts", "utf8"), /label: "This Week"/);
+assert.match(readFileSync("src/components/features/admin/RosterRoleSection.tsx", "utf8"), /Make administrator/);
+assert.doesNotMatch(readFileSync("src/components/features/admin/AdminRoleList.tsx", "utf8"), /Make administrator/);
 
 console.log("verify-admin-bundle-b OK");

@@ -30,7 +30,7 @@ function main() {
 
   assert.deepEqual(
     ADMIN_TABS.map((t) => t.label),
-    ["Users", "Pool", "System"]
+    ["Players", "This Week", "Pool"]
   );
 
   const nav = readFileSync(`${dir}/AdminNav.tsx`, "utf8");
@@ -57,7 +57,12 @@ function main() {
   const pool = readFileSync(`${dir}/ConfigScreen.tsx`, "utf8");
   assert.match(pool, /AdminRolesPanel/);
   assert.match(pool, /TransferCommissionerForm/);
-  assert.match(pool, /Make administrator/);
+  assert.match(pool, /Administrators/);
+  assert.doesNotMatch(pool, /Make administrator/);
+  assert.match(
+    readFileSync(`${dir}/RosterRoleSection.tsx`, "utf8"),
+    /Make administrator/
+  );
   assert.match(pool, /Hand the pool/);
 
   const system = readFileSync(`${dir}/SystemScreen.tsx`, "utf8");

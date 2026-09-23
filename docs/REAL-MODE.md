@@ -118,7 +118,7 @@ Most of this is **already done** (evening 13 Sep 2026): the pool is live, Week 1
 4. **Do not Reset pool** unless you intend to wipe the imported Week 1 board.
 5. Add **Resend** keys on Vercel (`RESEND_API_KEY` + `RESEND_FROM_EMAIL`) and Redeploy — then test **Forgot password** once. That is the invite blocker. If a claimed friend is stuck tonight (Cannoli Stuffer / Mike Frigo), use **Admin → Set a temporary password** or the one-shot temp password from the password-reset fix, and text them.
 6. Then send friends to **Join the pool** with invite code **`SUNDAY26`**. They pick their name from the live roster (nickname + real name), then set their own email and password. Already-claimed seats (Gams, Go Giants, Pauli) say Sign in instead.
-7. To give a friend Admin tools, open Admin → **Administrators** → **Make administrator**.
+7. To give a friend Admin tools, open Admin → **Players** → that person → **Make administrator**. Pool lists administrators and links back to them.
 
 ---
 

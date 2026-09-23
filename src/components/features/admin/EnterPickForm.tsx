@@ -72,7 +72,7 @@ export function EnterPickForm({ data, lockMember = false }: Props) {
         <p className="text-sm text-[var(--text-muted)] mt-1">
           They called or texted. Current or past weeks only. Next week
           opens after their own game starts and they have a pick. The same
-          pick is on that person’s Users row.
+          pick is on that person’s Players row.
         </p>
       </div>
       {body}

@@ -8,6 +8,7 @@ import { readRosterScroll, writeRosterScroll } from "./roster-scroll";
 import { buildRosterRows, visibleRosterRows } from "./roster-rows";
 import { RosterCard } from "./RosterCard";
 import { RosterFilters } from "./RosterFilters";
+import { RosterOpenScroll } from "./RosterOpenScroll";
 import type { RosterMember } from "./roster-types";
 
 export type { RosterMember, RosterMirrorOption } from "./roster-types";
@@ -15,14 +16,16 @@ export type { RosterMember, RosterMirrorOption } from "./roster-types";
 export function RosterEditor({
   members,
   enterPick,
+  openMemberId = null,
 }: {
   members: RosterMember[];
   enterPick: EnterPickData;
+  openMemberId?: string | null;
 }) {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(openMemberId);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<RosterFilterId>("all");
   const rootRef = useRef<HTMLDivElement>(null);
@@ -66,6 +69,7 @@ export function RosterEditor({
         />
       </label>
       <RosterFilters value={filter} counts={counts} onChange={setFilter} />
+      <RosterOpenScroll memberId={openMemberId} />
       {msg ? <p className="text-sm text-field-400" role="status">{msg}</p> : null}
       {err ? <p className="text-sm text-crimson-400" role="alert">{err}</p> : null}
       {visible.length === 0 ? (

@@ -14,6 +14,10 @@ export type RosterMember = {
   notifyPrefs?: NotificationPrefs;
   mirrorFromMembershipId: string | null;
   pickBackup: string | null;
+  /** Administrator grant. Omit when the roster is not stamped. */
+  isPoolAdmin?: boolean;
+  /** False when this person is the last administrator. */
+  canChangeAdmin?: boolean;
 };
 
 export type RosterMirrorOption = MirrorOption;

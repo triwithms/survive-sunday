@@ -9,7 +9,7 @@ import type { SystemScreenProps } from "./types";
 export function SystemScreen(props: SystemScreenProps) {
   return (
     <div className="space-y-4">
-      <AdminHeading title="System">
+      <AdminHeading title="This Week">
         Week wrap is first. Then missing picks, enter a friend’s pick, and a
         test notice. Reset lives on Pool.
       </AdminHeading>

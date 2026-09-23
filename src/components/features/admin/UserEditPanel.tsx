@@ -9,6 +9,7 @@ import { RemoveSeatButton } from "./RemoveSeatButton";
 import { RosterCardFields } from "./RosterCardFields";
 import { RosterContactFields } from "./RosterContactFields";
 import { RosterNotifyPref } from "./RosterNotifyPref";
+import { RosterRoleSection } from "./RosterRoleSection";
 import { SetMemberPasswordForm } from "./SetMemberPasswordForm";
 import type { RosterDraft } from "./use-roster-edit";
 import type { RosterMember } from "./roster-types";
@@ -73,6 +74,7 @@ export function UserEditPanel(p: Props) {
           </p>
         )}
       </AdminDetails>
+      {player ? <RosterRoleSection member={member} /> : null}
       {player ? (
         <AdminDetails title={`Remove ${member.nickname}`} danger>
           <RemoveSeatButton membershipId={member.id} nickname={member.nickname} />

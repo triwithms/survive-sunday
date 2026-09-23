@@ -367,7 +367,7 @@ Hold the **group invite** until Forgot password actually delivers a code (check 
 
 ## 8. Admin
 
-**Admin** is in the bottom bar for administrators (also under **Account**). Three phone tabs: **Users · Pool · System**. `/admin` opens Users. There is no Demo vs Real toggle — the pool is live-only (Week 2 current).
+**Admin** is in the bottom bar for administrators (also under **Account**). Three phone tabs: **Players · This Week · Pool**. `/admin` opens Players (`/admin/users` and `/admin/system` stay the paths). There is no Demo vs Real toggle — the pool is live-only (Week 2 current).
 
 Gams is Player + Administrator. Switch **Playing as Gams** / **Admin tools** from **Account**. Full playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
@@ -375,22 +375,22 @@ Gams is Player + Administrator. Switch **Playing as Gams** / **Admin tools** fro
 |------|----------------|
 | **Live-only pool** | Demo vs Real toggle was removed. The pool is forced live without wiping picks. Open seats still claim via `@survivesunday.demo` Join emails. |
 | **Reset pool** | Admin → **Pool** → **Danger — reset the pool** (closed until you open it, last on the tab). Optional. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Do not reset now** — Week 1 imports and the live roster (including JaJa) are already live. **Shipped.** |
-| **Add user** | Admin → **Users**. Fill any of nickname / full name / cell / email / password. Or send a Join invite + temp password. `/welcome` can fill gaps later. Existing Prisma fields only. |
-| **Personal Join links** | On that friend’s Users row (**Copy join link**). One URL per open seat. Send that link only to that friend. |
+| **Add user** | Admin → **Players**. Fill any of nickname / full name / cell / email / password. Or send a Join invite + temp password. `/welcome` can fill gaps later. Existing Prisma fields only. |
+| **Personal Join links** | On that friend’s Players row (**Copy join link**). One URL per open seat. Send that link only to that friend. |
 | **Roster** | See each nickname + real name (including Go Giants, Pauli, JaJa). Edit nickname, full name, email, cell. Copy that person’s Join link if they have not Joined yet. Set **If no pick within 30 min, copy from** (JaJa → Gams). Audit-logged. |
-| **Enter a friend’s pick** | System tab. Current or past weeks. Next week only after that friend’s own game has started and they have a valid pick. No far-future weeks. |
+| **Enter a friend’s pick** | This Week tab. Current or past weeks. Next week only after that friend’s own game has started and they have a valid pick. No far-future weeks. |
 | **Pool rules — mulligan** | Turn off the free mulligan from a chosen week (or immediately). One loss = out from that week. Already-scored weeks stay as they are. People who already used a mulligan stay in with one loss. Players see a banner. You can turn the mulligan back on. |
 | **Hand the pool to someone else** | Admin → **Pool**. Transfer Admin to another **existing** member. Type their nickname and confirm. You stay as a player and lose Admin. They keep their picks and stay on the board. Different from **Make administrator** (that keeps both of you as Admin). The app will not transfer if nobody else is in the pool. |
-| **Set a temporary password** | Admin → **Users** → find the friend → Edit → save a password → **copy the text**. Audit-logged (password not stored in the log). If they have not Joined, send their personal Join link instead. **Shipped.** |
-| Remove player | Inside that person’s Users editor. |
-| **Administrators** | Admin → **Pool** → **Make administrator**. Grant Admin tools to an existing pool player (confirm). They stay on the board. Same login can be Player + Administrator; switch views. Remove Admin is allowed only if another administrator remains. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
+| **Set a temporary password** | Admin → **Players** → find the friend → Edit → save a password → **copy the text**. Audit-logged (password not stored in the log). If they have not Joined, send their personal Join link instead. **Shipped.** |
+| Remove player | Inside that person’s Players editor. |
+| **Administrators** | **Make administrator** is on the player record (Role). Pool lists administrators and links to that player. Grant Admin tools to an existing pool player (confirm). They stay on the board. Same login can be Player + Administrator; switch views. Remove Admin is allowed only if another administrator remains. **Shipped** ([PR #19](https://github.com/triwithms/survive-sunday/pull/19)). |
 | **Share Leaderboard / Scores** | Header Share (page link) is hidden on Admin. Picture share: press and hold the Leaderboard or Scores title, or triple-tap the week label. No extra Share button on those screens. Full long picture always, or a shorter / split option. **Shipped** ([PR #45](https://github.com/triwithms/survive-sunday/pull/45)). |
 
 Removed from Admin UI (do not put back): Comms tab, pick census, unlock testing, lock controls, score & grading, Your administrator login.
 
 ### Admin Users UX
 
-Admin → **Users** is a phone-first roster (~390px): **Add user**, **Find a friend**, then one compact row (nickname + Joined / Unclaimed). Tap Edit to open that friend only — opening another closes the first. Unclaimed rows have **Invite** and **Copy Join** (44px; toast on copy). Joined friends get the password form inside Edit (suggest + copy-ready text; we do not email the password). Admin can change email and cell, but not to a value another pool member already uses (“That email is already used” / “That cell is already used.”). Remove stays inside that person. **Make administrator** and **Hand the pool** live on **Pool**. No player Who-are-you list on Admin. No Commissioner person.
+Admin → **Players** is a phone-first roster (~390px): **Add user**, **Find a friend**, then one compact row (nickname + Joined / Unclaimed). Tap Edit to open that friend only — opening another closes the first. **Copy join link** is on the row. Joined friends get the password form inside Edit (suggest + copy-ready text; we do not email the password). Admin can change email and cell, but not to a value another pool member already uses (“That email is already used” / “That cell is already used.”). Remove stays inside that person. **Make administrator** is on that record. **Hand the pool** stays on **Pool**. No player Who-are-you list on Admin. No Commissioner person.
 
 ---
 

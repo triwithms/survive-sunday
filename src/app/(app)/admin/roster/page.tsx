@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-/** Deep link: Roster now lives on Users. */
+/** Deep link: Roster now lives on Players. */
 export default function AdminRosterRedirect() {
   redirect("/admin/users");
 }

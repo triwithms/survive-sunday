@@ -10,7 +10,8 @@ export function ConfigScreen(props: ConfigScreenProps) {
   return (
     <div className="space-y-4">
       <AdminHeading title="Pool">
-        Mulligan rules, Make administrator, and Hand the pool. Reset is last.
+        Mulligan rules and Hand the pool. Administrators are listed here.
+        Reset is last.
       </AdminHeading>
       <PoolRulesForm
         currentWeek={props.currentWeek}
@@ -18,10 +19,7 @@ export function ConfigScreen(props: ConfigScreenProps) {
         oneLossCount={props.oneLossCount}
         undefeatedCount={props.undefeatedCount}
       />
-      <AdminRolesPanel
-        members={props.roleMembers}
-        canDemoteMembershipIds={props.canDemoteMembershipIds}
-      />
+      <AdminRolesPanel members={props.roleMembers} />
       <TransferCommissionerForm members={props.transferMembers} />
       <AdminDetails title="Danger — reset the pool" danger testId="pool-danger">
         <ResetPoolPanel />

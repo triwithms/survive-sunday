@@ -103,7 +103,7 @@ const helpAdmins = readFileSync(
   "src/components/features/help/HelpForAdmins.tsx",
   "utf8"
 );
-assert.match(helpAdmins, /Users · Pool · System/);
+assert.match(helpAdmins, /Players · This Week · Pool/);
 assert.match(helpAdmins, /Add user/);
 assert.match(helpAdmins, /nickname, full name, email, or cell/);
 assert.match(helpAdmins, /Save this person/);

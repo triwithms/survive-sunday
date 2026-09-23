@@ -11,6 +11,7 @@ import {
   toRoleMembers,
 } from "./map-users";
 import { toRemoveMembers, toRosterMembers } from "./map-roster";
+import { stampRosterAdmins } from "./roster-admin";
 import type { UsersScreenProps } from "./types";
 
 export async function loadUsersPage(): Promise<
@@ -29,13 +30,19 @@ export async function loadUsersPage(): Promise<
   ]);
   const adminIds = adminUserIdSet(grants);
   const userId = gate.userId;
+  const roleMembers = toRoleMembers(members, adminIds, userId);
+  const canDemoteMembershipIds = toDemoteIds(members, adminIds, grants);
   return {
     ok: true,
     props: {
       passwordMembers: toPasswordMembers(members),
-      roleMembers: toRoleMembers(members, adminIds, userId),
-      canDemoteMembershipIds: toDemoteIds(members, adminIds, grants),
-      rosterMembers: toRosterMembers(members),
+      roleMembers,
+      canDemoteMembershipIds,
+      rosterMembers: stampRosterAdmins(
+        toRosterMembers(members),
+        roleMembers,
+        canDemoteMembershipIds
+      ),
       removeMembers: toRemoveMembers(members),
       enterPick,
     },
