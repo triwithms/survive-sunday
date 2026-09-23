@@ -8,6 +8,7 @@ const TITLES: Record<string, string> = {
   commissioner_account_set: "Saved administrator login",
   pool_rules_mulligan: "Changed pool rules",
   pool_announcement: "Sent a pool note",
+  missing_pick_reminders: "Sent missing-pick reminders",
   week_wrap_sent: "Sent week wrap",
   week_wrap_skipped: "Skipped week wrap",
   import_pick: "Imported a pick",
