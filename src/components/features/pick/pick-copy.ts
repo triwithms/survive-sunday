@@ -30,5 +30,5 @@ export function pickEmptyMessage(
 export function pickChangeHint(readOnly: boolean, week1: boolean) {
   if (readOnly) return null;
   void week1;
-  return null;
+  return "You can change until your game starts.";
 }

@@ -1,10 +1,6 @@
 /** Client-safe score / clock helpers for pool, scores, pick, schedule. */
 
 import { abbrFromEspnTeamId, normAbbr } from "@/lib/espn-teams";
-import {
-  EASTERN_TIME_ZONE,
-  formatEasternDateTime,
-} from "@/lib/eastern-time";
 
 /** True when Scores/Home should keep polling ESPN (live window). */
 export function shouldPollLiveScores(
@@ -37,7 +33,7 @@ export function isFinalGame(status: string) {
 }
 
 /** NFL slate display timezone (US ET), matching Help / HANDOFF. */
-export const NFL_DISPLAY_TZ = EASTERN_TIME_ZONE;
+export const NFL_DISPLAY_TZ = "America/New_York";
 
 const ESPN_NOTE_SOURCE = /\s*·\s*ESPN\s*$/i;
 
@@ -237,30 +233,26 @@ export function formatKickoffForScores(
   const nowDate = now instanceof Date ? now : new Date(now);
 
   const dayKey = new Intl.DateTimeFormat("en-CA", {
-    timeZone: EASTERN_TIME_ZONE,
+    timeZone: NFL_DISPLAY_TZ,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
-  const time = formatEasternDateTime(
-    date,
-    {
-      hour: "numeric",
-      minute: "2-digit",
-    },
-    true
-  );
-  const weekday = formatEasternDateTime(
-    date,
-    {
-      weekday: "short",
-    },
-    false
-  );
+  const timeFmt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: NFL_DISPLAY_TZ,
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  const weekdayFmt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: NFL_DISPLAY_TZ,
+    weekday: "short",
+  });
+
+  const time = `${timeFmt.format(date)} ET`;
   if (dayKey.format(date) === dayKey.format(nowDate)) {
     return `Today ${time}`;
   }
-  return `${weekday} ${time}`;
+  return `${weekdayFmt.format(date)} ${time}`;
 }
 
 export type ScoresStatusBits = GameScoreBits & {

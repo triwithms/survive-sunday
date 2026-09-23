@@ -11,7 +11,6 @@ import {
   listNflPlayers,
   withLiveInjuries,
 } from "@/lib/team-research";
-import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { buildTeamHeader, buildThisWeek } from "./build-team-view";
 import { teamAbbr } from "./team-paths";
 import type { TeamPageData } from "./types";
@@ -30,18 +29,6 @@ export async function loadTeamPage(raw: string): Promise<TeamPageData> {
   const players = withLiveInjuries(listNflPlayers(abbr), injuries.injuries);
   const roster = getTeamRoster(abbr);
   const profile = getTeamProfile(abbr);
-  const currentWeekRef = await prisma.week.findUnique({
-    where: {
-      poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },
-    },
-    select: { id: true },
-  });
-  if (currentWeekRef) {
-    await syncWeekEspnForPage(currentWeekRef.id).catch((err) => {
-      console.error("team page espn sync skipped", err);
-    });
-  }
-
   const week = await prisma.week.findUnique({
     where: {
       poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },

@@ -1,5 +1,4 @@
-import { isFinalGame } from "@/lib/game-display";
-import { formatEasternDateTime } from "@/lib/eastern-time";
+import { isFinalGame, NFL_DISPLAY_TZ } from "@/lib/game-display";
 
 export type TeamGameResult = "win" | "loss" | "tie";
 
@@ -47,24 +46,20 @@ export type TeamScheduleSnap = {
 export function formatSeasonKickoff(
   kickoff: Date | string | null | undefined
 ): string {
-  const day = formatEasternDateTime(
-    kickoff,
-    {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    },
-    false
-  );
-  const time = formatEasternDateTime(
-    kickoff,
-    {
-      hour: "numeric",
-      minute: "2-digit",
-    },
-    false
-  );
-  if (!day || !time) return "";
+  if (kickoff == null) return "";
+  const date = typeof kickoff === "string" ? new Date(kickoff) : kickoff;
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+  const day = new Intl.DateTimeFormat("en-CA", {
+    timeZone: NFL_DISPLAY_TZ,
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  }).format(date);
+  const time = new Intl.DateTimeFormat("en-CA", {
+    timeZone: NFL_DISPLAY_TZ,
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
   return `${day}, ${time} ET`;
 }
 
