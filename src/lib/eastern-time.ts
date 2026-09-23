@@ -1,3 +1,4 @@
+/** Shared player-facing Eastern time formatting helpers. */
 export const EASTERN_TIME_ZONE = "America/New_York";
 export const EASTERN_TIME_SUFFIX = "ET";
 
