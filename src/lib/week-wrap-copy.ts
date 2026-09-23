@@ -1,12 +1,6 @@
 import type { NotifyContent } from "./notification-copy";
 import { PUBLIC_APP_ORIGIN } from "./invite-link";
 import { isWrapLoss } from "./week-wrap-players";
-import {
-  emailTextWithTouchdown,
-  smsWithTouchdown,
-  touchdownEmailHtml,
-  type TouchdownClip,
-} from "./week-wrap-touchdown";
 import type {
   WeekWrapBlocks,
   WeekWrapFacts,
@@ -134,16 +128,14 @@ export function weekWrapContent(opts: {
   facts: WeekWrapFacts;
   emailOverride?: string;
   smsOverride?: string;
-  touchdown?: TouchdownClip | null;
 }): NotifyContent {
   const email = (opts.emailOverride ?? "").trim();
   const sms = (opts.smsOverride ?? "").trim();
   const base = email || emailText(opts);
-  const clip = opts.touchdown ?? null;
   return {
     subject: subjectFor(opts.tone, opts.facts.weekNumber),
-    text: emailTextWithTouchdown(base, clip),
-    htmlBody: toHtml(base) + touchdownEmailHtml(clip),
-    smsBody: smsWithTouchdown(sms || weekWrapShortText(opts.facts, opts.blocks), clip),
+    text: base,
+    htmlBody: toHtml(base),
+    smsBody: sms || weekWrapShortText(opts.facts, opts.blocks),
   };
 }

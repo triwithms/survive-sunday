@@ -7,12 +7,6 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { resolveChannels } from "../src/lib/notify-channels";
 import { WEEK_WRAP_BOARD_URL, weekWrapContent } from "../src/lib/week-wrap-copy";
-import {
-  pickTouchdownClip,
-  titleStartsTouchdownWeek,
-} from "../src/lib/week-wrap-touchdown";
-import { findWeekTouchdownVideo } from "../src/lib/week-wrap-youtube";
-import { YT_NFL } from "../src/lib/youtube-channels";
 import { weekWrapPlayers } from "../src/lib/week-wrap-players";
 import {
   parseWeekWrapRequest,
@@ -197,124 +191,7 @@ const overridden = weekWrapContent({
 assert.equal(overridden.text, "Custom email");
 assert.equal(overridden.smsBody, "Custom sms");
 assert.doesNotMatch(funny.text + (funny.smsBody ?? ""), /youtube|division/i);
-const clip = {
-  videoId: "abc123",
-  title: "Every Touchdown of Week 3",
-  watchUrl: "https://www.youtube.com/watch?v=abc123",
-  shortUrl: "https://youtu.be/abc123",
-  thumbUrl: "https://i.ytimg.com/vi/abc123/hqdefault.jpg",
-};
-const withClip = weekWrapContent({ tone: "facts", blocks, facts, touchdown: clip });
-assert.match(withClip.text, /Every Touchdown of Week 3/);
-assert.match(withClip.text, /watch\?v=abc123/);
-assert.match(withClip.htmlBody, /<img/);
-assert.match(withClip.htmlBody, /hqdefault\.jpg/);
-assert.match(withClip.smsBody ?? "", /youtu\.be\/abc123/);
-const longSms = "x".repeat(470);
-const omitted = weekWrapContent({
-  tone: "facts",
-  blocks,
-  facts,
-  smsOverride: longSms,
-  touchdown: clip,
-});
-assert.equal(omitted.smsBody, longSms);
-assert.match(omitted.text, /watch\?v=abc123/);
-const custom = weekWrapContent({
-  tone: "facts",
-  blocks,
-  facts,
-  emailOverride: "Custom email",
-  touchdown: clip,
-});
-assert.match(custom.text, /^Custom email/);
-assert.match(custom.text, /watch\?v=abc123/);
 console.log("PASS  template copy");
-
-assert.equal(titleStartsTouchdownWeek("Every Touchdown of Week 3", 3), true);
-assert.equal(
-  titleStartsTouchdownWeek("Every Touchdown of Week 3 | 2026 NFL Season", 3),
-  true
-);
-assert.equal(titleStartsTouchdownWeek("Every Touchdown of Week 13", 3), false);
-assert.equal(titleStartsTouchdownWeek("Every Touchdown of Week 13", 1), false);
-assert.equal(titleStartsTouchdownWeek("Week 3 every touchdown", 3), false);
-const picked = pickTouchdownClip(
-  {
-    items: [
-      {
-        id: { videoId: "old" },
-        snippet: {
-          title: "Every Touchdown of Week 3 | 2024",
-          publishedAt: "2024-09-20T00:00:00Z",
-          thumbnails: { high: { url: "https://img.example/old.jpg" } },
-        },
-      },
-      {
-        id: { videoId: "new" },
-        snippet: {
-          title: "Every Touchdown of Week 3",
-          publishedAt: "2026-09-22T00:00:00Z",
-          thumbnails: { medium: { url: "https://img.example/new.jpg" } },
-        },
-      },
-      {
-        id: { videoId: "other" },
-        snippet: { title: "Every Touchdown of Week 13", publishedAt: "2026-12-01T00:00:00Z" },
-      },
-    ],
-  },
-  3
-);
-assert.equal(picked?.videoId, "new");
-assert.equal(picked?.thumbUrl, "https://img.example/new.jpg");
-
-async function verifyTouchdownSearch() {
-  let fetches = 0;
-  const missed = await findWeekTouchdownVideo(3, {
-    apiKey: "",
-    fetchImpl: async () => {
-      fetches += 1;
-      throw new Error("should not fetch");
-    },
-  });
-  assert.equal(missed, null);
-  assert.equal(fetches, 0);
-  const failed = await findWeekTouchdownVideo(3, {
-    apiKey: "test-key",
-    fetchImpl: async () => new Response("nope", { status: 403 }),
-  });
-  assert.equal(failed, null);
-  let searched = "";
-  const found = await findWeekTouchdownVideo(3, {
-    apiKey: "test-key",
-    seasonYear: 2026,
-    fetchImpl: async (input) => {
-      searched = String(input);
-      return new Response(
-        JSON.stringify({
-          items: [
-            {
-              id: { videoId: "td1" },
-              snippet: {
-                title: "Every Touchdown of Week 3 | 2026",
-                publishedAt: "2026-09-23T16:00:00Z",
-                thumbnails: { high: { url: "https://img.example/td.jpg" } },
-              },
-            },
-          ],
-        }),
-        { status: 200, headers: { "content-type": "application/json" } }
-      );
-    },
-  });
-  assert.equal(found?.videoId, "td1");
-  assert.match(searched, /channelId=UCDVYQ4Zhbm3S2dlz7P1GBDg/);
-  assert.equal(searched.includes(YT_NFL), true);
-  assert.match(searched, /publishedAfter=2026-08-01/);
-  assert.match(searched, /key=test-key/);
-  console.log("PASS  touchdown search");
-}
 
 assert.equal(DEFAULT_NOTIFICATION_PREFS.weekWrap, "email");
 assert.deepEqual(
@@ -356,7 +233,7 @@ const send = readFileSync("src/lib/week-wrap-send.ts", "utf8");
 assert.match(send, /weekWrapDedupeKey/);
 assert.match(send, /notifyUser/);
 assert.match(send, /type: "weekWrap"/);
-assert.match(send, /findWeekTouchdownVideo/);
+assert.doesNotMatch(send, /findWeekTouchdownVideo|YOUTUBE_API_KEY/);
 const dispatch = readFileSync("src/lib/notify-dispatch.ts", "utf8");
 assert.match(dispatch, /\$\{opts\.dedupeKey\}:\$\{plan\.channel\}/);
 const cron = readFileSync("src/app/api/cron/week-wrap/route.ts", "utf8");
@@ -385,13 +262,12 @@ const pkg = JSON.parse(readFileSync("package.json", "utf8")) as {
 };
 assert.equal(pkg.scripts.build, "next build");
 assert.doesNotMatch(readFileSync("src/lib/week-wrap-copy.ts", "utf8"), /openai|anthropic|generateText/i);
+assert.doesNotMatch(
+  readFileSync("src/lib/week-wrap-copy.ts", "utf8"),
+  /touchdown|YOUTUBE_API_KEY/
+);
+const handoff = readFileSync("docs/HANDOFF.md", "utf8");
+assert.match(handoff, /Every Touchdown of Week N/);
+assert.doesNotMatch(handoff, /YOUTUBE_API_KEY/);
 console.log("PASS  cron + admin wiring");
-
-verifyTouchdownSearch()
-  .then(() => {
-    console.log("\nverify-week-wrap OK");
-  })
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+console.log("\nverify-week-wrap OK");

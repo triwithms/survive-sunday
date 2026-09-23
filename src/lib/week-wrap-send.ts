@@ -5,7 +5,6 @@ import { WEEK_WRAP_BOARD_URL, weekWrapContent } from "./week-wrap-copy";
 import { weekWrapPlayers } from "./week-wrap-players";
 import { loadWeekWrapSettings } from "./week-wrap-settings";
 import { weekWrapDedupeKey } from "./week-wrap-types";
-import { findWeekTouchdownVideo } from "./week-wrap-youtube";
 import { notifyUser } from "./notify";
 
 export type WeekWrapSendCounts = {
@@ -26,10 +25,9 @@ export async function sendWeekWrap(
 ): Promise<{ ok: true; counts: WeekWrapSendCounts } | { ok: false; error: string }> {
   const week = await prisma.week.findUnique({
     where: { poolId_number: { poolId, number: weekNumber } },
-    select: { id: true, pool: { select: { season: true } } },
+    select: { id: true },
   });
   if (!week) return { ok: false, error: `No Week ${weekNumber} on this pool` };
-  const seasonYear = Number(String(week.pool.season).slice(0, 4));
 
   if (opts?.refresh !== false) {
     try {
@@ -45,7 +43,7 @@ export async function sendWeekWrap(
     console.warn("[week-wrap] grade skipped", error);
   }
 
-  const [settings, members, picks, touchdown] = await Promise.all([
+  const [settings, members, picks] = await Promise.all([
     loadWeekWrapSettings(poolId),
     prisma.membership.findMany({
       where: { poolId },
@@ -65,9 +63,6 @@ export async function sendWeekWrap(
       where: { weekId: week.id },
       select: { membershipId: true, teamAbbr: true, result: true },
     }),
-    findWeekTouchdownVideo(weekNumber, {
-      seasonYear: Number.isFinite(seasonYear) ? seasonYear : undefined,
-    }).catch(() => null),
   ]);
   const content = weekWrapContent({
     tone: settings.tone,
@@ -79,7 +74,6 @@ export async function sendWeekWrap(
     },
     emailOverride: settings.emailOverride,
     smsOverride: settings.smsOverride,
-    touchdown,
   });
   const counts = { sent: 0, skipped: 0, already: 0 };
   const seen = new Set<string>();
@@ -112,7 +106,6 @@ export async function sendWeekWrap(
       details: JSON.stringify({
         summary: `Week ${weekNumber} · ${weekWrapSendMessage(counts)}`,
         tone: settings.tone,
-        touchdown: Boolean(touchdown),
       }),
     },
   });
