@@ -37,8 +37,12 @@ function StandingTable({
   showDivisionCol?: boolean;
 }) {
   return (
-    <div className="overflow-x-auto -mx-1 px-1">
-      <table className="w-full min-w-[28rem] text-left text-sm">
+    <div className="space-y-1.5">
+      <div className="relative">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-[var(--stadium-800)]/85 to-transparent sm:hidden" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-7 bg-gradient-to-l from-[var(--stadium-800)]/90 to-transparent sm:hidden" />
+        <div className="overflow-x-auto -mx-1 px-1 pb-1">
+      <table className="w-full min-w-[34rem] text-left text-sm">
         <thead>
           <tr className="text-[10px] uppercase tracking-wide text-[var(--text-muted)] border-b border-stadium-border">
             <th className="py-2 pr-2 font-medium w-8">#</th>
@@ -109,6 +113,11 @@ function StandingTable({
           ))}
         </tbody>
       </table>
+        </div>
+      </div>
+      <p className="text-[10px] text-[var(--text-muted)] sm:hidden">
+        Swipe sideways for all standings columns.
+      </p>
     </div>
   );
 }

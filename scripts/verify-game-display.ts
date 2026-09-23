@@ -4,6 +4,7 @@
  *   npx tsx scripts/verify-game-display.ts
  */
 import assert from "node:assert/strict";
+import { formatKickoff } from "../src/lib/utils";
 import {
   espnClockFromNote,
   espnSituationFromNote,
@@ -107,6 +108,11 @@ const laterLabel = formatKickoffForScores(mondayNight, sundayEvening);
 assert.doesNotMatch(laterLabel, /^Today /);
 assert.match(laterLabel, /Mon/);
 assert.doesNotMatch(laterLabel, /Sep|September/);
+
+const kickoffLabel = formatKickoff(sundayAfternoon);
+assert.match(kickoffLabel, /ET$/);
+assert.match(kickoffLabel, /1:00/);
+assert.doesNotMatch(kickoffLabel, /GMT|UTC/);
 
 const live = formatScoresStatus({
   status: "live",

@@ -1,7 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/db";
 import { requireMembership } from "@/lib/require-membership";
-import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
+import { scheduleTeamStandingsRefresh } from "@/lib/espn-standings";
 import { teamLogoUrl } from "@/lib/espn-teams";
 import type { StandingRow } from "@/components/NflStandingsClient";
 
@@ -13,11 +13,7 @@ export type LeaguePageData = {
 
 export async function loadLeaguePage(): Promise<LeaguePageData> {
   await requireMembership();
-  try {
-    await syncTeamStandingsFromEspn();
-  } catch (e) {
-    console.error("nfl standings ESPN sync skipped", e);
-  }
+  scheduleTeamStandingsRefresh();
   const teams = await prisma.team.findMany({
     orderBy: [{ conference: "asc" }, { division: "asc" }, { divisionRank: "asc" }],
   });
