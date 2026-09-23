@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export const maxDuration = 60;
 import { requireAdmin } from "@/lib/session";
 import { applyWeekWrapAction } from "@/lib/week-wrap-admin";
-import { parseWeekWrapRequest } from "@/lib/week-wrap-types";
+import { parseWeekWrapRequest } from "@/lib/week-wrap-request";
 
 export async function POST(req: Request) {
   const admin = await requireAdmin();

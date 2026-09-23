@@ -1,18 +1,15 @@
 import { prisma } from "./db";
-import { WEEK_WRAP_BOARD_URL } from "./week-wrap-copy";
+import { weekNumbersFromDedupeKeys } from "./week-wrap-parse";
 import { weekWrapPlayers } from "./week-wrap-players";
+import { WEEK_WRAP_BOARD_URL } from "./week-wrap-sections";
 import { loadWeekWrapSettings } from "./week-wrap-settings";
+import { preferredWrapWeek } from "./week-wrap-status";
 import {
   DEFAULT_WEEK_WRAP_SETTINGS,
-  weekNumbersFromDedupeKeys,
   type WeekWrapPanelData,
   type WeekWrapWeekOption,
 } from "./week-wrap-types";
-import {
-  allGamesFinal,
-  isEligibleNoonDayAfter,
-  preferredWrapWeek,
-} from "./week-wrap-when";
+import { allGamesFinal, isEligibleNoonDayAfter } from "./week-wrap-when";
 
 export async function loadWeekWrapPanel(
   poolId: string,
