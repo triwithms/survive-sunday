@@ -41,6 +41,7 @@ export type UsersScreenProps = {
   canDemoteMembershipIds: string[];
   rosterMembers: RosterMember[];
   removeMembers: RemoveMember[];
+  enterPick: EnterPickData;
 };
 
 export type ConfigScreenProps = {

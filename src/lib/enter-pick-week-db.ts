@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "./db";
 import { isWeekLocked } from "./grading";
 import { allowedEnterPickWeeks } from "./enter-pick-week";
+import { enterPickStatusError } from "./enter-pick-status";
 import { effectiveCurrentWeek } from "./pool-mode";
 
 export async function assertEnterPickWeek(opts: {
@@ -39,6 +40,7 @@ export async function assertEnterPickWeek(opts: {
         nickname: { equals: opts.nickname, mode: "insensitive" },
       },
       select: {
+        status: true,
         playingFromWeek: true,
         picks: {
           select: {
@@ -52,6 +54,8 @@ export async function assertEnterPickWeek(opts: {
     }),
   ]);
   if (!member) return { ok: false, error: "Member not found (nickname or email)" };
+  const blocked = enterPickStatusError(member.status);
+  if (blocked) return { ok: false, error: blocked };
   const allowed = allowedEnterPickWeeks({
     currentWeek,
     weeks: weeks.map((w) => ({

@@ -4,7 +4,13 @@
  *   npx tsx scripts/verify-enter-pick.ts
  */
 import assert from "node:assert/strict";
-import { unusedTeamsForWeek, pickForWeek } from "../src/components/features/admin/enter-pick-options";
+import { readFileSync } from "node:fs";
+import {
+  memberWeekPick,
+  unusedTeamsForWeek,
+  pickForWeek,
+} from "../src/components/features/admin/enter-pick-options";
+import { enterPickStatusError } from "../src/lib/enter-pick-status";
 import { allowedEnterPickWeeks } from "../src/lib/enter-pick-week";
 
 function kick(hoursAgo: number) {
@@ -91,6 +97,18 @@ function main() {
     member: { picks: [] },
   });
   assert.deepEqual(noPick, [1, 2], "no pick yet — stay on current week");
+
+  assert.equal(enterPickStatusError("eliminated"), "Out — no pick.");
+  assert.equal(enterPickStatusError("undefeated"), null);
+  assert.equal(enterPickStatusError("one_loss"), null);
+  assert.equal(memberWeekPick([gams], "g", 2), "PHI");
+  assert.equal(memberWeekPick([gams], "missing", 2), null);
+
+  const gate = readFileSync("src/lib/enter-pick-week-db.ts", "utf8");
+  assert.match(gate, /enterPickStatusError/);
+  const save = readFileSync("src/components/features/admin/use-enter-pick.ts", "utf8");
+  assert.match(save, /\/api\/admin\/import-picks/);
+  assert.match(save, /enterPick: true/);
 
   console.log("verify-enter-pick OK");
 }
