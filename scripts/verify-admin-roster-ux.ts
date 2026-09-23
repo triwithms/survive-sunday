@@ -14,6 +14,7 @@ import {
   rosterRowDetail,
   rosterRowSubtitle,
 } from "../src/components/features/admin/roster-row-meta";
+import { rosterStatusLabel } from "../src/components/features/admin/roster-status";
 import type { RosterMember } from "../src/components/features/admin/roster-types";
 
 function lineCount(path: string): number {
@@ -113,7 +114,42 @@ function main() {
   );
   assert.match(row, /InviteJoinButtons/);
   assert.match(row, /Needs email to log in/);
+  assert.match(row, /TeamLogo/);
+  assert.match(row, /size=\{24\}/);
+  assert.match(row, /opacity-60/);
+  assert.match(row, /rosterStatusLabel/);
   assert.doesNotMatch(row, /unclaimed \?/);
+  assert.doesNotMatch(row, /Set pick|Remind/);
+
+  assert.equal(rosterStatusLabel("undefeated"), "Alive");
+  assert.equal(rosterStatusLabel("one_loss"), "One loss");
+  assert.equal(rosterStatusLabel("eliminated"), "Out");
+  assert.equal(rosterStatusLabel("active"), null);
+
+  const pickSection = readFileSync(
+    "src/components/features/admin/MemberPickSection.tsx",
+    "utf8"
+  );
+  assert.match(pickSection, /enterPickStatusError/);
+  assert.match(pickSection, /EnterPickForm/);
+  assert.match(pickSection, /lockMember/);
+  assert.doesNotMatch(pickSection, /Set pick|Remind|fetch\(/);
+
+  const enterForm = readFileSync(
+    "src/components/features/admin/EnterPickForm.tsx",
+    "utf8"
+  );
+  assert.match(enterForm, /Enter a friend.s pick/);
+  assert.match(enterForm, /They called or texted/);
+  assert.match(enterForm, /lockMember/);
+  assert.match(enterForm, /Choose an open week/);
+  assert.match(enterForm, /Saving replaces that week/);
+
+  const usersLoad = readFileSync(
+    "src/components/features/admin/load-users.ts",
+    "utf8"
+  );
+  assert.match(usersLoad, /loadEnterPick/);
 
   const panel = readFileSync(
     "src/components/features/admin/UserEditPanel.tsx",

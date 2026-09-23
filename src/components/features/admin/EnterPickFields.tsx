@@ -14,6 +14,7 @@ type Props = {
   current: string | null;
   busy: boolean;
   err: string;
+  lockMember?: boolean;
   onMember: (id: string) => void;
   onWeek: (week: number) => void;
   onTeam: (abbr: string) => void;
@@ -23,18 +24,20 @@ type Props = {
 export function EnterPickFields(p: Props) {
   return (
     <form onSubmit={p.onSubmit} className="space-y-3">
-      <label className="block text-sm space-y-1">
-        <span className="text-[var(--text-muted)]">Friend</span>
-        <select
-          className="w-full min-h-11 rounded-md bg-stadium-800 border border-stadium-border px-3"
-          value={p.memberId}
-          onChange={(e) => p.onMember(e.target.value)}
-        >
-          {p.members.map((m) => (
-            <option key={m.id} value={m.id}>{enterPickLabel(m)}</option>
-          ))}
-        </select>
-      </label>
+      {p.lockMember ? null : (
+        <label className="block text-sm space-y-1">
+          <span className="text-[var(--text-muted)]">Friend</span>
+          <select
+            className="w-full min-h-11 rounded-md bg-stadium-800 border border-stadium-border px-3"
+            value={p.memberId}
+            onChange={(e) => p.onMember(e.target.value)}
+          >
+            {p.members.map((m) => (
+              <option key={m.id} value={m.id}>{enterPickLabel(m)}</option>
+            ))}
+          </select>
+        </label>
+      )}
       <label className="block text-sm space-y-1">
         <span className="text-[var(--text-muted)]">Week</span>
         <select

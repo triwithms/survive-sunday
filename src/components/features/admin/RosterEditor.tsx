@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui";
+import type { EnterPickData } from "./enter-pick-types";
 import { rosterMatches } from "./roster-row-meta";
 import { RosterCard } from "./RosterCard";
 import type { RosterMember } from "./roster-types";
@@ -10,8 +11,10 @@ export type { RosterMember, RosterMirrorOption } from "./roster-types";
 
 export function RosterEditor({
   members,
+  enterPick,
 }: {
   members: RosterMember[];
+  enterPick: EnterPickData;
 }) {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
@@ -50,6 +53,7 @@ export function RosterEditor({
             <RosterCard
               key={m.id}
               member={m}
+              enterPick={enterPick}
               open={openId === m.id}
               onToggle={() => setOpenId((id) => (id === m.id ? null : m.id))}
               disabled={busyId !== null && busyId !== m.id}

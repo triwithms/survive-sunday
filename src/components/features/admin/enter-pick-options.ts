@@ -10,6 +10,17 @@ export function enterPickLabel(m: EnterPickMember): string {
   return who;
 }
 
+export function memberWeekPick(
+  members: EnterPickMember[],
+  memberId: string,
+  weekNumber: number
+): string | null {
+  return pickForWeek(
+    members.find((m) => m.id === memberId),
+    weekNumber
+  );
+}
+
 export function pickForWeek(
   member: EnterPickMember | undefined,
   weekNumber: number

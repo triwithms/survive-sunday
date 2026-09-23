@@ -1,7 +1,9 @@
 import "server-only";
 import { listPoolRoleGrants } from "@/lib/roles-db";
+import { effectiveCurrentWeek } from "@/lib/pool-mode";
 import { prisma } from "@/lib/db";
 import { loadAdminGate, loadPoolMembers } from "./load-admin";
+import { loadEnterPick } from "./load-enter-pick";
 import {
   adminUserIdSet,
   toDemoteIds,
@@ -16,8 +18,15 @@ export async function loadUsersPage(): Promise<
 > {
   const gate = await loadAdminGate();
   if (!gate.ok) return { ok: false, isDemo: gate.isDemo };
-  const members = await loadPoolMembers(gate.me.poolId);
-  const grants = await listPoolRoleGrants(prisma, gate.me.poolId);
+  const weekNumber = effectiveCurrentWeek(
+    gate.me.pool.mode,
+    gate.me.pool.currentWeek
+  );
+  const [members, grants, enterPick] = await Promise.all([
+    loadPoolMembers(gate.me.poolId),
+    listPoolRoleGrants(prisma, gate.me.poolId),
+    loadEnterPick(gate.me.poolId, weekNumber),
+  ]);
   const adminIds = adminUserIdSet(grants);
   const userId = gate.userId;
   return {
@@ -28,6 +37,7 @@ export async function loadUsersPage(): Promise<
       canDemoteMembershipIds: toDemoteIds(members, adminIds, grants),
       rosterMembers: toRosterMembers(members),
       removeMembers: toRemoveMembers(members),
+      enterPick,
     },
   };
 }

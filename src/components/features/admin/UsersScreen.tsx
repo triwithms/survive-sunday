@@ -11,7 +11,7 @@ export function UsersScreen(props: UsersScreenProps) {
         cell, set a password you can text, or tap the invite icon.
       </AdminHeading>
       <AddUserForm />
-      <RosterEditor members={props.rosterMembers} />
+      <RosterEditor members={props.rosterMembers} enterPick={props.enterPick} />
     </div>
   );
 }
