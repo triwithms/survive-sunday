@@ -9,7 +9,7 @@ import { weekWrapEmailText } from "./week-wrap-email-text";
 import { weekWrapBodyHtml, weekWrapEmailDocument } from "./week-wrap-html";
 import type { WeekWrapEmailParts } from "./week-wrap-rich-types";
 import { weekWrapShortText } from "./week-wrap-sections";
-import { WEEK_WRAP_DRAMA_PLACEHOLDER, weekWrapIntro, weekWrapSubject } from "./week-wrap-tone";
+import { WEEK_WRAP_FUNNY_DRAMA, weekWrapIntro, weekWrapSubject } from "./week-wrap-tone";
 import type { TouchdownClip } from "./week-wrap-touchdown";
 import type { WeekWrapBlocks, WeekWrapFacts, WeekWrapTone } from "./week-wrap-types";
 
@@ -22,9 +22,9 @@ function smsWithPrefs(body: string, clip: TouchdownClip | null): string {
 }
 
 /**
- * Template copy. Email is rich HTML sections (logos, pool board, NFL
- * divisions); SMS stays the short facts block. An email override replaces
- * only the intro. No live model.
+ * Automatic copy from WeekWrapFacts. Email is rich HTML sections (logos,
+ * pool board, NFL divisions); SMS stays the short facts block. An email
+ * override replaces only the intro. No live model.
  */
 export function weekWrapContent(opts: {
   tone: WeekWrapTone;
@@ -36,12 +36,10 @@ export function weekWrapContent(opts: {
 }): NotifyContent {
   const sms = (opts.smsOverride ?? "").trim();
   const clip = opts.touchdown ?? null;
-  const subject = weekWrapSubject(opts.tone, opts.facts.weekNumber);
+  const subject = weekWrapSubject(opts.tone, opts.facts);
   const parts: WeekWrapEmailParts = {
-    intro:
-      (opts.emailOverride ?? "").trim() ||
-      weekWrapIntro(opts.tone, opts.facts.weekNumber),
-    drama: opts.tone === "funny" && opts.blocks.drama ? WEEK_WRAP_DRAMA_PLACEHOLDER : "",
+    intro: (opts.emailOverride ?? "").trim() || weekWrapIntro(opts.tone, opts.facts),
+    drama: opts.tone === "funny" && opts.blocks.drama ? WEEK_WRAP_FUNNY_DRAMA : "",
     blocks: opts.blocks,
     facts: opts.facts,
     clip,

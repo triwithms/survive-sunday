@@ -1,20 +1,22 @@
-import type { WeekWrapTone } from "./week-wrap-types";
+import { weekWrapAutoIntro } from "./week-wrap-auto";
+import type { WeekWrapFacts, WeekWrapTone } from "./week-wrap-types";
 
 /**
- * Placeholder tone lines only.
- * Swap this file when the Funny / Straight / Short paste lands.
+ * Email voice per tone. Every tone is automatic from WeekWrapFacts (no model,
+ * no API call), so it always works at cron and Admin send.
+ * Funny uses the Straight facts copy until a real banter paste lands here;
+ * custom banter today = the Admin email intro override (intro only).
  * SMS stays the short facts block; these lines are the email voice.
  */
 
-export function weekWrapSubject(tone: WeekWrapTone, weekNumber: number): string {
-  if (tone === "short") return `Wk ${weekNumber} wrap`;
-  if (tone === "funny") return `Week ${weekNumber} wrap (funny)`;
-  return `Week ${weekNumber} wrap`;
+export function weekWrapSubject(tone: WeekWrapTone, facts: WeekWrapFacts): string {
+  if (tone === "short") return `Wk ${facts.weekNumber} wrap`;
+  return `Week ${facts.weekNumber} wrap`;
 }
 
-export function weekWrapIntro(tone: WeekWrapTone, weekNumber: number): string {
-  if (tone === "funny") return `Week ${weekNumber}. Funny placeholder.`;
-  return `Week ${weekNumber} wrap.`;
+export function weekWrapIntro(_tone: WeekWrapTone, facts: WeekWrapFacts): string {
+  return weekWrapAutoIntro(facts);
 }
 
-export const WEEK_WRAP_DRAMA_PLACEHOLDER = "Drama placeholder.";
+/** Funny-only one-liner. Empty until the banter paste lands, so nothing is invented. */
+export const WEEK_WRAP_FUNNY_DRAMA = "";

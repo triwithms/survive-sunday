@@ -19,7 +19,7 @@ export function WeekWrapOverrides(props: {
           rows={4}
           value={props.emailOverride}
           onChange={(e) => props.onEmail(e.target.value)}
-          placeholder="Replaces the tone intro. Results, leaderboard, and NFL sections stay."
+          placeholder="Replaces the automatic facts intro. Results, leaderboard, and NFL sections stay."
           data-testid="week-wrap-email-override"
         />
       </label>
