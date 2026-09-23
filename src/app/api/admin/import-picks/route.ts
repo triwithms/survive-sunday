@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { importPickConfirmedChange } from "@/lib/import-pick-notify";
+import { schedulePickConfirmed } from "@/lib/notification-events";
 import { requireAdmin } from "@/lib/session";
 import {
   gradeWeekPicks,
@@ -418,6 +420,18 @@ export async function POST(req: Request) {
         }),
       },
     });
+
+    const notice = importPickConfirmedChange(existingPick, teamAbbr);
+    if (notice) {
+      schedulePickConfirmed({
+        user: member.user,
+        nickname: member.nickname,
+        weekNumber,
+        weekId: week.id,
+        teamAbbr,
+        changed: notice.changed,
+      });
+    }
 
     results.push({
       nickname: member.nickname,
