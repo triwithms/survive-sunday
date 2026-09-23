@@ -14,7 +14,8 @@ import {
 } from "@/lib/grading";
 import { canEditExistingPick, gameForPick } from "@/lib/pick-change";
 import { isPlayerPickWeek } from "@/lib/next-week-picks";
-import { syncWeekScoresFromEspn, shouldPollLiveScores } from "@/lib/live-scores";
+import { shouldPollLiveScores } from "@/lib/live-scores";
+import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { pickMatchupsFromGames, usedTeamAbbrs } from "./pick-payload";
 import type { PickClientProps } from "./pick-copy";
@@ -36,7 +37,7 @@ export async function loadPickPage(searchParams?: {
 
   try { await ensureWeekLockedEffects(weekRef.id, { applyBackup: false }); }
   catch (e) { console.error("pick lock effects skipped", e); }
-  await syncWeekScoresFromEspn(weekRef.id).catch((e) => {
+  await syncWeekEspnForPage(weekRef.id).catch((e) => {
     console.error("pick espn score sync skipped", e);
     return null;
   });
