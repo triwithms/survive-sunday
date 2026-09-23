@@ -50,6 +50,24 @@
 - "Alive: 62 of 100 · Eliminated this week: 9".
 - Eliminated players collapsed into one count by default.
 
+## Queue: strip personal / BM Boys–only bits (before other pools)
+
+Do this before any second pool, paid or free. Planning only — no app change in this pass.
+
+SUNDAY26 is one private friends pool. Shared screens, seed data, and one quiet Easter egg still assume that group. Another organizer must not see those names, that invite string, or that link. SUNDAY26 can keep founder extras (Robert-paid SMS, and the fox if it stays on that pool only). Every other pool gets a generic shell. Same off-season window as the `pool_id` backfill.
+
+**Strip from the shared app, or show only inside SUNDAY26:**
+
+1. **Silver Fox egg.** A quiet fox at the bottom of Help → Rules (`HelpFoxEgg`, `/help/silver-fox.png`) opens a private YouTube (`youtu.be/6GWTb8Fs9g0`). The screen does not say Easter egg, reunion, Silver Fox, or Colin — that silence is the point. Other pools must not get the image or the link.
+2. **Help Quick tour.** `HelpQuickTour` opens `youtu.be/VlcYAX34_L8`, a walkthrough of this pool, not a demo for strangers. Replace it, or hide it until a neutral tour exists.
+3. **BM Boys–only player copy.** A wrong invite says to ask the administrator for `SUNDAY26`. Another message uses "Gams" as the example seat. The built-in pool name is "Survive Sunday — Friends Pool." Each pool needs its own invite code and name, with no BM Boys nicknames in the shared strings.
+4. **Real-name placeholders and sample imports.** The roster name field uses a real name as its example ("e.g. Robert Gama"). The pick-import sample lists BM Boys nicknames (Gams, Black Cobra, Cannoli Stuffer, Colin, and the rest). Swap both for fictional samples.
+5. **Seed and demo roster.** Demo participant files, `demo-account.ts`, and the seed carry BM Boys names. A one-shot temporary password targets one named seat in that roster. Fine for the founder database. A new pool starts empty — do not copy that roster into someone else's database.
+6. **Friends-only lines on shared screens.** "Survive Sunday · for friends, not betting" on the board, Scores, and the share image. App description: "Private NFL survivor pool for friends." Help: last friends standing, and roasting friends. A private-pool voice can stay. It should not read as one friend group. The entertainment disclaimer ("For entertainment among friends...") is a wording check, not an automatic delete.
+7. **Sender identity.** Production mail goes out as `Survive Sunday <noreply@triwithms.com>`. A shared app needs a product domain, not a personal one. Decide this with the paid hosting tier.
+
+Operator notes (handoff and the like) can keep the roster. Players in another pool never open those pages.
+
 ## Multi-pool: one app, many pools, shared infra
 
 **Data model (concept):**
@@ -70,7 +88,7 @@
 
 **Hosting fine print:** Vercel's free Hobby plan is meant for personal, non-commercial use. Charging other organizers likely means moving to Vercel Pro (about USD 20/month per seat). Neon and the email provider also have free tiers with limits (storage, compute, daily send caps). Budget for a paid tier on each once money changes hands.
 
-**Migration:** add `pool_id` to existing rows, backfill SUNDAY26, then turn on the scoping. Do it in the off-season.
+**Migration:** add `pool_id` to existing rows, backfill SUNDAY26, then turn on the scoping. Do it in the off-season, after the personal-strip queue — not while BM Boys names and the Silver Fox egg are still in the shared app.
 
 ## Monetization options (compare)
 
@@ -128,7 +146,7 @@
 3. **SMS = Option C add-on only**, prepaid packs, facts-only, ≤160 GSM-7 characters, no emoji, hard stop at zero.
 4. **Skip Option A** except maybe as an optional "support the app" tip.
 5. **SUNDAY26** keeps Robert-paid SMS as the founder pool; it does not set the rule for other pools.
-6. **Top-X lists** ship with multi-pool, since only other people's pools will be big.
+6. **Top-X lists** ship with multi-pool, since only other people's pools will be big. Finish the personal-strip queue first.
 7. **Budget honestly:** commercial-tier hosting + email + number ≈ USD 40–60/month while live (~USD 200–300 for a 5-month season, ≈ CAD 275–420). The ~CAD 2,400/yr household telecom savings can cover that plus modest AI/coding tooling — but the ~$1,400 already spent on AI/coding shows tooling, not hosting, is the real cost risk. At ~$1 net per paying player, breaking even on hosting alone needs roughly 200–400 paying players a season. Treat v3 as a hobby that pays its own way, not income.
 
 ## Cost estimate sheet (organizer view)
@@ -162,6 +180,7 @@
 6. Allow US organizers from day one (means 10DLC registration), or Canada only at first?
 7. Who handles support for other pools' players — you, or the pool Admin only?
 8. Should players in several pools get one combined email, or one per pool?
+9. Keep the Silver Fox egg and other BM Boys–only bits on SUNDAY26 only, or take them out of the app entirely before another pool exists?
 
 ## Appendix: competitor notes
 
