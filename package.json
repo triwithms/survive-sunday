@@ -59,6 +59,7 @@
     "verify:week1-pick-change": "tsx scripts/verify-week1-pick-change.ts",
     "verify:next-week-picks": "tsx scripts/verify-next-week-picks.ts",
     "verify:weeks": "tsx scripts/verify-weeks.ts",
+    "verify:week-wrap": "tsx scripts/verify-week-wrap.ts",
     "verify:app-chrome": "tsx scripts/verify-app-chrome.ts",
     "verify:header-share": "tsx scripts/verify-header-share.ts",
     "verify:matchup-share": "tsx scripts/verify-matchup-share.ts",

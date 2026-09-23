@@ -1,0 +1,67 @@
+"use client";
+
+import { Card } from "@/components/ui";
+import type { WeekWrapPanelData } from "@/lib/week-wrap-types";
+import { wrapAutoStatus } from "@/lib/week-wrap-when";
+import { WeekWrapActions } from "./WeekWrapActions";
+import { WeekWrapControls } from "./WeekWrapControls";
+import { WeekWrapOverrides } from "./WeekWrapOverrides";
+import { WeekWrapPreview } from "./WeekWrapPreview";
+import { useWeekWrap } from "./use-week-wrap";
+
+export function WeekWrapPanel({ data }: { data: WeekWrapPanelData }) {
+  const w = useWeekWrap(data);
+  return (
+    <Card
+      as="section"
+      id="week-wrap"
+      className="space-y-3 p-4"
+      data-testid="week-wrap"
+    >
+      <div>
+        <h2 className="font-semibold">Week wrap</h2>
+        <p className="mt-1 text-sm text-[var(--text-muted)]">
+          Automatic email the next morning (America/Toronto) after the last
+          game is final. Texts stay short facts. Save defaults for the next auto.
+        </p>
+      </div>
+      {w.week ? (
+        <>
+          <WeekWrapControls
+            weeks={w.weeks}
+            weekNumber={w.week.number}
+            onWeek={w.setWeekNumber}
+            tone={w.tone}
+            onTone={w.setTone}
+            blocks={w.blocks}
+            onToggle={w.toggle}
+            status={wrapAutoStatus(w.week)}
+          />
+          <WeekWrapOverrides
+            emailOverride={w.emailOverride}
+            smsOverride={w.smsOverride}
+            onEmail={w.setEmailOverride}
+            onSms={w.setSmsOverride}
+          />
+          {w.preview ? (
+            <WeekWrapPreview
+              subject={w.preview.subject}
+              text={w.preview.text}
+              sms={w.preview.smsBody ?? w.preview.text}
+            />
+          ) : null}
+          <WeekWrapActions
+            busy={w.busy}
+            msg={w.msg}
+            err={w.err}
+            onSave={() => void w.run("save")}
+            onSend={() => void w.run("send")}
+            onSkip={() => void w.run("skip")}
+          />
+        </>
+      ) : (
+        <p className="text-sm text-[var(--text-muted)]">No weeks on the slate yet.</p>
+      )}
+    </Card>
+  );
+}

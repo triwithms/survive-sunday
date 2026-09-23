@@ -112,6 +112,7 @@ model Pool {
   poolAccessRoles PoolAccessRole[]
   weeks           Week[]
   auditLogs       AuditLog[]
+  weekWrapSetting WeekWrapSetting?
 }
 
 model Membership {
@@ -263,6 +264,23 @@ model NotificationPreference {
   /// JSON { type: email|sms|both|off }. Empty → product defaults.
   channelsJson         String   @default("{}")
   updatedAt            DateTime @updatedAt
+}
+
+/// Admin defaults for the automatic week-wrap note. Created at boot, not by the Vercel build.
+model WeekWrapSetting {
+  poolId           String   @id
+  pool             Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  /// funny | facts | short
+  tone             String   @default("facts")
+  showRoster       Boolean  @default(true)
+  showPicks        Boolean  @default(true)
+  showBoardLink    Boolean  @default(true)
+  showDrama        Boolean  @default(true)
+  emailOverride    String   @default("")
+  smsOverride      String   @default("")
+  /// JSON number[] — weeks the admin skipped (automatic cron only).
+  skippedWeeksJson String   @default("[]")
+  updatedAt        DateTime @updatedAt
 }
 
 /// Idempotency log so reminders / grade emails do not fire twice.

@@ -39,13 +39,14 @@ import {
 assert.equal(DEFAULT_NOTIFICATION_PREFS.missingPickReminder, "both");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.pickConfirmed, "email");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.resultsGraded, "email");
+assert.equal(DEFAULT_NOTIFICATION_PREFS.weekWrap, "email");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.eliminationMulligan, "both");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.poolAnnouncements, "email");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.scoreUpdates, "off");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.injuryNotes, "off");
 assert.equal(DEFAULT_NOTIFICATION_PREFS.masterOn, true);
 assert.equal(DEFAULT_NOTIFICATION_PREFS.pushEnabled, false);
-assert.equal(CORE_NOTIFICATION_TYPES.length, 5);
+assert.equal(CORE_NOTIFICATION_TYPES.length, 6);
 assert.equal(OPTIONAL_NOTIFICATION_TYPES.length, 2);
 assert.equal(isNotificationType("missingPickReminder"), true);
 assert.equal(isNotificationType("password_reset"), false);

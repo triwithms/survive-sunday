@@ -22,7 +22,11 @@ export function HelpForAdmins() {
         <li className="text-[var(--text-primary)]">
           Notifications on Users use the same master On/Off and per-type
           Email / SMS / both / Off as Account. System has{" "}
-          <strong>Send test to me</strong>.
+          <strong>Send test to me</strong>. System → <strong>Week wrap</strong>{" "}
+          picks Funny, Straight facts, or Short, then previews,{" "}
+          <strong>Send now</strong>, or <strong>Skip this week</strong>. The
+          automatic note goes out the next morning (Toronto) after the last
+          game is final. Texts stay short.
         </li>
         <li className="text-[var(--text-primary)]">
           Personal Join links: one Copy per friend on their Users row. Do not

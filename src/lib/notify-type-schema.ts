@@ -15,6 +15,7 @@ const DEFAULT_JSON = JSON.stringify({
   missingPickReminder: "both",
   pickConfirmed: "email",
   resultsGraded: "email",
+  weekWrap: "email",
   eliminationMulligan: "both",
   poolAnnouncements: "email",
   scoreUpdates: "off",
