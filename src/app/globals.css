@@ -29,6 +29,9 @@ html {
   /* Do not set overflow-x on html/body. Safari treats clip like hidden and
      also clips Y, so fixed chrome sticks to the document bottom. */
   max-width: 100%;
+  /* Set by ChromeInsets: keep scrollIntoView / #anchors clear of sticky chrome */
+  scroll-padding-top: var(--app-header-h, 0px);
+  scroll-padding-bottom: var(--app-nav-h, 0px);
 }
 
 body {

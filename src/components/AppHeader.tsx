@@ -11,6 +11,7 @@ export function AppHeader(data: AppHeaderData) {
   return (
     <header
       data-share-chrome=""
+      data-app-header=""
       className="sticky top-0 z-30 border-b border-stadium-border bg-stadium-900/95 backdrop-blur pt-[env(safe-area-inset-top)]"
     >
       <div className="mx-auto max-w-pool w-full px-3 sm:px-4 py-3 flex items-center gap-2 min-w-0">

@@ -13,6 +13,7 @@ Bottom nav vs URLs (easy to mix up):
 - **Leaderboard** is the pool in/out race (`/standings`)
 - **Standings** is NFL W-L (`/nfl`)
 - Header **?** is Help (`/help`). Videos are not a tab.
+- **Scrolling:** the document scrolls (Safari Full Page screenshots need that). Header is `sticky top-0`, BottomNav is `sticky bottom-0` in normal flow — `src/app/(app)/layout.tsx` and `src/app/help/page.tsx`. Never put `h-dvh` / `overflow-hidden` / `overflow-y-auto` on the shell or `overflow` on `html` / `body` (iOS unpins the chrome). Sideways: `overflow-x-clip` on the content pane only. `src/components/ChromeInsets.tsx` sets `--app-header-h` / `--app-nav-h` for `scroll-padding` and in-page sticky bars. Guard: `npm run verify:app-chrome`.
 - Header **Share** (square-with-arrow, beside Help / Account) opens a short-lived panel with the **current page URL**, **Copy**, and Send (Web Share) when the phone offers it. Hidden on Admin, Account/settings, Sign in, Join. Not centred — Week N stays in the middle.
 
 Checked on `main` (`66a474b`). Do not invent paths.

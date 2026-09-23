@@ -1,5 +1,6 @@
 /**
- * Phone chrome: viewport BottomNav + read-only header Week N.
+ * Phone chrome: document scroll + sticky header / BottomNav + read-only
+ * header Week N. Safari Full Page screenshots need the document to scroll.
  *
  *   npx tsx scripts/verify-app-chrome.ts
  */
@@ -10,23 +11,26 @@ function src(path: string) {
   return readFileSync(path, "utf8");
 }
 
-const layout = src("src/app/(app)/layout.tsx");
-assert.match(layout, /<BottomNav/);
-assert.match(layout, /h-dvh max-h-dvh/);
-assert.match(layout, /overflow-y-auto overflow-x-hidden/);
-assert.doesNotMatch(
-  layout,
-  /pb-24/,
-  "in-flow tab bar must not use spacer padding"
-);
-assert.doesNotMatch(
-  layout,
-  /min-h-dvh/,
-  "app shell must be viewport-locked (h-dvh), not min-h-dvh"
-);
+function assertDocumentScrollShell(file: string) {
+  const code = src(file);
+  assert.match(code, /<BottomNav/, `${file}: BottomNav`);
+  assert.match(code, /<ChromeInsets/, `${file}: ChromeInsets`);
+  assert.match(code, /min-h-dvh flex flex-col/, `${file}: shell grows with content`);
+  assert.match(code, /overflow-x-clip/, `${file}: clip (not hidden) sideways`);
+  assert.doesNotMatch(
+    code,
+    /(?<![-\w])h-dvh|max-h-dvh|overflow-hidden|overflow-y-auto|overflow-x-hidden|overflow-auto/,
+    `${file}: a viewport-locked shell or inner scroll pane keeps document height at one screen (Safari Full Page)`
+  );
+  assert.doesNotMatch(code, /pb-24/, `${file}: sticky tab bar must not use spacer padding`);
+}
+
+assertDocumentScrollShell("src/app/(app)/layout.tsx");
+assertDocumentScrollShell("src/app/help/page.tsx");
 
 const nav = src("src/components/BottomNav.tsx");
-assert.match(nav, /shrink-0/);
+assert.match(nav, /sticky bottom-0 shrink-0/);
+assert.match(nav, /data-app-nav/);
 assert.doesNotMatch(
   nav,
   /fixed bottom-0/,
@@ -54,11 +58,24 @@ assert.doesNotMatch(
   "body overflow-x hidden/clip breaks iOS bottom nav"
 );
 
-const help = src("src/app/help/page.tsx");
-assert.match(help, /h-dvh max-h-dvh/);
-assert.match(help, /<BottomNav/);
+assert.match(css, /scroll-padding-top:\s*var\(--app-header-h/);
+assert.match(css, /scroll-padding-bottom:\s*var\(--app-nav-h/);
+assert.doesNotMatch(
+  css,
+  /(html|body)\s*\{[^}]*(overflow(-y)?:\s*(hidden|auto|scroll|clip)|(?<![-\w])height:\s*100(d|s|l)?vh)/,
+  "html/body must not lock height or overflow (document must scroll)"
+);
+
+const roster = src("src/components/features/admin/RosterRecordBar.tsx");
+assert.match(
+  roster,
+  /sticky top-\[var\(--app-header-h,0px\)\]/,
+  "in-page sticky bars sit under the sticky header"
+);
 
 const header = src("src/components/AppHeader.tsx");
+assert.match(header, /sticky top-0/);
+assert.match(header, /data-app-header/);
 assert.match(header, /weekNumber=\{data\.currentWeek\}/);
 assert.match(header, /HeaderShareButton/);
 assert.doesNotMatch(
@@ -79,6 +96,7 @@ for (const file of [
   "src/components/AppHeader.tsx",
   "src/components/HeaderShareButton.tsx",
   "src/components/HeaderHelpLink.tsx",
+  "src/components/ChromeInsets.tsx",
   "src/app/(app)/layout.tsx",
 ]) {
   const lines = src(file).split("\n").length;

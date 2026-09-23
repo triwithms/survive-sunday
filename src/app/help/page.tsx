@@ -7,6 +7,7 @@ import { HelpContent } from "@/components/HelpContent";
 import { A2hsNudge } from "@/components/features/a2hs";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { BottomNav } from "@/components/BottomNav";
+import { ChromeInsets } from "@/components/ChromeInsets";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -24,17 +25,9 @@ export default async function HelpPage() {
     requested: cookieStore.get(ROLE_VIEW_COOKIE)?.value,
   });
 
-  const showNav = Boolean(membership);
-
   return (
-    <div
-      className={
-        showNav
-          ? "h-dvh max-h-dvh flex flex-col overflow-hidden"
-          : "min-h-dvh flex flex-col"
-      }
-    >
-      <div className={showNav ? "flex-1 min-h-0 overflow-y-auto" : "flex-1"}>
+    <div className="min-h-dvh flex flex-col max-w-full">
+      <div className="flex-1 min-w-0 overflow-x-clip">
         <main className="mx-auto w-full max-w-pool pb-8 pt-[calc(2rem+env(safe-area-inset-top))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
           <Link
             href={membership ? "/pick" : "/"}
@@ -51,6 +44,7 @@ export default async function HelpPage() {
       </div>
       {membership && <BottomNav isAdmin={roleView === "admin"} />}
       <A2hsNudge />
+      <ChromeInsets />
     </div>
   );
 }

@@ -30,7 +30,8 @@ export function BottomNav({ isAdmin }: { isAdmin?: boolean }) {
   return (
     <nav
       data-share-chrome=""
-      className="shrink-0 z-40 border-t border-stadium-border bg-stadium-900/95 backdrop-blur pb-[env(safe-area-inset-bottom)]"
+      data-app-nav=""
+      className="sticky bottom-0 shrink-0 z-40 border-t border-stadium-border bg-stadium-900/95 backdrop-blur pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="mx-auto flex max-w-pool w-full justify-between sm:justify-around px-0.5 sm:px-2 py-2 min-w-0">
         {nav.map(({ href, label, icon: Icon }) => {

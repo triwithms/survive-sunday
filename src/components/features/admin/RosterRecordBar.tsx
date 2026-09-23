@@ -36,7 +36,7 @@ export function RosterRecordBar({ member, weekPick, weekOpen }: Props) {
   );
   return (
     <div
-      className="sticky top-0 z-10 flex gap-2 bg-stadium-900/95 py-2 backdrop-blur"
+      className="sticky top-[var(--app-header-h,0px)] z-10 flex gap-2 bg-stadium-900/95 py-2 backdrop-blur"
       data-testid="roster-record-bar"
     >
       <Button
