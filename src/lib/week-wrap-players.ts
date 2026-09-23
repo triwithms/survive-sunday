@@ -36,6 +36,7 @@ export function weekWrapPlayers(
       const teamAbbr = pick?.teamAbbr ?? null;
       const result = pick?.result ?? null;
       return {
+        id: member.id,
         nickname: member.nickname,
         status: member.status,
         teamAbbr,

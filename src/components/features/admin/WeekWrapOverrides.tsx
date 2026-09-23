@@ -13,13 +13,13 @@ export function WeekWrapOverrides(props: {
         Paste override (optional)
       </summary>
       <label className="block space-y-1 mt-2">
-        <span className="text-[var(--text-muted)]">Email body</span>
+        <span className="text-[var(--text-muted)]">Email intro</span>
         <textarea
           className={field}
           rows={4}
           value={props.emailOverride}
           onChange={(e) => props.onEmail(e.target.value)}
-          placeholder="Leave blank to use the template"
+          placeholder="Replaces the tone intro. Results, leaderboard, and NFL sections stay."
           data-testid="week-wrap-email-override"
         />
       </label>

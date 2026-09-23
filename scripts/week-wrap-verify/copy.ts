@@ -5,7 +5,7 @@ import { WEEK_WRAP_DRAMA_PLACEHOLDER } from "../../src/lib/week-wrap-tone";
 import { weekWrapContent } from "../../src/lib/week-wrap-copy";
 import { weekWrapPlayers } from "../../src/lib/week-wrap-players";
 
-const players = weekWrapPlayers(
+export const wrapPlayers = weekWrapPlayers(
   [
     { id: "a", nickname: "Ada", status: "undefeated", role: "member", isParticipant: true },
     { id: "b", nickname: "Bea", status: "one_loss", role: "member", isParticipant: true },
@@ -19,9 +19,11 @@ const players = weekWrapPlayers(
     { membershipId: "c", teamAbbr: "DAL", result: "loss" },
   ]
 );
+const players = wrapPlayers;
 assert.deepEqual(players.map((p) => p.nickname), ["Ada", "Bea", "Cal", "Dee"]);
 assert.equal(players.find((p) => p.nickname === "Cal")?.eliminatedThisWeek, true);
 assert.equal(players.find((p) => p.nickname === "Dee")?.eliminatedThisWeek, false);
+assert.equal(players.find((p) => p.nickname === "Ada")?.id, "a");
 
 const facts = { weekNumber: 3, players, boardUrl: WEEK_WRAP_BOARD_URL };
 const blocks = { roster: true, picks: true, board: true, drama: true };
@@ -30,19 +32,23 @@ const factsCopy = weekWrapContent({ tone: "facts", blocks, facts });
 const short = weekWrapContent({ tone: "short", blocks, facts });
 assert.match(funny.text, /Funny placeholder/);
 assert.match(funny.text, new RegExp(WEEK_WRAP_DRAMA_PLACEHOLDER));
-assert.match(funny.text, /Still in: Ada, Bea/);
-assert.match(funny.text, /Ada BUF won/);
-assert.match(funny.text, /\/standings/);
+assert.match(funny.text, /Won this week\n- Ada BUF/);
+assert.match(funny.text, /Lost this week\n- Bea KC \(still in\)\n- Cal DAL\n/);
+assert.match(funny.text, /Eliminated this week\n- Cal DAL/);
+assert.doesNotMatch(funny.text, /Dee/, "out before this week: no ghost row");
+assert.match(funny.text, /Board: .*\/standings/);
 assert.match(funny.text, /Preferences:/);
 assert.match(funny.text, new RegExp(PREFS_URL.replace(/[.]/g, "\\.")));
 assert.match(funny.htmlBody, /font-size:12px/);
 assert.match(funny.htmlBody, /account\/notifications/);
-assert.doesNotMatch(funny.smsBody ?? "", /Drama placeholder|Funny placeholder/);
+assert.match(funny.html ?? "", /^<!doctype html>/);
+assert.equal((funny.html ?? "").match(/account\/notifications/g)?.length, 1, "one prefs footer");
+assert.doesNotMatch(funny.smsBody ?? "", /Drama placeholder|Funny placeholder|<|helmets/);
 assert.match(funny.smsBody ?? "", /Still in: Ada, Bea/);
 assert.ok((funny.smsBody ?? "").length <= 160);
-assert.match(funny.text, /account\/notifications/);
 assert.doesNotMatch(factsCopy.text, /Funny placeholder|Drama placeholder/);
 assert.match(short.text, /Preferences:/);
+assert.match(short.text, /Won this week/);
 assert.ok((short.smsBody ?? "").length <= 160);
 assert.equal(short.smsBody, funny.smsBody);
 const brief = weekWrapContent({
@@ -59,7 +65,8 @@ const quiet = weekWrapContent({
   blocks: { roster: false, picks: false, board: false, drama: false },
   facts,
 });
-assert.doesNotMatch(quiet.text, /Still in:|Picks:|Leaderboard:|Drama placeholder/);
+assert.doesNotMatch(quiet.text, /Won this week|Lost this week|Pool leaderboard|Board:|Drama placeholder/);
+assert.doesNotMatch(quiet.htmlBody, /Won this week|Pool leaderboard|Open the board/);
 const clip = {
   videoId: "abc123",
   title: "Every Touchdown of Week 3",
@@ -70,7 +77,7 @@ const clip = {
 const withClip = weekWrapContent({ tone: "facts", blocks, facts, touchdown: clip });
 assert.match(withClip.text, /Every Touchdown of Week 3/);
 assert.match(withClip.text, /Preferences:/);
-assert.match(withClip.htmlBody, /<img/);
+assert.match(withClip.htmlBody, /hqdefault\.jpg/);
 assert.match(withClip.htmlBody, /font-size:12px/);
 assert.ok((withClip.smsBody ?? "").length <= 160);
 assert.match(withClip.text, /account\/notifications/);
@@ -94,6 +101,8 @@ const custom = weekWrapContent({
   touchdown: clip,
 });
 assert.match(custom.text, /^Custom email/);
+assert.match(custom.text, /Won this week/, "override replaces only the intro");
 assert.match(custom.text, /watch\?v=abc123/);
+assert.match(custom.htmlBody, /Custom email/);
 assert.match(custom.htmlBody, /font-size:12px/);
 console.log("PASS  template copy");

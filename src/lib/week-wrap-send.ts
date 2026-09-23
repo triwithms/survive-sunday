@@ -3,6 +3,7 @@ import { ensureWeekLockedEffects, gradeWeekPicks } from "./grading";
 import { syncWeekScoresFromEspn } from "./live-scores";
 import { weekWrapContent } from "./week-wrap-copy";
 import { loadWrapMembers, notifyWrapMembers, weekWrapSendMessage } from "./week-wrap-deliver";
+import { loadWrapBoard, loadWrapNfl } from "./week-wrap-extras";
 import { weekWrapPlayers } from "./week-wrap-players";
 import { WEEK_WRAP_BOARD_URL } from "./week-wrap-sections";
 import { loadWeekWrapSettings } from "./week-wrap-settings";
@@ -36,7 +37,7 @@ export async function sendWeekWrap(
   } catch (error) {
     console.warn("[week-wrap] grade skipped", error);
   }
-  const [settings, members, picks, touchdown] = await Promise.all([
+  const [settings, members, picks, touchdown, board, nfl] = await Promise.all([
     loadWeekWrapSettings(poolId),
     loadWrapMembers(poolId),
     prisma.pick.findMany({
@@ -46,11 +47,14 @@ export async function sendWeekWrap(
     findWeekTouchdownVideo(weekNumber, {
       seasonYear: Number.isFinite(seasonYear) ? seasonYear : undefined,
     }).catch(() => null),
+    loadWrapBoard(poolId),
+    loadWrapNfl({ sync: true }),
   ]);
+  const players = weekWrapPlayers(members, picks);
   const content = weekWrapContent({
     tone: settings.tone,
     blocks: settings.blocks,
-    facts: { weekNumber, players: weekWrapPlayers(members, picks), boardUrl: WEEK_WRAP_BOARD_URL },
+    facts: { weekNumber, players, boardUrl: WEEK_WRAP_BOARD_URL, board, nfl },
     emailOverride: settings.emailOverride,
     smsOverride: settings.smsOverride,
     touchdown,
@@ -67,6 +71,7 @@ export async function sendWeekWrap(
         summary: `Week ${weekNumber} · ${weekWrapSendMessage(counts)}`,
         tone: settings.tone,
         touchdown: Boolean(touchdown),
+        nfl: Boolean(nfl),
       }),
     },
   });

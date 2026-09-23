@@ -1,3 +1,5 @@
+import type { WeekWrapBoardRow, WeekWrapNflDivision } from "./week-wrap-rich-types";
+
 export const WEEK_WRAP_TONES = ["funny", "facts", "short"] as const;
 export type WeekWrapTone = (typeof WEEK_WRAP_TONES)[number];
 
@@ -22,6 +24,7 @@ export const DEFAULT_WEEK_WRAP_BLOCKS: WeekWrapBlocks = {
 };
 
 export type WeekWrapPlayer = {
+  id: string;
   nickname: string;
   status: string;
   teamAbbr: string | null;
@@ -33,6 +36,10 @@ export type WeekWrapFacts = {
   weekNumber: number;
   players: WeekWrapPlayer[];
   boardUrl: string;
+  /** Empty or missing → no pool leaderboard section. */
+  board?: WeekWrapBoardRow[];
+  /** Null or missing (ESPN down) → no NFL section; the wrap still sends. */
+  nfl?: WeekWrapNflDivision[] | null;
 };
 
 export type WeekWrapSettings = {
@@ -68,6 +75,8 @@ export type WeekWrapPanelData = {
   emailOverride: string;
   smsOverride: string;
   weeks: WeekWrapWeekOption[];
+  board: WeekWrapBoardRow[];
+  nfl: WeekWrapNflDivision[] | null;
 };
 
 export function weekWrapDedupeKey(poolId: string, weekNumber: number): string {

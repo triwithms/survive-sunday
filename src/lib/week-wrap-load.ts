@@ -1,4 +1,5 @@
 import { prisma } from "./db";
+import { loadWrapBoard, loadWrapNfl } from "./week-wrap-extras";
 import { weekNumbersFromDedupeKeys } from "./week-wrap-parse";
 import { weekWrapPlayers } from "./week-wrap-players";
 import { WEEK_WRAP_BOARD_URL } from "./week-wrap-sections";
@@ -27,6 +28,8 @@ export async function loadWeekWrapPanel(
       emailOverride: "",
       smsOverride: "",
       weeks: [],
+      board: [],
+      nfl: null,
     };
   }
 }
@@ -36,7 +39,7 @@ async function loadWeekWrapPanelUnsafe(
   now: Date
 ): Promise<WeekWrapPanelData> {
   const settings = await loadWeekWrapSettings(poolId);
-  const [members, weeks, sends] = await Promise.all([
+  const [members, weeks, sends, board, nfl] = await Promise.all([
     prisma.membership.findMany({
       where: { poolId },
       select: {
@@ -65,6 +68,8 @@ async function loadWeekWrapPanelUnsafe(
       },
       select: { dedupeKey: true },
     }),
+    loadWrapBoard(poolId),
+    loadWrapNfl({ sync: false }),
   ]);
   const sent = weekNumbersFromDedupeKeys(
     sends.map((row) => row.dedupeKey),
@@ -87,5 +92,7 @@ async function loadWeekWrapPanelUnsafe(
     emailOverride: settings.emailOverride,
     smsOverride: settings.smsOverride,
     weeks: options,
+    board,
+    nfl,
   };
 }

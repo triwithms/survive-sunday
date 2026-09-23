@@ -2,11 +2,6 @@ import type { TouchdownClip } from "./week-wrap-touchdown";
 
 export const TOUCHDOWN_SMS_MAX = 480;
 
-export function emailTextWithTouchdown(body: string, clip: TouchdownClip | null): string {
-  if (!clip) return body;
-  return `${body}\n${clip.title}\n${clip.watchUrl}`;
-}
-
 export function smsWithTouchdown(body: string, clip: TouchdownClip | null): string {
   if (!clip) return body;
   const next = `${body}\n${clip.shortUrl}`;
@@ -26,5 +21,5 @@ export function touchdownEmailHtml(clip: TouchdownClip | null): string {
   const alt = escapeAttr(clip.title);
   const href = escapeAttr(clip.watchUrl);
   const src = escapeAttr(clip.thumbUrl);
-  return `<p style="margin:12px 0 8px;"><a href="${href}"><img src="${src}" alt="${alt}" width="320" style="max-width:100%;height:auto;border:0;" /></a></p><p style="margin:0 0 8px;"><a href="${href}">${alt}</a></p>`;
+  return `<p style="margin:12px 0 8px;"><a href="${href}"><img src="${src}" alt="${alt}" width="320" style="max-width:100%;height:auto;border:0;" /></a></p><p style="margin:0 0 16px;font-family:Helvetica,Arial,sans-serif;font-size:14px;"><a href="${href}" style="color:#e8c547;">${alt}</a></p>`;
 }
