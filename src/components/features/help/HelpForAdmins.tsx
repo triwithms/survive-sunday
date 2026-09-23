@@ -22,11 +22,14 @@ export function HelpForAdmins() {
         <li className="text-[var(--text-primary)]">
           Notifications on Users use the same master On/Off and per-type
           Email / SMS / both / Off as Account. System has{" "}
-          <strong>Send test to me</strong>. System → <strong>Week wrap</strong>{" "}
+          <strong>Send test to me</strong> (it arrives marked ADMIN TEST, not a
+          real pool alert). System → <strong>Week wrap</strong>{" "}
           picks Funny, Straight facts, or Short, then previews,{" "}
           <strong>Send now</strong>, or <strong>Skip this week</strong>. The
           automatic note goes out at noon (Toronto) the day after the last
-          game is final. The email adds the NFL Every Touchdown video when
+          game is final. The email shows Won, Lost, and Eliminated (only if
+          someone went out) with team helmets, then the pool leaderboard and
+          NFL division standings, plus the NFL Every Touchdown video when
           that post exists, and a small preferences link. Texts stay short.{" "}
           <strong>Missing picks</strong> lists who is still blank, sends
           reminders, or copies a group-chat list while the week is open. The

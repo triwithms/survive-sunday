@@ -8,6 +8,7 @@ import { verifyTouchdownSearch } from "./week-wrap-verify/search";
 import "./week-wrap-verify/when";
 import "./week-wrap-verify/dedupe";
 import "./week-wrap-verify/copy";
+import "./week-wrap-verify/html";
 import "./week-wrap-verify/wiring";
 
 verifyTouchdownSearch()

@@ -10,6 +10,8 @@ import { defaultNotifyPref, parseNotifyPrefBody } from "../src/lib/notify-pref";
 import { resolveChannels } from "../src/lib/notify-channels";
 import { planNotice } from "../src/lib/notify-plan";
 import { destOnAllowlist, parseNotifyAllowlist, readNotifyMode } from "../src/lib/notify-mode";
+import { testGameCopy } from "../src/lib/notify-test-copy";
+import { TRIAL_SMS_MAX, toGsm7 } from "../src/lib/sms-gsm";
 
 function lineCount(path: string) {
   const text = readFileSync(path, "utf8");
@@ -190,5 +192,20 @@ assert.doesNotMatch(readFileSync("src/lib/feedback-admin-alert.ts", "utf8"), /se
 assert.doesNotMatch(readFileSync("src/lib/password-reset-alert.ts", "utf8"), /sendResendMessage/);
 assert.match(readFileSync("src/lib/password-reset-deliver.ts", "utf8"), /dispatchOtp/);
 console.log("PASS  send paths go through the gatekeeper");
+
+const adminTest = testGameCopy();
+assert.equal(
+  adminTest.smsBody,
+  "Survive Sunday ADMIN TEST only. Checking that your notify channel works. Not a real pool alert."
+);
+assert.equal(toGsm7(adminTest.smsBody ?? ""), adminTest.smsBody, "admin test SMS is plain GSM-7");
+assert.ok((adminTest.smsBody ?? "").length <= TRIAL_SMS_MAX);
+assert.match(adminTest.subject, /ADMIN TEST/);
+assert.match(adminTest.subject, /not a real pool alert/i);
+assert.match(adminTest.text, /ADMIN TEST/);
+assert.match(adminTest.text, /not a real pool alert/i);
+assert.match(adminTest.htmlBody, /ADMIN TEST/);
+assert.match(adminTest.htmlBody, /not a real pool alert/i);
+console.log("PASS  admin test notice is labeled ADMIN TEST / not a real pool alert");
 
 console.log("\nverify-notify-channels OK");

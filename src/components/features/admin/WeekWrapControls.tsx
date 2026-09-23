@@ -7,9 +7,9 @@ import {
 } from "@/lib/week-wrap-types";
 
 const BLOCKS: { key: keyof WeekWrapBlocks; label: string }[] = [
-  { key: "roster", label: "Who's still in / who lost / who eliminated" },
-  { key: "picks", label: "Each player's pick + result" },
-  { key: "board", label: "Link to Leaderboard" },
+  { key: "roster", label: "Won / lost / eliminated this week" },
+  { key: "picks", label: "Each player's team helmet + pick" },
+  { key: "board", label: "Pool leaderboard, NFL divisions, board link" },
   { key: "drama", label: "One-line drama (Funny email)" },
 ];
 
