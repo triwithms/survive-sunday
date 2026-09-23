@@ -14,7 +14,7 @@ export function InjuryStatusChip({
       : tone === "doubtful"
         ? "chip-one-loss"
         : tone === "questionable"
-          ? "chip-live"
+          ? "chip-gold"
           : "chip-one-loss";
   return (
     <span className={`chip ${cls} ${compact ? "text-[10px]" : "text-xs"}`}>
