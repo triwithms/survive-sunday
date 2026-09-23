@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Share2 } from "lucide-react";
 import { issueInviteToken } from "@/app/actions/issue-invite-token";
 import { shareOrCopy } from "./copy-join";
 
 type Props = {
   membershipId: string;
   nickname: string;
+  /** Full-width label inside the record. The row uses a compact label. */
+  block?: boolean;
 };
 
-export function InviteJoinButtons({ membershipId, nickname }: Props) {
+export function InviteJoinButtons({ membershipId, nickname, block }: Props) {
   const [toast, setToast] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -32,16 +33,20 @@ export function InviteJoinButtons({ membershipId, nickname }: Props) {
   }
 
   return (
-    <div className="relative shrink-0">
+    <div className={block ? "relative" : "relative shrink-0"}>
       <button
         type="button"
-        className="min-h-11 min-w-11 inline-flex items-center justify-center text-gold-400"
+        className={
+          block
+            ? "min-h-11 w-full text-sm text-gold-400"
+            : "min-h-11 max-w-[4.75rem] px-1 shrink-0 text-center text-[11px] leading-tight text-gold-400"
+        }
         disabled={busy}
-        aria-label={`Invite ${nickname}`}
+        aria-label={`Copy join link for ${nickname}`}
         data-testid={`invite-${membershipId}`}
         onClick={() => void invite()}
       >
-        <Share2 className="h-5 w-5" aria-hidden />
+        Copy join link
       </button>
       {toast ? (
         <p

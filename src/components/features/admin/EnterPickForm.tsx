@@ -56,17 +56,12 @@ export function EnterPickForm({ data, lockMember = false }: Props) {
 
   if (lockMember) {
     return (
-      <section
-        id="member-pick"
-        data-testid="member-pick"
-        className="rounded-md border border-stadium-border p-3 space-y-2"
-      >
-        <h3 className="text-sm font-semibold">Pick</h3>
+      <div className="space-y-2">
         <p className="text-xs text-[var(--text-muted)]">
           Choose an open week. Saving replaces that week’s pick.
         </p>
         {body}
-      </section>
+      </div>
     );
   }
 

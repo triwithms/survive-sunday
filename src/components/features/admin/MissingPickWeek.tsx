@@ -5,6 +5,7 @@ import {
   missingPickChatText,
   type MissingPickWeekView,
 } from "@/lib/missing-pick-who";
+import { MissingPickRemind } from "./MissingPickRemind";
 import { useMissingPick } from "./use-missing-pick";
 
 export function MissingPickWeek(props: {
@@ -43,15 +44,12 @@ export function MissingPickWeek(props: {
           ))}
         </ul>
       )}
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <Button
-          className="min-h-11 flex-1"
-          disabled={m.busy || empty}
-          onClick={() => void m.send(props.week.weekId)}
-          data-testid="missing-pick-send"
-        >
-          {m.busy ? "Sending…" : "Send reminders"}
-        </Button>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+        <MissingPickRemind
+          weekId={props.week.weekId}
+          plan={props.week.plan}
+          disabled={empty}
+        />
         <Button
           variant="secondary"
           className="min-h-11 flex-1"
@@ -62,11 +60,6 @@ export function MissingPickWeek(props: {
           {m.copied ? "Copied" : "Copy text"}
         </Button>
       </div>
-      {m.note ? (
-        <p className="text-sm text-gold-400" role="status">
-          {m.note}
-        </p>
-      ) : null}
       {m.err ? <p className="text-sm text-crimson-400">{m.err}</p> : null}
     </div>
   );

@@ -374,9 +374,9 @@ Gams is Player + Administrator. Switch **Playing as Gams** / **Admin tools** fro
 | Tool | What it does |
 |------|----------------|
 | **Live-only pool** | Demo vs Real toggle was removed. The pool is forced live without wiping picks. Open seats still claim via `@survivesunday.demo` Join emails. |
-| **Reset pool** | Admin → **System** → **Danger — reset the pool** (closed until you open it). Optional. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Do not reset now** — Week 1 imports and the live roster (including JaJa) are already live. **Shipped.** |
+| **Reset pool** | Admin → **Pool** → **Danger — reset the pool** (closed until you open it, last on the tab). Optional. Clears picks, removes practice accounts (`@survivesunday.demo`), resets everyone to undefeated. Type `RESET` to confirm. Does **not** wipe Auth/env. **Do not reset now** — Week 1 imports and the live roster (including JaJa) are already live. **Shipped.** |
 | **Add user** | Admin → **Users**. Fill any of nickname / full name / cell / email / password. Or send a Join invite + temp password. `/welcome` can fill gaps later. Existing Prisma fields only. |
-| **Personal Join links** | On that friend’s Users row (**Invite** / **Copy Join**). One URL per open seat. Send that link only to that friend. |
+| **Personal Join links** | On that friend’s Users row (**Copy join link**). One URL per open seat. Send that link only to that friend. |
 | **Roster** | See each nickname + real name (including Go Giants, Pauli, JaJa). Edit nickname, full name, email, cell. Copy that person’s Join link if they have not Joined yet. Set **If no pick within 30 min, copy from** (JaJa → Gams). Audit-logged. |
 | **Enter a friend’s pick** | System tab. Current or past weeks. Next week only after that friend’s own game has started and they have a valid pick. No far-future weeks. |
 | **Pool rules — mulligan** | Turn off the free mulligan from a chosen week (or immediately). One loss = out from that week. Already-scored weeks stay as they are. People who already used a mulligan stay in with one loss. Players see a banner. You can turn the mulligan back on. |

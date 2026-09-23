@@ -3,6 +3,7 @@
 import { memberWeekPick } from "./enter-pick-options";
 import type { EnterPickData } from "./enter-pick-types";
 import { MemberPickSection } from "./MemberPickSection";
+import { RosterRecordBar } from "./RosterRecordBar";
 import { RosterRow } from "./RosterRow";
 import { UserEditPanel } from "./UserEditPanel";
 import { useRosterEdit } from "./use-roster-edit";
@@ -36,6 +37,11 @@ export function RosterCard(p: Props) {
       open={p.open}
       onToggle={p.onToggle}
     >
+      <RosterRecordBar
+        member={member}
+        weekPick={weekPick}
+        weekOpen={p.enterPick.currentWeekOpen === true}
+      />
       <MemberPickSection member={member} data={p.enterPick} />
       <UserEditPanel
         member={member}

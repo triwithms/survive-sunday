@@ -21,14 +21,14 @@ export const ADMIN_TABS: AdminTab[] = [
     href: "/admin/config",
     label: "Pool",
     name: "Pool",
-    blurb: "Mulligan, Make administrator, Hand the pool.",
+    blurb: "Mulligan, Make administrator, Hand the pool. Reset is last.",
     match: (path) => path.startsWith("/admin/config"),
   },
   {
     href: "/admin/system",
     label: "System",
     name: "System",
-    blurb: "Enter a friend’s pick. Reset stays closed.",
+    blurb: "Week wrap, missing picks, enter a friend’s pick.",
     match: (path) =>
       path.startsWith("/admin/system") || path.startsWith("/admin/import"),
   },

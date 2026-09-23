@@ -61,9 +61,12 @@ function main() {
   assert.match(pool, /Hand the pool/);
 
   const system = readFileSync(`${dir}/SystemScreen.tsx`, "utf8");
-  assert.match(system, /system-danger/);
-  assert.match(system, /ResetPoolPanel/);
+  assert.doesNotMatch(system, /system-danger/);
+  assert.doesNotMatch(system, /ResetPoolPanel/);
+  assert.match(system, /WeekWrapPanel/);
   assert.match(system, /EnterPickForm/);
+  assert.match(pool, /ResetPoolPanel/);
+  assert.match(pool, /pool-danger/);
   assert.doesNotMatch(system, /PickCensusPanel/);
   assert.doesNotMatch(system, /AdminLockPanel/);
   assert.doesNotMatch(system, /AdminGradePanel/);

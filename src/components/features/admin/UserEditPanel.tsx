@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui";
 import { isSeatClaimed } from "@/lib/claim-seat";
 import { AdminDetails } from "./AdminDetails";
+import { InviteJoinButtons } from "./InviteJoinButtons";
 import { rosterToPasswordMember } from "./password-members";
 import { RemoveSeatButton } from "./RemoveSeatButton";
 import { RosterCardFields } from "./RosterCardFields";
@@ -28,35 +29,50 @@ export function UserEditPanel(p: Props) {
   const player = member.role !== "admin";
   return (
     <>
-      <RosterCardFields
-        nickname={draft.nickname}
-        realName={draft.realName}
-        disabled={p.disabled}
-        onNickname={(nickname) => p.onChange({ nickname })}
-        onRealName={(realName) => p.onChange({ realName })}
-      />
-      <RosterContactFields
-        email={draft.email}
-        phone={draft.phone}
-        disabled={p.disabled}
-        onEmail={(email) => p.onChange({ email })}
-        onPhone={(phone) => p.onChange({ phone })}
-      />
-      <Button
-        className="w-full min-h-11"
-        disabled={p.disabled || !p.dirty}
-        onClick={p.onSave}
-        data-testid="roster-save"
-      >
-        {p.busy ? "Saving…" : "Save this person"}
-      </Button>
-      <RosterNotifyPref userId={member.userId} initial={member.notifyPrefs} />
-      {claimed && player ? (
-        <SetMemberPasswordForm
-          members={[rosterToPasswordMember(member)]}
-          embedded
+      <AdminDetails title="Contact" summary={member.nickname} testId="roster-contact">
+        <RosterCardFields
+          nickname={draft.nickname}
+          realName={draft.realName}
+          disabled={p.disabled}
+          onNickname={(nickname) => p.onChange({ nickname })}
+          onRealName={(realName) => p.onChange({ realName })}
         />
-      ) : null}
+        <RosterContactFields
+          email={draft.email}
+          phone={draft.phone}
+          disabled={p.disabled}
+          onEmail={(email) => p.onChange({ email })}
+          onPhone={(phone) => p.onChange({ phone })}
+        />
+        <Button
+          className="w-full min-h-11"
+          disabled={p.disabled || !p.dirty}
+          onClick={p.onSave}
+          data-testid="roster-save"
+        >
+          {p.busy ? "Saving…" : "Save this person"}
+        </Button>
+      </AdminDetails>
+      <AdminDetails
+        title="Notifications"
+        summary="Game notices and reminders"
+        testId="roster-notifications"
+      >
+        <RosterNotifyPref userId={member.userId} initial={member.notifyPrefs} />
+      </AdminDetails>
+      <AdminDetails title="Access" summary="Copy join link · password" testId="roster-access">
+        <InviteJoinButtons membershipId={member.id} nickname={member.nickname} block />
+        {claimed && player ? (
+          <SetMemberPasswordForm
+            members={[rosterToPasswordMember(member)]}
+            embedded
+          />
+        ) : (
+          <p className="text-sm text-[var(--text-muted)]">
+            Send the join link until they join with a real email.
+          </p>
+        )}
+      </AdminDetails>
       {player ? (
         <AdminDetails title={`Remove ${member.nickname}`} danger>
           <RemoveSeatButton membershipId={member.id} nickname={member.nickname} />

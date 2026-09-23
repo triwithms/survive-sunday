@@ -31,6 +31,7 @@
     "verify:pool-mode": "tsx scripts/verify-pool-mode.ts",
     "verify:roster-names": "tsx scripts/verify-roster-name-patch.ts",
     "verify:admin-roster": "tsx scripts/verify-admin-roster-ux.ts",
+    "verify:admin-bundle-b": "tsx scripts/verify-admin-bundle-b.ts",
     "verify:add-user": "tsx scripts/verify-add-user.ts",
     "verify:admin-phone": "tsx scripts/verify-admin-phone-ux.ts",
     "verify:admin-user-profile": "tsx scripts/verify-admin-user-profile.ts",

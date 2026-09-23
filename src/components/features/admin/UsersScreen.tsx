@@ -8,7 +8,7 @@ export function UsersScreen(props: UsersScreenProps) {
     <div className="space-y-4">
       <AdminHeading title="Users">
         Add a friend, or tap someone to edit nickname, full name, email, or
-        cell, set a password you can text, or tap the invite icon.
+        cell, set a password you can text, or copy their join link.
       </AdminHeading>
       <AddUserForm />
       <RosterEditor members={props.rosterMembers} enterPick={props.enterPick} />

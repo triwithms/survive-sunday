@@ -35,13 +35,16 @@ export function HelpForAdmins() {
           together, then the pool leaderboard and
           NFL division standings, plus the NFL Every Touchdown video when
           that post exists, and a small preferences link. Texts stay short.{" "}
-          <strong>Missing picks</strong> lists who is still blank, sends
-          reminders, or copies a group-chat list while the week is open. The
-          daily reminder is only the last 24 hours before lock.
+          <strong>Missing picks</strong> lists who is still blank.{" "}
+          <strong>Remind all</strong> confirms email, SMS, and who is skipped
+          before it sends. Copy text stays. The daily reminder is only the
+          last 24 hours before lock. Week wrap sits above those tools.
         </li>
         <li className="text-[var(--text-primary)]">
-          Personal Join links: one Copy per friend on their Users row. Do not
-          paste one link in the group chat.
+          Personal Join links: <strong>Copy join link</strong> on each Users
+          row. Do not paste one link in the group chat. Filters: All, No pick,
+          One loss, Out. Pool → <strong>Reset pool</strong> is last and needs
+          RESET typed.
         </li>
         <li className="text-[var(--text-primary)]">
           System → <strong>Enter a friend’s pick</strong> for this week or a

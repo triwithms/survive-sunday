@@ -43,7 +43,6 @@ export function useWeekWrap(data: WeekWrapPanelData) {
 
   async function run(action: "save" | "send" | "skip") {
     const label = `Week ${weekNumber}`;
-    if (action === "send" && !window.confirm(`Send the ${label} wrap now?`)) return;
     if (action === "skip" && !window.confirm(`Skip the automatic ${label} wrap?`)) {
       return;
     }

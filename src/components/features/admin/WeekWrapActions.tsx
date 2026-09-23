@@ -1,6 +1,10 @@
 import { Button } from "@/components/ui";
+import type { NoticeCounts } from "@/lib/notice-audience";
+import { WeekWrapSend } from "./WeekWrapSend";
 
 export function WeekWrapActions(props: {
+  weekNumber: number;
+  audience: NoticeCounts;
   busy: "" | "save" | "send" | "skip";
   msg: string;
   err: string;
@@ -11,14 +15,12 @@ export function WeekWrapActions(props: {
   const busy = props.busy !== "";
   return (
     <div className="space-y-2">
-      <Button
-        className="w-full min-h-11"
-        disabled={busy}
-        onClick={props.onSend}
-        data-testid="week-wrap-send"
-      >
-        {props.busy === "send" ? "Sending…" : "Send now"}
-      </Button>
+      <WeekWrapSend
+        weekNumber={props.weekNumber}
+        audience={props.audience}
+        busy={props.busy === "send"}
+        onSend={props.onSend}
+      />
       <Button
         variant="secondary"
         className="w-full min-h-11"

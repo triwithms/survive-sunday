@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/db";
+import { isWeekLocked } from "@/lib/grading";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { toEnterPickMember, weekBits, weekTeamOptions } from "./enter-pick-map";
 import type { EnterPickData } from "./enter-pick-types";
@@ -36,6 +37,7 @@ export async function loadEnterPick(
       orderBy: { number: "asc" },
       select: {
         number: true,
+        status: true,
         lockAt: true,
         lockOverrideAt: true,
         games: {
@@ -53,8 +55,12 @@ export async function loadEnterPick(
   ]);
   const names = new Map(teams.map((t) => [t.abbr, t.name]));
   const bits = weekBits(weeks);
+  const current = weeks.find((week) => week.number === currentWeek);
   return {
     currentWeek,
+    currentWeekOpen: Boolean(
+      current && current.status === "open" && !isWeekLocked(current)
+    ),
     members: members.filter(isPoolParticipant).map((m) =>
       toEnterPickMember(m, currentWeek, bits)
     ),

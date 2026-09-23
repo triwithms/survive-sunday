@@ -1,4 +1,5 @@
 import { PUBLIC_APP_ORIGIN } from "./invite-link";
+import type { NoticeCounts } from "./notice-audience";
 import { isMissingPickReminderWindow } from "./notification-gates";
 import { shouldApplyMissedPick } from "./pool-rules";
 import { isPlayerSeat } from "./roles";
@@ -31,6 +32,7 @@ export type MissingPickWeekView = {
   weekNumber: number;
   lockLabel: string;
   blanks: MissingPickBlank[];
+  plan: NoticeCounts;
 };
 
 export type MissingPickPanelData = {

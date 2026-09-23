@@ -67,6 +67,13 @@ export type WeekWrapWeekOption = {
   players: WeekWrapPlayer[];
 };
 
+export type WeekWrapAudience = {
+  email: number;
+  sms: number;
+  skippedOff: number;
+  nicknames: string[];
+};
+
 export type WeekWrapPanelData = {
   boardUrl: string;
   selectedWeek: number;
@@ -77,6 +84,7 @@ export type WeekWrapPanelData = {
   weeks: WeekWrapWeekOption[];
   board: WeekWrapBoardRow[];
   nfl: WeekWrapNflDivision[] | null;
+  audience: WeekWrapAudience;
 };
 
 export function weekWrapDedupeKey(poolId: string, weekNumber: number): string {

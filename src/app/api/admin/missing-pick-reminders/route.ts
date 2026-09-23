@@ -13,20 +13,31 @@ export async function GET() {
 export async function POST(req: Request) {
   const admin = await requireAdmin();
   if (!admin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const body = await readBody(req);
   const result = await sendMissingPickReminders({
     poolId: admin.membership.poolId,
-    weekId: await readWeekId(req),
+    weekId: body.weekId,
+    membershipId: body.membershipId,
     mode: "admin",
     actorId: admin.user.id,
   });
   return NextResponse.json({ ok: true, ...result });
 }
 
-async function readWeekId(req: Request): Promise<string | undefined> {
+async function readBody(req: Request): Promise<{
+  weekId?: string;
+  membershipId?: string;
+}> {
   try {
-    const body = (await req.json()) as { weekId?: unknown };
-    return typeof body.weekId === "string" && body.weekId ? body.weekId : undefined;
+    const body = (await req.json()) as { weekId?: unknown; membershipId?: unknown };
+    return {
+      weekId: typeof body.weekId === "string" && body.weekId ? body.weekId : undefined,
+      membershipId:
+        typeof body.membershipId === "string" && body.membershipId
+          ? body.membershipId
+          : undefined,
+    };
   } catch {
-    return undefined;
+    return {};
   }
 }

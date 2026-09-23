@@ -56,7 +56,7 @@ Home page = **Who are you?** (live roster) + **Join** + **Sign in**.
 
 Real mode already uses Week 1. Use reset when you want a **clean** board before importing real Week 1 picks. You do **not** have to reset today.
 
-1. Admin → **System → Reset pool** (the red card).
+1. Admin → **Pool → Reset pool** (the red card, last).
 2. Read the preview.
 3. Tap **Start reset…**
 4. Type **`RESET`**.
