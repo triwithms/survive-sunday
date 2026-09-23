@@ -22,7 +22,11 @@
     },
     {
       "path": "/api/cron/week-wrap",
-      "schedule": "0 12 * * *"
+      "schedule": "0 16 * * *"
+    },
+    {
+      "path": "/api/cron/week-wrap",
+      "schedule": "0 17 * * *"
     }
   ]
 }

@@ -12,8 +12,8 @@ export function SystemScreen(props: SystemScreenProps) {
     <div className="space-y-4">
       <AdminHeading title="System">
         Enter a friend’s pick for this week or a past week. Next week opens
-        for them after their own game starts. Week wrap sends the next
-        morning after the last game is final. Reset stays closed.
+        for them after their own game starts. Week wrap sends at noon
+        the day after the last game is final. Reset stays closed.
       </AdminHeading>
       <EnterPickForm data={props.enterPick} />
       <WeekWrapPanel data={props.weekWrap} />

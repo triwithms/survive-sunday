@@ -4,7 +4,7 @@ import { runDueWeekWraps } from "@/lib/week-wrap-run";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-/** 12:00 UTC = 8:00 a.m. EDT / 7:00 a.m. EST (morning America/Toronto). */
+/** 16:00 UTC = noon EDT. 17:00 UTC = noon EST. Gate is noon America/Toronto. */
 export const maxDuration = 60;
 
 export async function GET(req: Request) {

@@ -21,8 +21,9 @@ export function WeekWrapPanel({ data }: { data: WeekWrapPanelData }) {
       <div>
         <h2 className="font-semibold">Week wrap</h2>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Automatic email the next morning (America/Toronto) after the last
-          game is final. Texts stay short facts. Save defaults for the next auto.
+          Automatic email at noon (America/Toronto) the day after the last
+          game is final. If the NFL has posted “Every Touchdown of Week N”,
+          that link and preview are added when this sends. Texts stay short.
         </p>
       </div>
       {w.week ? (

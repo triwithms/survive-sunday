@@ -10,7 +10,7 @@ import {
 } from "./week-wrap-types";
 import {
   allGamesFinal,
-  isEligibleNextMorning,
+  isEligibleNoonDayAfter,
   preferredWrapWeek,
 } from "./week-wrap-when";
 
@@ -77,7 +77,7 @@ async function loadWeekWrapPanelUnsafe(
   const options: WeekWrapWeekOption[] = weeks.map((week) => ({
     number: week.number,
     allFinal: allGamesFinal(week.games),
-    eligible: isEligibleNextMorning(week.games, now),
+    eligible: isEligibleNoonDayAfter(week.games, now),
     skipped: skipped.has(week.number),
     sent: sent.has(week.number),
     players: weekWrapPlayers(members, week.picks),

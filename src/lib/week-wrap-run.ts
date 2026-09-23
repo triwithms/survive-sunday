@@ -5,20 +5,9 @@ import { sendWeekWrap, type WeekWrapSendCounts } from "./week-wrap-send";
 import { ensureWeekWrapTable } from "./week-wrap-schema";
 import {
   allGamesFinal,
-  latestKickoff,
+  isNoonDayAfterKickoff,
   shouldAutoSend,
-  torontoDaySpan,
 } from "./week-wrap-when";
-
-function inMorningWindow(
-  games: { status?: string | null; kickoff?: Date | null }[],
-  now: Date
-) {
-  const last = latestKickoff(games);
-  if (!last) return false;
-  const span = torontoDaySpan(last, now);
-  return span >= 1 && span <= 7;
-}
 
 export async function runDueWeekWraps(now = new Date()) {
   await ensureWeekWrapTable(prisma);
@@ -41,7 +30,7 @@ export async function runDueWeekWraps(now = new Date()) {
     const skippedWeeks = parseSkippedWeeks(pool.weekWrapSetting?.skippedWeeksJson);
     for (const week of pool.weeks) {
       if (skippedWeeks.includes(week.number)) continue;
-      if (!inMorningWindow(week.games, now)) continue;
+      if (!isNoonDayAfterKickoff(week.games, now)) continue;
       let games = week.games;
       const alreadyFinal = allGamesFinal(games);
       if (!alreadyFinal) {

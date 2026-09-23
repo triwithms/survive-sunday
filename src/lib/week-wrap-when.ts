@@ -1,4 +1,4 @@
-/** Next-morning America/Toronto eligibility. No database. */
+/** Noon-the-next-day America/Toronto eligibility. No database. */
 
 export type WrapKickoff = {
   status?: string | null;
@@ -47,21 +47,48 @@ export function torontoDaySpan(from: Date, to: Date): number {
   return Math.round((end - start) / 86_400_000);
 }
 
+/** Minutes since midnight in America/Toronto. */
+export function torontoMinutes(date: Date): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: TORONTO,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+  const hour = Number(parts.find((part) => part.type === "hour")?.value ?? "0");
+  const minute = Number(parts.find((part) => part.type === "minute")?.value ?? "0");
+  return (hour % 24) * 60 + minute;
+}
+
+export function isAtOrAfterTorontoNoon(date: Date): boolean {
+  return torontoMinutes(date) >= 12 * 60;
+}
+
 /**
- * Auto-send once every game is final and Toronto’s date is after the
- * last kickoff’s date (Monday and Tuesday night finales included).
- * Stays open `windowDays` so a missed cron still sends once.
+ * Calendar day after the last kickoff, at or after noon Toronto.
+ * Night finales (Monday, Tuesday) wait until the next day’s noon.
+ * Later days in the window stay open so a missed noon still sends once.
  */
-export function isEligibleNextMorning(
+export function isNoonDayAfterKickoff(
   games: WrapKickoff[],
   now: Date,
   windowDays = 7
 ): boolean {
-  if (!allGamesFinal(games)) return false;
   const last = latestKickoff(games);
   if (!last) return false;
   const span = torontoDaySpan(last, now);
-  return span >= 1 && span <= windowDays;
+  if (span < 1 || span > windowDays) return false;
+  if (span === 1 && !isAtOrAfterTorontoNoon(now)) return false;
+  return true;
+}
+
+/** All games final, and noon Toronto on the day after that finale has arrived. */
+export function isEligibleNoonDayAfter(
+  games: WrapKickoff[],
+  now: Date,
+  windowDays = 7
+): boolean {
+  return allGamesFinal(games) && isNoonDayAfterKickoff(games, now, windowDays);
 }
 
 export function shouldAutoSend(opts: {
@@ -71,7 +98,7 @@ export function shouldAutoSend(opts: {
   weekNumber: number;
 }): boolean {
   if (opts.skippedWeeks.includes(opts.weekNumber)) return false;
-  return isEligibleNextMorning(opts.games, opts.now);
+  return isEligibleNoonDayAfter(opts.games, opts.now);
 }
 
 export function preferredWrapWeek(
@@ -94,7 +121,7 @@ export function wrapAutoStatus(week: {
 }): string {
   if (week.sent) return "Already handled for this week. It will not send twice.";
   if (week.skipped) return "Skipped. Automatic send will not go out.";
-  if (week.eligible) return "Due on the next morning check (America/Toronto).";
+  if (week.eligible) return "Due at the noon check (America/Toronto).";
   if (!week.allFinal) return "Waiting until every game this week is final.";
-  return "Final. Auto send is the next Toronto morning, not at the whistle.";
+  return "Final. Auto send is noon Toronto the next day, not at the whistle.";
 }

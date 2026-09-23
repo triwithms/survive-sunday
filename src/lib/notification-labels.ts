@@ -27,7 +27,7 @@ export const NOTIFICATION_COPY = {
   },
   weekWrap: {
     label: "Week wrap",
-    hint: "The next morning after that week’s last game is final.",
+    hint: "Noon Toronto the day after that week’s last game is final.",
   },
   eliminationMulligan: {
     label: "You’re out / mulligan used",
