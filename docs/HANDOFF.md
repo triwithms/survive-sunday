@@ -499,7 +499,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Work | PR | Notes |
 |------|-----|-------|
 | Team page full-season schedule | [#132](https://github.com/triwithms/survive-sunday/pull/132) | **HOLD** — not live. Do not document as shipped. Merge only when Robert says go. |
-| Player UX Batch A v2 (perf-first) | `player-ux/sprint` (not merged) | **DO NOT MERGE** until Robert phone-tests Preview. Tab loads read the database first and no longer wait on a full ESPN pull. #167 was reverted by #168 because that sync blocked every tab. |
+| Player UX Batch A v2 (perf-first) | [#169](https://github.com/triwithms/survive-sunday/pull/169) | **DO NOT MERGE** until Robert phone-tests Preview. Tab loads read the database first and no longer wait on a full ESPN pull. #167 was reverted by #168 because that sync blocked every tab. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
