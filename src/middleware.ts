@@ -37,5 +37,3 @@ export const config = {
     "/((?!_next/static|_next/image|icons/|favicon.ico|manifest.webmanifest|sw.js).*)",
   ],
 };
-
-export const runtime = "nodejs";
