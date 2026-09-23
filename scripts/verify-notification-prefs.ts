@@ -184,9 +184,12 @@ assert.match(withGameSmsFooter(miss.smsBody ?? ""), /spam\/junk/);
 assert.match(GAME_SMS_FOOTER, /Not junk/);
 assert.match(GAME_SMS_FOOTER, /https:\/\/survive-sunday\.vercel\.app\/account\/notifications/);
 assert.match(withGameEmailText(pick.text), /spam or junk/);
-assert.match(withGameEmailHtml("<p>hi</p>"), /font-size:12px/);
+const foot = withGameEmailHtml("<p>hi</p>");
+assert.match(foot, /font-size:12px/);
+assert.match(foot, /color:#9aa5b5/);
+assert.match(foot, /<a [^>]*font-size:12px/);
 assert.match(
-  withGameEmailHtml("<p>hi</p>"),
+  foot,
   /href="https:\/\/survive-sunday\.vercel\.app\/account\/notifications"/
 );
 assert.match(GAME_EMAIL_FOOTER, /Not junk/);

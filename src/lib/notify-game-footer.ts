@@ -10,37 +10,43 @@ export const GAME_SMS_FOOTER =
 export const GAME_EMAIL_FOOTER =
   `If this is in spam or junk, mark Not junk so the next one reaches you.\nPreferences: ${PREFS_URL}`;
 
-function alreadyHasTip(text: string): boolean {
+/** Spam tip or preferences link already present — do not add a second footer. */
+export function hasGameNoticeTip(text: string): boolean {
   return /account\/notifications|spam\/junk|spam or junk/i.test(text);
 }
 
 export function withGameSmsFooter(body: string): string {
   const text = (body ?? "").trim();
   if (!text) return GAME_SMS_FOOTER;
-  if (alreadyHasTip(text)) return text;
+  if (hasGameNoticeTip(text)) return text;
   return `${text}\n${GAME_SMS_FOOTER}`;
 }
 
 export function withGameEmailText(body: string): string {
   const text = (body ?? "").trim();
   if (!text) return GAME_EMAIL_FOOTER;
-  if (alreadyHasTip(text)) return text;
+  if (hasGameNoticeTip(text)) return text;
   return `${text}\n\n${GAME_EMAIL_FOOTER}`;
 }
 
+const FOOT_STYLE = "font-size:12px;line-height:16px;color:#9aa5b5;";
+
+/** Quiet footnote for every game email. Smaller and greyer than the body. */
 export function gameEmailFooterHtml(): string {
-  return `<p style="color:#9aa5b5;font-size:12px;margin:16px 0 0;">If this is in spam or junk, mark Not junk so the next one reaches you. <a href="${PREFS_URL}" style="color:#9aa5b5;text-decoration:underline;">Preferences</a></p>`;
+  const link =
+    `<a href="${PREFS_URL}" style="${FOOT_STYLE}text-decoration:underline;">Preferences</a>`;
+  return `<p style="margin:16px 0 0;${FOOT_STYLE}"><span style="${FOOT_STYLE}">If this is in spam or junk, mark Not junk so the next one reaches you. ${link}</span></p>`;
 }
 
 export function withGameEmailHtml(bodyHtml: string): string {
   const html = bodyHtml ?? "";
-  if (alreadyHasTip(html)) return html;
+  if (hasGameNoticeTip(html)) return html;
   return `${html}${gameEmailFooterHtml()}`;
 }
 
 export function withGameEmailDocument(html: string): string {
   const doc = html ?? "";
-  if (alreadyHasTip(doc)) return doc;
+  if (hasGameNoticeTip(doc)) return doc;
   if (/<\/body>/i.test(doc)) {
     return doc.replace(/<\/body>/i, `${gameEmailFooterHtml()}</body>`);
   }

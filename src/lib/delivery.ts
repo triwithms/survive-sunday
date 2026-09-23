@@ -1,3 +1,5 @@
+import { hasGameNoticeTip } from "./notify-game-footer";
+
 export type DeliverResult =
   | { ok: true; stubbed: boolean }
   | { ok: false; error: string };
@@ -297,7 +299,11 @@ export function stadiumEmailHtml(opts: {
     <p style="color:#e8c547;font-size:20px;letter-spacing:0.08em;margin:0 0 16px;">SURVIVE SUNDAY</p>
     <p style="font-size:18px;margin:0 0 12px;">${opts.heading}</p>
     ${opts.bodyHtml}
-    <p style="color:#9aa5b5;font-size:13px;margin:24px 0 0;">You can change what we send from Account → Notification preferences. Password-reset codes are always sent when you ask for one.</p>
+    ${
+      hasGameNoticeTip(opts.bodyHtml)
+        ? ""
+        : `<p style="margin:24px 0 0;font-size:12px;line-height:16px;color:#9aa5b5;">You can change what we send from Account → Notification preferences. Password-reset codes are always sent when you ask for one.</p>`
+    }
   </body>
 </html>`;
 }
