@@ -1,3 +1,4 @@
+import type { MissingPickPanelData } from "@/lib/missing-pick-who";
 import type { WeekWrapPanelData } from "@/lib/week-wrap-types";
 import type { EnterPickData } from "./enter-pick-types";
 import type { AdminRoleRow } from "./admin-role-types";
@@ -62,6 +63,7 @@ export type AuditLogRow = {
 export type SystemScreenProps = {
   weekNumber: number;
   enterPick: EnterPickData;
+  missingPicks: MissingPickPanelData;
   weekWrap: WeekWrapPanelData;
   logs: AuditLogRow[];
 };

@@ -66,6 +66,7 @@
     "verify:account-hub": "tsx scripts/verify-account-hub.ts",
     "verify:feedback-admin": "tsx scripts/verify-feedback-admin.ts",
     "verify:notification-prefs": "tsx scripts/verify-notification-prefs.ts",
+    "verify:missing-pick": "tsx scripts/verify-missing-pick-reminders.ts",
     "verify:notify-channels": "tsx scripts/verify-notify-channels.ts",
     "notify:defaults": "tsx scripts/default-notify-prefs.ts",
     "verify:notification-schema": "tsx scripts/verify-notification-schema.ts",

@@ -27,7 +27,10 @@ export function HelpForAdmins() {
           <strong>Send now</strong>, or <strong>Skip this week</strong>. The
           automatic note goes out at noon (Toronto) the day after the last
           game is final. The email adds the NFL Every Touchdown video when
-          that post exists, and a small preferences link. Texts stay short.
+          that post exists, and a small preferences link. Texts stay short.{" "}
+          <strong>Missing picks</strong> lists who is still blank, sends
+          reminders, or copies a group-chat list while the week is open. The
+          daily reminder is only the last 24 hours before lock.
         </li>
         <li className="text-[var(--text-primary)]">
           Personal Join links: one Copy per friend on their Users row. Do not

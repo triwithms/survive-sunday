@@ -1,67 +1,82 @@
-import { prisma } from "./db";
-import { effectiveLockAt, isWeekLocked } from "./grading";
-import { missingPickCopy, notifyUser } from "./notify";
-import { isMissingPickReminderWindow } from "./notification-types";
 import { applyMirrorPicksForActiveWeeks } from "./pick-mirror-db";
-import { isPlayerSeat } from "./roles";
+import { writeMissingPickAudit } from "./missing-pick-audit";
+import { loadRemindWeeks, membershipHasPick } from "./missing-pick-load";
+import { remindAfterRecheck, type RemindMode } from "./missing-pick-who";
+import { missingPickCopy, notifyUser } from "./notify";
 
 export async function sendMissingPickReminders(opts?: {
   poolId?: string;
+  weekId?: string;
   now?: Date;
-}): Promise<{ reminded: number; skipped: number; mirrored: number }> {
+  mode?: RemindMode;
+  actorId?: string | null;
+}): Promise<{
+  reminded: number;
+  skipped: number;
+  mirrored: number;
+  alreadyPicked: number;
+  nicknames: string[];
+}> {
   const now = opts?.now ?? new Date();
+  const mode: RemindMode = opts?.mode ?? "cron";
   const mirrored = await applyMirrorPicksForActiveWeeks(now);
-  const weeks = await prisma.week.findMany({
-    where: {
-      status: { in: ["open"] },
-      ...(opts?.poolId ? { poolId: opts.poolId } : {}),
-    },
-    include: {
-      pool: {
-        include: { memberships: { include: { user: true, picks: true } } },
-      },
-      picks: true,
-    },
+  const weeks = await loadRemindWeeks({
+    poolId: opts?.poolId,
+    weekId: opts?.weekId,
+    now,
+    mode,
   });
-
   let reminded = 0;
   let skipped = 0;
+  let alreadyPicked = 0;
+  const nicknames: string[] = [];
+
   for (const week of weeks) {
-    if (isWeekLocked(week)) continue;
-    const lockAt = effectiveLockAt(week);
-    if (!isMissingPickReminderWindow(lockAt, now)) continue;
-    const picked = new Set(week.picks.map((p) => p.membershipId));
-    const lockLabel = lockAt.toLocaleString("en-CA", {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-      timeZone: "America/Toronto",
-    });
-    for (const m of week.pool.memberships) {
-      if (!isPlayerSeat(m)) continue;
-      if (m.status === "eliminated") continue;
-      if (picked.has(m.id)) continue;
+    for (const seat of week.blanks) {
+      const exists = await membershipHasPick(seat.membershipId, week.id);
+      if (!remindAfterRecheck(exists)) {
+        alreadyPicked += 1;
+        continue;
+      }
       const result = await notifyUser({
         target: {
-          userId: m.user.id,
-          email: m.user.email,
-          phoneE164: m.user.phoneE164,
-          notifyPref: m.user.notifyPref,
-          nickname: m.nickname,
+          userId: seat.userId,
+          email: seat.email,
+          phoneE164: seat.phoneE164,
+          notifyPref: seat.notifyPref,
+          nickname: seat.nickname,
         },
         type: "missingPickReminder",
         content: missingPickCopy({
-          nickname: m.nickname,
+          nickname: seat.nickname,
           weekNumber: week.number,
-          lockLabel,
+          lockLabel: week.lockLabel,
         }),
         dedupeKey: week.id,
       });
+      nicknames.push(seat.nickname);
       if (result.emailed || result.texted) reminded += 1;
       else skipped += 1;
     }
   }
-  return { reminded, skipped, mirrored: mirrored.copied };
+
+  if (mode === "admin" && opts?.poolId && opts.actorId) {
+    await writeMissingPickAudit({
+      poolId: opts.poolId,
+      actorId: opts.actorId,
+      weeks: weeks.map((week) => week.number),
+      reminded,
+      skipped,
+      alreadyPicked,
+      nicknames,
+    });
+  }
+
+  return {
+    reminded,
+    skipped,
+    mirrored: mirrored.copied,
+    alreadyPicked,
+    nicknames,
+  };
 }
