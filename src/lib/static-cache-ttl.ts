@@ -5,6 +5,8 @@ export const SCOREBOARD_LIVE_TTL_MS = 20_000;
 /** Week slate / kickoffs: skip ESPN on Scores/Schedule nav inside this window. */
 export const SCOREBOARD_SLATE_TTL_MS = 6 * 60 * 60 * 1000;
 export const SCOREBOARD_FAIL_TTL_MS = 45_000;
+/** NFL Standings tab: background ESPN refresh at most this often per instance. */
+export const STANDINGS_TTL_MS = 10 * 60 * 1000;
 
 /** Injury report: serve last-good; refresh on TTL or content hash change. */
 export const INJURY_TTL_MS = 24 * 60 * 60 * 1000;

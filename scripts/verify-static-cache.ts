@@ -23,6 +23,7 @@ import {
   INJURY_TTL_MS,
   SCOREBOARD_LIVE_TTL_MS,
   SCOREBOARD_SLATE_TTL_MS,
+  STANDINGS_TTL_MS,
   pageEspnRefreshShape,
 } from "../src/lib/static-cache-ttl";
 
@@ -84,6 +85,7 @@ const row = (player: string): LiveInjury => ({
 assert.equal(injuryFingerprint([row("A"), row("B")]), injuryFingerprint([row("B"), row("A")]));
 assert.notEqual(injuryFingerprint([row("A")]), injuryFingerprint([row("C")]));
 assert.equal(INJURY_TTL_MS, 24 * 60 * 60 * 1000);
+assert.equal(STANDINGS_TTL_MS, 10 * 60 * 1000);
 assert.deepEqual(pageEspnRefreshShape(false), { standings: false, grade: true });
 assert.deepEqual(pageEspnRefreshShape(true), { standings: false, grade: false });
 assert.match(readFileSync("docs/FILE-MAP.md", "utf8"), /static-cache-ttl/);
@@ -106,6 +108,15 @@ for (const path of [
   assert.match(src, /syncWeekEspnForPage/, `${path} must use the deferred page refresh`);
   assert.doesNotMatch(src, /syncWeekScoresFromEspn/, `${path} must not use the heavy sync`);
 }
+
+assert.doesNotMatch(
+  readFileSync("src/components/features/team/load-team.ts", "utf8"),
+  /syncWeekEspn|syncWeekScoresFromEspn/,
+  "team page must not sync ESPN"
+);
+const league = readFileSync("src/components/features/league/load-league.ts", "utf8");
+assert.match(league, /scheduleTeamStandingsRefresh/);
+assert.doesNotMatch(league, /await syncTeamStandingsFromEspn/);
 
 const heavy = readFileSync("src/app/api/scores/sync/route.ts", "utf8");
 assert.match(heavy, /syncWeekScoresFromEspn\(week\.id\)/);

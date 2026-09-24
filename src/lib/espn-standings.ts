@@ -1,6 +1,8 @@
 import "server-only";
+import { after } from "next/server";
 import { prisma } from "@/lib/db";
 import { fetchEspnJson, normAbbr } from "@/lib/espn";
+import { STANDINGS_TTL_MS } from "@/lib/static-cache-ttl";
 
 /** ESPN → app team abbreviation. */
 export function fromEspnAbbr(abbr: string): string {
@@ -142,4 +144,33 @@ export async function syncTeamStandingsFromEspn(): Promise<{
   }
 
   return { updated, teams: rows.length, source: "espn" };
+}
+
+let standingsFreshUntil = 0;
+let standingsInflight: Promise<void> | null = null;
+
+/** NFL Standings paints stored W-L first. ESPN refresh does not block the tab. */
+export function scheduleTeamStandingsRefresh(): void {
+  if (Date.now() < standingsFreshUntil || standingsInflight) return;
+  const run = () => {
+    if (standingsInflight) return standingsInflight;
+    const job = syncTeamStandingsFromEspn()
+      .then(() => {
+        standingsFreshUntil = Date.now() + STANDINGS_TTL_MS;
+      })
+      .catch((err) => {
+        console.error("deferred standings refresh failed", err);
+      })
+      .finally(() => {
+        if (standingsInflight === job) standingsInflight = null;
+      });
+    standingsInflight = job;
+    return job;
+  };
+  try {
+    after(run);
+  } catch (err) {
+    console.error("after() unavailable for standings refresh", err);
+    void run();
+  }
 }

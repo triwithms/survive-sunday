@@ -499,6 +499,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Work | PR | Notes |
 |------|-----|-------|
 | Team page full-season schedule | [#132](https://github.com/triwithms/survive-sunday/pull/132) | **HOLD** — not live. Do not document as shipped. Merge only when Robert says go. |
+| Player UX Batch A v2 (perf-first) | [#169](https://github.com/triwithms/survive-sunday/pull/169) | **DO NOT MERGE** until Robert phone-tests Preview. Rebased on #170 / #171 (paint-first ESPN and deferred lock effects are already on `main`). Adds ET labels, standings swipe cue, Schedule wrap, one change-until-kickoff line, gold Questionable chip, and a non-blocking NFL Standings refresh. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
