@@ -10,3 +10,14 @@ export const SCOREBOARD_FAIL_TTL_MS = 45_000;
 export const INJURY_TTL_MS = 24 * 60 * 60 * 1000;
 export const INJURY_FAIL_TTL_MS = 45_000;
 export const INJURY_SWR_MS = INJURY_TTL_MS * 2;
+
+/**
+ * Page refreshes leave standings to the heavy sync path and only grade when
+ * games are outside the live window.
+ */
+export function pageEspnRefreshShape(live: boolean): {
+  standings: false;
+  grade: boolean;
+} {
+  return { standings: false, grade: !live };
+}

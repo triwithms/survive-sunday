@@ -38,11 +38,21 @@ export function buildEspnGameNote(
   return snap.clockLabel ? `${snap.clockLabel} · ESPN` : null;
 }
 
+export type WeekScoreSyncOpts = {
+  /** Pending finals → results. Default true for cron and the sync API. */
+  grade?: boolean;
+  /** ESPN W-L pull. Default true; player tabs pass false. */
+  standings?: boolean;
+};
+
 /**
  * Pull ESPN scoreboard into our Game rows for a pool week.
  * Overwrites demo/fake live scores. Does not invent scores — scheduled clears them.
  */
-export async function syncWeekScoresFromEspn(weekId: string): Promise<{
+export async function syncWeekScoresFromEspn(
+  weekId: string,
+  opts: WeekScoreSyncOpts = {}
+): Promise<{
   updated: number;
   live: number;
   final: number;
@@ -136,27 +146,35 @@ export async function syncWeekScoresFromEspn(weekId: string): Promise<{
     console.error("espn odds sync skipped", e);
   }
 
-  // Ungrade picks whose game is no longer final (e.g. premature demo finals).
-  const picks = await prisma.pick.findMany({
-    where: {
-      weekId,
-      result: { in: ["win", "loss", "push"] },
-      NOT: { source: "missed" },
-    },
-    include: { game: true },
-  });
-  for (const pick of picks) {
-    if (!pick.game || pick.game.status === "final") continue;
-    await undoPickMembershipEffect(pick.membershipId, pick.result);
-    await prisma.pick.update({
-      where: { id: pick.id },
-      data: { result: "pending", gradedAt: null },
+  const grade = opts.grade !== false;
+  let graded: string[] = [];
+  if (grade) {
+    // Ungrade picks whose game is no longer final (e.g. premature demo finals).
+    const picks = await prisma.pick.findMany({
+      where: {
+        weekId,
+        result: { in: ["win", "loss", "push"] },
+        NOT: { source: "missed" },
+      },
+      include: { game: true },
     });
+    for (const pick of picks) {
+      if (!pick.game || pick.game.status === "final") continue;
+      await undoPickMembershipEffect(pick.membershipId, pick.result);
+      await prisma.pick.update({
+        where: { id: pick.id },
+        data: { result: "pending", gradedAt: null },
+      });
+    }
+
+    graded = await gradeWeekPicks(weekId);
+    await recomputeWeeksSurvived(week.poolId);
   }
 
-  const graded = await gradeWeekPicks(weekId);
-  await recomputeWeeksSurvived(week.poolId);
-  const standings = await syncTeamStandingsFromEspn();
+  const standings =
+    opts.standings === false
+      ? { updated: 0 }
+      : await syncTeamStandingsFromEspn();
 
   return {
     updated,
