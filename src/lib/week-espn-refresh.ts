@@ -5,6 +5,7 @@ import { shouldPollLiveScores } from "@/lib/game-display";
 import { isWeekScoreboardFresh } from "@/lib/espn-scoreboard";
 import { syncWeekScoresFromEspn } from "@/lib/live-scores";
 import { pageEspnRefreshShape } from "@/lib/static-cache-ttl";
+import { enqueueWeekWork } from "@/lib/week-work-queue";
 
 /**
  * Player tabs read Postgres and return. ESPN runs after the response via
@@ -12,6 +13,10 @@ import { pageEspnRefreshShape } from "@/lib/static-cache-ttl";
  * The scoreboard TTL applies during the live window too.
  */
 const inflight = new Map<string, Promise<void>>();
+type WeekRefreshSnapshot = {
+  number: number;
+  games: Array<{ status: string; kickoff: Date | string }>;
+};
 
 function scheduleWeekEspnRefresh(
   weekId: string,
@@ -21,7 +26,10 @@ function scheduleWeekEspnRefresh(
     const pending = inflight.get(weekId);
     if (pending) return pending;
 
-    const job = syncWeekScoresFromEspn(weekId, shape)
+    const job = enqueueWeekWork(
+      weekId,
+      () => syncWeekScoresFromEspn(weekId, shape).then(() => undefined)
+    )
       .then(() => undefined)
       .catch((err) => {
         console.error("deferred page espn refresh failed", weekId, err);
@@ -42,8 +50,11 @@ function scheduleWeekEspnRefresh(
 }
 
 /** Gates on the scoreboard TTL and never waits on ESPN. */
-export async function syncWeekEspnForPage(weekId: string): Promise<void> {
-  const week = await prisma.week.findUnique({
+export async function syncWeekEspnForPage(
+  weekId: string,
+  loadedWeek?: WeekRefreshSnapshot
+): Promise<void> {
+  const week = loadedWeek ?? await prisma.week.findUnique({
     where: { id: weekId },
     select: {
       number: true,

@@ -8,13 +8,10 @@ import {
   weekNavOptions,
 } from "@/lib/page-week";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
-import {
-  effectiveLockAt,
-  ensureWeekLockedEffects,
-  isWeekLocked,
-} from "@/lib/grading";
+import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
+import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { buildHomeRows } from "./build-home-rows";
 import type { HomeScreenProps } from "./types";
@@ -32,18 +29,24 @@ export async function loadHomePage(searchParams?: {
   });
   if (!selectedRef) return null;
 
-  await ensureWeekLockedEffects(selectedRef.id);
-  try { await syncWeekEspnForPage(selectedRef.id); }
+  deferWeekLockedEffects(selectedRef.id);
+  const [week, members] = await Promise.all([
+    prisma.week.findUniqueOrThrow({
+      where: { id: selectedRef.id },
+      include: { games: true },
+    }),
+    prisma.membership.findMany({
+      where: { poolId: me.poolId },
+      include: {
+        picks: {
+          where: { weekId: selectedRef.id },
+          include: { game: true },
+        },
+      },
+    }),
+  ]);
+  try { await syncWeekEspnForPage(selectedRef.id, week); }
   catch (e) { console.error("pool espn score sync skipped", e); }
-
-  const week = await prisma.week.findUniqueOrThrow({
-    where: { id: selectedRef.id },
-    include: { games: true },
-  });
-  const members = await prisma.membership.findMany({
-    where: { poolId: me.poolId },
-    include: { picks: { where: { weekId: week.id }, include: { game: true } } },
-  });
   const self = members.find((m) => m.id === me.id) ?? me;
   const locked = isWeekLocked(week);
   const sorted = sortParticipants(

@@ -4,6 +4,7 @@
  *
  *   npx tsx scripts/verify-credentials-authorize.ts
  */
+import { readFileSync } from "node:fs";
 import { Auth, skipCSRFCheck } from "@auth/core";
 import Credentials from "@auth/core/providers/credentials";
 import { userFromCredentials } from "../src/lib/credentials-user";
@@ -36,11 +37,27 @@ async function main() {
     "postgresql://u:p@ep-foo-pooler.us-west-2.aws.neon.tech/neondb?sslmode=require"
   );
   assert(!!pooled && pooled.includes("pgbouncer=true"), `pooler URL ${pooled}`);
-  assert(!!pooled && pooled.includes("connection_limit=1"), `limit ${pooled}`);
+  assert(!!pooled && pooled.includes("connection_limit=3"), `limit ${pooled}`);
   const local = prismaDatasourceUrl("postgresql://survive:survive@127.0.0.1:5432/survive");
   assert(!!local && local.includes("connection_limit=1"), `local ${local}`);
   assert(!!local && !local.includes("pgbouncer"), `local should not set pgbouncer: ${local}`);
-  console.log("PASS  Neon pooler URL gets pgbouncer + connection_limit");
+  const direct = prismaDatasourceUrl(
+    "postgresql://u:p@ep-foo.us-east-1.aws.neon.tech/neondb"
+  );
+  assert(!!direct && direct.includes("connection_limit=1"), `direct ${direct}`);
+  assert(!!direct && !direct.includes("pgbouncer"), `direct URL ${direct}`);
+  const configured = prismaDatasourceUrl(
+    "postgresql://u:p@ep-foo-pooler.us-east-1.aws.neon.tech/neondb?connection_limit=7"
+  );
+  assert(!!configured && configured.includes("connection_limit=7"), `configured ${configured}`);
+  assert(!!configured && configured.includes("pgbouncer=true"), `configured ${configured}`);
+  console.log("PASS  pooled Neon gets 3; direct stays 1; explicit limits stay set");
+
+  const vercel = JSON.parse(readFileSync("vercel.json", "utf8")) as {
+    regions?: string[];
+  };
+  assert(vercel.regions?.length === 1 && vercel.regions[0] === "iad1", "Vercel region must be iad1");
+  console.log("PASS  Vercel functions pinned to iad1");
 
   const SECRET = "test-auth-secret-for-callback-route-32b";
   const host = "survive-sunday.vercel.app";

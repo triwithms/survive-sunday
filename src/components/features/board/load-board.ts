@@ -1,8 +1,9 @@
 import "server-only";
 import { prisma } from "@/lib/db";
 import { requireMembership } from "@/lib/require-membership";
-import { ensureWeekLockedEffects, isWeekLocked, MISSED_TEAM } from "@/lib/grading";
+import { isWeekLocked, MISSED_TEAM } from "@/lib/grading";
 import { resolvedPoolWeek } from "@/lib/pool-current-week-db";
+import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { assembleBoardPage } from "./assemble-board";
@@ -29,8 +30,7 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
     select: { id: true },
   });
   if (weekRef) {
-    try { await ensureWeekLockedEffects(weekRef.id); }
-    catch (e) { console.error("standings lock effects skipped", e); }
+    deferWeekLockedEffects(weekRef.id);
   }
   const week = weekRef
     ? await prisma.week.findUnique({

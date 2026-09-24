@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { after } from "next/server";
 import { auth } from "./auth";
 import { prisma } from "./db";
 import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
@@ -12,7 +14,6 @@ import { ensureUserNotifyPref } from "./notify-pref-schema";
 const membershipInclude = {
   pool: true,
   user: true,
-  picks: { include: { game: true } },
 } as const;
 
 export function preferPlayerMembership<T extends { role: string }>(
@@ -69,19 +70,31 @@ async function loadMemberships(userId: string) {
   }
 }
 
+function schedulePoolMaintenance(poolId: string): void {
+  const run = async () => {
+    await applyCanonicalRosterNamesThrottled(prisma, poolId);
+    await ensureCanonicalLiveSeatsThrottled(prisma, poolId);
+  };
+  try {
+    after(run);
+  } catch (error) {
+    console.error("after() unavailable for pool maintenance", error);
+    void run();
+  }
+}
+
 /**
  * One login can be Player (board / picks) and Administrator (Admin tools).
  * `membership` is the player seat when both exist (e.g. Gams).
  */
-export async function getUserPoolContext(userId: string) {
+export const getUserPoolContext = cache(async (userId: string) => {
   let memberships = await loadMemberships(userId);
   if (memberships[0]) {
-    await applyCanonicalRosterNamesThrottled(prisma, memberships[0].poolId);
-    await ensureCanonicalLiveSeatsThrottled(prisma, memberships[0].poolId);
     const isolation = await ensureLiveWeekIsolation(prisma, memberships[0].pool);
     if (isolation.changed) {
       memberships = await loadMemberships(userId);
     }
+    schedulePoolMaintenance(memberships[0].poolId);
   }
   const membership = preferPlayerMembership(memberships);
   const adminMembership = adminMembershipOf(memberships);
@@ -108,7 +121,7 @@ export async function getUserPoolContext(userId: string) {
     roles,
     memberships,
   };
-}
+});
 
 export async function getMembershipForUser(userId: string) {
   const ctx = await getUserPoolContext(userId);

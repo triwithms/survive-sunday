@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { requireMembership } from "@/lib/require-membership";
 import {
   loadParticipantWeeks,
+  pageWeekNumberForGame,
   playerPickDecision,
   selectPageWeek,
   weekNavOptions,
@@ -10,7 +11,7 @@ import {
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
-import { matchupGameParam, weekQueryForGame } from "@/lib/matchup-share";
+import { matchupGameParam } from "@/lib/matchup-share";
 import { formatKickoff } from "@/lib/utils";
 import { mapScheduleGames } from "./schedule-games";
 import type { ScheduleScreenProps } from "./types";
@@ -20,26 +21,28 @@ export async function loadSchedulePage(searchParams?: {
   game?: string | string[];
 }): Promise<ScheduleScreenProps | null> {
   const me = await requireMembership();
-  const { currentWeek, weeks } = await loadParticipantWeeks(me);
-  const decision = playerPickDecision(me, weeks, currentWeek);
   const openGameId = matchupGameParam(searchParams?.game);
+  const [{ currentWeek, weeks }, linkedWeek] = await Promise.all([
+    loadParticipantWeeks(me),
+    pageWeekNumberForGame(me.poolId, openGameId),
+  ]);
+  const decision = playerPickDecision(me, weeks, currentWeek);
   const selectedRef = selectPageWeek({
     weeks,
-    requested: searchParams?.week ?? weekQueryForGame(weeks, openGameId),
+    requested: searchParams?.week ?? linkedWeek?.toString(),
     basePath: "/schedule",
     currentWeek, actionWeek: decision.actionWeek,
     allowFuture: true, fallbackFirst: true,
   });
   if (!selectedRef) return null;
 
-  await syncWeekEspnForPage(selectedRef.id).catch((e) => {
-    console.error("schedule espn score sync skipped", e);
-    return null;
-  });
-
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: selectedRef.id },
     include: { games: { orderBy: { kickoff: "asc" } } },
+  });
+  await syncWeekEspnForPage(selectedRef.id, week).catch((e) => {
+    console.error("schedule espn score sync skipped", e);
+    return null;
   });
   const teamAbbrs = [
     ...new Set(week.games.flatMap((g) => [g.awayAbbr, g.homeAbbr])),
