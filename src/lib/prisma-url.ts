@@ -1,7 +1,7 @@
 /**
- * Neon’s pooled host needs Prisma’s pgbouncer flag; serverless should
- * keep a single connection per isolate. Applied at PrismaClient init so
- * Auth.js authorize and the rest of the app share one URL.
+ * Neon’s pooled host needs Prisma’s pgbouncer flag. Its pooler can safely
+ * multiplex a small bounded set, so 3 avoids serializing independent page
+ * reads; direct hosts stay at 1 to remain conservative in serverless.
  */
 export function prismaDatasourceUrl(
   raw: string | undefined = process.env.DATABASE_URL
@@ -15,7 +15,7 @@ export function prismaDatasourceUrl(
       url.searchParams.set("pgbouncer", "true");
     }
     if (!url.searchParams.has("connection_limit")) {
-      url.searchParams.set("connection_limit", "1");
+      url.searchParams.set("connection_limit", pooled ? "3" : "1");
     }
     return url.toString();
   } catch {
