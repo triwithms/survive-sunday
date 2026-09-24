@@ -3,7 +3,7 @@ import { formatMatchupListLine } from "@/lib/game-display";
 import {
   formatCurrentStanding,
   formatPriorYearRank,
-  resolveFavourite,
+  playerSpreadLabel,
 } from "@/lib/matchup-meta";
 import { formatWinPct } from "@/lib/standings-format";
 import { formatKickoff } from "@/lib/utils";
@@ -72,12 +72,11 @@ export function buildThisWeek(
   if (!game) return null;
   const atHome = game.homeAbbr === abbr;
   const opponentAbbr = atHome ? game.awayAbbr : game.homeAbbr;
-  const fav = resolveFavourite(game);
   return {
     opponentAbbr,
     atHome,
     kickoffLabel: formatKickoff(game.kickoff),
     scoreLine: formatMatchupListLine(game),
-    favouriteLabel: fav?.label ?? null,
+    favouriteLabel: playerSpreadLabel(game),
   };
 }

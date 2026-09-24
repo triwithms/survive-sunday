@@ -235,11 +235,45 @@ export type EspnSummaryOddsPayload = {
   odds?: unknown;
 };
 
+function firstDetails(items: unknown): string | null {
+  const list = Array.isArray(items) ? items : [];
+  const item = list[0] as { details?: unknown } | undefined;
+  return typeof item?.details === "string" ? item.details : null;
+}
+
+/**
+ * ESPN prints `details` ("GB -4.5") on the scoreboard. `pointSpread.close`
+ * can be a different number (open vs current, or another book). Player
+ * screens store and show the printed line so My pick and Schedule cannot
+ * disagree by which field a payload happened to include.
+ */
+export function withEspnDetailsLine(
+  odds: GameOdds | null,
+  details: string | null | undefined,
+  homeAbbr: string,
+  awayAbbr: string
+): GameOdds | null {
+  const fromDetails = parseEspnOddsDetails(details, homeAbbr, awayAbbr);
+  if (!fromDetails) return odds;
+  return sanitizeGameOdds({
+    spreadHome: fromDetails.spreadHome,
+    spreadAway: fromDetails.spreadAway,
+    mlHome: odds?.mlHome ?? null,
+    mlAway: odds?.mlAway ?? null,
+  });
+}
+
 export function parseEspnSummaryOdds(
-  payload: EspnSummaryOddsPayload | null | undefined
+  payload: EspnSummaryOddsPayload | null | undefined,
+  homeAbbr?: string,
+  awayAbbr?: string
 ): GameOdds | null {
   if (!payload) return null;
-  return parseEspnPickcenter(payload.pickcenter) ?? parseEspnPickcenter(payload.odds);
+  const parsed =
+    parseEspnPickcenter(payload.pickcenter) ?? parseEspnPickcenter(payload.odds);
+  if (!homeAbbr || !awayAbbr) return parsed;
+  const details = firstDetails(payload.pickcenter) ?? firstDetails(payload.odds);
+  return withEspnDetailsLine(parsed, details, homeAbbr, awayAbbr);
 }
 
 function oddsAbbr(abbr: string): string {
@@ -293,17 +327,20 @@ export function parseEspnCompetitionOdds(
   awayAbbr: string
 ): GameOdds | null {
   const parsed = parseEspnPickcenter(oddsItems);
-  if (parsed && (parsed.spreadHome != null || parsed.spreadAway != null)) {
-    return parsed;
+  const lined = withEspnDetailsLine(
+    parsed,
+    firstDetails(oddsItems),
+    homeAbbr,
+    awayAbbr
+  );
+  if (
+    !lined ||
+    (lined.spreadHome == null &&
+      lined.spreadAway == null &&
+      lined.mlHome == null &&
+      lined.mlAway == null)
+  ) {
+    return null;
   }
-  const list = Array.isArray(oddsItems) ? oddsItems : [];
-  const item = list[0] as { details?: string } | undefined;
-  const fromDetails = parseEspnOddsDetails(item?.details, homeAbbr, awayAbbr);
-  if (!fromDetails) return parsed;
-  return sanitizeGameOdds({
-    spreadHome: fromDetails.spreadHome,
-    spreadAway: fromDetails.spreadAway,
-    mlHome: parsed?.mlHome ?? null,
-    mlAway: parsed?.mlAway ?? null,
-  });
+  return lined;
 }

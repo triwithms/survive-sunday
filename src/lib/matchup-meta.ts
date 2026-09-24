@@ -93,6 +93,43 @@ function favouredInfo(abbr: string, spread: number): FavouriteInfo {
   };
 }
 
+/**
+ * One mirrored pair for every player screen.
+ * The negative number is the favourite. If home and away disagree
+ * (4.5 vs 5.5), mirror that favourite instead of letting one column win.
+ */
+export function canonicalSpreads(
+  spreadHome: number | null | undefined,
+  spreadAway: number | null | undefined
+): { spreadHome: number; spreadAway: number } | null {
+  const home =
+    spreadHome != null && Number.isFinite(Number(spreadHome))
+      ? Number(spreadHome)
+      : null;
+  const away =
+    spreadAway != null && Number.isFinite(Number(spreadAway))
+      ? Number(spreadAway)
+      : null;
+  if (home == null && away == null) return null;
+  if (home != null && home < 0) return { spreadHome: home, spreadAway: -home };
+  if (away != null && away < 0) return { spreadHome: -away, spreadAway: away };
+  if (home === 0 || away === 0) return { spreadHome: 0, spreadAway: 0 };
+  if (home != null) return { spreadHome: home, spreadAway: -home };
+  return { spreadHome: -(away as number), spreadAway: away as number };
+}
+
+/** Plain-language line shared by My pick, Schedule, Selections, and team hub. */
+export function playerSpreadLabel(game: {
+  homeAbbr: string;
+  awayAbbr: string;
+  spreadHome: number | null;
+  spreadAway: number | null;
+  mlHome?: number | null;
+  mlAway?: number | null;
+}): string | null {
+  return resolveFavourite(game)?.label ?? null;
+}
+
 export function resolveFavourite(opts: {
   homeAbbr: string;
   awayAbbr: string;
@@ -103,8 +140,10 @@ export function resolveFavourite(opts: {
 }): FavouriteInfo | null {
   const { homeAbbr, awayAbbr } = opts;
   const odds = sanitizeGameOdds(opts);
-  const spreadHome = odds.spreadHome;
-  const spreadAway = odds.spreadAway;
+  const pair = canonicalSpreads(odds.spreadHome, odds.spreadAway);
+  if (!pair) return null;
+  const spreadHome = pair.spreadHome;
+  const spreadAway = pair.spreadAway;
   if (spreadHome != null && !Number.isNaN(Number(spreadHome))) {
     if (spreadHome === 0) return pickemInfo();
     if (spreadHome < 0) return favouredInfo(homeAbbr, spreadHome);

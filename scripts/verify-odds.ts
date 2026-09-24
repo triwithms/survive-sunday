@@ -351,4 +351,53 @@ assert.equal(
   "missing ESPN line stays hidden — never invent a favourite or pick'em"
 );
 
+const detailsBeatsClose = parseEspnCompetitionOdds(
+  [
+    {
+      details: "GB -4.5",
+      spread: -5.5,
+      homeTeamOdds: { favorite: true },
+      awayTeamOdds: { favorite: false },
+      pointSpread: {
+        home: { close: { line: "-5.5" }, open: { line: "-7.5" } },
+        away: { close: { line: "+5.5" }, open: { line: "+7.5" } },
+      },
+    },
+  ],
+  "GB",
+  "ATL"
+);
+assert.equal(detailsBeatsClose?.spreadHome, -4.5);
+assert.equal(detailsBeatsClose?.spreadAway, 4.5);
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "GB",
+    awayAbbr: "ATL",
+    ...detailsBeatsClose!,
+  })?.label,
+  "GB favoured by 4.5",
+  "printed ESPN details wins over a disagreeing close line"
+);
+
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "GB",
+    awayAbbr: "ATL",
+    spreadHome: -4.5,
+    spreadAway: 5.5,
+  })?.label,
+  "GB favoured by 4.5",
+  "a torn home favourite line is mirrored, not mixed with the other column"
+);
+assert.equal(
+  resolveFavourite({
+    homeAbbr: "GB",
+    awayAbbr: "ATL",
+    spreadHome: 4.5,
+    spreadAway: -5.5,
+  })?.label,
+  "ATL favoured by 5.5",
+  "when columns disagree, the negative side is the favourite everyone shows"
+);
+
 console.log("verify-odds OK");
