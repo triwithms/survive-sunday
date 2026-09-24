@@ -323,6 +323,7 @@ Team logos and names on the pick slate open a **team research** page (roster, ne
 
 - **Scores** opens on the signed-in friend’s **current pick week** (same week Pick is focused on). Past weeks are fine; **future weeks stay on Schedule** — Scores will not open them.
 - **Scores** (and My pick / Selections / Schedule) refresh from ESPN while games are on. Finals auto-grade.
+- Player tabs read saved Postgres scores first and never wait for ESPN. A stale scoreboard refresh runs after the response (6h slate / about 20s live); live polling and cron keep the heavy score, grading, and standings paths.
 - **Scores**, **My pick**, **Selections**, and **Standings** show **local-only** transparent helmets (`public/helmets/{abbr}.png` — no white plates, no ESPN CDN / `Team.logoUrl`; [#119](https://github.com/triwithms/survive-sunday/pull/119), [#124](https://github.com/triwithms/survive-sunday/pull/124)). Marks are sized to read at a glance on a phone. Possession is a **🏈** plus a gold bar.
 - **Team pages** show ESPN’s public injury report as a **name list** (not official NFL). Selections / Scores / Schedule / Pick do not show Out / Doubtful / Q chips or TV stations. Tap a **player name** on the roster or injury list for a detail page.
 - If ESPN is blocked or down, last saved scores stay; injury cards say the feed failed and link out.
