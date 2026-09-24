@@ -12,6 +12,10 @@ import { pageEspnRefreshShape } from "@/lib/static-cache-ttl";
  * The scoreboard TTL applies during the live window too.
  */
 const inflight = new Map<string, Promise<void>>();
+type WeekRefreshSnapshot = {
+  number: number;
+  games: Array<{ status: string; kickoff: Date | string }>;
+};
 
 function scheduleWeekEspnRefresh(
   weekId: string,
@@ -42,8 +46,11 @@ function scheduleWeekEspnRefresh(
 }
 
 /** Gates on the scoreboard TTL and never waits on ESPN. */
-export async function syncWeekEspnForPage(weekId: string): Promise<void> {
-  const week = await prisma.week.findUnique({
+export async function syncWeekEspnForPage(
+  weekId: string,
+  loadedWeek?: WeekRefreshSnapshot
+): Promise<void> {
+  const week = loadedWeek ?? await prisma.week.findUnique({
     where: { id: weekId },
     select: {
       number: true,

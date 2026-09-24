@@ -4,7 +4,7 @@
  *   npx tsx scripts/verify-static-cache.ts
  */
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import {
   isLastGoodFresh,
   lastGoodServePlan,
@@ -109,4 +109,34 @@ for (const path of [
 const heavy = readFileSync("src/app/api/scores/sync/route.ts", "utf8");
 assert.match(heavy, /syncWeekScoresFromEspn\(week\.id\)/);
 assert.doesNotMatch(heavy, /standings:\s*false/);
+
+const deferredLockEffects = readFileSync("src/lib/week-lock-effects.ts", "utf8");
+assert.match(deferredLockEffects, /after\(run\)/);
+assert.match(deferredLockEffects, /await ensureWeekLockedEffects/);
+for (const path of [
+  "src/components/features/home/load-home.ts",
+  "src/components/features/pick/load-pick.ts",
+  "src/components/features/scores/load-scores.ts",
+  "src/components/features/board/load-board.ts",
+]) {
+  const src = readFileSync(path, "utf8");
+  assert.match(src, /deferWeekLockedEffects/);
+  assert.doesNotMatch(src, /await ensureWeekLockedEffects/);
+}
+
+const session = readFileSync("src/lib/session.ts", "utf8");
+assert.match(session, /cache\(async/);
+assert.match(session, /after\(run\)/);
+assert.doesNotMatch(session, /picks:\s*\{\s*include:\s*\{\s*game:/);
+const pageWeeks = readFileSync("src/lib/page-week.ts", "utf8");
+assert.match(pageWeeks, /_count:\s*\{\s*select:\s*\{\s*games:\s*true/);
+assert.match(pageWeeks, /number:\s*\{\s*in:\s*\[currentWeek, currentWeek \+ 1\]/);
+
+for (const file of [
+  "01-login.png", "02-pool-home.png", "03-pick-this-weeks-games.png",
+  "04-team-research.png", "05-team-news.png", "06-league-standings.png",
+  "07-board-survival.png", "08-change-pick.png", "09-schedule.png",
+]) {
+  assert.equal(existsSync(`public/help-preview/${file}`), false);
+}
 console.log("verify-static-cache: ok");

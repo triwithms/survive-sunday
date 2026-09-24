@@ -6,7 +6,7 @@ import {
   type PlayerPickWeek,
 } from "@/lib/next-week-picks";
 import { resolvedPoolWeek } from "@/lib/pool-current-week-db";
-import { weeksForParticipants } from "@/lib/pool-mode";
+import { effectiveCurrentWeek, weeksForParticipants } from "@/lib/pool-mode";
 import { parseWeekParam, resolvePageWeekNumber } from "@/lib/weeks";
 import type { ExistingPickBits } from "@/lib/pick-change";
 
@@ -21,28 +21,68 @@ const weekGameSelect = {
 export type PageWeekRow = {
   id: string; number: number; label: string;
   lockAt: Date; lockOverrideAt: Date | null;
+  hasGames: boolean;
   games: Array<{
     id: string; status: string; kickoff: Date;
     awayAbbr: string; homeAbbr: string;
   }>;
+  pick: ExistingPickBits;
 };
 
 type MemberForDecision = {
-  poolId: string; playingFromWeek: number | null;
+  id: string; poolId: string; playingFromWeek: number | null;
   pool: { mode: string; currentWeek: number };
-  picks: Array<ExistingPickBits & { weekId: string }>;
 };
 
+async function loadDecisionPair(me: MemberForDecision, currentWeek: number) {
+  return prisma.week.findMany({
+    where: { poolId: me.poolId, number: { in: [currentWeek, currentWeek + 1] } },
+    orderBy: { number: "asc" },
+    select: {
+      id: true, number: true, label: true, lockAt: true, lockOverrideAt: true,
+      games: { select: weekGameSelect },
+      picks: {
+        where: { membershipId: me.id },
+        select: {
+          source: true, teamAbbr: true, gameId: true, result: true,
+        },
+      },
+    },
+  });
+}
+
 export async function loadParticipantWeeks(me: MemberForDecision) {
-  const weeks = weeksForParticipants(
-    me.pool.mode,
-    await prisma.week.findMany({
+  let currentWeek = effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
+  const [weekRefs, firstPair] = await Promise.all([
+    prisma.week.findMany({
       where: { poolId: me.poolId },
       orderBy: { number: "asc" },
-      include: { games: { select: weekGameSelect } },
-    })
-  ) as PageWeekRow[];
-  const { currentWeek } = resolvedPoolWeek(me.pool.mode, me.pool.currentWeek, weeks);
+      select: {
+        id: true, number: true, label: true, lockAt: true, lockOverrideAt: true,
+        _count: { select: { games: true } },
+      },
+    }),
+    loadDecisionPair(me, currentWeek),
+  ]);
+  const decisionWeeks = new Map<number, Awaited<ReturnType<typeof loadDecisionPair>>[number]>();
+  let pair = firstPair;
+  for (let attempt = 0; attempt <= weekRefs.length; attempt += 1) {
+    pair.forEach((week) => decisionWeeks.set(week.number, week));
+    const resolved = resolvedPoolWeek(me.pool.mode, currentWeek, pair).currentWeek;
+    if (resolved === currentWeek) break;
+    currentWeek = resolved;
+    pair = await loadDecisionPair(me, currentWeek);
+  }
+  const weeks = weeksForParticipants(me.pool.mode, weekRefs).map((ref) => {
+    const decision = decisionWeeks.get(ref.number);
+    return {
+      id: ref.id, number: ref.number, label: ref.label,
+      lockAt: ref.lockAt, lockOverrideAt: ref.lockOverrideAt,
+      hasGames: ref._count.games > 0,
+      games: decision?.games ?? [],
+      pick: decision?.picks[0] ?? null,
+    };
+  });
   return { currentWeek, weeks };
 }
 
@@ -53,12 +93,6 @@ export function playerPickDecision(
 ): PlayerPickWeek {
   const currentWeekRow = weeks.find((row) => row.number === currentWeek);
   const nextWeekRow = weeks.find((row) => row.number === currentWeek + 1);
-  const currentPick = currentWeekRow
-    ? me.picks.find((p) => p.weekId === currentWeekRow.id) ?? null
-    : null;
-  const nextPick = nextWeekRow
-    ? me.picks.find((p) => p.weekId === nextWeekRow.id) ?? null
-    : null;
   return resolvePlayerPickWeekFromLoaded({
     poolCurrentWeek: currentWeek,
     weeks: weeks.map((row) => ({
@@ -66,8 +100,8 @@ export function playerPickDecision(
       locked: isWeekLocked(row),
       games: row.games,
     })),
-    currentPick,
-    nextPick,
+    currentPick: currentWeekRow?.pick ?? null,
+    nextPick: nextWeekRow?.pick ?? null,
     playingFromWeek: me.playingFromWeek,
   });
 }
@@ -100,6 +134,18 @@ export function weekNavOptions(weeks: PageWeekRow[]) {
   return weeks.map((week) => ({
     number: week.number,
     label: week.label,
-    hasGames: week.games.length > 0,
+    hasGames: week.hasGames,
   }));
+}
+
+export async function pageWeekNumberForGame(
+  poolId: string,
+  gameId: string | null
+): Promise<number | undefined> {
+  if (!gameId) return undefined;
+  const game = await prisma.game.findFirst({
+    where: { id: gameId, week: { poolId } },
+    select: { week: { select: { number: true } } },
+  });
+  return game?.week.number;
 }

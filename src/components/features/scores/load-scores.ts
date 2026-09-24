@@ -3,16 +3,18 @@ import { prisma } from "@/lib/db";
 import { requireMembership } from "@/lib/require-membership";
 import {
   loadParticipantWeeks,
+  pageWeekNumberForGame,
   playerPickDecision,
   selectPageWeek,
   weekNavOptions,
 } from "@/lib/page-week";
-import { ensureWeekLockedEffects, isWeekLocked } from "@/lib/grading";
+import { isWeekLocked } from "@/lib/grading";
 import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
+import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { isPoolParticipant } from "@/lib/pool-rules";
-import { matchupGameParam, weekQueryForGame } from "@/lib/matchup-share";
+import { matchupGameParam } from "@/lib/matchup-share";
 import { scoreCardGames, scoresPickRows, sortScoreGames } from "./score-view";
 import type { ScoresScreenProps } from "./screen-types";
 
@@ -21,31 +23,32 @@ export async function loadScoresPage(searchParams?: {
   game?: string | string[];
 }): Promise<ScoresScreenProps | null> {
   const me = await requireMembership();
-  const { currentWeek, weeks } = await loadParticipantWeeks(me);
-  const decision = playerPickDecision(me, weeks, currentWeek);
   const openGameId = matchupGameParam(searchParams?.game);
+  const [{ currentWeek, weeks }, linkedWeek] = await Promise.all([
+    loadParticipantWeeks(me),
+    pageWeekNumberForGame(me.poolId, openGameId),
+  ]);
+  const decision = playerPickDecision(me, weeks, currentWeek);
   const selectedRef = selectPageWeek({
     weeks,
-    requested: searchParams?.week ?? weekQueryForGame(weeks, openGameId),
+    requested: searchParams?.week ?? linkedWeek?.toString(),
     basePath: "/scores",
     currentWeek, actionWeek: decision.actionWeek,
     allowFuture: false, fallbackFirst: true,
   });
   if (!selectedRef) return null;
 
-  try { await ensureWeekLockedEffects(selectedRef.id); }
-  catch (e) { console.error("scores lock effects skipped", e); }
-  let espnSyncError: string | null = null;
-  try { await syncWeekEspnForPage(selectedRef.id); }
-  catch (e) {
-    console.error("espn score sync skipped", e);
-    espnSyncError = "Couldn’t refresh ESPN right now — showing last saved scores.";
-  }
-
+  deferWeekLockedEffects(selectedRef.id);
   const week = await prisma.week.findUniqueOrThrow({
     where: { id: selectedRef.id },
     include: { games: { orderBy: { kickoff: "asc" } } },
   });
+  let espnSyncError: string | null = null;
+  try { await syncWeekEspnForPage(selectedRef.id, week); }
+  catch (e) {
+    console.error("espn score sync skipped", e);
+    espnSyncError = "Couldn’t refresh ESPN right now — showing last saved scores.";
+  }
   const teamAbbrs = [...new Set(week.games.flatMap((g) => [g.awayAbbr, g.homeAbbr]))];
   const logoByAbbr = new Map(
     (teamAbbrs.length
