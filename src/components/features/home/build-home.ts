@@ -3,7 +3,7 @@ import { formatScoreLine } from "@/lib/game-display";
 import {
   formatCurrentStanding,
   formatPriorYearRank,
-  resolveFavourite,
+  playerSpreadLabel,
 } from "@/lib/matchup-meta";
 import {
   nextWeekOpenHeadline,
@@ -44,16 +44,7 @@ export async function buildHomeHero(args: {
   const myTeam = await prisma.team.findUnique({
     where: { abbr: myPick.teamAbbr },
   });
-  const fav = myPick.game
-    ? resolveFavourite({
-        homeAbbr: myPick.game.homeAbbr,
-        awayAbbr: myPick.game.awayAbbr,
-        spreadHome: myPick.game.spreadHome,
-        spreadAway: myPick.game.spreadAway,
-        mlHome: myPick.game.mlHome,
-        mlAway: myPick.game.mlAway,
-      })
-    : null;
+  const favLabel = myPick.game ? playerSpreadLabel(myPick.game) : null;
   const nextOpen =
     args.isCurrentWeek &&
     (decision.nextWeekOpen ||
@@ -78,7 +69,7 @@ export async function buildHomeHero(args: {
           formatScoreLine(myPick.game) ? ` · ${formatScoreLine(myPick.game)}` : ""
         }`
       : null,
-    favouriteLabel: fav?.label ?? null,
+    favouriteLabel: favLabel,
     imported: myPick.source === "imported",
     status: args.status,
     result: myPick.result,

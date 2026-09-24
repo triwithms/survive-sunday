@@ -22,7 +22,7 @@ export function NflPlayerRows({
           <Link
             href={playerHref(teamAbbr, p.slug)}
             prefetch={false}
-            className="flex items-center gap-2 min-h-11 py-2.5 min-w-0 rounded-md px-0.5 hover:bg-gold-400/5 active:bg-gold-400/10"
+            className="flex items-center gap-2 min-h-11 min-h-[44px] py-2.5 min-w-0 rounded-md px-0.5 hover:bg-gold-400/5 active:bg-gold-400/10"
             aria-label={`${p.name}, ${p.position}${p.number != null ? ` #${p.number}` : ""}`}
           >
             <span className="font-mono text-[var(--text-muted)] w-8 shrink-0 text-xs">
@@ -35,7 +35,7 @@ export function NflPlayerRows({
               <span className="block font-medium break-words leading-snug">
                 {p.name}
               </span>
-              <span className="block text-xs text-[var(--text-muted)] truncate">
+              <span className="block text-xs text-[var(--text-muted)] break-words">
                 {p.college || "—"}
                 {p.keyPlayer ? " · Key" : ""}
               </span>
@@ -50,7 +50,7 @@ export function NflPlayerRows({
               )}
             </span>
             <ChevronRight
-              className="h-4 w-4 shrink-0 text-[var(--text-muted)]"
+              className="h-6 w-6 shrink-0 text-[var(--text-muted)]"
               aria-hidden
             />
           </Link>

@@ -19,9 +19,13 @@ export function formatEasternDateTime(
   const date = asDate(input);
   if (!date) return "";
   try {
+    const rest: Intl.DateTimeFormatOptions = { ...options };
+    delete rest.timeZone;
+    delete rest.timeZoneName;
     const formatted = new Intl.DateTimeFormat("en-CA", {
-      ...options,
+      ...rest,
       timeZone: EASTERN_TIME_ZONE,
+      ...(rest.hour ? { hourCycle: "h12" as const } : {}),
     }).format(date);
     return includeSuffix ? `${formatted} ${EASTERN_TIME_SUFFIX}` : formatted;
   } catch {

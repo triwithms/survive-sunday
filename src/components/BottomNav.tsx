@@ -44,12 +44,12 @@ export function BottomNav({ isAdmin }: { isAdmin?: boolean }) {
               <Link
                 href={href}
                 prefetch={false}
-                className={`flex flex-col items-center gap-0.5 px-0.5 sm:px-1 py-1 text-[9px] sm:text-[11px] min-w-0 touch-manipulation transition-transform duration-75 active:scale-95 ${
+                className={`flex min-h-[44px] flex-col items-center justify-center gap-0.5 px-0.5 py-1 text-center text-[0.7rem] leading-tight min-w-0 touch-manipulation transition-transform duration-75 active:scale-95 sm:px-1 ${
                   active ? "text-gold-400" : "text-[var(--text-muted)] active:text-gold-400/80"
                 }`}
               >
-                <Icon size={18} strokeWidth={active ? 2.4 : 1.75} className="sm:w-5 sm:h-5" />
-                <span className="truncate max-w-full">{label}</span>
+                <Icon className="h-5 w-5 shrink-0" strokeWidth={active ? 2.4 : 1.75} aria-hidden />
+                <span className="max-w-full break-words">{label}</span>
                 <NavPulse active={active} />
               </Link>
             </li>

@@ -31,12 +31,12 @@ export function PickSideButton({
         selected
           ? "border-gold-400 bg-gold-400/10 ring-2 ring-gold-400"
           : "border-transparent bg-[var(--stadium-700)]/40"
-      } ${side.alreadyUsed && !selected ? "opacity-40" : ""}`}
+      } ${side.alreadyUsed && !selected ? "opacity-80" : ""}`}
     >
       <PickSideTeamLink side={side} reverse={!isAway} />
       {(prior || current) && (
         <div
-          className={`w-full space-y-0.5 text-[10px] leading-tight text-[var(--text-muted)] ${
+          className={`w-full space-y-0.5 break-words text-xs leading-tight text-[var(--text-muted)] ${
             isAway ? "text-left" : "text-right"
           }`}
         >
@@ -45,9 +45,9 @@ export function PickSideButton({
         </div>
       )}
       {side.alreadyUsed ? (
-        <div className="text-[10px] font-medium text-crimson-400">Already used</div>
+        <div className="text-xs font-medium text-crimson-400">Already used</div>
       ) : gameClosed && !selected ? (
-        <div className="text-[10px] font-medium text-[var(--text-muted)]">
+        <div className="text-xs font-medium text-[var(--text-muted)]">
           Game started
         </div>
       ) : !readOnly ? (
@@ -65,7 +65,7 @@ export function PickSideButton({
           {selected ? "Selected · confirm" : "Pick"}
         </Button>
       ) : selected ? (
-        <div className="text-[10px] font-medium text-gold-400">Your pick</div>
+        <div className="text-xs font-medium text-gold-400">Your pick</div>
       ) : null}
     </div>
   );

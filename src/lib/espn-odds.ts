@@ -47,7 +47,11 @@ function oddsChanged(row: OddsGameRow, next: GameOdds): boolean {
   );
 }
 
-async function fetchEspnSummaryOdds(eventId: string): Promise<GameOdds | null> {
+async function fetchEspnSummaryOdds(
+  eventId: string,
+  homeAbbr: string,
+  awayAbbr: string
+): Promise<GameOdds | null> {
   const now = Date.now();
   const hit = oddsByEvent.get(eventId);
   if (hit && now - hit.at < ODDS_TTL_MS) return hit.odds;
@@ -59,7 +63,7 @@ async function fetchEspnSummaryOdds(eventId: string): Promise<GameOdds | null> {
       `/apis/site/v2/sports/football/nfl/summary?event=${encodeURIComponent(eventId)}`,
       { timeoutMs: 5000 }
     );
-    const odds = parseEspnSummaryOdds(data);
+    const odds = parseEspnSummaryOdds(data, homeAbbr, awayAbbr);
     oddsByEvent.set(eventId, { at: now, odds });
     return odds;
   } catch (e) {
@@ -161,7 +165,11 @@ export async function syncOddsFromEspnSnapshots(
 
   const fetched = await mapPool(jobs, 4, async (job) => ({
     game: job.game,
-    odds: await fetchEspnSummaryOdds(job.eventId),
+    odds: await fetchEspnSummaryOdds(
+      job.eventId,
+      job.game.homeAbbr,
+      job.game.awayAbbr
+    ),
   }));
 
   for (const row of fetched) {

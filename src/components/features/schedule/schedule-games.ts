@@ -1,4 +1,4 @@
-import { resolveFavourite } from "@/lib/matchup-meta";
+import { playerSpreadLabel } from "@/lib/matchup-meta";
 import { formatKickoff } from "@/lib/utils";
 import { formatMatchupListLine } from "@/lib/game-display";
 import { teamLogoUrl } from "@/lib/espn-teams";
@@ -24,29 +24,19 @@ export function mapScheduleGames(
   games: GameBits[],
   logoByAbbr: Map<string, string | null>
 ): ScheduleGame[] {
-  return games.map((game) => {
-    const fav = resolveFavourite({
-      homeAbbr: game.homeAbbr,
-      awayAbbr: game.awayAbbr,
-      spreadHome: game.spreadHome,
-      spreadAway: game.spreadAway,
-      mlHome: game.mlHome,
-      mlAway: game.mlAway,
-    });
-    return {
-      id: game.id,
-      awayAbbr: game.awayAbbr,
-      homeAbbr: game.homeAbbr,
-      status: game.status,
-      scoreAway: game.scoreAway,
-      scoreHome: game.scoreHome,
-      note: game.note,
-      kickoff: game.kickoff,
-      network: game.network,
-      scoreLine: formatMatchupListLine(game) || formatKickoff(game.kickoff),
-      favouriteLabel: fav?.label ?? null,
-      awayLogoUrl: teamLogoUrl(game.awayAbbr, logoByAbbr.get(game.awayAbbr)),
-      homeLogoUrl: teamLogoUrl(game.homeAbbr, logoByAbbr.get(game.homeAbbr)),
-    };
-  });
+  return games.map((game) => ({
+    id: game.id,
+    awayAbbr: game.awayAbbr,
+    homeAbbr: game.homeAbbr,
+    status: game.status,
+    scoreAway: game.scoreAway,
+    scoreHome: game.scoreHome,
+    note: game.note,
+    kickoff: game.kickoff,
+    network: game.network,
+    scoreLine: formatMatchupListLine(game) || formatKickoff(game.kickoff),
+    favouriteLabel: playerSpreadLabel(game),
+    awayLogoUrl: teamLogoUrl(game.awayAbbr, logoByAbbr.get(game.awayAbbr)),
+    homeLogoUrl: teamLogoUrl(game.homeAbbr, logoByAbbr.get(game.homeAbbr)),
+  }));
 }

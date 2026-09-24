@@ -44,7 +44,7 @@ function StandingTable({
         <div className="overflow-x-auto -mx-1 px-1 pb-1">
       <table className="w-full min-w-[34rem] text-left text-sm">
         <thead>
-          <tr className="text-[10px] uppercase tracking-wide text-[var(--text-muted)] border-b border-stadium-border">
+          <tr className="text-xs uppercase tracking-wide text-[var(--text-muted)] border-b border-stadium-border">
             <th className="py-2 pr-2 font-medium w-8">#</th>
             <th className="py-2 pr-2 font-medium">Team</th>
             {showDivisionCol && (
@@ -115,7 +115,7 @@ function StandingTable({
       </table>
         </div>
       </div>
-      <p className="text-[10px] text-[var(--text-muted)] sm:hidden">
+      <p className="text-xs text-[var(--text-muted)] sm:hidden">
         Swipe sideways for all standings columns.
       </p>
     </div>

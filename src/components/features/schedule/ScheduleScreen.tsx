@@ -35,7 +35,7 @@ export function ScheduleScreen(props: ScheduleScreenProps) {
           </h2>
           <Chip
             tone={isCurrent ? "gold" : "one-loss"}
-            className="text-[10px]"
+            className="text-xs"
           >
             {isCurrent
               ? "This week"

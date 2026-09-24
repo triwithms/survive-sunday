@@ -46,7 +46,7 @@ export function ScoreTeamRow({
         </span>
       ) : null}
       <span
-        className={`ml-auto w-9 text-right font-mono text-xl tabular-nums ${
+        className={`ml-auto min-w-[1.75rem] text-right font-mono text-xl tabular-nums ${
           live && score != null ? "text-gold-400" : ""
         } ${leading ? "font-semibold" : ""}`}
       >

@@ -33,7 +33,7 @@ function LiveScorebugStrip({
         </p>
       ) : null}
       {periodLine ? (
-        <p className="mt-0.5 font-mono text-xs tabular-nums text-[var(--text-primary)] whitespace-nowrap">
+        <p className="mt-0.5 break-words font-mono text-xs tabular-nums text-[var(--text-primary)]">
           {periodLine}
         </p>
       ) : (
@@ -42,7 +42,7 @@ function LiveScorebugStrip({
         </p>
       )}
       {spot ? (
-        <p className="mt-0.5 text-[10px] font-medium text-[var(--text-muted)] whitespace-nowrap">
+        <p className="mt-0.5 break-words text-xs font-medium text-[var(--text-muted)]">
           {spot}
         </p>
       ) : null}
@@ -71,18 +71,18 @@ export function ScoreStatusColumn({ game }: { game: ScoreGameCardGame }) {
         <StatusWell>
           <Chip>{status.primary}</Chip>
           {status.secondary ? (
-            <p className="mt-1 text-[10px] text-[var(--text-muted)]">
+            <p className="mt-1 break-words text-xs text-[var(--text-muted)]">
               {status.secondary}
             </p>
           ) : null}
         </StatusWell>
       ) : (
         <StatusWell>
-          <p className="whitespace-nowrap text-sm font-medium leading-snug text-[var(--text-primary)]">
+          <p className="break-words text-sm font-medium leading-snug text-[var(--text-primary)]">
             {status.primary}
           </p>
           {status.secondary ? (
-            <p className="mt-0.5 text-[10px] text-[var(--text-muted)]">
+            <p className="mt-0.5 break-words text-xs text-[var(--text-muted)]">
               {status.secondary}
             </p>
           ) : null}
