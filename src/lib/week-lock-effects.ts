@@ -1,6 +1,7 @@
 import "server-only";
 import { after } from "next/server";
 import { ensureWeekLockedEffects } from "./grading";
+import { enqueueWeekWork } from "./week-work-queue";
 
 type LockEffectOptions = { applyBackup?: boolean };
 
@@ -14,7 +15,9 @@ export function deferWeekLockedEffects(
 ): void {
   const run = async () => {
     try {
-      await ensureWeekLockedEffects(weekId, opts);
+      await enqueueWeekWork(weekId, async () => {
+        await ensureWeekLockedEffects(weekId, opts);
+      });
     } catch (error) {
       console.error("deferred week lock effects failed", weekId, error);
     }

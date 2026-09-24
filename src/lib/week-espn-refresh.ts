@@ -5,6 +5,7 @@ import { shouldPollLiveScores } from "@/lib/game-display";
 import { isWeekScoreboardFresh } from "@/lib/espn-scoreboard";
 import { syncWeekScoresFromEspn } from "@/lib/live-scores";
 import { pageEspnRefreshShape } from "@/lib/static-cache-ttl";
+import { enqueueWeekWork } from "@/lib/week-work-queue";
 
 /**
  * Player tabs read Postgres and return. ESPN runs after the response via
@@ -25,7 +26,10 @@ function scheduleWeekEspnRefresh(
     const pending = inflight.get(weekId);
     if (pending) return pending;
 
-    const job = syncWeekScoresFromEspn(weekId, shape)
+    const job = enqueueWeekWork(
+      weekId,
+      () => syncWeekScoresFromEspn(weekId, shape).then(() => undefined)
+    )
       .then(() => undefined)
       .catch((err) => {
         console.error("deferred page espn refresh failed", weekId, err);

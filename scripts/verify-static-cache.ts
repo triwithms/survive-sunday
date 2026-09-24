@@ -91,6 +91,7 @@ assert.match(readFileSync("docs/HANDOFF.md", "utf8"), /last-good \*\*6h\*\*/);
 
 const refresh = readFileSync("src/lib/week-espn-refresh.ts", "utf8");
 assert.match(refresh, /after\(/);
+assert.match(refresh, /enqueueWeekWork/);
 assert.match(refresh, /if \(isWeekScoreboardFresh\(week\.number\)\) return;/);
 assert.doesNotMatch(refresh, /await syncWeekScoresFromEspn/);
 assert.match(refresh, /pageEspnRefreshShape/);
@@ -112,6 +113,7 @@ assert.doesNotMatch(heavy, /standings:\s*false/);
 
 const deferredLockEffects = readFileSync("src/lib/week-lock-effects.ts", "utf8");
 assert.match(deferredLockEffects, /after\(run\)/);
+assert.match(deferredLockEffects, /enqueueWeekWork/);
 assert.match(deferredLockEffects, /await ensureWeekLockedEffects/);
 for (const path of [
   "src/components/features/home/load-home.ts",
