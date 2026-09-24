@@ -32,7 +32,7 @@ export function BoardHeading(props: BoardHeadingProps) {
             title={props.cta.title}
             className={
               props.cta.muted
-                ? "btn-secondary text-center text-sm shrink-0 opacity-60"
+                ? "btn-secondary text-center text-sm shrink-0 opacity-80"
                 : "btn-primary text-center text-sm shrink-0"
             }
           >

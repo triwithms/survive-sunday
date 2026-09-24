@@ -28,7 +28,7 @@ export function PickSideTeamLink({
         <span className="font-mono text-sm font-semibold text-gold-400 underline underline-offset-2 decoration-gold-400/40">
           {side.abbr}
         </span>
-        <div className="truncate text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-transparent hover:decoration-[var(--text-muted)]">
+        <div className="break-words text-xs text-[var(--text-muted)] underline underline-offset-2 decoration-transparent hover:decoration-[var(--text-muted)]">
           {side.name}
         </div>
       </div>

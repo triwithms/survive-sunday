@@ -17,13 +17,13 @@ function Row({
       <Link
         href={href}
         prefetch={false}
-        className="flex items-center gap-2 min-h-11 py-2.5 px-0.5 rounded-md hover:bg-gold-400/5 active:bg-gold-400/10"
+        className="flex items-center gap-2 min-h-11 min-h-[44px] py-2.5 px-0.5 rounded-md hover:bg-gold-400/5 active:bg-gold-400/10"
       >
         <span className="flex-1 font-medium">{label}</span>
         {count != null && (
           <span className="chip chip-gold text-xs">{count}</span>
         )}
-        <ChevronRight className="h-4 w-4 text-[var(--text-muted)]" aria-hidden />
+        <ChevronRight className="h-6 w-6 text-[var(--text-muted)]" aria-hidden />
       </Link>
     </li>
   );

@@ -69,9 +69,9 @@ export function WeekSwitcher({
           aria-label={
             previous ? `Previous week, ${previous.label}` : "No previous week"
           }
-          className="btn-secondary inline-flex items-center justify-center min-h-11 min-w-11 px-2 py-2 shrink-0"
+          className="btn-secondary inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-2 py-2 shrink-0"
         >
-          <ChevronLeft className="h-5 w-5" aria-hidden />
+          <ChevronLeft className="h-6 w-6" aria-hidden />
         </button>
         <label className="flex-1 min-w-0">
           <span className="sr-only">Select week</span>
@@ -98,17 +98,17 @@ export function WeekSwitcher({
           onClick={() => next && goTo(next.number)}
           disabled={!next}
           aria-label={next ? `Next week, ${next.label}` : "No next week"}
-          className="btn-secondary inline-flex items-center justify-center min-h-11 min-w-11 px-2 py-2 shrink-0"
+          className="btn-secondary inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-2 py-2 shrink-0"
         >
-          <ChevronRight className="h-5 w-5" aria-hidden />
+          <ChevronRight className="h-6 w-6" aria-hidden />
         </button>
       </div>
       {!allowFuture ? (
-        <p className="text-[10px] text-[var(--text-muted)] px-0.5">
+        <p className="text-xs text-[var(--text-muted)] px-0.5">
           Future weeks are on Schedule.
         </p>
       ) : (
-        <p className="text-[10px] text-[var(--text-muted)] px-0.5">
+        <p className="text-xs text-[var(--text-muted)] px-0.5">
           Flip weeks with the arrows or jump from the dropdown.
         </p>
       )}

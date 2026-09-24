@@ -22,7 +22,7 @@ export function HomeParticipantItem({
 }) {
   return (
     <li
-      className={`card-glass p-3 ${row.status === "eliminated" ? "opacity-60" : ""}`}
+      className={`card-glass p-3 ${row.status === "eliminated" ? "opacity-80" : ""}`}
     >
       <div className={below ? "min-w-0" : undefined}>
         <div className="flex items-center gap-2 flex-wrap min-w-0">

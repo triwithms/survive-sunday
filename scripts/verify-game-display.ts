@@ -111,8 +111,14 @@ assert.doesNotMatch(laterLabel, /Sep|September/);
 
 const kickoffLabel = formatKickoff(sundayAfternoon);
 assert.match(kickoffLabel, /ET$/);
-assert.match(kickoffLabel, /1:00/);
-assert.doesNotMatch(kickoffLabel, /GMT|UTC/);
+assert.match(kickoffLabel, /1:00 p\.m\./);
+assert.doesNotMatch(kickoffLabel, /EDT|EST|GMT|UTC/);
+
+const revealLine = `Picks reveal: ${kickoffLabel}`;
+const lockLine = `Lock: ${kickoffLabel}`;
+assert.match(revealLine, /ET$/);
+assert.match(lockLine, /ET$/);
+assert.doesNotMatch(`${revealLine} ${lockLine}`, /EDT|EST|GMT|UTC/);
 
 const live = formatScoresStatus({
   status: "live",
@@ -195,6 +201,8 @@ const scheduled = formatScoresStatus(
 );
 assert.equal(scheduled.kind, "scheduled");
 assert.match(scheduled.primary, /^Today /);
+assert.match(scheduled.primary, /ET$/);
+assert.doesNotMatch(scheduled.primary, /EDT|EST|GMT|UTC/);
 assert.equal(scheduled.secondary, null);
 
 assert.equal(

@@ -37,16 +37,16 @@ export function BoardParticipantRow({
       data-share-row=""
       data-status={status}
       className={`p-3 flex items-center gap-2 sm:gap-3 min-w-0 ${
-        status === "eliminated" ? "opacity-60" : ""
+        status === "eliminated" ? "opacity-80" : ""
       }`}
     >
       {rank != null ? (
-        <span className="text-[var(--text-muted)] w-5 sm:w-6 text-sm font-mono shrink-0">
+        <span className="text-[var(--text-muted)] min-w-[1.25rem] text-sm font-mono tabular-nums shrink-0">
           {rank}
         </span>
       ) : null}
-      <div className="flex-1 min-w-0 overflow-hidden">
-        <div className="font-medium truncate">
+      <div className="flex-1 min-w-0">
+        <div className="font-medium break-words">
           {nickname}
           <AutoPickStamps count={autoPickStamps} />
           {isSelf ? " (you)" : ""}
@@ -58,7 +58,7 @@ export function BoardParticipantRow({
           ) : null}
         </div>
         {meta ? (
-          <div className="text-xs text-[var(--text-muted)] truncate">{meta}</div>
+          <div className="text-xs text-[var(--text-muted)] break-words">{meta}</div>
         ) : null}
       </div>
       <div className="shrink-0 flex flex-col items-end gap-1.5">

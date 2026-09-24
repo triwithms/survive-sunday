@@ -47,7 +47,7 @@ export function PickCurrentCard({
               <p className="font-mono text-2xl font-bold text-gold-400 leading-none">
                 {side.abbr}
               </p>
-              <p className="text-base font-medium text-[var(--text-primary)] truncate mt-1">
+              <p className="text-base font-medium text-[var(--text-primary)] break-words mt-1">
                 {side.name}
               </p>
               {opp && (

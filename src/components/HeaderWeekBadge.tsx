@@ -56,7 +56,7 @@ export function HeaderWeekBadge({ weekNumber }: { weekNumber: number }) {
     return <div className="min-w-0 flex-1" aria-hidden />;
   }
   return (
-    <div className="flex items-center gap-1.5 sm:gap-2 text-sm min-w-0 flex-1 justify-center overflow-hidden">
+    <div className="flex items-center gap-1.5 sm:gap-2 text-sm min-w-0 flex-1 justify-center">
       <WeekBadge
         weekNumber={weekNumber}
         allowShareGesture={weekAllowsShare(pathname)}
