@@ -6,6 +6,8 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { applyPickSave, pickSavedMessage } from "../src/components/features/pick/pick-save";
+import { pickedSpreadLine } from "../src/components/features/pick/pick-format";
+import type { PickMatchup } from "../src/components/features/pick/types";
 
 assert.deepEqual(applyPickSave({ ok: true }, null, "KC"), { kind: "ok", changed: false });
 assert.deepEqual(applyPickSave({ ok: true }, "BUF", "KC"), { kind: "ok", changed: true });
@@ -55,6 +57,44 @@ const currentCard = readFileSync(
 assert.match(currentCard, /text-lg font-semibold uppercase/);
 assert.match(currentCard, /text-2xl font-bold/);
 assert.match(currentCard, /text-base font-medium/);
+assert.doesNotMatch(currentCard, /vs \{opp|@ \{/);
+
+const confirm = readFileSync(
+  "src/components/features/pick/PickConfirmPanel.tsx",
+  "utf8"
+);
+assert.doesNotMatch(confirm, /@ \{matchup|vs \{/);
+
+const side = {
+  logoUrl: null,
+  alreadyUsed: false,
+  priorYearRank: null,
+  standing: null,
+};
+const slate = {
+  id: "g",
+  kickoff: "2026-09-25T00:15:00.000Z",
+  status: "scheduled",
+  scoreAway: null,
+  scoreHome: null,
+  note: null,
+  spreadHome: 5.5,
+  spreadAway: -5.5,
+  mlHome: null,
+  mlAway: null,
+  away: { ...side, abbr: "GB", name: "Green Bay Packers" },
+  home: { ...side, abbr: "ATL", name: "Atlanta Falcons" },
+} satisfies PickMatchup;
+assert.equal(pickedSpreadLine(slate, "GB"), "-5.5");
+assert.equal(pickedSpreadLine(slate, "ATL"), "+5.5");
+assert.equal(
+  pickedSpreadLine({ ...slate, spreadHome: 0, spreadAway: 0 }, "GB"),
+  "PK"
+);
+assert.equal(
+  pickedSpreadLine({ ...slate, spreadHome: null, spreadAway: null }, "ATL"),
+  null
+);
 
 const hook = readFileSync("src/components/features/pick/use-pick-submit.ts", "utf8");
 assert.match(hook, /opts\?\.disabled/);

@@ -3,7 +3,7 @@ import { Card } from "@/components/ui";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { formatKickoff } from "@/lib/utils";
 import { formatMatchupListLine } from "@/lib/game-display";
-import { matchupFavourite, selectedPick, sideMeta } from "./pick-format";
+import { pickedSpreadLine, selectedPick, sideMeta } from "./pick-format";
 import type { PickMatchup } from "./types";
 
 export function PickCurrentCard({
@@ -21,9 +21,14 @@ export function PickCurrentCard({
   emptyMessage: string;
   saving?: boolean;
 }) {
-  const { matchup, side, opp } = selectedPick(games, selectedAbbr);
+  const { matchup, side } = selectedPick(games, selectedAbbr);
   const listLine = matchup ? formatMatchupListLine(matchup) : null;
-  const fav = matchup ? matchupFavourite(matchup) : null;
+  const status = listLine
+    ? listLine
+    : matchup?.kickoff
+      ? formatKickoff(matchup.kickoff)
+      : "";
+  const spread = side && matchup ? pickedSpreadLine(matchup, side.abbr) : null;
   const meta = side ? sideMeta(side) : "";
 
   return (
@@ -50,21 +55,12 @@ export function PickCurrentCard({
               <p className="text-base font-medium text-[var(--text-primary)] break-words mt-1">
                 {side.name}
               </p>
-              {opp && (
-                <p className="text-xs text-[var(--text-muted)] mt-0.5">
-                  vs {opp.abbr}
-                  {listLine
-                    ? ` · ${listLine}`
-                    : matchup?.kickoff
-                      ? ` · ${formatKickoff(matchup.kickoff)}`
-                      : ""}
-                </p>
-              )}
-              {fav && (
-                <p className="text-xs text-[var(--text-primary)] mt-0.5">
-                  {fav.label}
-                </p>
-              )}
+              {status ? (
+                <p className="text-xs text-[var(--text-muted)] mt-0.5">{status}</p>
+              ) : null}
+              {spread ? (
+                <p className="text-xs text-[var(--text-primary)] mt-0.5">{spread}</p>
+              ) : null}
               {meta ? (
                 <p className="text-xs text-[var(--text-muted)] mt-0.5">{meta}</p>
               ) : null}

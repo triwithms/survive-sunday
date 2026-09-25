@@ -1,7 +1,7 @@
 import { Button, Card } from "@/components/ui";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
 import { formatKickoff } from "@/lib/utils";
-import { matchupFavourite, sideMeta } from "./pick-format";
+import { pickedSpreadLine, sideMeta } from "./pick-format";
 import type { PickMatchup, PickSide } from "./types";
 
 export function PickConfirmPanel({
@@ -23,7 +23,7 @@ export function PickConfirmPanel({
   onCancel: () => void;
   onConfirm: () => void;
 }) {
-  const fav = matchupFavourite(matchup);
+  const spread = pickedSpreadLine(matchup, side.abbr);
   const meta = sideMeta(side);
 
   return (
@@ -46,12 +46,9 @@ export function PickConfirmPanel({
             ) : null}
           </div>
         </div>
-        <p className="text-sm text-[var(--text-muted)]">
-          {matchup.away.abbr} @ {matchup.home.abbr}
-        </p>
         <p className="text-sm">{formatKickoff(matchup.kickoff)}</p>
-        {fav ? (
-          <p className="text-xs text-[var(--text-primary)]">{fav.label}</p>
+        {spread ? (
+          <p className="text-xs text-[var(--text-primary)]">{spread}</p>
         ) : null}
         <p className="text-xs text-[var(--text-muted)]">
           Odds are informational only — not for wagering.

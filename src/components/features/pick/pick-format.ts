@@ -1,8 +1,10 @@
 import {
+  canonicalSpreads,
   formatCurrentStanding,
   formatPriorYearRank,
   resolveFavourite,
 } from "@/lib/matchup-meta";
+import { formatSignedSpread } from "@/lib/odds";
 import type { PickMatchup, PickSide } from "./types";
 
 export function matchupFavourite(m: PickMatchup) {
@@ -14,6 +16,18 @@ export function matchupFavourite(m: PickMatchup) {
     mlHome: m.mlHome,
     mlAway: m.mlAway,
   });
+}
+
+/** This team's own line (`-3.5`, `+3.5`, `PK`). Does not name the opponent. */
+export function pickedSpreadLine(m: PickMatchup, abbr: string): string | null {
+  const fav = matchupFavourite(m);
+  if (!fav) return null;
+  if (fav.abbr == null) return "PK";
+  const pair = canonicalSpreads(m.spreadHome, m.spreadAway);
+  if (!pair) return null;
+  const signed = abbr === m.home.abbr ? pair.spreadHome : pair.spreadAway;
+  const line = formatSignedSpread(signed);
+  return line || null;
 }
 
 export function sideMeta(side: PickSide) {

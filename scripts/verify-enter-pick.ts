@@ -12,6 +12,7 @@ import {
 } from "../src/components/features/admin/enter-pick-options";
 import { enterPickStatusError } from "../src/lib/enter-pick-status";
 import { allowedEnterPickWeeks } from "../src/lib/enter-pick-week";
+import { weekTeamOptions } from "../src/components/features/admin/enter-pick-map";
 
 function kick(hoursAgo: number) {
   return new Date(Date.now() - hoursAgo * 3600 * 1000);
@@ -109,6 +110,19 @@ function main() {
   const save = readFileSync("src/components/features/admin/use-enter-pick.ts", "utf8");
   assert.match(save, /\/api\/admin\/import-picks/);
   assert.match(save, /enterPick: true/);
+
+  const options = weekTeamOptions(
+    [{ awayAbbr: "GB", homeAbbr: "ATL" }],
+    new Map([
+      ["GB", "Green Bay Packers"],
+      ["ATL", "Atlanta Falcons"],
+    ])
+  );
+  assert.deepEqual(
+    options.map((t) => t.name),
+    ["Atlanta Falcons", "Green Bay Packers"]
+  );
+  assert.doesNotMatch(options.map((t) => t.name).join(" "), /@|\bvs\b/i);
 
   console.log("verify-enter-pick OK");
 }
