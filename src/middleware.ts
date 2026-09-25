@@ -33,7 +33,10 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // Static files must not run middleware. Helmets are <img> on every tab;
+  // matching them turned each logo into an edge invocation, and no-store
+  // made the browser refetch the whole set on every paint.
   matcher: [
-    "/((?!_next/static|_next/image|icons/|favicon.ico|manifest.webmanifest|sw.js).*)",
+    "/((?!_next/static|_next/image|icons/|helmets/|favicon.ico|manifest.webmanifest|sw.js|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
   ],
 };

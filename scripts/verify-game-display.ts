@@ -18,6 +18,7 @@ import {
   possessionAbbrFromSituation,
   shouldPollLiveScores,
 } from "../src/lib/game-display";
+import { shouldRunLiveScoreSync } from "../src/lib/live-refresh-gate";
 
 assert.equal(espnClockFromNote("Q3 4:21 · ESPN"), "Q3 4:21");
 assert.equal(espnClockFromNote("End of 2nd · ESPN"), "End of 2nd");
@@ -253,6 +254,47 @@ assert.doesNotMatch(
 assert.equal(
   shouldPollLiveScores([{ status: "live", kickoff: new Date() }]),
   true
+);
+
+assert.equal(
+  shouldRunLiveScoreSync({
+    visible: false,
+    now: 1_000_000,
+    lastSyncAt: 0,
+    intervalMs: 600_000,
+  }),
+  false,
+  "hidden tabs do not sync"
+);
+assert.equal(
+  shouldRunLiveScoreSync({
+    visible: true,
+    now: 1_000_000,
+    lastSyncAt: 900_000,
+    intervalMs: 600_000,
+  }),
+  false,
+  "visible tab waits out the interval"
+);
+assert.equal(
+  shouldRunLiveScoreSync({
+    visible: true,
+    now: 1_600_000,
+    lastSyncAt: 900_000,
+    intervalMs: 600_000,
+  }),
+  true
+);
+assert.equal(
+  shouldRunLiveScoreSync({
+    force: true,
+    visible: false,
+    now: 1_000_000,
+    lastSyncAt: 999_000,
+    intervalMs: 600_000,
+  }),
+  true,
+  "Refresh button still runs"
 );
 
 console.log("verify-game-display: ok");

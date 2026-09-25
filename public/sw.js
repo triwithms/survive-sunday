@@ -52,6 +52,7 @@ function shouldBypass(url, request) {
     p.startsWith("/join") ||
     p.startsWith("/help") ||
     p.startsWith("/videos") ||
+    // Includes /api/auth/* — never cache or revalidate the session endpoint.
     p.startsWith("/api/")
   );
 }

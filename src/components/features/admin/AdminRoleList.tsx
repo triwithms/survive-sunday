@@ -15,6 +15,7 @@ export function AdminRoleList({ members }: { members: AdminRoleRow[] }) {
         <li key={member.id}>
           <Link
             href={`/admin/users?member=${member.id}`}
+            prefetch={false}
             className="flex min-h-11 items-center text-sm text-gold-400"
             data-testid={`admin-link-${member.id}`}
           >

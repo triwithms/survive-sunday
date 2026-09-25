@@ -55,24 +55,33 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
+    const dynamic =
+      "/((?!_next/static|_next/image|icons/|helmets/|favicon.ico|manifest.webmanifest|sw.js).*)";
+    const immutable = "public, max-age=86400, stale-while-revalidate=604800";
     return [
       {
-        source: "/:path*",
+        // Personalized HTML/RSC only. Vary: Cookie + no-store on /helmets
+        // and /_next/static forced a fresh origin fetch per image per paint.
+        source: dynamic,
         headers: [
-          {
-            key: "Vary",
-            value: "Cookie",
-          },
-        ],
-      },
-      {
-        source: "/((?!_next/static|_next/image|icons/|favicon.ico|manifest.webmanifest|sw.js).*)",
-        headers: [
+          { key: "Vary", value: "Cookie" },
           {
             key: "Cache-Control",
             value: "private, no-store, no-cache, must-revalidate",
           },
         ],
+      },
+      {
+        source: "/helmets/:path*",
+        headers: [{ key: "Cache-Control", value: immutable }],
+      },
+      {
+        source: "/icons/:path*",
+        headers: [{ key: "Cache-Control", value: immutable }],
+      },
+      {
+        source: "/favicon.ico",
+        headers: [{ key: "Cache-Control", value: immutable }],
       },
     ];
   },
