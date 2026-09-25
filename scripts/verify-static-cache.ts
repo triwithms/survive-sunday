@@ -92,8 +92,14 @@ assert.match(readFileSync("docs/FILE-MAP.md", "utf8"), /static-cache-ttl/);
 assert.match(readFileSync("docs/HANDOFF.md", "utf8"), /last-good \*\*6h\*\*/);
 
 const providers = readFileSync("src/components/Providers.tsx", "utf8");
-assert.doesNotMatch(providers, /refetchInterval=/);
+assert.match(providers, /refetchInterval=\{0\}/);
+assert.doesNotMatch(providers, /refetchInterval=\{60\}/);
 assert.match(providers, /refetchOnWindowFocus=\{false\}/);
+assert.match(providers, /session=\{session\}/);
+const rootLayout = readFileSync("src/app/layout.tsx", "utf8");
+assert.match(rootLayout, /await auth\(\)/);
+assert.match(rootLayout, /<Providers session=\{session\}>/);
+assert.match(readFileSync("public/sw.js", "utf8"), /\/api\/auth/);
 
 const middleware = readFileSync("src/middleware.ts", "utf8");
 assert.match(middleware, /helmets\//);

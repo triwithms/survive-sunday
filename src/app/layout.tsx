@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo_Black, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import { auth } from "@/lib/auth";
 
 const display = Archivo_Black({
   weight: "400",
@@ -48,15 +49,17 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // One JWT read for the document. The client must not poll /api/auth/session.
+  const session = (await auth()) ?? null;
   return (
     <html lang="en-CA" className="dark">
       <body
         className={`${display.variable} ${sans.variable} ${mono.variable} font-sans antialiased stadium-bg`}
       >
-        <Providers>{children}</Providers>
+        <Providers session={session}>{children}</Providers>
         <script
           dangerouslySetInnerHTML={{
             __html: `
