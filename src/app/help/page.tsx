@@ -31,6 +31,7 @@ export default async function HelpPage() {
         <main className="mx-auto w-full max-w-pool pb-8 pt-[calc(2rem+env(safe-area-inset-top))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
           <Link
             href={membership ? "/pick" : "/"}
+            prefetch={false}
             className="inline-flex min-h-11 items-center text-sm text-gold-400"
           >
             ← {membership ? "My pick" : "Survive Sunday"}

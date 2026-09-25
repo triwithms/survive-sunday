@@ -91,6 +91,22 @@ assert.deepEqual(pageEspnRefreshShape(true), { standings: false, grade: false })
 assert.match(readFileSync("docs/FILE-MAP.md", "utf8"), /static-cache-ttl/);
 assert.match(readFileSync("docs/HANDOFF.md", "utf8"), /last-good \*\*6h\*\*/);
 
+const providers = readFileSync("src/components/Providers.tsx", "utf8");
+assert.doesNotMatch(providers, /refetchInterval=/);
+assert.match(providers, /refetchOnWindowFocus=\{false\}/);
+
+const middleware = readFileSync("src/middleware.ts", "utf8");
+assert.match(middleware, /helmets\//);
+assert.match(middleware, /png\|jpg\|jpeg/);
+
+const nextConfig = readFileSync("next.config.ts", "utf8");
+assert.match(nextConfig, /\/helmets\/:path\*/);
+assert.match(nextConfig, /public, max-age=86400/);
+assert.doesNotMatch(
+  nextConfig,
+  /source:\s*"\/:path\*"[\s\S]*Vary/
+);
+
 const refresh = readFileSync("src/lib/week-espn-refresh.ts", "utf8");
 assert.match(refresh, /after\(/);
 assert.match(refresh, /enqueueWeekWork/);
