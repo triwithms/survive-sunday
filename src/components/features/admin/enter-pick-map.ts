@@ -30,16 +30,27 @@ type MemberRow = {
   }>;
 };
 
+/** Closed select and each option: the team you would pick. No opponent. */
+export function teamPickLabel(abbr: string, name: string | undefined): string {
+  const label = (name ?? "").trim();
+  if (!label || label.toUpperCase() === abbr.toUpperCase()) return abbr;
+  return label;
+}
+
 export function weekTeamOptions(
   games: { awayAbbr: string; homeAbbr: string }[],
   names: Map<string, string>
 ): EnterPickTeam[] {
   const rows: EnterPickTeam[] = [];
   for (const g of games) {
-    const away = names.get(g.awayAbbr) ?? g.awayAbbr;
-    const home = names.get(g.homeAbbr) ?? g.homeAbbr;
-    rows.push({ abbr: g.awayAbbr, name: `${g.awayAbbr} ${away} @ ${g.homeAbbr}` });
-    rows.push({ abbr: g.homeAbbr, name: `${g.homeAbbr} ${home} vs ${g.awayAbbr}` });
+    rows.push({
+      abbr: g.awayAbbr,
+      name: teamPickLabel(g.awayAbbr, names.get(g.awayAbbr)),
+    });
+    rows.push({
+      abbr: g.homeAbbr,
+      name: teamPickLabel(g.homeAbbr, names.get(g.homeAbbr)),
+    });
   }
   return rows.sort((a, b) => a.abbr.localeCompare(b.abbr));
 }
