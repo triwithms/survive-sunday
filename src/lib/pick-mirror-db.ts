@@ -1,6 +1,7 @@
 import { prisma } from "./db";
 import { effectiveLockAt, parseUsedTeams, rebuildUsedTeams } from "./grading";
 import { schedulePickConfirmed } from "./notification-events";
+import { isUniqueConflict } from "./unique-conflict";
 import {
   bestRemainingRankedTeam,
   decideRankedAutoPick,
@@ -170,17 +171,24 @@ async function writeBackupPick(args: {
     (g) => g.awayAbbr === args.teamAbbr || g.homeAbbr === args.teamAbbr
   );
   try {
-    await prisma.pick.create({
-      data: {
-        membershipId: args.member.id,
-        weekId: args.week.id,
-        teamAbbr: args.teamAbbr,
-        gameId: game?.id ?? null,
-        source: RANKED_PICK_SOURCE,
-        result: "pending",
-      },
+    const inserted = await prisma.pick.createMany({
+      data: [
+        {
+          membershipId: args.member.id,
+          weekId: args.week.id,
+          teamAbbr: args.teamAbbr,
+          gameId: game?.id ?? null,
+          source: RANKED_PICK_SOURCE,
+          result: "pending",
+        },
+      ],
+      skipDuplicates: true,
     });
-  } catch {
+    if (inserted.count === 0) return false;
+  } catch (error) {
+    if (!isUniqueConflict(error)) {
+      console.error("[mirror] backup pick insert failed", error);
+    }
     return false;
   }
   if (shouldStampAutoPick(RANKED_PICK_SOURCE)) {

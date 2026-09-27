@@ -1,6 +1,7 @@
 import { prisma } from "./db";
 import { scheduleResultsNotice } from "./notification-events";
 import { scheduleAdminEliminationNotice } from "./elimination-admin-alert";
+import { isUniqueConflict } from "./unique-conflict";
 import {
   decideStatusAfterLoss,
   shouldApplyMissedPick,
@@ -177,10 +178,14 @@ export async function gradeWeekPicks(weekId: string) {
     if (result === "pending") continue;
     poolId = pick.membership.poolId;
 
-    await prisma.pick.update({
-      where: { id: pick.id },
+    const marked = await prisma.pick.updateMany({
+      where: {
+        id: pick.id,
+        OR: [{ result: null }, { result: "pending" }],
+      },
       data: { result, gradedAt: new Date() },
     });
+    if (marked.count === 0) continue;
 
     const before = pick.membership;
     let afterStatus = before.status;
@@ -248,18 +253,24 @@ export async function applyMissedPicks(weekId: string) {
     if (picked.has(m.id)) continue;
 
     try {
-      await prisma.pick.create({
-        data: {
-          membershipId: m.id,
-          weekId: week.id,
-          teamAbbr: MISSED_TEAM,
-          source: "missed",
-          result: "loss",
-          gradedAt: new Date(),
-        },
+      const inserted = await prisma.pick.createMany({
+        data: [
+          {
+            membershipId: m.id,
+            weekId: week.id,
+            teamAbbr: MISSED_TEAM,
+            source: "missed",
+            result: "loss",
+            gradedAt: new Date(),
+          },
+        ],
+        skipDuplicates: true,
       });
-    } catch {
-      // Unique (membershipId, weekId) — already applied
+      if (inserted.count === 0) continue;
+    } catch (error) {
+      if (!isUniqueConflict(error)) {
+        console.error("missed pick insert skipped", m.id, error);
+      }
       continue;
     }
 
