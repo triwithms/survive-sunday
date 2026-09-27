@@ -3,6 +3,7 @@ import { AuditLogList } from "./AuditLogList";
 import { EnterPickForm } from "./EnterPickForm";
 import { MissingPickPanel } from "./MissingPickPanel";
 import { SendTestNotify } from "./SendTestNotify";
+import { ServerErrorList } from "./ServerErrorList";
 import { WeekWrapPanel } from "./WeekWrapPanel";
 import type { SystemScreenProps } from "./types";
 
@@ -18,6 +19,7 @@ export function SystemScreen(props: SystemScreenProps) {
       <EnterPickForm data={props.enterPick} />
       <SendTestNotify />
       <AuditLogList logs={props.logs} />
+      <ServerErrorList rows={props.serverErrors} />
     </div>
   );
 }

@@ -69,6 +69,7 @@
     "verify:notification-prefs": "tsx scripts/verify-notification-prefs.ts",
     "verify:missing-pick": "tsx scripts/verify-missing-pick-reminders.ts",
     "verify:notify-channels": "tsx scripts/verify-notify-channels.ts",
+    "verify:notify-claim": "tsx scripts/verify-notify-claim.ts",
     "notify:defaults": "tsx scripts/default-notify-prefs.ts",
     "verify:notification-schema": "tsx scripts/verify-notification-schema.ts",
     "verify:pick-mirror": "tsx scripts/verify-pick-mirror.ts",

@@ -61,10 +61,19 @@ export type AuditLogRow = {
   details: string | null;
 };
 
+export type ServerErrorItem = {
+  id: string;
+  route: string;
+  message: string;
+  createdAt: string;
+  source: string;
+};
+
 export type SystemScreenProps = {
   weekNumber: number;
   enterPick: EnterPickData;
   missingPicks: MissingPickPanelData;
   weekWrap: WeekWrapPanelData;
   logs: AuditLogRow[];
+  serverErrors: ServerErrorItem[];
 };

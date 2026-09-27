@@ -1,6 +1,6 @@
 import { cache } from "react";
-import { after } from "next/server";
 import { auth } from "./auth";
+import { deferAfter } from "./defer-after";
 import { prisma } from "./db";
 import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
 import { ensureCanonicalLiveSeatsThrottled } from "./live-roster";
@@ -71,16 +71,10 @@ async function loadMemberships(userId: string) {
 }
 
 function schedulePoolMaintenance(poolId: string): void {
-  const run = async () => {
+  deferAfter("pool maintenance", async () => {
     await applyCanonicalRosterNamesThrottled(prisma, poolId);
     await ensureCanonicalLiveSeatsThrottled(prisma, poolId);
-  };
-  try {
-    after(run);
-  } catch (error) {
-    console.error("after() unavailable for pool maintenance", error);
-    void run();
-  }
+  });
 }
 
 /**

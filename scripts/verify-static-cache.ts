@@ -114,7 +114,8 @@ assert.doesNotMatch(
 );
 
 const refresh = readFileSync("src/lib/week-espn-refresh.ts", "utf8");
-assert.match(refresh, /after\(/);
+assert.match(refresh, /deferAfter\(/);
+assert.match(readFileSync("src/lib/defer-after.ts", "utf8"), /after\(/);
 assert.match(refresh, /enqueueWeekWork/);
 assert.match(refresh, /if \(isWeekScoreboardFresh\(week\.number\)\) return;/);
 assert.doesNotMatch(refresh, /await syncWeekScoresFromEspn/);
@@ -145,7 +146,7 @@ assert.match(heavy, /syncWeekScoresFromEspn\(week\.id\)/);
 assert.doesNotMatch(heavy, /standings:\s*false/);
 
 const deferredLockEffects = readFileSync("src/lib/week-lock-effects.ts", "utf8");
-assert.match(deferredLockEffects, /after\(run\)/);
+assert.match(deferredLockEffects, /deferAfter\(/);
 assert.match(deferredLockEffects, /enqueueWeekWork/);
 assert.match(deferredLockEffects, /await ensureWeekLockedEffects/);
 for (const path of [
@@ -161,7 +162,7 @@ for (const path of [
 
 const session = readFileSync("src/lib/session.ts", "utf8");
 assert.match(session, /cache\(async/);
-assert.match(session, /after\(run\)/);
+assert.match(session, /deferAfter\(/);
 assert.doesNotMatch(session, /picks:\s*\{\s*include:\s*\{\s*game:/);
 const pageWeeks = readFileSync("src/lib/page-week.ts", "utf8");
 assert.match(pageWeeks, /_count:\s*\{\s*select:\s*\{\s*games:\s*true/);

@@ -9,6 +9,7 @@ import {
 } from "./pool-mode";
 import { grantPoolRole } from "./roles-db";
 import { POOL_ROLES } from "./roles";
+import { isUniqueConflict } from "./unique-conflict";
 
 export { PENDING_EMAIL_SUFFIX };
 
@@ -145,15 +146,24 @@ async function ensureOneLiveSeat(
         });
       }
     } else {
-      const created = await db.user.create({
-        data: {
-          email: seat.practiceEmail,
-          name: seat.realName,
-          passwordHash,
-        },
-      });
-      userId = created.id;
-      result.createdUser = true;
+      try {
+        const created = await db.user.create({
+          data: {
+            email: seat.practiceEmail,
+            name: seat.realName,
+            passwordHash,
+          },
+        });
+        userId = created.id;
+        result.createdUser = true;
+      } catch (error) {
+        if (!isUniqueConflict(error)) throw error;
+        const again = await db.user.findUnique({
+          where: { email: seat.practiceEmail },
+        });
+        if (!again) throw error;
+        userId = again.id;
+      }
     }
   }
 
@@ -171,20 +181,33 @@ async function ensureOneLiveSeat(
   }
 
   if (!membership) {
-    membership = await db.membership.create({
-      data: {
-        poolId,
-        userId,
-        nickname: seat.nickname,
-        realName: seat.realName,
-        role: "member",
-        status: "undefeated",
-        mulliganRemaining: true,
-        pickBackup: "ranked",
-      },
-      include: { user: true },
-    });
-    result.createdMembership = true;
+    try {
+      membership = await db.membership.create({
+        data: {
+          poolId,
+          userId,
+          nickname: seat.nickname,
+          realName: seat.realName,
+          role: "member",
+          status: "undefeated",
+          mulliganRemaining: true,
+          pickBackup: "ranked",
+        },
+        include: { user: true },
+      });
+      result.createdMembership = true;
+    } catch (error) {
+      if (!isUniqueConflict(error)) throw error;
+      const again = await db.membership.findFirst({
+        where: {
+          poolId,
+          nickname: { equals: seat.nickname, mode: "insensitive" },
+        },
+        include: { user: true },
+      });
+      if (!again) throw error;
+      membership = again;
+    }
   }
 
   try {
@@ -225,19 +248,28 @@ async function ensureOneLiveSeat(
       if (existingPick && (replaceMiss || replaceCanonical)) {
         await db.pick.delete({ where: { id: existingPick.id } });
       }
-      await db.pick.create({
-        data: {
-          membershipId: membership.id,
-          weekId: week1.id,
-          teamAbbr: seat.week1Team,
-          gameId: game.id,
-          source: "imported",
-          result: "pending",
-        },
-      });
-      const { rebuildUsedTeams } = await import("./grading");
-      await rebuildUsedTeams(membership.id);
-      result.importedWeek1 = true;
+      try {
+        const inserted = await db.pick.createMany({
+          data: [
+            {
+              membershipId: membership.id,
+              weekId: week1.id,
+              teamAbbr: seat.week1Team,
+              gameId: game.id,
+              source: "imported",
+              result: "pending",
+            },
+          ],
+          skipDuplicates: true,
+        });
+        if (inserted.count > 0) {
+          const { rebuildUsedTeams } = await import("./grading");
+          await rebuildUsedTeams(membership.id);
+          result.importedWeek1 = true;
+        }
+      } catch (error) {
+        if (!isUniqueConflict(error)) throw error;
+      }
     }
   }
 

@@ -311,3 +311,16 @@ model AuditLog {
   pool       Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
   actor      User?    @relation("AuditActor", fields: [actorId], references: [id])
 }
+
+/// Short-lived server errors. Hobby function logs expire after about an hour.
+/// Additive table, created at boot — never dropped by the Vercel build.
+model ServerError {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  route     String
+  message   String
+  digest    String?
+  source    String   @default("request")
+
+  @@index([createdAt])
+}
