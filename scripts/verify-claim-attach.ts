@@ -20,7 +20,7 @@ import {
   membershipUserUniqueExists,
 } from "../src/lib/membership-schema";
 
-assert.equal(normalizeAuthEmail("  RobertGama@Gmail.com "), "robertgama@gmail.com");
+assert.equal(normalizeAuthEmail("  Organizer@Example.com "), "organizer@example.com");
 assert.equal(normalizeAuthPassword("  AttachPass9!  "), "AttachPass9!");
 assert.equal(normalizeAuthPassword("AttachPass9!\n"), "AttachPass9!");
 assert.equal(normalizeAuthPassword("AttachPass9!\r\n"), "AttachPass9!");
@@ -34,7 +34,7 @@ assert.equal(safeAuthCallbackPath(null), "/pick");
 
 const commishEmail = decideClaim({
   seat: { role: "member", userId: "u-gams", email: "gams@survivesunday.demo" },
-  newEmail: "robertgama@gmail.com",
+  newEmail: "organizer@example.com",
   emailOwner: { id: "u-commish", hasPlayerSeat: false, hasAdminSeat: true },
 });
 assert.deepEqual(commishEmail, {
@@ -81,14 +81,14 @@ async function main() {
   const passwordHash = await bcrypt.hash(password, 10);
   const record = {
     id: "u-commish",
-    email: "robertgama@gmail.com",
+    email: "organizer@example.com",
     name: "Commissioner",
     image: null,
     passwordHash,
   };
 
   const ok = await userFromCredentials(
-    "  robertgama@gmail.com ",
+    "  organizer@example.com ",
     `  ${password}  `,
     async () => record
   );
@@ -101,14 +101,14 @@ async function main() {
   assert.equal(await passwordsMatch("not-the-password", passwordHash), false);
 
   const pastedNewline = await userFromCredentials(
-    "robertgama@gmail.com",
+    "organizer@example.com",
     `${password}\n`,
     async () => record
   );
   assert.equal(pastedNewline?.id, "u-commish");
 
   const wrong = await userFromCredentials(
-    "robertgama@gmail.com",
+    "organizer@example.com",
     "not-the-password",
     async () => record
   );

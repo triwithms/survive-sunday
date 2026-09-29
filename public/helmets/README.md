@@ -12,6 +12,6 @@ Committed NFL team marks for all 32 clubs used in Survive Sunday.
 `TeamLogo` uses `/helmets/{abbr}.png` only, then this placeholder. No ESPN/CDN lookup.
 It never shows abbreviation letter badges.
 
-Robert Gama accepts responsibility for storing these local/saved helmet image backups.
+The repo owner accepts responsibility for storing these local/saved helmet image backups.
 
 Team marks © the respective NFL clubs / ESPN. Cached here as display backups for a private friends pool.

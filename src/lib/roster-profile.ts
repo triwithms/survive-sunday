@@ -67,7 +67,7 @@ export function parseRosterProfile(body: unknown): ParseRosterProfile {
   if (phoneRaw) {
     phoneE164 = normalizeToE164(phoneRaw);
     if (!phoneE164) {
-      return fail("Enter a valid Canadian or US number, e.g. (416) 951-4262 or +1…");
+      return fail("Enter a valid Canadian or US number, e.g. (416) 555-0100 or +1…");
     }
   }
 

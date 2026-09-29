@@ -72,7 +72,7 @@ export function CompleteProfileForm({ missing, nickname, fullName }: Props) {
           onChange={setPhone}
           autoComplete="tel"
           inputMode="tel"
-          placeholder="(416) 951-4262"
+          placeholder="(416) 555-0100"
         />
       )}
       {err && (

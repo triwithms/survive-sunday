@@ -37,7 +37,7 @@ export function RosterCardFields({
           disabled={disabled}
           className="mt-1"
           autoComplete="name"
-          placeholder="e.g. Robert Gama"
+          placeholder="e.g. Alex Player"
         />
       </label>
     </>

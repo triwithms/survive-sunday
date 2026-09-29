@@ -1,8 +1,9 @@
 import type { PrismaClient } from "@prisma/client";
 
 /**
- * Canonical real names for BM Boys seats that were seeded with leftovers.
- * Changing seed files does not update an already-created production pool.
+ * Optional leftover-name fixes. Legal names stay in the database
+ * (Admin → Players), not in git, so this list ships empty. A deploy
+ * must not overwrite the live roster with sample names.
  */
 export type RosterNameFix = {
   nickname: string;
@@ -11,23 +12,7 @@ export type RosterNameFix = {
   stale: string[];
 };
 
-export const ROSTER_NAME_FIXES: RosterNameFix[] = [
-  {
-    nickname: "Long Snapper",
-    realName: "John Stilo",
-    stale: ["J S", "JS", "J.S.", "J. S.", "Long Snapper"],
-  },
-  {
-    nickname: "Steve",
-    realName: "Steve Venerus",
-    stale: ["Steve"],
-  },
-  {
-    nickname: "Gdogss",
-    realName: "Tony Gyuro",
-    stale: ["Gdogss"],
-  },
-];
+export const ROSTER_NAME_FIXES: RosterNameFix[] = [];
 
 export const ROSTER_NAME_PATCH_AUDIT = "roster_canonical_names_patched";
 
@@ -66,6 +51,8 @@ export async function applyCanonicalRosterNames(
   poolId: string,
   opts: { force?: boolean } = {}
 ): Promise<RosterPatchResult> {
+  if (ROSTER_NAME_FIXES.length === 0) return { updated: [] };
+
   const already = await db.auditLog.findFirst({
     where: { poolId, action: ROSTER_NAME_PATCH_AUDIT },
     select: { id: true },

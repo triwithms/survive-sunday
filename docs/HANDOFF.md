@@ -41,7 +41,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **CRITICAL — production data:** A Vercel Production build is `npm run build` → `next build` only. It does **not** run `ensure-production-db`, `prisma db push`, or seeds. Scheduled jobs (missing-pick reminders, ensure-week) do **not** wipe or reseed the pool. Never reattach those scripts to the build. Details: [DEPLOY.md](../DEPLOY.md) section 4.
 - **Game-day error page (27 Sep 2026):** At the 1 p.m. kickoff, two players saw **Something went wrong** and had to reopen the app. A second score sync tried to record a notice that was already recorded. That duplicate is now treated as **already sent** (no second email or text, and it does not throw) — [#175](https://github.com/triwithms/survive-sunday/pull/175). Score sync and grading that start when a page opens can no longer take down My pick, Selections, Scores, Schedule, or Standings — the page still paints from the database. Admin → System → **Server errors** keeps those messages for 14 days, because Vercel Hobby only shows about the last hour of logs. Session polling stays off ([#174](https://github.com/triwithms/survive-sunday/pull/174)).
 
-- **Cannoli Stuffer (Mike Frigo) has Joined.** Email codes were failing. A one-shot temporary password **`Cannoli1!`** was already written on Neon, and **Admin → Set a temporary password** is live for anyone else. A Redeploy does **not** rewrite passwords. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login) with his email and password. His sign-in email is on **Admin → Roster**. He should change the password after he is in.
+- **A claimed friend can be stuck if email codes fail.** Use Admin → **Set a temporary password**, text that password yourself, and have them change it after Sign in. Do not put the password in git, chat, or this file. A Redeploy does **not** rewrite passwords. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login). The sign-in email is on **Admin → Players**.
 
 - Cold open (`/`) is **Sign in**. Join via a personal or invite link (`/join?who=` / `/login?invite=`). After Sign in, default landing is **My pick**. **Selections** is `/pool`. **Player / Administrator** roles (not a special admin account) + **Playing as … / Admin tools** in **Account** — roles merged [PR #19](https://github.com/triwithms/survive-sunday/pull/19)
 - Safari sign-in + **Account → Sign out** — merged [PR #18](https://github.com/triwithms/survive-sunday/pull/18)
@@ -50,10 +50,10 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **Player-tab first paint stays on saved Postgres data.** Lock/missed-pick/grading work, roster repairs, and ESPN refreshes finish after the response (or through the existing cron/sync routes); they must not be put back in the page wait path.
 - Leaderboard (pool in/out): **still in → out**, then fewest losses / most weeks survived; among equals clean record (no 💩) → live win margin of finished picks → nickname. No week chip (season race). Selections is the weekly pick list. **My pick**, **Selections**, and **Scores** open on your current pick week; future weeks are on **Schedule**.
 - ESPN live scores + injuries; **Standings (NFL W-L) syncs from ESPN** (not the demo `week2-standings` seed); no player-facing demo League copy in Real mode
-- Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **DAL** (Dallas — not Gams’ KC). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
+- Real **Week 1 picks imported** for the BM Boys including **Go Giants**, **Pauli**, and **JaJa** (Morgan Lee). Pauli’s nickname is **Pauli**. JaJa’s Week 1 pick is **DAL** (Dallas — not Gams’ KC). Her Join seat uses a practice `@survivesunday.demo` email so it stays **claimable** (not `@pending.survivesunday.local`).
 - **Pick backup:** Off by default. Optional copy-from-member within **30 minutes** of lock (no 💩). Optional ranked leftover (~**2 minutes** before lock) stamps 💩 and that player cannot be the official winner. Server jobs apply this — opening the app is not required. Keep Help general; do not name a specific friend.
 - **Pick-change until kickoff** — every week: you can still change an existing pick until **that team’s** kickoff if the new game has not started.
-- Forgot password is on `main`. Production Resend is set (verified domain **triwithms.com**; From `Survive Sunday <noreply@triwithms.com>` — **section 4**). New-domain mail may land in **spam**/junk. Sign in is **email + password** (not a sign-in code first).
+- Forgot password is on `main`. Production Resend is set (a verified From domain in `RESEND_FROM_EMAIL` — **section 4**). New-domain mail may land in **spam**/junk. Sign in is **email + password** (not a sign-in code first).
 - **Personal Join links** — Admin → **Personal Join links** → one **Copy** per friend who has not Joined (`/join?who=cannoli-stuffer` when the nickname is unique; otherwise `/join?seat=…`). Opens Join with that seat already picked. Invite code `SUNDAY26` is filled in. If the seat is already claimed, the friend sees Sign in — not a broken form. Send one link per friend; do not blast one link to the group chat. Roster has the same Copy button, without extra wording. **Help → Getting started**.
 - **Home Screen prompt** — after Sign in on a phone (not already the Home Screen icon), a card asks: **Do you want to add NFL Pool to your Home Screen?** **Yes** = Android native Install or iOS … beside the URL → scroll → Share (□↑) → Add to Home Screen → Add (sheet has **Close** / **Done**). **Not now** = ask again next Sign in (no 3-day timer). **No — don’t ask again** = never auto-prompt; Help top **Install on Home Screen** reopens Yes. If already `installed` (or standalone / related display-mode), do **not** auto-show in Safari on the same origin (shared links). Desktop never shows. Standalone never shows; mark installed. Code: `src/components/features/a2hs/`.
 - **Share Leaderboard / Scores as a picture** — merged [PR #45](https://github.com/triwithms/survive-sunday/pull/45). Header **Share** sends the page **link** (not a picture); it is hidden on Admin and Settings. Picture share has no extra button on the Leaderboard/Scores screen: **press and hold the page title**, or **tap the week label (gold W#) three times**. Then pick full long picture (always offered) or a shorter / split option → Make picture → Save or Send. The picture leaves off nav, tabs, **Details ›**, and “tap for details.” Help documents both. Does not change picks, Join, Sign in, or lock.
@@ -72,7 +72,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 
 The Real-mode playbook is [`docs/REAL-MODE.md`](./REAL-MODE.md). Earlier handoff refreshes ([PR #13](https://github.com/triwithms/survive-sunday/pull/13), [PR #15](https://github.com/triwithms/survive-sunday/pull/15)) are **superseded by this file**.
 
-**Friends:** do **not** hold forever. The board, roles, Week 2 slate, and Week 1 imports are live. Cold open is Sign in; Join is via a personal or invite link. **Do not send personal Join links** until you have tested **Forgot password** once (you should receive a 6-digit code; check spam/junk — new-domain mail from **noreply@triwithms.com** may land there). Without a working reset, friends who forget their password are stuck. After that, copy one Admin link per friend — do not send one blast to the whole group chat.
+**Friends:** do **not** hold forever. The board, roles, Week 2 slate, and Week 1 imports are live. Cold open is Sign in; Join is via a personal or invite link. **Do not send personal Join links** until you have tested **Forgot password** once (you should receive a 6-digit code; check spam/junk — new-domain mail from the verified From address may land there). Without a working reset, friends who forget their password are stuck. After that, copy one Admin link per friend — do not send one blast to the whole group chat.
 
 ---
 
@@ -194,13 +194,13 @@ Friends add their cell for SMS reminders on the first-run prompt, or later from 
 
 Standing facts for a CoS / free AI. Do **not** invent extra env values or flip modes. Account **Notification preferences** (Email / SMS / both / none) and Admin **Send test to me** are shipped ([#133](https://github.com/triwithms/survive-sunday/pull/133)). Click-by-click Resend setup stays in [DEPLOY.md](../DEPLOY.md) §3b — this is not a second deploy guide.
 
-- **Resend:** Domain **triwithms.com** is **verified**. Production `RESEND_FROM_EMAIL` is `Survive Sunday <noreply@triwithms.com>`. New-domain mail may land in **spam** — friends should check junk.
+- **Resend:** The sending domain is **verified** on the Resend account. Production `RESEND_FROM_EMAIL` is a From address on that domain (`Survive Sunday <noreply@yourdomain.com>`). New-domain mail may land in **spam** — friends should check junk.
 - **`NOTIFY_MODE`:** Production uses **`allowlist`**. **`NOTIFY_ALLOWLIST`** is working. **Keep allowlist** until Robert explicitly says switch to **`live`**. Do not document as live-to-everyone yet. Password-reset codes ignore this gate (SECURITY).
 - **Week wrap:** After a pool week’s last game is final, cron `/api/cron/week-wrap` sends type `weekWrap` at **noon America/Toronto the next calendar day** (16:00 UTC in EDT, 17:00 UTC in EST). A Tuesday 11:40 p.m. ET finale is eligible starting Wednesday noon; a Monday night finale is eligible starting Tuesday noon. A missed noon can still send for 7 Toronto days. One send per user per pool week (`NotificationSend`). Default channel is email. SMS is short facts; Funny copy stays on email. The email is table-based HTML (`week-wrap-html*.ts`) in this order: intro · **Won this week** · **Lost this week** (mulligan seats say “still in”; in every list, same-team picks sit together — biggest group first, ties by team A–Z, no pick last — with nicknames A–Z inside each team) · **Eliminated this week** (only when someone went out) · **Pool leaderboard** (same order as `/standings`) · **NFL division standings** (AFC/NFC nested tables, W-L from ESPN; the section is dropped if ESPN is down) · drama / touchdown video / **Open the board** → `/standings`. Team helmets are absolute `PUBLIC_APP_ORIGIN` + `localHelmetSrc(abbr)` — lowercase files, `WAS` not `WSH`. The Admin email box now replaces only the intro. Admin → System sets tone and blocks, previews the real HTML email, **Send now** (ignores the noon wait and a skip), or **Skip this week** (auto only). **Save defaults** is what the next automatic send uses. The subject and intro are **automatic from facts** every week (`week-wrap-auto.ts`, e.g. `Week 3 wrap: 12 still in, 2 took a hit, nobody out.`) — counts and names from WeekWrapFacts only, no LLM, no API call, so cron and Admin send always work. **Funny** uses that same Straight facts copy (and no drama line) until a real banter paste lands in `week-wrap-tone.ts`; custom banter today is the Admin email intro override, which replaces only the intro. Email uses the same quiet game-notice footer as other player mail (small preferences link to `/account/notifications`). SMS adds `Prefs:` plus that URL only when the whole text stays within 160 GSM-7 characters; otherwise the link stays on the email. At send time the app searches the official NFL channel for a title starting `Every Touchdown of Week N` (`YOUTUBE_API_KEY`); a miss does not block the send. There is no Admin paste box for the video. `NOTIFY_MODE` / allowlist unchanged. Not in this version: per-player team highlights, extra tones ([#156](https://github.com/triwithms/survive-sunday/issues/156)).
 - **Admin Send test to me:** subject, email, and SMS say **ADMIN TEST** and **not a real pool alert** (`src/lib/notify-test-copy.ts`). SMS: `Survive Sunday ADMIN TEST only. Checking that your notify channel works. Not a real pool alert.`
 - **`YOUTUBE_API_KEY`:** Optional YouTube Data API v3 key for that week-wrap search. Spell the name **`YOUTUBE_API_KEY`**. Add it on Vercel for Production, then Redeploy. A blank key still sends the wrap.
-- **Twilio:** Spell the names **`TWILIO_ACCOUNT_SID`**, **`TWILIO_AUTH_TOKEN`**, **`TWILIO_FROM_NUMBER`**. The account is on **trial**. Every SMS — game notices, week wrap, admin alerts, and password-reset codes — is finalized in `sendTwilioMessage` by `fitTrialSms` (`src/lib/sms-gsm.ts`): plain GSM-7, **at most 160 characters**, no emoji or smart punctuation. A longer text is cut with `...`. The short `Prefs:` link is added only when the whole text still fits; otherwise that link stays on the email. Trial texts deliver only to **verified To numbers** in the Twilio console, and Twilio may prepend a trial prefix. SMS works for Robert’s **CA** cell. TwiML noreply bin is set.
-- **US friends** (e.g. Pauli / Paul NJ, Go Giants / Carson CO): prefer **Email** until Twilio is upgraded / 10DLC or Verified Caller IDs cover them — SMS may fail or be unreliable for US numbers on trial.
+- **Twilio:** Spell the names **`TWILIO_ACCOUNT_SID`**, **`TWILIO_AUTH_TOKEN`**, **`TWILIO_FROM_NUMBER`**. The account is on **trial**. Every SMS — game notices, week wrap, admin alerts, and password-reset codes — is finalized in `sendTwilioMessage` by `fitTrialSms` (`src/lib/sms-gsm.ts`): plain GSM-7, **at most 160 characters**, no emoji or smart punctuation. A longer text is cut with `...`. The short `Prefs:` link is added only when the whole text still fits; otherwise that link stays on the email. Trial texts deliver only to **verified To numbers** in the Twilio console, and Twilio may prepend a trial prefix. SMS works for the organizer’s Canadian cell. TwiML noreply bin is set.
+- **US friends:** prefer **Email** until Twilio is upgraded / 10DLC or Verified Caller IDs cover them — SMS may fail or be unreliable for US numbers on trial.
 - **Admin CC on player notices:** **Not building.** Password-reset Administrator alert is already shipped (leave it).
 
 A full list with local-dev notes is in [`.env.example`](../.env.example) and [`DEPLOY.md`](../DEPLOY.md).
@@ -236,25 +236,25 @@ A Redeploy also does **not** patch leftover short names or emails. Edit names on
 
 ---
 
-## 6. BM Boys roster (confirmed real names)
+## 6. BM Boys roster (nicknames)
 
-Nicknames stay as friends know them. Real names show in brackets on the board and on Join. Live late 13 Sep 2026: **13 player seats**.
+Nicknames stay as friends know them. Legal names show in brackets on the board and on Join, and they live in the database only (**Admin → Players**). This file uses placeholders such as **Alex Player** — do not copy them onto the live roster. Live late 13 Sep 2026: **13 player seats**.
 
-| Nickname | Real name | On live Join |
-|----------|-----------|--------------|
-| Black Cobra | Justin John | Unclaimed |
-| Cannoli Stuffer | Michael Frigo | **Claimed** (codes failing — temp password already set; see Admin → Roster for his email) |
-| Colin | Colin Malone | Unclaimed |
-| Daddy Chill | Joachim Kuzel | Unclaimed |
-| Deep and Delicious | Kent Richmond | Unclaimed |
-| Gams | Robert Gama | Claimed |
-| Gdogss | Tony Gyuro | Unclaimed |
-| **Go Giants** | **Carson Gama** | Unclaimed |
-| JimmyC | Jim Coulson | Unclaimed |
-| Long Snapper | John Stilo | Unclaimed |
-| **Pauli** | **Paul Gama** | Unclaimed |
-| **JaJa** | **Jacquie Gama** | Unclaimed (Join-claimable) |
-| Steve | Steve Venerus | Unclaimed |
+| Nickname | Sample name in this repo | Notes |
+|----------|--------------------------|-------|
+| Black Cobra | Jordan Blake | Sample only |
+| Cannoli Stuffer | Sam Player | Sample only. Email is on Admin → Players |
+| Colin | Casey Morgan | Sample only |
+| Daddy Chill | Riley Chen | Sample only |
+| Deep and Delicious | Quinn Harper | Sample only |
+| Gams | Alex Player | Sample only |
+| Gdogss | Avery Brooks | Sample only |
+| Go Giants | Parker Ellis | Sample only |
+| JimmyC | Drew Patel | Sample only |
+| Long Snapper | Jamie Cole | Sample only |
+| Pauli | Reese Nolan | Nickname is **Pauli** |
+| JaJa | Morgan Lee | Join-claimable practice email |
+| Steve | Taylor Nguyen | Sample only |
 
 **Go Giants**, **Pauli**, and **JaJa** were added on the live roster (not only in seed files). Pauli’s nickname is **Pauli**, not Paul. Leftover `@pending.survivesunday.local` placeholders are treated as unclaimed practice seats (same as `@survivesunday.demo`) so they can Join; Gams stays claimed. JaJa uses `jaja@survivesunday.demo` so Join does **not** say already claimed. You can edit any row on **Admin → Roster**. A Redeploy does **not** patch names or create missing seats — use Roster (and **Admin → Import week picks** for a wrong Week 1 team).
 
@@ -281,7 +281,7 @@ Steve,DET
 JaJa,DAL
 ```
 
-**Go Giants** (Carson Gama), **Pauli** (Paul Gama), and **JaJa** (Jacquie Gama) also have Week 1 picks on the live Board (JaJa = **DAL**, not Gams’ KC). If a row looks wrong, fix it with **Admin → Import week picks** (week **1**) — read the live Board, do not invent a team. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
+**Go Giants** (Parker Ellis), **Pauli** (Reese Nolan), and **JaJa** (Morgan Lee) also have Week 1 picks on the live Board (JaJa = **DAL**, not Gams’ KC). If a row looks wrong, fix it with **Admin → Import week picks** (week **1**) — read the live Board, do not invent a team. Playbook: [`docs/REAL-MODE.md`](./REAL-MODE.md).
 
 ---
 
@@ -302,7 +302,7 @@ Unclaimed seats still use practice `@survivesunday.demo` emails so Join can clai
 - **Notification preferences:** header **Account** → **Settings → Notification preferences**. Each friend chooses **Email / SMS / both / none** (`notifyPref`). Admin **Send test to me** on System. `NOTIFY_MODE` is `dryrun` | `allowlist` | `live`. Production is **allowlist**; **keep allowlist** until Robert says **`live`**. Password-reset codes always send when requested (SECURITY ignores prefs).
 - **Pick backup:** header **Account** → **Settings → Pick backup**. Off, copy from a member (30 min), or auto best remaining **2025 rank** team (~2 min). Administrators can set the same on **Admin → Roster**. JaJa copies Gams by default.
 
-The **Forgot password?** screen is on `main` (merged PR #7). Production Resend is set (**section 4** notification ops; click-by-click remains in [DEPLOY.md](../DEPLOY.md) §3b). Optional Twilio for texts (Robert’s **CA** cell works; prefer **Email** for US friends on trial). Check spam/junk. Practice `@survivesunday.demo` seats are Join placeholders, not a Demo-mode login.
+The **Forgot password?** screen is on `main` (merged PR #7). Production Resend is set (**section 4** notification ops; click-by-click remains in [DEPLOY.md](../DEPLOY.md) §3b). Optional Twilio for texts (a Canadian cell on the trial account works; prefer **Email** for US friends on trial). Check spam/junk. Practice `@survivesunday.demo` seats are Join placeholders, not a Demo-mode login.
 
 ### Picks
 
@@ -444,7 +444,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Work | PR | What friends have today |
 |------|-----|-------------------------|
 | Login / session cookie + AUTH_URL placeholder guard | several early merges | Sign-in keeps a session when env vars are set. |
-| BM Boys real names + Roster editor | [#9](https://github.com/triwithms/survive-sunday/pull/9) | John Stilo / Steve Venerus / Tony Gyuro, plus Admin → Roster. Live roster also has **Go Giants** (Carson Gama) and **Pauli** (Paul Gama). |
+| BM Boys real names + Roster editor | [#9](https://github.com/triwithms/survive-sunday/pull/9) | Jamie Cole / Taylor Nguyen / Avery Brooks, plus Admin → Roster. Live roster also has **Go Giants** (Parker Ellis) and **Pauli** (Reese Nolan). |
 | Owner handoff (earlier passes) | [#13](https://github.com/triwithms/survive-sunday/pull/13), [#15](https://github.com/triwithms/survive-sunday/pull/15) | **Superseded by this file.** |
 | Live ESPN scores + injury report | [#12](https://github.com/triwithms/survive-sunday/pull/12) | Scores poll ESPN; team pages + chips use ESPN injuries. No paid key. |
 | Live pool (was Real vs Demo), reset, real administrator login | [#10](https://github.com/triwithms/survive-sunday/pull/10); toggle removed on Admin tabs PR | Live-only. **Week 2** is the current board week (header **Week N** from the slate). No practice picker. [`docs/REAL-MODE.md`](./REAL-MODE.md). |
@@ -458,7 +458,7 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Pick-change until kickoff | [#25](https://github.com/triwithms/survive-sunday/pull/25) | Every week: change an existing pick until **that team’s** kickoff if the new game has not started. |
 | Next-week picks unlock per player | [#50](https://github.com/triwithms/survive-sunday/pull/50) | Once **your** current-week game has started (pick locked), **next week’s picks open for you immediately**. Do **not** wait for Monday Night Football. New joiners who never had a Week 1 pick path see **Week 2 is open — make your pick**. Friends still waiting on their own Week 1 kickoff keep the Week 1 flow. |
 | Notification preferences | [#29](https://github.com/triwithms/survive-sunday/pull/29) | Header → **Account → Notification preferences**. Types: missing pick, pick saved/changed, results, you’re out / mulligan, pool notes (default on); live scores, injury notes (default off). Email via Resend. Missing-pick SMS follows the same switch. If that page 500s, production is missing NotificationPreference columns — boot + request retry now add them. |
-| JaJa seat + pick backup | [#37](https://github.com/triwithms/survive-sunday/pull/37) | **JaJa (Jacquie Gama)** is on Join as claimable, Week 1 **DAL**. Pick backup: off / copy-from-member (30 min, no 💩; JaJa → Gams later) / auto best remaining **2025 rank** team (~2 min, stamps 💩). Official winner must have no 💩. Help stays general (no JaJa / Gams copy example) — [#41](https://github.com/triwithms/survive-sunday/pull/41). |
+| JaJa seat + pick backup | [#37](https://github.com/triwithms/survive-sunday/pull/37) | **JaJa (Morgan Lee)** is on Join as claimable, Week 1 **DAL**. Pick backup: off / copy-from-member (30 min, no 💩; JaJa → Gams later) / auto best remaining **2025 rank** team (~2 min, stamps 💩). Official winner must have no 💩. Help stays general (no JaJa / Gams copy example) — [#41](https://github.com/triwithms/survive-sunday/pull/41). |
 | Unclaim leftover pending.local seats | [#27](https://github.com/triwithms/survive-sunday/pull/27) | **Go Giants** and **Pauli** are Join-claimable again if they still had leftover pending emails. |
 | Cell-number first-run prompt | [#42](https://github.com/triwithms/survive-sunday/pull/42) | Soft ask to add a cell for SMS reminders; skippable. |
 | Personal Join links + Home Screen prompt + simpler Sign in | [#44](https://github.com/triwithms/survive-sunday/pull/44) | One Copy per open seat (`?who=` when unique). Claimed seats → Sign in. Phone browser prompt after Join / first Sign in. Sign in defaults to **Email me a sign-in code**; password and Forgot are secondary; Google hidden on Sign in. Help + this file updated. |

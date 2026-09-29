@@ -45,15 +45,15 @@ function main() {
   assert(friendlyLoginError(null) === null, "null code is no banner");
 
   assert(
-    loginEmailQueryValue("RobertGama@gmail.com") === "robertgama@gmail.com",
+    loginEmailQueryValue("Organizer@example.com") === "organizer@example.com",
     "email kept and lowercased"
   );
   assert(loginEmailQueryValue("Gams") === "Gams", "keep username");
   assert(loginEmailQueryValue("https://evil") === "", "reject urls");
   assert(
-    loginFailurePath("CredentialsSignin", "robertgama@gmail.com") ===
-      "/login?error=CredentialsSignin&email=robertgama%40gmail.com",
-    `failure path ${loginFailurePath("CredentialsSignin", "robertgama@gmail.com")}`
+    loginFailurePath("CredentialsSignin", "organizer@example.com") ===
+      "/login?error=CredentialsSignin&email=organizer%40example.com",
+    `failure path ${loginFailurePath("CredentialsSignin", "organizer@example.com")}`
   );
 
   assert(safeLoginCallbackPath("/pool") === "/pool", "/pool ok");

@@ -1,5 +1,21 @@
-const PROD_ENDPOINT = "ep-falling-flower-avkrw34u";
 const ALLOWED_HOSTS = ["localhost", "127.0.0.1"];
+
+/**
+ * Production Neon host fragment (for example `ep-…`). Set in the operator
+ * environment. Do not commit the real value. When unset, every `*.neon.tech`
+ * host is refused so a missing env cannot point scripts at production.
+ */
+function prodEndpoint(): string {
+  return (process.env.PROD_DB_ENDPOINT ?? "").trim();
+}
+
+function isProdHost(host: string): boolean {
+  const endpoint = prodEndpoint();
+  if (endpoint && host.includes(endpoint)) return true;
+  if (!endpoint && host.includes(".neon.tech")) return true;
+  return false;
+}
+
 export const PROD_DB_BREAK_GLASS = "ALLOW_PROD_DB_MUTATION";
 
 const URL_KEYS = [
@@ -47,10 +63,14 @@ function refuseProdHosts(script: string) {
   if (urls.length === 0) refuse(`${script}: DATABASE_URL is not set.`);
   for (const url of urls) {
     const host = hostOf(script, url);
-    if (host.includes(PROD_ENDPOINT)) {
+    if (isProdHost(host)) {
+      const named = prodEndpoint();
+      const why = named
+        ? `This host matches PROD_DB_ENDPOINT and is the database that runs the pool.`
+        : `PROD_DB_ENDPOINT is unset, so every Neon host is refused. Set it locally to the production host fragment (do not commit it) before using another Neon branch.`;
       refuse(
         `${script} is pointed at PRODUCTION (${host}).\n` +
-          `  This is the database that runs the pool. Refusing.\n` +
+          `  ${why}\n` +
           `  Emergency only: ${PROD_DB_BREAK_GLASS}=1`
       );
     }

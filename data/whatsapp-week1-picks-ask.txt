@@ -8,19 +8,19 @@ Format per person:
 Nickname (Real name): TEAM
 
 Example:
-Gams (Robert Gama): DET
+Gams (Alex Player): DET
 
 ———
-Black Cobra (Justin John): 
-Cannoli Stuffer (Michael Frigo): 
-Colin (Colin Malone): 
-Daddy Chill (Joachim Kuzel): 
-Deep and Delicious (Kent Richmond): 
-Gams (Robert Gama): 
-Gdogss (Tony Gyuro): 
-JimmyC (Jim Coulson): 
-Long Snapper (John Stilo): 
-Steve (Steve Venerus): 
+Black Cobra (Jordan Blake): 
+Cannoli Stuffer (Sam Player): 
+Colin (Casey Morgan): 
+Daddy Chill (Riley Chen): 
+Deep and Delicious (Quinn Harper): 
+Gams (Alex Player): 
+Gdogss (Avery Brooks): 
+JimmyC (Drew Patel): 
+Long Snapper (Jamie Cole): 
+Steve (Taylor Nguyen): 
 ———
 
 Rules: one NFL team for Week 1. That team is burned — can’t reuse it later.

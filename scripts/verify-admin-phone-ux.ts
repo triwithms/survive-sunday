@@ -83,7 +83,7 @@ function main() {
   const pauli: RosterMember = {
     id: "1",
     nickname: "Pauli",
-    realName: "Paul Gama",
+    realName: "Reese Nolan",
     status: "active",
     role: "member",
     email: "paul@example.com",
@@ -95,7 +95,7 @@ function main() {
   };
   assert.equal(rosterMatches(pauli, ""), true);
   assert.equal(rosterMatches(pauli, "pau"), true);
-  assert.equal(rosterMatches(pauli, "Gama"), true);
+  assert.equal(rosterMatches(pauli, "Nolan"), true);
   assert.equal(rosterMatches(pauli, "jaja"), false);
 
   assert.equal(auditTitle("transfer_commissioner"), "Handed the pool");

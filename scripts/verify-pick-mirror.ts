@@ -94,7 +94,7 @@ assert.deepEqual(
 );
 
 assert.equal(JAJA_SEAT.nickname, "JaJa");
-assert.equal(JAJA_SEAT.realName, "Jacquie Gama");
+assert.equal(JAJA_SEAT.realName, "Morgan Lee");
 assert.equal(JAJA_SEAT.week1Team, "DAL", "JaJa Week 1 is DAL, not KC");
 assert.equal(JAJA_SEAT.practiceEmail, "jaja@survivesunday.demo");
 assert.equal(practiceEmailForNickname("JaJa"), "jaja@survivesunday.demo");

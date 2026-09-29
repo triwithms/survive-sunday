@@ -26,15 +26,15 @@ function main() {
   assert(!adminNotifyLooksSafe("code 123456"), "rejects a 6-digit OTP");
   assert(
     collectAdminEmails([
-      { email: "robertgama@gmail.com" },
+      { email: "organizer@example.com" },
       { email: "admin@survivesunday.demo" },
-      { email: "robertgama@gmail.com" },
-    ]).join(",") === "robertgama@gmail.com",
+      { email: "organizer@example.com" },
+    ]).join(",") === "organizer@example.com",
     "admin emails skip demo and dedupe"
   );
   assert(
     collectAdminPhones([
-      { phoneE164: "+14165551212", email: "robertgama@gmail.com" },
+      { phoneE164: "+14165551212", email: "organizer@example.com" },
       { phoneE164: "+14165559999", email: "admin@survivesunday.demo" },
     ]).join(",") === "+14165551212",
     "admin phones skip demo"

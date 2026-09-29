@@ -1,7 +1,7 @@
 # Chief of Staff — takeover handoff
 
 **Audience:** a new Grok Bot / Chief of Staff (or human) picking up Survive Sunday after the previous CoS froze.
-**Owner:** Robert Gama (`robertgama@gmail.com`, GitHub `triwithms`).
+**Owner:** Alex Player (`organizer@example.com`, GitHub `triwithms`).
 **Live app:** https://survive-sunday.vercel.app  ·  Sign in: https://survive-sunday.vercel.app/login  ·  Shortcut name: **NFL Pool**
 **Repo:** https://github.com/triwithms/survive-sunday (public)
 **Updated:** 2026-09-19 (America/Toronto)

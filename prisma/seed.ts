@@ -544,7 +544,7 @@ async function main() {
   console.log(`   Week 2 lockAt: ${lockAt2.toISOString()}`);
   console.log("   Invite code: SUNDAY26");
   console.log("   Demo password: demo1234");
-  console.log("   Default seat: gams@survivesunday.demo (Robert Gama)");
+  console.log("   Default seat: gams@survivesunday.demo (Alex Player)");
   console.log("   Demo emails: black-cobra@… cannoli-stuffer@… … steve@survivesunday.demo");
   console.log("   Admin tools: Gams (Player + Administrator)");
 }

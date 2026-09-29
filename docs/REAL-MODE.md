@@ -30,12 +30,12 @@ Friends never see a practice administrator password.
 
 The list is the **live Admin roster** (current nicknames + real names), not a hard-coded file. Administrator / non-player seats are left off.
 
-1. Home or **Join the pool** → pick e.g. `Gams (Robert Gama)`.
+1. Home or **Join the pool** → pick e.g. `Gams (Alex Player)`.
 2. Enter invite code **`SUNDAY26`**, **your own email**, and a password you choose.
 3. That login attaches to the existing membership. Week 1 picks stay with that person — you do not get a second “Gams”.
 4. If that seat already has a real (non-practice) email: **already claimed — Sign in instead** (or ask the administrator).
 5. Practice `@survivesunday.demo` seats (and leftover `@pending.survivesunday.local` placeholders) **are** claimable by the real person.
-6. **One user, more than one role.** There is no separate “admin account.” If you already sign in with `robertgama@gmail.com` (Administrator), pick **Gams** on Join and use that same email and the password you already sign in with. That adds the **Player** role to the same user. Or **Sign in first**, then Join — email is prefilled, and you still type the password. Then switch **Playing as Gams** | **Admin tools**. Do not invent a second email. If Join says the email already has an account, tap **I already have this login — Sign in to claim**.
+6. **One user, more than one role.** There is no separate “admin account.” If you already sign in with `organizer@example.com` (Administrator), pick **Gams** on Join and use that same email and the password you already sign in with. That adds the **Player** role to the same user. Or **Sign in first**, then Join — email is prefilled, and you still type the password. Then switch **Playing as Gams** | **Admin tools**. Do not invent a second email. If Join says the email already has an account, tap **I already have this login — Sign in to claim**.
 7. When you have both roles, switch in **Account** (top right): **Playing as Gams** | **Admin tools**. That switch is not on League or other main screens. Player view hides Admin. Admin view shows Admin. Friends who are only players never see Admin tools.
 8. On **Admin**, you can **Make administrator** for someone already in the pool (confirm first). They stay on the board. You can remove Admin later if at least one administrator remains. Roles live on a user↔roles list so a later **Watcher** (follow the board, no picks) can be added without starting over. Watcher is **not** in the app yet.
 9. Nicknames still change on **Admin → Roster** or **Change nickname**. The list always shows the current names.
@@ -82,9 +82,9 @@ This cannot be undone. Skipping reset keeps the live Week 1 board. There is no D
 
 ## Real names on the live site
 
-Long Snapper → **John Stilo**, Steve → **Steve Venerus**, Gdogss → **Tony Gyuro**.
+Long Snapper → **Jamie Cole**, Steve → **Taylor Nguyen**, Gdogss → **Avery Brooks**.
 
-Live roster also includes **Go Giants** (Carson Gama), **Pauli** (Paul Gama), and **JaJa** (Jacquie Gama). Pauli’s nickname is **Pauli**. JaJa’s Join seat is claimable (`jaja@survivesunday.demo`) and her Week 1 pick is **DAL** (Dallas — not Gams’ KC). She is set to copy Gams’ pick if she still has none within 30 minutes of kickoff / lock (later weeks; copy does not stamp 💩). Any player can instead auto-pick the best remaining **2025 rank** team (~2 minutes before lock) from Account or Admin → Roster — that stamps 💩 and they cannot be the official winner.
+Live roster also includes **Go Giants** (Parker Ellis), **Pauli** (Reese Nolan), and **JaJa** (Morgan Lee). Pauli’s nickname is **Pauli**. JaJa’s Join seat is claimable (`jaja@survivesunday.demo`) and her Week 1 pick is **DAL** (Dallas — not Gams’ KC). She is set to copy Gams’ pick if she still has none within 30 minutes of kickoff / lock (later weeks; copy does not stamp 💩). Any player can instead auto-pick the best remaining **2025 rank** team (~2 minutes before lock) from Account or Admin → Roster — that stamps 💩 and they cannot be the official winner.
 
 This is applied to the **live database** on deploy (and again when the site loads). Changing seed files alone is not enough.
 
@@ -114,9 +114,9 @@ Most of this is **already done** (evening 13 Sep 2026): the pool is live, Week 1
 
 1. Friends land on **Week 1**. Week 2 stays on the schedule. There is no Demo vs Real toggle.
 2. You already have a **real administrator login**. Sign in with that email. Same email can hold **Player + Administrator** — use **Playing as Gams** / **Admin tools**.
-3. Fix names on **Roster** only if needed (John Stilo / Steve Venerus / Pauli / Go Giants / JaJa should already be right). JaJa’s pick backup (copy from Gams) is on that same Roster card, or **Account → Pick backup**.
+3. Fix names on **Roster** only if needed (Jamie Cole / Taylor Nguyen / Pauli / Go Giants / JaJa should already be right). JaJa’s pick backup (copy from Gams) is on that same Roster card, or **Account → Pick backup**.
 4. **Do not Reset pool** unless you intend to wipe the imported Week 1 board.
-5. Add **Resend** keys on Vercel (`RESEND_API_KEY` + `RESEND_FROM_EMAIL`) and Redeploy — then test **Forgot password** once. That is the invite blocker. If a claimed friend is stuck tonight (Cannoli Stuffer / Mike Frigo), use **Admin → Set a temporary password** or the one-shot temp password from the password-reset fix, and text them.
+5. Add **Resend** keys on Vercel (`RESEND_API_KEY` + `RESEND_FROM_EMAIL`) and Redeploy — then test **Forgot password** once. That is the invite blocker. If a claimed friend is stuck tonight (Cannoli Stuffer / Sam Player), use **Admin → Set a temporary password** or the one-shot temp password from the password-reset fix, and text them.
 6. Then send friends to **Join the pool** with invite code **`SUNDAY26`**. They pick their name from the live roster (nickname + real name), then set their own email and password. Already-claimed seats (Gams, Go Giants, Pauli) say Sign in instead.
 7. To give a friend Admin tools, open Admin → **Players** → that person → **Make administrator**. Pool lists administrators and links back to them.
 

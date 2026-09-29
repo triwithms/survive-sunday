@@ -33,7 +33,7 @@ function assert(cond: unknown, msg: string): asserts cond {
 async function main() {
   assert(isDemoEmail("gams@survivesunday.demo"), "gams is demo");
   assert(isDemoEmail("ADMIN@SurviveSunday.demo"), "demo case");
-  assert(!isDemoEmail("robertgama@gmail.com"), "gams claimed email");
+  assert(!isDemoEmail("organizer@example.com"), "gams claimed email");
   assert(normalizeEmail(" Pat@Example.com ") === "pat@example.com", "normalize");
   console.log("PASS  demo + email helpers");
 
@@ -51,7 +51,7 @@ async function main() {
   assert(sentCodeCopy(true).toLowerCase().includes("texted"), "SMS mentioned");
   assert(parseChannel("nope") === null, "parse junk");
   assert(maskEmail("pat@example.com") === "p•••@example.com", "mask email");
-  assert(maskPhone("+14169514262") === "+1 •••-•••-4262", "mask phone");
+  assert(maskPhone("+14165550100") === "+1 •••-•••-0100", "mask phone");
   assert(secondsUntil(new Date(Date.now() - 10_000), 45_000) === 35, "cooldown");
   assert(expirySeconds(new Date(Date.now() + 90_000)) === 90, "expiry");
   console.log("PASS  otp helpers");

@@ -33,7 +33,7 @@ assert.match(links, /Report a bug or idea/);
 assert.doesNotMatch(links, /mailto:|Commissioner/);
 const row = src("src/components/features/account/account-row.ts");
 assert.match(row, /\/account\/report/);
-assert.doesNotMatch(row, /mailto:|robertgama@gmail.com/);
+assert.doesNotMatch(row, /mailto:|organizer@example.com/);
 const report = src("src/app/(app)/account/report/page.tsx");
 assert.match(report, /ReportBugForm/);
 assert.match(report, /every Administrator/);

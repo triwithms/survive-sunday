@@ -9,57 +9,57 @@ const DEMO_PROFILES: Record<
 > = {
   "gams@survivesunday.demo": {
     nickname: "Gams",
-    realName: "Robert Gama",
+    realName: "Alex Player",
     role: "member",
   },
   "black-cobra@survivesunday.demo": {
     nickname: "Black Cobra",
-    realName: "Justin John",
+    realName: "Jordan Blake",
     role: "member",
   },
   "cannoli-stuffer@survivesunday.demo": {
     nickname: "Cannoli Stuffer",
-    realName: "Michael Frigo",
+    realName: "Sam Player",
     role: "member",
   },
   "colin@survivesunday.demo": {
     nickname: "Colin",
-    realName: "Colin Malone",
+    realName: "Casey Morgan",
     role: "member",
   },
   "daddy-chill@survivesunday.demo": {
     nickname: "Daddy Chill",
-    realName: "Joachim Kuzel",
+    realName: "Riley Chen",
     role: "member",
   },
   "deep-and-delicious@survivesunday.demo": {
     nickname: "Deep and Delicious",
-    realName: "Kent Richmond",
+    realName: "Quinn Harper",
     role: "member",
   },
   "gdogss@survivesunday.demo": {
     nickname: "Gdogss",
-    realName: "Tony Gyuro",
+    realName: "Avery Brooks",
     role: "member",
   },
   "jimmyc@survivesunday.demo": {
     nickname: "JimmyC",
-    realName: "Jim Coulson",
+    realName: "Drew Patel",
     role: "member",
   },
   "long-snapper@survivesunday.demo": {
     nickname: "Long Snapper",
-    realName: "John Stilo",
+    realName: "Jamie Cole",
     role: "member",
   },
   "steve@survivesunday.demo": {
     nickname: "Steve",
-    realName: "Steve Venerus",
+    realName: "Taylor Nguyen",
     role: "member",
   },
   "jaja@survivesunday.demo": {
     nickname: "JaJa",
-    realName: "Jacquie Gama",
+    realName: "Morgan Lee",
     role: "member",
   },
 };

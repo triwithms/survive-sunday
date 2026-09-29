@@ -37,7 +37,7 @@ function member(partial: Partial<RosterMember>): RosterMember {
     id: "1",
     userId: "u-1",
     nickname: "Pauli",
-    realName: "Paul Gama",
+    realName: "Reese Nolan",
     status: "active",
     role: "member",
     email: "paul@example.com",
@@ -171,17 +171,17 @@ function main() {
 
   assert.equal(
     rosterRowDetail(member({})),
-    "Paul Gama · Joined"
+    "Reese Nolan · Joined"
   );
   assert.equal(
     rosterRowDetail(
-      member({ email: "jaja@survivesunday.demo", realName: "Jacquie Gama" })
+      member({ email: "jaja@survivesunday.demo", realName: "Morgan Lee" })
     ),
-    "Jacquie Gama · Not joined"
+    "Morgan Lee · Not joined"
   );
   assert.equal(
-    rosterRowDetail(member({ role: "admin", realName: "Robert Gama" })),
-    "Robert Gama · Administrator"
+    rosterRowDetail(member({ role: "admin", realName: "Alex Player" })),
+    "Alex Player · Administrator"
   );
 
   assert.equal(claimShortLabel(member({})), "Joined");
