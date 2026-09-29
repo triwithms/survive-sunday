@@ -29,7 +29,7 @@ Follow this when you sell a pool. Payment stays outside the app (e-transfer, cas
    - Person who already signs in: use that same email and leave the password blank. Typing a password here changes it for every pool on that login.
    - On their row, tap **Make administrator**.
 4. **Send the welcome email** in Appendix A. Subject with no emoji. Put the real email and temporary password only in that private email, not in a group chat.
-5. **Short walkthrough** if they want one. Show **Admin → Players** (add a person, set a password) and **Admin → Pool** (mulligan). Ten minutes is enough.
+5. **Short walkthrough** if they want one. Show both ways to add players: **Admin → Players** (you set a password and text it) and **Admin → Pool → Shared join link** (they choose their own email and password). Mulligan is on **Pool** too. Ten minutes is enough.
 
 You are still a player in their pool, and an administrator until you hand it over. You cannot remove your own seat. When they can open Admin for their pool:
 
@@ -44,17 +44,20 @@ Then switch back to the family pool and confirm its players and picks look the s
 2. Settings has no password box. To choose your own password, sign out and use **Forgot password** on Sign in. A 6-digit code arrives by email. Check spam.
 3. If Robert told you to start the pool yourself: **Settings → Start a pool** (name and mulligan). You become the administrator.
 4. If you are in more than one pool, the switcher is on Settings. Pick your pool before you add anyone. If the screen says you are playing, switch to **Admin tools**. Admin in the bottom bar is only for a pool you administer.
-5. **Admin → Players → Add user** for each player: nickname, email, and a temporary password. Text each person their own login. If that email already signs in somewhere else, leave the password blank.
-6. Send the player text in Appendix B, and send the email and temporary password in a separate direct message. One person, one message. Not the group chat.
-7. Mulligan changes live under **Admin → Pool**.
+5. Add players either way, or both. They are optional, not a choice you have to make once.
+   - **You set the password:** **Admin → Players → Add user**. Nickname, email, and a temporary password. Text each person their own login (Appendix B, plus the password in a separate direct message). If that email already signs in somewhere else, leave the password blank.
+   - **They set the password:** **Admin → Pool → Shared join link → Create link**. Copy that one link and send it to the group. Each person opens it, enters their own email, password, and display name, and lands in this pool only. **New link** replaces the old one. **Turn off** stops it. You cannot copy the old link again after you leave the page.
+6. Mulligan changes live under **Admin → Pool**.
 
 You only see the pool you are in. You cannot open another pool’s roster or picks.
 
 ## 5. How players get in
 
-- They open the same website and sign in with **email and password**.
-- The pool administrator creates the account and texts the temporary password. Players do not pick themselves off a public list, and they do not type a pool code.
-- A personal join link, if the administrator sends one, only attaches email and password to a seat that administrator already created. After that, Sign in is the way back.
+- They open the same website and sign in with **email and password**. Returning players always use Sign in, plus **Forgot password** if they need it.
+- Two ways in, both optional:
+  - The administrator creates the account and texts a temporary password.
+  - Or the administrator shares one pool join link. The player opens it and chooses their own email, password, and display name. That link joins only that pool. It is not a code, and it does not show a list of people.
+- A personal join link, if the administrator sends one for a seat they already created, only attaches email and password to that seat. After that, Sign in is the way back.
 - **Forgot password** is on the Sign in page.
 - They see picks and standings for their pool. If a login is in two pools, Settings shows a switcher. One pool means no switcher.
 - They do not see Admin unless someone made them an administrator of the pool they are in.
@@ -64,7 +67,7 @@ You only see the pool you are in. You cannot open another pool’s roster or pic
 - An administrator or player only sees the pool their login is in. Admin of one pool is not Admin of another.
 - There is no public list of pools or players. People need the web address and their own email and password.
 - Robert has no extra screen that lists every pool. He only sees a pool he has a seat in.
-- The family pool stays separate. Do not reset it when you set up a sold pool.
+- The family pool stays separate. Do not reset it when you set up a sold pool. It has no shared join link until an administrator creates one. Leave that off.
 - NFL schedule and scores are shared. Rosters, picks, locks, and mulligan are not.
 
 ## 7. Support
@@ -78,7 +81,7 @@ You only see the pool you are in. You cannot open another pool’s roster or pic
 |---|---|---|
 | Payment | Outside the app | In-app checkout |
 | Starting a pool | A signed-in person uses **Settings → Start a pool**. When you sell one, you still do that and create their login. | A public signup page |
-| Players | Administrator adds them and sets a password, or sends a personal join link for that seat | Players registering themselves from the home page |
+| Players | Administrator adds them and texts a password, or shares one pool join link so they choose their own email and password. A personal link can still claim a seat the administrator already created. | A public people list, or a code that signs you into every pool |
 | Web address | One shared URL | A different web address per pool |
 
 No checkout and no extra sign-in method are part of this version. **Hand the pool** is already how Admin moves to an existing member.
@@ -94,7 +97,7 @@ Charging other organizers is also a hosting choice. Vercel’s free Hobby plan i
 5. **Can an administrator set a player’s password?** Yes. **Admin → Players**, that person, **Set a password**. Copy the text and send it. The app does not email it. If that email already signs in, leave the password blank unless you mean to change it for every pool on that login.
 6. **Is the family pool mixed in with a sold pool?** No. It stays separate. Do not reset it.
 7. **How do scores update?** From the shared NFL schedule. You do not type them in.
-8. **Can players sign themselves up on the website?** No. The administrator creates the account. A personal join link only claims a seat that administrator already added.
+8. **Can players sign themselves up?** Only if their administrator shares the pool join link from **Admin → Pool**. That page asks for email, password, and display name. It does not list people, and it does not accept a pool code. Otherwise the administrator creates the account and texts a password. Returning players use Sign in.
 9. **What address do we send?** [https://survive-sunday.vercel.app](https://survive-sunday.vercel.app)
 10. **Who do players contact if they are locked out?** Their pool administrator.
 
@@ -115,8 +118,8 @@ Your NFL survivor pool is set up.
 Next:
 
 1. Sign in at the link above. Settings has no password box. To choose your own password, sign out and use Forgot password on the Sign in page.
-2. Open Admin → Players. Add each player’s email and a temporary password. If they already sign in to Survive Sunday, add that email and leave the password blank.
-3. Text each player the note in your operator guide, and send their email and temporary password in a separate direct message.
+2. Add players either way. Admin → Players: you set a temporary password and text it. Or Admin → Pool → Shared join link: one link, and each player chooses their own email and password. If an email already signs in, do not type a new password on Add user.
+3. If you set the password, text the note in your operator guide, and send the email and temporary password in a separate direct message.
 
 Reply if something in the app is broken. Your players should come to you for passwords and rules.
 
