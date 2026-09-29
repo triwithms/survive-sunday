@@ -1,4 +1,5 @@
 import "server-only";
+import { poolInviteIsActive } from "@/lib/pool-invite-db";
 import { listPoolRoleGrants } from "@/lib/roles-db";
 import { prisma } from "@/lib/db";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
@@ -26,6 +27,7 @@ export async function loadConfigPage(): Promise<
       transferMembers: toTransferMembers(members, gate.userId),
       roleMembers: toRoleMembers(members, adminIds, gate.userId),
       canDemoteMembershipIds: toDemoteIds(members, adminIds, grants),
+      poolInviteActive: await poolInviteIsActive(me.poolId),
     },
   };
 }
