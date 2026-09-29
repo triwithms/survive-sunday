@@ -19,8 +19,10 @@ export function personalJoinPath(opts: {
   membershipId: string;
   nickname?: string;
   includeWho?: boolean;
+  poolId?: string;
 }): string {
   const q = new URLSearchParams();
+  if (opts.poolId) q.set("pool", opts.poolId);
   q.set("seat", opts.membershipId);
   if (opts.includeWho && opts.nickname) {
     const who = nicknameInviteSlug(opts.nickname);
@@ -29,9 +31,13 @@ export function personalJoinPath(opts: {
   return `/join?${q.toString()}`;
 }
 
-export function personalJoinWhoPath(nickname: string): string {
+export function personalJoinWhoPath(nickname: string, poolId?: string): string {
   const who = nicknameInviteSlug(nickname);
-  return who ? `/join?who=${encodeURIComponent(who)}` : "/join";
+  if (!who) return poolId ? `/join?pool=${encodeURIComponent(poolId)}` : "/join";
+  const q = new URLSearchParams();
+  if (poolId) q.set("pool", poolId);
+  q.set("who", who);
+  return `/join?${q.toString()}`;
 }
 
 export function joinUrl(origin: string, path: string): string {
@@ -43,14 +49,19 @@ export function joinUrl(origin: string, path: string): string {
 /** Stable per-seat link the administrator copies (membership id). */
 export function personalSeatJoinUrl(
   origin: string,
-  membershipId: string
+  membershipId: string,
+  poolId?: string
 ): string {
-  return joinUrl(origin, personalJoinPath({ membershipId }));
+  return joinUrl(origin, personalJoinPath({ membershipId, poolId }));
 }
 
 /** Nickname-friendly alias. Resolves on Join; seat id still wins if both are present. */
-export function personalWhoJoinUrl(origin: string, nickname: string): string {
-  return joinUrl(origin, personalJoinWhoPath(nickname));
+export function personalWhoJoinUrl(
+  origin: string,
+  nickname: string,
+  poolId?: string
+): string {
+  return joinUrl(origin, personalJoinWhoPath(nickname, poolId));
 }
 
 /** True when this nickname slug maps to exactly one roster seat. */
@@ -69,13 +80,13 @@ export function nicknameSlugIsUnique(
  */
 export function personalInviteUrl(
   origin: string,
-  seat: { membershipId: string; nickname: string },
+  seat: { membershipId: string; nickname: string; poolId?: string },
   roster: { nickname: string }[]
 ): string {
   if (nicknameSlugIsUnique(seat.nickname, roster)) {
-    return personalWhoJoinUrl(origin, seat.nickname);
+    return personalWhoJoinUrl(origin, seat.nickname, seat.poolId);
   }
-  return personalSeatJoinUrl(origin, seat.membershipId);
+  return personalSeatJoinUrl(origin, seat.membershipId, seat.poolId);
 }
 
 export function resolveSeatFromInvite(

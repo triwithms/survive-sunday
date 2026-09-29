@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "./db";
+import { overlayPoolWeeks, withSlateGames } from "./slate-games";
 import { resolvedPoolWeek } from "./pool-current-week-db";
 import { isWeekLocked } from "./grading";
 import {
@@ -35,10 +36,13 @@ export async function loadEligibleWeek(
   membership: SubmitMembership,
   weekNumber: number
 ) {
-  const relatedWeeks = await prisma.week.findMany({
-    where: { poolId: membership.poolId },
-    include: { games: true },
-  });
+  const relatedWeeks = await overlayPoolWeeks(
+    membership.poolId,
+    await prisma.week.findMany({
+      where: { poolId: membership.poolId },
+      include: { games: true },
+    })
+  );
   const { currentWeek } = resolvedPoolWeek(
     membership.pool.mode,
     membership.pool.currentWeek,
@@ -84,14 +88,14 @@ export async function loadEligibleWeek(
       status: 403,
     };
   }
-  const week = await prisma.week.findUnique({
+  const weekRow = await prisma.week.findUnique({
     where: {
       poolId_number: { poolId: membership.poolId, number: weekNumber },
     },
     include: { games: true },
   });
-  if (!week) {
+  if (!weekRow) {
     return { ok: false as const, error: "Week not found", status: 404 };
   }
-  return { ok: true as const, week };
+  return { ok: true as const, week: await withSlateGames(weekRow) };
 }

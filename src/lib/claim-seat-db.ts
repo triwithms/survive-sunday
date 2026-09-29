@@ -439,6 +439,22 @@ export async function joinOrClaimSeat(
   if (passwordNormalized && passwordNormalized.length < CLAIM_PASSWORD_MIN) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.passwordShort };
   }
+  if (membershipId) {
+    const seat = await prisma.membership.findUnique({
+      where: { id: membershipId },
+      select: { poolId: true },
+    });
+    if (!seat) {
+      return { ok: false, status: 404, error: CLAIM_ERRORS.seatMissing };
+    }
+    await ensureDualMembershipIndex(prisma);
+    return claimPracticeSeat({
+      poolId: seat.poolId,
+      membershipId,
+      email,
+      password,
+    });
+  }
   if (inviteCode.toUpperCase() !== INVITE_CODE) {
     return { ok: false, status: 400, error: CLAIM_ERRORS.invalidInvite };
   }
@@ -452,16 +468,6 @@ export async function joinOrClaimSeat(
   const pool = await primaryPool();
   if (!pool) {
     return { ok: false, status: 404, error: CLAIM_ERRORS.poolMissing };
-  }
-
-  if (membershipId) {
-    await ensureDualMembershipIndex(prisma);
-    return claimPracticeSeat({
-      poolId: pool.id,
-      membershipId,
-      email,
-      password,
-    });
   }
 
   return joinAsNewPlayer({

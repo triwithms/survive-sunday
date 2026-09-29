@@ -10,16 +10,20 @@ import { assembleBoardPage } from "./assemble-board";
 import { sortBoard } from "./sort-board";
 import { winMarginByMember } from "./win-margin";
 import type { BoardScreenProps } from "./types";
+import { overlayPoolWeeks, withSlateGames } from "@/lib/slate-games";
 
 export async function loadBoardPage(): Promise<BoardScreenProps> {
   const me = await requireMembership();
-  const slate = await prisma.week.findMany({
-    where: { poolId: me.poolId },
-    select: {
-      number: true,
-      games: { select: { status: true, kickoff: true } },
-    },
-  });
+  const slate = await overlayPoolWeeks(
+    me.poolId,
+    await prisma.week.findMany({
+      where: { poolId: me.poolId },
+      select: {
+        number: true,
+        games: { select: { status: true, kickoff: true } },
+      },
+    })
+  );
   const { currentWeek } = resolvedPoolWeek(
     me.pool.mode,
     me.pool.currentWeek,
@@ -32,12 +36,13 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
   if (weekRef) {
     deferWeekLockedEffects(weekRef.id);
   }
-  const week = weekRef
+  const loadedWeek = weekRef
     ? await prisma.week.findUnique({
         where: { id: weekRef.id },
         include: { picks: { include: { game: true } }, games: true },
       })
     : null;
+  const week = loadedWeek ? await withSlateGames(loadedWeek) : null;
   const [members, seasonPicks] = await Promise.all([
     prisma.membership.findMany({ where: { poolId: me.poolId } }),
     prisma.pick.findMany({

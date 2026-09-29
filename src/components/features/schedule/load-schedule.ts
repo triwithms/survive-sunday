@@ -12,6 +12,7 @@ import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { matchupGameParam } from "@/lib/matchup-share";
+import { withSlateGames } from "@/lib/slate-games";
 import { formatKickoff } from "@/lib/utils";
 import { mapScheduleGames } from "./schedule-games";
 import type { ScheduleScreenProps } from "./types";
@@ -36,10 +37,10 @@ export async function loadSchedulePage(searchParams?: {
   });
   if (!selectedRef) return null;
 
-  const week = await prisma.week.findUniqueOrThrow({
+  const week = await withSlateGames(await prisma.week.findUniqueOrThrow({
     where: { id: selectedRef.id },
     include: { games: { orderBy: { kickoff: "asc" } } },
-  });
+  }));
   await syncWeekEspnForPage(selectedRef.id, week).catch((e) => {
     console.error("schedule espn score sync skipped", e);
     return null;

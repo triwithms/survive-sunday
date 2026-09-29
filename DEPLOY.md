@@ -88,7 +88,16 @@ npm run seed             # BM Boys demo seed — refuses Production
 npm run setup            # generate + db push + seed — refuses Production
 ```
 
-- Prefer **`prisma db push`** (`npm run db:push`) if you need a schema sync — there is no `prisma/migrations` folder yet.
+- Prefer **`prisma db push`** (`npm run db:push`) for local schema experiments. Do not point it at Neon Production.
+- **Multi-pool migration (one-off, not a Redeploy):** `prisma/migrations/20260929150000_pool_slate_source` only adds nullable `Pool.slatePoolId`. It does not update or delete memberships, picks, weeks, or games. Existing pools keep `slatePoolId` empty and keep owning their games. Run it yourself against Production, once, from a machine that has the Neon URL:
+
+  ```bash
+  npx prisma migrate deploy
+  ```
+
+  Risk: low. It is an additive column plus a foreign key. If the column is already there, the SQL uses `IF NOT EXISTS` and does nothing harmful.
+- **Pool join-link migration (same one-off command):** `prisma/migrations/20260929161000_pool_invite_link` creates an empty `PoolInvite` table. It does not update or delete memberships, picks, weeks, or games. `npx prisma migrate deploy` runs this after the slate column. Risk: low.
+- Do not run `migrate reset`, `db push`, or seed against Production. After the migrations succeed, create a test pool from Settings while signed in, confirm the family pool still has the same players and picks, then switch back. Delete the test pool only if you are sure — deleting a pool is not part of this change, so leave the test pool or ignore it.
 - `npm run db:push`, `npm run seed`, and `npm run setup` refuse the live production database (`assert-not-production`). Do not point them at Neon Production. Emergency only: `ALLOW_PROD_DB_MUTATION=1`.
 - If a trusted person must run a **one-off** production schema helper, that is `ALLOW_PROD_DB_MUTATION=1 tsx scripts/_dangerous/ensure-production-db.ts` with prod `DATABASE_URL` — **never** from the Vercel build, **never** without that break-glass env, and **never** as a habit on every deploy.
 - The live BM Boys pool (`SUNDAY26`) already exists. Do **not** re-seed Production.

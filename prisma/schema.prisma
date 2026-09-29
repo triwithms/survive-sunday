@@ -107,12 +107,34 @@ model Pool {
   mode        String       @default("demo") // demo | live
   /// null = classic one-mulligan season. N = from week N onward, one loss = out.
   singleEliminationFromWeek Int?
+  /// Null = this pool owns its Game rows (the live family pool).
+  /// Set = read NFL games and scores from that pool's weeks (same week number).
+  /// Picks, locks, and memberships stay on this pool. Do not chain copies.
+  slatePoolId String?
   createdAt   DateTime     @default(now())
+  slatePool       Pool?            @relation("PoolSlate", fields: [slatePoolId], references: [id], onDelete: Restrict)
+  slateFor        Pool[]           @relation("PoolSlate")
   memberships     Membership[]
   poolAccessRoles PoolAccessRole[]
   weeks           Week[]
   auditLogs       AuditLog[]
   weekWrapSetting WeekWrapSetting?
+  poolInvites     PoolInvite[]
+
+  @@index([slatePoolId])
+}
+
+/// Shared join link for one pool. Store the HMAC hash only.
+/// Revoke or rotate from Admin. Plaintext exists only when minted.
+model PoolInvite {
+  id        String    @id @default(cuid())
+  poolId    String
+  tokenHash String    @unique
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  pool      Pool      @relation(fields: [poolId], references: [id], onDelete: Cascade)
+
+  @@index([poolId, revokedAt])
 }
 
 model Membership {

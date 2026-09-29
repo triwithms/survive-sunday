@@ -17,6 +17,7 @@ import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { withSlateGames } from "@/lib/slate-games";
 import { pickMatchupsFromGames, usedTeamAbbrs } from "./pick-payload";
 import type { PickClientProps } from "./pick-copy";
 
@@ -36,13 +37,13 @@ export async function loadPickPage(searchParams?: {
   if (!weekRef) return null;
 
   deferWeekLockedEffects(weekRef.id, { applyBackup: false });
-  const week = await prisma.week.findUniqueOrThrow({
+  const week = await withSlateGames(await prisma.week.findUniqueOrThrow({
     where: { id: weekRef.id },
     include: {
       games: { orderBy: { kickoff: "asc" } },
       picks: { where: { membershipId: me.id } },
     },
-  });
+  }));
   await syncWeekEspnForPage(weekRef.id, week).catch((e) => {
     console.error("pick espn score sync skipped", e);
     return null;

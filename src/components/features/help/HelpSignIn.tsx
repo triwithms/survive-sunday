@@ -5,11 +5,18 @@ export function HelpSignIn() {
       <ol className="list-decimal pl-5 space-y-1 text-[var(--text-muted)] mb-2">
         <li className="text-[var(--text-primary)]">
           Open the app. You land on <strong>Sign in</strong> — email (or
-          username) and password only. There is no people list.
+          username) and password only. There is no people list and no pool
+          code.
         </li>
         <li className="text-[var(--text-primary)]">
-          Use the email and password the administrator texted you. Tap{" "}
-          <strong>Sign in</strong>.
+          If an administrator texted you a login, use that email and password.
+          Tap <strong>Sign in</strong>. Settings has no password box. To choose
+          a new one, use <strong>Forgot password?</strong>
+        </li>
+        <li className="text-[var(--text-primary)]">
+          If they sent one shared join link, open that link, choose your email,
+          password, and display name, and you enter that pool. Later visits use
+          Sign in.
         </li>
         <li className="text-[var(--text-primary)]">
           If we ask for nickname, full name, or cell, fill only what’s missing,

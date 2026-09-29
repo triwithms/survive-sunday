@@ -1,6 +1,7 @@
 import { AdminDetails } from "./AdminDetails";
 import { AdminRolesPanel } from "./AdminRolesPanel";
 import { AdminHeading } from "./AdminHeading";
+import { PoolInviteCard } from "./PoolInviteCard";
 import { PoolRulesForm } from "./PoolRulesForm";
 import { ResetPoolPanel } from "./ResetPoolPanel";
 import { TransferCommissionerForm } from "./TransferCommissionerForm";
@@ -13,6 +14,7 @@ export function ConfigScreen(props: ConfigScreenProps) {
         Mulligan rules and Hand the pool. Administrators are listed here.
         Reset is last.
       </AdminHeading>
+      <PoolInviteCard active={props.poolInviteActive} />
       <PoolRulesForm
         currentWeek={props.currentWeek}
         singleEliminationFromWeek={props.singleEliminationFromWeek}

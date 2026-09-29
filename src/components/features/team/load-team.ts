@@ -14,6 +14,7 @@ import {
 import { buildTeamHeader, buildThisWeek } from "./build-team-view";
 import { teamAbbr } from "./team-paths";
 import type { TeamPageData } from "./types";
+import { withSlateGames } from "@/lib/slate-games";
 
 export async function loadTeamPage(raw: string): Promise<TeamPageData> {
   const me = await requireMembership();
@@ -29,12 +30,13 @@ export async function loadTeamPage(raw: string): Promise<TeamPageData> {
   const players = withLiveInjuries(listNflPlayers(abbr), injuries.injuries);
   const roster = getTeamRoster(abbr);
   const profile = getTeamProfile(abbr);
-  const week = await prisma.week.findUnique({
+  const weekRow = await prisma.week.findUnique({
     where: {
       poolId_number: { poolId: me.poolId, number: me.pool.currentWeek },
     },
     include: { games: true },
   });
+  const week = weekRow ? await withSlateGames(weekRow) : null;
   const game = week?.games.find(
     (row) => row.awayAbbr === abbr || row.homeAbbr === abbr
   );

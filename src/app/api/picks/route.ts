@@ -11,6 +11,7 @@ import {
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { submitPick } from "@/app/actions/submit-pick";
+import { withSlateGames } from "@/lib/slate-games";
 
 export async function POST(req: Request) {
   const { weekNumber, teamAbbr } = await req.json();
@@ -39,21 +40,22 @@ export async function GET(req: Request) {
     url.searchParams.get("week") ||
       effectiveCurrentWeek(membership.pool.mode, membership.pool.currentWeek)
   );
-  const week = await prisma.week.findUnique({
+  const weekRow = await prisma.week.findUnique({
     where: {
       poolId_number: { poolId: membership.poolId, number: weekNumber },
     },
     include: { games: true },
   });
-  if (!week) {
+  if (!weekRow) {
     return NextResponse.json({ error: "Week not found" }, { status: 404 });
   }
+  const week = await withSlateGames(weekRow);
 
   await ensureWeekLockedEffects(week.id);
-  const weekFresh = await prisma.week.findUniqueOrThrow({
+  const weekFresh = await withSlateGames(await prisma.week.findUniqueOrThrow({
     where: { id: week.id },
     include: { games: true },
-  });
+  }));
 
   const locked = isWeekLocked(weekFresh);
   const members = await prisma.membership.findMany({

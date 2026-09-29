@@ -8,6 +8,7 @@ import {
 } from "./pick-change";
 import { loadEligibleWeek, type SubmitMembership, type SubmitPickResult } from "./pick-submit-week";
 import { writeUserPick } from "./pick-submit-write";
+import { withSlateGames } from "./slate-games";
 
 export type { SubmitMembership, SubmitPickResult };
 
@@ -23,10 +24,10 @@ export async function submitPickForMembership(input: {
   }
 
   await ensureWeekLockedEffects(resolved.week.id, { applyBackup: false });
-  const week = await prisma.week.findUniqueOrThrow({
+  const week = await withSlateGames(await prisma.week.findUniqueOrThrow({
     where: { id: resolved.week.id },
     include: { games: true },
-  });
+  }));
   const team = await prisma.team.findUnique({ where: { abbr: teamAbbr } });
   if (!team) return fail("Unknown team", 400);
   const game = week.games.find(

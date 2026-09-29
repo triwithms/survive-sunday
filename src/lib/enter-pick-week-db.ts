@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "./db";
+import { overlayPoolWeeks } from "./slate-games";
 import { isWeekLocked } from "./grading";
 import { allowedEnterPickWeeks } from "./enter-pick-week";
 import { enterPickStatusError } from "./enter-pick-status";
@@ -53,12 +54,13 @@ export async function assertEnterPickWeek(opts: {
       },
     }),
   ]);
+  const slateWeeks = await overlayPoolWeeks(opts.poolId, weeks);
   if (!member) return { ok: false, error: "Member not found (nickname or email)" };
   const blocked = enterPickStatusError(member.status);
   if (blocked) return { ok: false, error: blocked };
   const allowed = allowedEnterPickWeeks({
     currentWeek,
-    weeks: weeks.map((w) => ({
+    weeks: slateWeeks.map((w) => ({
       number: w.number,
       locked: isWeekLocked(w),
       games: w.games,

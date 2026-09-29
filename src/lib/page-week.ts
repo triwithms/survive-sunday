@@ -1,5 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/db";
+import { slateGamesByNumber, slateSourcePoolId } from "@/lib/slate-games";
+import { overlayGamesByNumber } from "@/lib/slate-overlay";
 import { isWeekLocked } from "@/lib/grading";
 import {
   resolvePlayerPickWeekFromLoaded,
@@ -66,20 +68,40 @@ export async function loadParticipantWeeks(me: MemberForDecision) {
   ]);
   const decisionWeeks = new Map<number, Awaited<ReturnType<typeof loadDecisionPair>>[number]>();
   let pair = firstPair;
+  let slate: Awaited<ReturnType<typeof slateGamesByNumber>> | undefined;
+  const fillPair = async (rows: typeof pair) => {
+    if (rows.every((row) => row.games.length > 0)) return rows;
+    if (slate === undefined) slate = await slateGamesByNumber(me.poolId);
+    return overlayGamesByNumber(rows, slate);
+  };
   for (let attempt = 0; attempt <= weekRefs.length; attempt += 1) {
+    pair = await fillPair(pair);
     pair.forEach((week) => decisionWeeks.set(week.number, week));
     const resolved = resolvedPoolWeek(me.pool.mode, currentWeek, pair).currentWeek;
     if (resolved === currentWeek) break;
     currentWeek = resolved;
     pair = await loadDecisionPair(me, currentWeek);
   }
+  const needsSlate = weekRefs.some((ref) => ref._count.games === 0);
+  if (needsSlate && slate === undefined) slate = await slateGamesByNumber(me.poolId);
+  const slateWeeks = needsSlate
+    ? overlayGamesByNumber(
+        weekRefs.map((ref) => ({
+          number: ref.number,
+          games: decisionWeeks.get(ref.number)?.games ?? [],
+        })),
+        slate ?? null
+      )
+    : null;
   const weeks = weeksForParticipants(me.pool.mode, weekRefs).map((ref) => {
     const decision = decisionWeeks.get(ref.number);
+    const shared = slateWeeks?.find((row) => row.number === ref.number)?.games;
+    const games = (decision?.games.length ? decision.games : shared) ?? [];
     return {
       id: ref.id, number: ref.number, label: ref.label,
       lockAt: ref.lockAt, lockOverrideAt: ref.lockOverrideAt,
-      hasGames: ref._count.games > 0,
-      games: decision?.games ?? [],
+      hasGames: ref._count.games > 0 || games.length > 0,
+      games,
       pick: decision?.picks[0] ?? null,
     };
   });
@@ -147,5 +169,12 @@ export async function pageWeekNumberForGame(
     where: { id: gameId, week: { poolId } },
     select: { week: { select: { number: true } } },
   });
-  return game?.week.number;
+  if (game) return game.week.number;
+  const source = await slateSourcePoolId(poolId);
+  if (!source || source === poolId) return undefined;
+  const shared = await prisma.game.findFirst({
+    where: { id: gameId, week: { poolId: source } },
+    select: { week: { select: { number: true } } },
+  });
+  return shared?.week.number;
 }

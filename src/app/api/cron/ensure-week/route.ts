@@ -3,7 +3,8 @@ import { prisma } from "@/lib/db";
 import { cronAuthorized } from "@/lib/cron-auth";
 import { ensureWeekLockedEffects } from "@/lib/grading";
 import { applyMirrorPicksForActiveWeeks } from "@/lib/pick-mirror-db";
-import { syncWeekScoresFromEspn } from "@/lib/live-scores";
+import { syncPoolWeekFromEspn } from "@/lib/live-scores";
+import { overlayPoolWeeks } from "@/lib/slate-games";
 import {
   persistPoolWeekAdvance,
   resolvedPoolWeek,
@@ -22,21 +23,23 @@ export async function GET(req: Request) {
   const mirrored = await applyMirrorPicksForActiveWeeks();
 
   const pools = await prisma.pool.findMany({
-    select: { id: true, mode: true, currentWeek: true },
+    select: { id: true, mode: true, currentWeek: true, slatePoolId: true },
   });
+  pools.sort((a, b) => Number(Boolean(a.slatePoolId)) - Number(Boolean(b.slatePoolId)));
   const lockEffects: Array<{ weekId: string; missed: number; graded: number }> =
     [];
   const scores: Array<{ weekId: string; updated?: number; error?: string }> = [];
 
   const advanced: Array<{ poolId: string; from: number; to: number }> = [];
   for (const pool of pools) {
-    const slate = await prisma.week.findMany({
+    const ownWeeks = await prisma.week.findMany({
       where: { poolId: pool.id },
       select: {
         number: true,
         games: { select: { status: true, kickoff: true } },
       },
     });
+    const slate = await overlayPoolWeeks(pool.id, ownWeeks);
     const { stored, currentWeek: number } = resolvedPoolWeek(
       pool.mode,
       pool.currentWeek,
@@ -57,7 +60,7 @@ export async function GET(req: Request) {
       graded: effects.graded.length,
     });
     try {
-      const sync = await syncWeekScoresFromEspn(week.id);
+      const sync = await syncPoolWeekFromEspn(week.id);
       scores.push({ weekId: week.id, updated: sync.updated });
     } catch (error) {
       scores.push({

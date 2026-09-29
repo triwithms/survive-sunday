@@ -10,6 +10,7 @@ import { weeksForParticipants } from "@/lib/pool-mode";
 import type { HeaderWeek, NextOpenDeadline } from "@/components/HeaderWeekNav";
 import { loadAppMembership, type AppMembership } from "./load-app-membership";
 import type { RoleView } from "@/lib/roles";
+import { overlayPoolWeeks } from "@/lib/slate-games";
 
 export type AppHeaderData = {
   userId: string;
@@ -48,13 +49,16 @@ export async function loadAppHeader(): Promise<AppHeaderData> {
   const me = await loadAppMembership();
   const weeks = weeksForParticipants(
     me.poolMode,
-    await prisma.week.findMany({
-      where: { poolId: me.poolId },
-      orderBy: { number: "asc" },
-      include: {
-        games: { select: { id: true, status: true, kickoff: true, awayAbbr: true, homeAbbr: true } },
-      },
-    })
+    await overlayPoolWeeks(
+      me.poolId,
+      await prisma.week.findMany({
+        where: { poolId: me.poolId },
+        orderBy: { number: "asc" },
+        include: {
+          games: { select: { id: true, status: true, kickoff: true, awayAbbr: true, homeAbbr: true } },
+        },
+      })
+    )
   );
   const { stored, currentWeek } = resolvedPoolWeek(me.poolMode, me.poolCurrentWeek, weeks);
   await persistPoolWeekAdvance(prisma, me.poolId, stored, currentWeek);

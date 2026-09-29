@@ -6,13 +6,23 @@ export function HelpForAdmins() {
       </h2>
       <ul className="list-disc pl-5 space-y-1 text-[var(--text-muted)]">
         <li className="text-[var(--text-primary)]">
-          Admin is in the header. Players · This Week · Pool.
+          Admin is in the header. Players · This Week · Pool. Those tools apply
+          only to the pool you are in.
         </li>
         <li className="text-[var(--text-primary)]">
-          <strong>Add user</strong> on Players: fill name, nickname, cell, email,
-          and a password you can text — or send a Join invite. Email and cell
+          <strong>Settings → Start a pool</strong> (name and mulligan). You
+          become that pool’s administrator. A switcher appears on Settings only
+          when you are in more than one pool.
+        </li>
+        <li className="text-[var(--text-primary)]">
+          Two ways to add players. <strong>Add user</strong> on Players: you
+          set a password and text it — or send a Join invite. Email and cell
           must be unique. Welcome asks for anything still missing. We do not
-          email the password.
+          email the password. Or <strong>Pool → Shared join link</strong>: one
+          link for the group. Each person chooses email, password, and display
+          name and enters this pool only. <strong>New link</strong> replaces
+          it. <strong>Turn off</strong> stops it. Not a people list and not a
+          pool-code login.
         </li>
         <li className="text-[var(--text-primary)]">
           Tap a friend to edit nickname, full name, email, or cell, then{" "}

@@ -12,6 +12,7 @@ import {
   type WeekWrapWeekOption,
 } from "./week-wrap-types";
 import { allGamesFinal, isEligibleNoonDayAfter } from "./week-wrap-when";
+import { overlayPoolWeeks } from "./slate-games";
 
 export async function loadWeekWrapPanel(
   poolId: string,
@@ -62,12 +63,13 @@ async function loadWeekWrapPanelUnsafe(
     loadWrapBoard(poolId),
     loadWrapNfl({ sync: false }),
   ]);
+  const slateWeeks = await overlayPoolWeeks(poolId, weeks);
   const sent = weekNumbersFromDedupeKeys(
     sends.map((row) => row.dedupeKey),
     poolId
   );
   const skipped = new Set(settings.skippedWeeks);
-  const options: WeekWrapWeekOption[] = weeks.map((week) => ({
+  const options: WeekWrapWeekOption[] = slateWeeks.map((week) => ({
     number: week.number,
     allFinal: allGamesFinal(week.games),
     eligible: isEligibleNoonDayAfter(week.games, now),

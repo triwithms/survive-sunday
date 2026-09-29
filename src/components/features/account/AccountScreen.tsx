@@ -1,9 +1,11 @@
+import { PoolSwitcher } from "@/components/PoolSwitcher";
 import { RoleSwitcher } from "@/components/RoleSwitcher";
 import { SignOutButton } from "@/components/SignOutButton";
 import { Card } from "@/components/ui";
 import { AccountHubLinks } from "./AccountHubLinks";
 import { AccountNicknameSheet } from "./AccountNicknameSheet";
 import { AccountPhoneRow } from "./AccountPhoneRow";
+import { CreatePoolForm } from "./CreatePoolForm";
 import type { AccountScreenProps } from "./types";
 
 export function AccountScreen(p: AccountScreenProps) {
@@ -29,6 +31,9 @@ export function AccountScreen(p: AccountScreenProps) {
             {p.statusLabel}
           </p>
         </div>
+        {p.pools.length > 1 ? (
+          <PoolSwitcher pools={p.pools} activePoolId={p.activePoolId} />
+        ) : null}
         {p.canSwitchRoles ? (
           <RoleSwitcher playerName={p.nickname} activeView={p.roleView} />
         ) : null}
@@ -42,6 +47,7 @@ export function AccountScreen(p: AccountScreenProps) {
         />
         <SignOutButton next="/login" className="btn-danger w-full" />
       </div>
+      <CreatePoolForm />
     </div>
   );
 }

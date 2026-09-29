@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { deferAfter } from "@/lib/defer-after";
 import { shouldPollLiveScores } from "@/lib/game-display";
 import { isWeekScoreboardFresh } from "@/lib/espn-scoreboard";
-import { syncWeekScoresFromEspn } from "@/lib/live-scores";
+import { syncPoolWeekFromEspn, syncWeekScoresFromEspn } from "@/lib/live-scores";
 import { pageEspnRefreshShape } from "@/lib/static-cache-ttl";
 import { enqueueWeekWork } from "@/lib/week-work-queue";
 
@@ -58,6 +58,14 @@ export async function syncWeekEspnForPage(
         },
       }));
     if (!week) return;
+    if (week.games.length === 0) {
+      deferAfter("slate pool scores", () =>
+        syncPoolWeekFromEspn(weekId, { standings: false, grade: true }).then(
+          () => undefined
+        )
+      );
+      return;
+    }
     if (isWeekScoreboardFresh(week.number)) return;
 
     const shape = pageEspnRefreshShape(shouldPollLiveScores(week.games));

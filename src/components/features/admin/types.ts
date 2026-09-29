@@ -52,6 +52,7 @@ export type ConfigScreenProps = {
   transferMembers: { id: string; nickname: string; status: string }[];
   roleMembers: AdminRoleRow[];
   canDemoteMembershipIds: string[];
+  poolInviteActive: boolean;
 };
 
 export type AuditLogRow = {

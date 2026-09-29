@@ -28,5 +28,7 @@ export async function loadAccountPage(): Promise<AccountScreenProps> {
     showAdmin: ctx.isAdmin && roleView === "admin",
     showPickBackup: ctx.isPlayer && isPlayerSeat(me),
     phoneE164: me.user.phoneE164,
+    pools: ctx.pools,
+    activePoolId: ctx.activePoolId,
   };
 }

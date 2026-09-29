@@ -34,11 +34,13 @@ export async function lookupUserByLogin(login: string): Promise<CredentialRecord
   const trimmed = login.trim();
   if (!trimmed) return null;
   if (trimmed.includes("@")) return lookupUserByEmail(trimmed);
-  const member = await prisma.membership.findFirst({
+  const members = await prisma.membership.findMany({
     where: { nickname: { equals: trimmed, mode: "insensitive" } },
     select: { user: true },
   });
-  return member?.user ?? null;
+  const users = new Map(members.map((row) => [row.user.id, row.user]));
+  if (users.size !== 1) return null;
+  return [...users.values()][0] ?? null;
 }
 
 /**

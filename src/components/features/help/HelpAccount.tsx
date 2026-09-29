@@ -16,7 +16,12 @@ export function HelpAccount() {
         </li>
         <li className="text-[var(--text-primary)]">
           Sign in is email (or username) and password. We do not ask for a code
-          every time.
+          every time. There is no people list and no pool code.
+        </li>
+        <li className="text-[var(--text-primary)]">
+          More than one pool shows a switcher on Settings.{" "}
+          <strong>Start a pool</strong> is there too. Administrator tools apply
+          only to the pool you are in.
         </li>
         <li className="text-[var(--text-primary)]">
           <strong>Forgot password?</strong> is under Sign in. We email a 6-digit
