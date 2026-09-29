@@ -1,6 +1,6 @@
 import { prisma } from "./db";
 import { ensureWeekLockedEffects, gradeWeekPicks } from "./grading";
-import { syncWeekScoresFromEspn } from "./live-scores";
+import { syncPoolWeekFromEspn } from "./live-scores";
 import { weekWrapContent } from "./week-wrap-copy";
 import { loadWrapMembers, notifyWrapMembers, weekWrapSendMessage } from "./week-wrap-deliver";
 import { loadWrapBoard, loadWrapNfl } from "./week-wrap-extras";
@@ -26,7 +26,7 @@ export async function sendWeekWrap(
   const seasonYear = Number(String(week.pool.season).slice(0, 4));
   if (opts?.refresh !== false) {
     try {
-      await syncWeekScoresFromEspn(week.id);
+      await syncPoolWeekFromEspn(week.id);
     } catch (error) {
       console.warn("[week-wrap] score sync skipped", error);
     }

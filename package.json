@@ -44,6 +44,7 @@
     "verify:claim-attach": "tsx scripts/verify-claim-attach.ts",
     "verify:roles": "tsx scripts/verify-roles.ts",
     "verify:pool-rules": "tsx scripts/verify-pool-rules.ts",
+    "verify:multi-pool": "tsx scripts/verify-multi-pool.ts",
     "verify:pick-census": "tsx scripts/verify-pick-census.ts",
     "verify:enter-pick": "tsx scripts/verify-enter-pick.ts",
     "verify:import-pick-notify": "tsx scripts/verify-import-pick-notify.ts",

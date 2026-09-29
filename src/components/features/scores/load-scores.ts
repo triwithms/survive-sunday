@@ -15,6 +15,7 @@ import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
 import { boardPickFields, sortParticipants } from "@/lib/tiebreak";
 import { isPoolParticipant } from "@/lib/pool-rules";
 import { matchupGameParam } from "@/lib/matchup-share";
+import { withSlateGames } from "@/lib/slate-games";
 import { scoreCardGames, scoresPickRows, sortScoreGames } from "./score-view";
 import type { ScoresScreenProps } from "./screen-types";
 
@@ -39,10 +40,10 @@ export async function loadScoresPage(searchParams?: {
   if (!selectedRef) return null;
 
   deferWeekLockedEffects(selectedRef.id);
-  const week = await prisma.week.findUniqueOrThrow({
+  const week = await withSlateGames(await prisma.week.findUniqueOrThrow({
     where: { id: selectedRef.id },
     include: { games: { orderBy: { kickoff: "asc" } } },
-  });
+  }));
   let espnSyncError: string | null = null;
   try { await syncWeekEspnForPage(selectedRef.id, week); }
   catch (e) {

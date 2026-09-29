@@ -4,6 +4,7 @@ import { getMembershipForUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { loadWeeklyVideos } from "@/lib/youtube-videos";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
+import { withSlateGames } from "@/lib/slate-games";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -26,7 +27,7 @@ export async function GET(req: Request) {
       : effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek);
 
   try {
-    const weekRow = await prisma.week.findFirst({
+    const found = await prisma.week.findFirst({
       where: { poolId: me.poolId, number: week },
       include: {
         games: {
@@ -39,6 +40,7 @@ export async function GET(req: Request) {
         },
       },
     });
+    const weekRow = found ? await withSlateGames(found) : null;
     const data = await loadWeeklyVideos(week, weekRow?.games ?? []);
     return NextResponse.json(data);
   } catch (e) {

@@ -13,6 +13,7 @@ import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { withSlateGames } from "@/lib/slate-games";
 import { buildHomeRows } from "./build-home-rows";
 import type { HomeScreenProps } from "./types";
 
@@ -30,7 +31,7 @@ export async function loadHomePage(searchParams?: {
   if (!selectedRef) return null;
 
   deferWeekLockedEffects(selectedRef.id);
-  const [week, members] = await Promise.all([
+  const [weekRow, members] = await Promise.all([
     prisma.week.findUniqueOrThrow({
       where: { id: selectedRef.id },
       include: { games: true },
@@ -45,6 +46,7 @@ export async function loadHomePage(searchParams?: {
       },
     }),
   ]);
+  const week = await withSlateGames(weekRow);
   try { await syncWeekEspnForPage(selectedRef.id, week); }
   catch (e) { console.error("pool espn score sync skipped", e); }
   const self = members.find((m) => m.id === me.id) ?? me;

@@ -1,3 +1,4 @@
+import type { PoolChoice } from "@/lib/active-pool";
 import type { RoleView } from "@/lib/roles";
 import type { PickBackupMode } from "@/lib/pick-mirror";
 
@@ -9,6 +10,8 @@ export type AccountScreenProps = {
   showAdmin: boolean;
   showPickBackup: boolean;
   phoneE164: string | null;
+  pools: PoolChoice[];
+  activePoolId: string | null;
 };
 
 export type AccountMirrorProps = {

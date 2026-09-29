@@ -6,6 +6,7 @@ import { peekCachedWeekScoreboard } from "@/lib/espn-scoreboard";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { loadNormalizedSeason } from "@/lib/season-schedule";
 import { mergeTeamSchedule } from "./merge-team-schedule";
+import { overlayPoolWeeks } from "@/lib/slate-games";
 import { teamAbbr } from "./team-paths";
 import type { TeamScheduleFileGame, TeamScheduleItem } from "./team-schedule";
 
@@ -67,7 +68,7 @@ export async function loadTeamSchedule(raw: string): Promise<TeamScheduleData> {
     });
   }
 
-  const weeks = await prisma.week.findMany({
+  const weeks = await overlayPoolWeeks(me.poolId, await prisma.week.findMany({
     where: { poolId: me.poolId },
     orderBy: { number: "asc" },
     include: {
@@ -76,19 +77,15 @@ export async function loadTeamSchedule(raw: string): Promise<TeamScheduleData> {
         orderBy: { kickoff: "asc" },
       },
     },
-  });
+  }));
   const dbGames = weeks.flatMap((week) =>
-    week.games.map((game) => ({
-      id: game.id,
-      week: week.number,
-      awayAbbr: game.awayAbbr,
-      homeAbbr: game.homeAbbr,
-      kickoff: game.kickoff,
-      status: game.status,
-      scoreAway: game.scoreAway,
-      scoreHome: game.scoreHome,
-      note: game.note,
-    }))
+    week.games
+      .filter((game) => game.awayAbbr === abbr || game.homeAbbr === abbr)
+      .map((game) => ({
+        id: game.id, week: week.number, awayAbbr: game.awayAbbr,
+        homeAbbr: game.homeAbbr, kickoff: game.kickoff, status: game.status,
+        scoreAway: game.scoreAway, scoreHome: game.scoreHome, note: game.note,
+      }))
   );
 
   return {

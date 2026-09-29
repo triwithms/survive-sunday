@@ -33,18 +33,23 @@ export async function loadResetNotifyContext(
   userId: string,
   email: string
 ): Promise<{ who: string; admins: AdminNotifyUser[] }> {
-  const pool = await prisma.pool.findUnique({
-    where: { inviteCode: INVITE_CODE },
-    select: { id: true },
+  const seats = await prisma.membership.findMany({
+    where: { userId },
+    select: { poolId: true, nickname: true },
+    orderBy: { createdAt: "asc" },
   });
-  if (!pool) return { who: email, admins: [] };
-
-  const members = await prisma.membership.findMany({
-    where: { poolId: pool.id },
-    select: { userId: true, role: true, isAdmin: true, nickname: true },
-  });
-  const who =
-    members.find((m) => m.userId === userId)?.nickname?.trim() || email;
-  const admins = await loadPoolAdminUsers(pool.id);
-  return { who, admins };
+  if (seats.length === 0) {
+    const pool = await prisma.pool.findUnique({
+      where: { inviteCode: INVITE_CODE },
+      select: { id: true },
+    });
+    if (!pool) return { who: email, admins: [] };
+    return { who: email, admins: await loadPoolAdminUsers(pool.id) };
+  }
+  const who = seats.find((seat) => seat.nickname.trim())?.nickname.trim() || email;
+  const poolIds = [...new Set(seats.map((seat) => seat.poolId))];
+  const lists = await Promise.all(poolIds.map((poolId) => loadPoolAdminUsers(poolId)));
+  const byId = new Map<string, AdminNotifyUser>();
+  for (const admin of lists.flat()) byId.set(admin.id, admin);
+  return { who, admins: [...byId.values()] };
 }

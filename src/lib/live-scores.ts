@@ -116,7 +116,6 @@ export async function syncWeekScoresFromEspn(
     if (snap.status === "live" && game.status !== "final") {
       const livePicks = await prisma.pick.findMany({
         where: {
-          weekId,
           gameId: game.id,
           source: { not: "missed" },
         },
@@ -184,6 +183,45 @@ export async function syncWeekScoresFromEspn(
     graded,
     standingsUpdated: standings.updated,
     source: "espn",
+  };
+}
+
+/**
+ * Score sync for the week the viewer is in. The live pool owns the Game
+ * rows, so this is the existing sync. A pool that shares the slate updates
+ * those same rows, then grades its own picks.
+ */
+export async function syncPoolWeekFromEspn(
+  viewerWeekId: string,
+  opts: WeekScoreSyncOpts = {}
+) {
+  const week = await prisma.week.findUnique({
+    where: { id: viewerWeekId },
+    select: {
+      id: true,
+      number: true,
+      poolId: true,
+      pool: { select: { slatePoolId: true } },
+      _count: { select: { games: true } },
+    },
+  });
+  if (!week) throw new Error("Week not found");
+  if (!week.pool.slatePoolId || week._count.games > 0) {
+    return syncWeekScoresFromEspn(viewerWeekId, opts);
+  }
+  const slate = await prisma.week.findUnique({
+    where: {
+      poolId_number: { poolId: week.pool.slatePoolId, number: week.number },
+    },
+    select: { id: true },
+  });
+  const synced = await syncWeekScoresFromEspn(slate?.id ?? viewerWeekId, opts);
+  if (!slate || slate.id === viewerWeekId) return synced;
+  const extra = await gradeWeekPicks(viewerWeekId);
+  await recomputeWeeksSurvived(week.poolId);
+  return {
+    ...synced,
+    graded: [...new Set([...synced.graded, ...extra])],
   };
 }
 

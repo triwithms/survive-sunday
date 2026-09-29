@@ -1,5 +1,8 @@
 import { cache } from "react";
+import { cookies } from "next/headers";
 import { auth } from "./auth";
+import { ACTIVE_POOL_COOKIE, pickActivePoolId, poolChoicesFromMemberships } from "./active-pool";
+import { INVITE_CODE } from "./constants";
 import { deferAfter } from "./defer-after";
 import { prisma } from "./db";
 import { applyCanonicalRosterNamesThrottled } from "./roster-name-patch";
@@ -77,26 +80,46 @@ function schedulePoolMaintenance(poolId: string): void {
   });
 }
 
+async function requestedActivePoolId(): Promise<string | null> {
+  try {
+    const jar = await cookies();
+    return jar.get(ACTIVE_POOL_COOKIE)?.value ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * One login can be Player (board / picks) and Administrator (Admin tools).
- * `membership` is the player seat when both exist (e.g. Gams).
+ * `membership` is the player seat in the active pool when both exist.
+ * Admin flags are for that pool only — never another pool's seat.
+ * Family-pool maintenance runs only for SUNDAY26 so a new pool does not
+ * receive the live roster.
  */
 export const getUserPoolContext = cache(async (userId: string) => {
   let memberships = await loadMemberships(userId);
-  if (memberships[0]) {
-    const isolation = await ensureLiveWeekIsolation(prisma, memberships[0].pool);
+  const pools = poolChoicesFromMemberships(memberships);
+  const activePoolId = pickActivePoolId(
+    memberships,
+    await requestedActivePoolId()
+  );
+  let activeMemberships = memberships.filter((row) => row.poolId === activePoolId);
+  const activePool = activeMemberships[0]?.pool;
+  if (activePool && activePool.inviteCode === INVITE_CODE) {
+    const isolation = await ensureLiveWeekIsolation(prisma, activePool);
     if (isolation.changed) {
       memberships = await loadMemberships(userId);
+      activeMemberships = memberships.filter((row) => row.poolId === activePoolId);
     }
-    schedulePoolMaintenance(memberships[0].poolId);
+    schedulePoolMaintenance(activePool.id);
   }
-  const membership = preferPlayerMembership(memberships);
-  const adminMembership = adminMembershipOf(memberships);
-  const poolId = memberships[0]?.poolId;
+  const membership = preferPlayerMembership(activeMemberships);
+  const adminMembership = adminMembershipOf(activeMemberships);
+  const poolId = activePoolId;
   let roles: string[] = [];
   if (poolId) {
     roles = await listUserPoolRoles(prisma, { poolId, userId });
-    if (roles.length === 0) {
+    if (roles.length === 0 && activeMemberships.length > 0) {
       await backfillPoolAccessRoles(prisma, poolId);
       roles = await listUserPoolRoles(prisma, { poolId, userId });
     }
@@ -106,14 +129,16 @@ export const getUserPoolContext = cache(async (userId: string) => {
     Boolean(membership && isPlayerSeat(membership));
   const isAdmin =
     hasRole(roles, POOL_ROLES.administrator) ||
-    memberships.some((m) => isAdministrator(m));
+    activeMemberships.some((m) => isAdministrator(m));
   return {
     membership,
     adminMembership,
     isAdmin,
     isPlayer,
     roles,
-    memberships,
+    memberships: activeMemberships,
+    pools,
+    activePoolId,
   };
 });
 

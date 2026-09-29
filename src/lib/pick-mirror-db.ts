@@ -1,4 +1,5 @@
 import { prisma } from "./db";
+import { withSlateGames } from "./slate-games";
 import { effectiveLockAt, parseUsedTeams, rebuildUsedTeams } from "./grading";
 import { schedulePickConfirmed } from "./notification-events";
 import { isUniqueConflict } from "./unique-conflict";
@@ -92,7 +93,7 @@ export async function applyMirrorPicksForWeek(
   weekId: string,
   now: Date = new Date()
 ): Promise<{ copied: string[] }> {
-  const week = await prisma.week.findUnique({
+  const loaded = await prisma.week.findUnique({
     where: { id: weekId },
     include: {
       games: true,
@@ -105,7 +106,8 @@ export async function applyMirrorPicksForWeek(
       },
     },
   });
-  if (!week) return { copied: [] };
+  if (!loaded) return { copied: [] };
+  const week = await withSlateGames(loaded);
 
   const lockAt = effectiveLockAt(week);
   const ranks = await prisma.team.findMany({

@@ -16,7 +16,7 @@ for (const name of readdirSync("src/lib")) {
 const send = readFileSync("src/lib/week-wrap-send.ts", "utf8");
 assert.match(send, /notifyUser|notifyWrapMembers/);
 assert.match(send, /findWeekTouchdownVideo/);
-assert.match(send, /syncWeekScoresFromEspn/);
+assert.match(send, /syncPoolWeekFromEspn|syncWeekScoresFromEspn/);
 assert.match(send, /loadWrapBoard\(poolId\)/);
 assert.match(send, /loadWrapNfl\(\{ sync: true \}\)/);
 const extras = readFileSync("src/lib/week-wrap-extras.ts", "utf8");
@@ -33,7 +33,10 @@ assert.match(dispatch, /withGameEmailHtml/);
 const cron = readFileSync("src/app/api/cron/week-wrap/route.ts", "utf8");
 assert.match(cron, /cronAuthorized/);
 assert.match(cron, /runDueWeekWraps/);
-assert.match(readFileSync("src/lib/week-wrap-run.ts", "utf8"), /syncWeekScoresFromEspn/);
+assert.match(
+  readFileSync("src/lib/week-wrap-run.ts", "utf8"),
+  /syncPoolWeekFromEspn|syncWeekScoresFromEspn/
+);
 const vercel = readFileSync("vercel.json", "utf8");
 assert.match(vercel, /"path": "\/api\/cron\/week-wrap",\s*"schedule": "0 16 \* \* \*"/);
 assert.match(vercel, /"path": "\/api\/cron\/week-wrap",\s*"schedule": "0 17 \* \* \*"/);

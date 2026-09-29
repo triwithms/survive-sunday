@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { importPickConfirmedChange } from "@/lib/import-pick-notify";
 import { schedulePickConfirmed } from "@/lib/notification-events";
 import { requireAdmin } from "@/lib/session";
+import { withSlateGames } from "@/lib/slate-games";
 import {
   gradeWeekPicks,
   gradePickFromScore,
@@ -75,7 +76,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No rows to import" }, { status: 400 });
   }
 
-  const week = await prisma.week.findUnique({
+  const weekRow = await prisma.week.findUnique({
     where: {
       poolId_number: {
         poolId: admin.membership.poolId,
@@ -84,9 +85,10 @@ export async function POST(req: Request) {
     },
     include: { games: true },
   });
-  if (!week) {
+  if (!weekRow) {
     return NextResponse.json({ error: "Week not found" }, { status: 404 });
   }
+  const week = await withSlateGames(weekRow);
 
   const members = await prisma.membership.findMany({
     where: { poolId: admin.membership.poolId },

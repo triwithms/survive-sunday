@@ -1,5 +1,6 @@
 import { prisma } from "./db";
-import { syncWeekScoresFromEspn } from "./live-scores";
+import { syncPoolWeekFromEspn } from "./live-scores";
+import { slateGamesByNumber } from "./slate-games";
 import { parseSkippedWeeks } from "./week-wrap-parse";
 import { ensureWeekWrapTable } from "./week-wrap-schema";
 import { sendWeekWrap, type WeekWrapSendCounts } from "./week-wrap-send";
@@ -12,6 +13,7 @@ export async function runDueWeekWraps(now = new Date()) {
     select: {
       id: true,
       weekWrapSetting: { select: { skippedWeeksJson: true } },
+      slatePoolId: true,
       weeks: {
         select: {
           id: true,
@@ -25,18 +27,24 @@ export async function runDueWeekWraps(now = new Date()) {
     [];
   for (const pool of pools) {
     const skippedWeeks = parseSkippedWeeks(pool.weekWrapSetting?.skippedWeeksJson);
+    const needsSlate = pool.weeks.some((week) => week.games.length === 0);
+    const slate = needsSlate ? await slateGamesByNumber(pool.id) : null;
     for (const week of pool.weeks) {
       if (skippedWeeks.includes(week.number)) continue;
-      if (!isNoonDayAfterKickoff(week.games, now)) continue;
-      let games = week.games;
+      const shared = week.games.length > 0 ? week.games : (slate?.get(week.number) ?? []);
+      if (!isNoonDayAfterKickoff(shared, now)) continue;
+      let games = shared;
       const alreadyFinal = allGamesFinal(games);
       if (!alreadyFinal) {
         try {
-          await syncWeekScoresFromEspn(week.id);
-          games = await prisma.game.findMany({
-            where: { weekId: week.id },
-            select: { status: true, kickoff: true },
-          });
+          await syncPoolWeekFromEspn(week.id);
+          games =
+            week.games.length > 0
+              ? await prisma.game.findMany({
+                  where: { weekId: week.id },
+                  select: { status: true, kickoff: true },
+                })
+              : ((await slateGamesByNumber(pool.id))?.get(week.number) ?? []);
         } catch (error) {
           console.warn("[week-wrap] score sync failed", week.id, error);
           continue;
