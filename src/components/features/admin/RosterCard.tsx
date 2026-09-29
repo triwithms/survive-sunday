@@ -2,6 +2,7 @@
 
 import { memberWeekPick } from "./enter-pick-options";
 import type { EnterPickData } from "./enter-pick-types";
+import { EntryFeeSection } from "./EntryFeeSection";
 import { MemberPickSection } from "./MemberPickSection";
 import { RosterRecordBar } from "./RosterRecordBar";
 import { RosterRow } from "./RosterRow";
@@ -19,6 +20,7 @@ type Props = {
   onBusy: (busy: boolean) => void;
   onMsg: (msg: string) => void;
   onErr: (err: string) => void;
+  tracking?: boolean;
 };
 
 export function RosterCard(p: Props) {
@@ -36,6 +38,7 @@ export function RosterCard(p: Props) {
       weekPick={weekPick}
       open={p.open}
       onToggle={p.onToggle}
+      tracking={p.tracking}
     >
       <RosterRecordBar
         member={member}
@@ -43,6 +46,14 @@ export function RosterCard(p: Props) {
         weekOpen={p.enterPick.currentWeekOpen === true}
       />
       <MemberPickSection member={member} data={p.enterPick} />
+      {p.tracking ? (
+        <EntryFeeSection
+          membershipId={member.id}
+          status={member.paymentStatus ?? "unpaid"}
+          note={member.paymentNote ?? null}
+          markedAt={member.paymentMarkedAt ?? null}
+        />
+      ) : null}
       <UserEditPanel
         member={member}
         draft={edit.draft}

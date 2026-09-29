@@ -1,4 +1,5 @@
 import type { PoolChoice } from "@/lib/active-pool";
+import type { PlayerEntryFee } from "@/lib/payment-tracking";
 import type { RoleView } from "@/lib/roles";
 import type { PickBackupMode } from "@/lib/pick-mirror";
 
@@ -12,6 +13,7 @@ export type AccountScreenProps = {
   phoneE164: string | null;
   pools: PoolChoice[];
   activePoolId: string | null;
+  entryFee: PlayerEntryFee | null;
 };
 
 export type AccountMirrorProps = {

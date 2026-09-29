@@ -2,6 +2,7 @@ import { AdminDetails } from "./AdminDetails";
 import { AdminRolesPanel } from "./AdminRolesPanel";
 import { AdminHeading } from "./AdminHeading";
 import { DeletePoolPanel } from "./DeletePoolPanel";
+import { EntryFeeCard } from "./EntryFeeCard";
 import { PoolInviteCard } from "./PoolInviteCard";
 import { PoolRulesForm } from "./PoolRulesForm";
 import { ResetPoolPanel } from "./ResetPoolPanel";
@@ -12,8 +13,8 @@ export function ConfigScreen(props: ConfigScreenProps) {
   return (
     <div className="space-y-4">
       <AdminHeading title="Pool">
-        Mulligan rules and Hand the pool. Administrators are listed here.
-        Reset and Delete are last.
+        Mulligan rules, entry fees, and Hand the pool. Administrators are
+        listed here. Reset and Delete are last.
       </AdminHeading>
       <PoolInviteCard active={props.poolInviteActive} />
       <PoolRulesForm
@@ -21,6 +22,13 @@ export function ConfigScreen(props: ConfigScreenProps) {
         singleEliminationFromWeek={props.singleEliminationFromWeek}
         oneLossCount={props.oneLossCount}
         undefeatedCount={props.undefeatedCount}
+      />
+      <EntryFeeCard
+        enabled={props.paymentTrackingEnabled}
+        entryFeeCents={props.entryFeeCents}
+        currency={props.entryFeeCurrency}
+        instructions={props.paymentInstructions}
+        link={props.paymentLink}
       />
       <AdminRolesPanel members={props.roleMembers} />
       <TransferCommissionerForm members={props.transferMembers} />

@@ -62,7 +62,7 @@ assert.equal(passesRosterFilter(noB, "one_loss"), true);
 assert.equal(passesRosterFilter(noB, "no_pick"), true);
 assert.equal(passesRosterFilter(out, "out"), true);
 const counts = rosterFilterCounts(rows);
-assert.deepEqual(counts, { all: 5, no_pick: 2, one_loss: 2, out: 1 });
+assert.deepEqual(counts, { all: 5, no_pick: 2, one_loss: 2, out: 1, unpaid: 0 });
 assert.equal(rosterEmptyCopy("no_pick", 3, false), "Everyone has a pick for Week 3.");
 assert.equal(rosterEmptyCopy("out", 3, false), "No one is out yet.");
 assert.equal(rosterEmptyCopy("all", 3, true), "No one matches that.");

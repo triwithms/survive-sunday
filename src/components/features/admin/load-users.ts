@@ -45,6 +45,9 @@ export async function loadUsersPage(): Promise<
       ),
       removeMembers: toRemoveMembers(members),
       enterPick,
+      paymentTrackingEnabled: gate.me.pool.paymentTrackingEnabled,
+      entryFeeCents: gate.me.pool.entryFeeCents,
+      entryFeeCurrency: gate.me.pool.entryFeeCurrency,
     },
   };
 }

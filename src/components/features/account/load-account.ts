@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { profileIsComplete, snapshotFromMember } from "@/lib/profile-complete";
 import { isPlayerSeat, ROLE_VIEW_COOKIE, resolveRoleView } from "@/lib/roles";
+import { entryFeeForViewer } from "@/lib/payment-tracking";
 import { getUserPoolContext } from "@/lib/session";
 import type { AccountScreenProps } from "./types";
 
@@ -30,5 +31,12 @@ export async function loadAccountPage(): Promise<AccountScreenProps> {
     phoneE164: me.user.phoneE164,
     pools: ctx.pools,
     activePoolId: ctx.activePoolId,
+    entryFee: entryFeeForViewer(session.user.id, {
+      userId: me.userId,
+      enabled: me.pool.paymentTrackingEnabled,
+      status: me.paymentStatus,
+      instructions: me.pool.paymentInstructions,
+      link: me.pool.paymentLink,
+    }),
   };
 }

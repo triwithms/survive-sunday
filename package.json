@@ -43,6 +43,7 @@
     "verify:claim-attach": "tsx scripts/verify-claim-attach.ts",
     "verify:roles": "tsx scripts/verify-roles.ts",
     "verify:pool-rules": "tsx scripts/verify-pool-rules.ts",
+    "verify:payment-tracking": "tsx scripts/verify-payment-tracking.ts",
     "verify:multi-pool": "tsx scripts/verify-multi-pool.ts",
     "verify:pool-invite": "tsx scripts/verify-pool-invite.ts",
     "verify:delete-pool": "tsx scripts/verify-delete-pool.ts",

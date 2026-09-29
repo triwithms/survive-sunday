@@ -13,11 +13,19 @@ export function RosterFilters(props: {
   value: RosterFilterId;
   counts: Record<RosterFilterId, number>;
   onChange: (id: RosterFilterId) => void;
+  showUnpaid?: boolean;
 }) {
+  const filters = props.showUnpaid
+    ? [...FILTERS, { id: "unpaid" as const, label: "Unpaid" }]
+    : FILTERS;
   return (
     <div role="group" aria-label="Filter roster" className="flex flex-wrap gap-2">
-      {FILTERS.map((filter) => {
+      {filters.map((filter) => {
         const on = props.value === filter.id;
+        const label =
+          filter.id === "unpaid"
+            ? `Unpaid (${props.counts.unpaid})`
+            : `${filter.label} ${props.counts[filter.id]}`;
         return (
           <button
             key={filter.id}
@@ -32,7 +40,7 @@ export function RosterFilters(props: {
                 : "border-stadium-border text-[var(--text-muted)]",
             ].join(" ")}
           >
-            {filter.label} {props.counts[filter.id]}
+            {label}
           </button>
         );
       })}

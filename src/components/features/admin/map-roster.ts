@@ -25,6 +25,9 @@ export function toRosterMembers(members: MemberRow[]) {
     notifyPrefs: prefsFromRow(m.user.notificationPreference),
     mirrorFromMembershipId: m.mirrorFromMembershipId,
     pickBackup: m.pickBackup,
+    paymentStatus: m.paymentStatus ?? "unpaid",
+    paymentNote: m.paymentNote ?? null,
+    paymentMarkedAt: m.paymentMarkedAt ? m.paymentMarkedAt.toISOString() : null,
   }));
 }
 
