@@ -55,7 +55,7 @@ Friends stay signed in on their phone / Home Screen app. We do **not** ask for a
 
 If they forget the password: **Sign in → Forgot password** → 6-digit code by email (check inbox and spam/junk; optional SMS if a cell is saved) → new password → signed back in.
 
-- Demo `@survivesunday.demo` seats always use **demo1234** (no reset).
+- Practice `@survivesunday.demo` addresses cannot use Forgot password. Claim the seat, or ask the administrator to set a password. There is no demo sign-in route.
 - Production minimum: **`RESEND_API_KEY`** and **`RESEND_FROM_EMAIL`** (see `DEPLOY.md` §3b). Optional Twilio for texts.
 - Locally, if those keys are missing, the code is printed in the server log and shown on the reset page.
 
@@ -103,7 +103,7 @@ Wave 1 Pool QA (critical):
 5. **Import preview** — Preview matches resolves nickname→team (nickname first, then email) before Confirm import.
 6. **Auto-grade on load** — scores/pool (and other ensure paths) grade pending picks whose games are FINAL.
 7. **App Router error boundaries** — `src/app/not-found.tsx`, `error.tsx`, `global-error.tsx`, and `(app)/error.tsx` so a reload on `/admin` or `/help` no longer 404/500 with “missing required error components”.
-8. **Admin session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. Demo Administrator `admin@survivesunday.demo` / `demo1234` keeps admin membership for `/admin` and `/admin/import`.
+8. **Admin session on localhost** — `AUTH_URL=http://localhost:3000`, `AUTH_TRUST_HOST=true`, `trustHost: true`, Secure cookies only on https. A practice administrator keeps admin membership for `/admin` and `/admin/import` until a real administrator login exists. There is no separate demo sign-in route.
 8b. **Tunnel login Host** — middleware forwards a public `Host` (e.g. `*.trycloudflare.com`) as `x-forwarded-host` / `x-forwarded-proto`. Auth `callbacks.redirect` and the auth route rewrite any `https://localhost:3000` Location to the request Host. Client `afterAuthNavigate` always uses a relative signed-in path (`/pick`).
 9. **Session identity drift** — demo login `signOut`s first, `await getSession()` before navigate, then hard-loads `/pick`. Authenticated routes are `force-dynamic` + `revalidate = 0`; BottomNav prefetch is off; SW is network-only for HTML/RSC. `SessionProvider` remounts on user id (`refetchOnWindowFocus`, `refetchInterval={60}`).
 10. **/pick red “1 Error” toast** — header has no slate-wide countdown; kickoff/logo/undefined guards in `PickClient`.

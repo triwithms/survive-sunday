@@ -20,7 +20,7 @@ Set these in Vercel → Project → Settings → Environment Variables (Producti
 
 | Variable | Value |
 |---|---|
-| `AUTH_SECRET` | Long random string (e.g. `openssl rand -base64 32`). **Required** — without it Auth.js 500s every `/api/auth/*` route and demo login cannot create a session. |
+| `AUTH_SECRET` | Long random string (e.g. `openssl rand -base64 32`). **Required** — without it Auth.js 500s every `/api/auth/*` route and sign-in cannot create a session. |
 | `AUTH_TRUST_HOST` | `true` |
 | `NEXT_PUBLIC_APP_URL` | Your production URL (e.g. `https://survive-sunday.vercel.app`) |
 | `AUTH_URL` | Same production URL, or **omit**. `https://example.com` (and other IANA example.* placeholders) is ignored so request Host wins. |
@@ -35,7 +35,7 @@ If they forget the password: Sign in → **Forgot password?** → 6-digit code b
 
 If they already Joined: Sign in is **email + password**. **Forgot password?** emails a 6-digit code (and texts it if a cell is saved). This is not a code at every login.
 
-Demo seats (`@survivesunday.demo`) always use **demo1234**. No reset.
+Practice addresses (`@survivesunday.demo`) cannot use Forgot password. Claim the seat with a real email, or ask the administrator to set a password. There is no demo sign-in route.
 
 **Minimum for friends today** (Vercel → nfl-pool → survive-sunday → Settings → Environment Variables → Production):
 

@@ -14,7 +14,7 @@ const vercelPrismaEngine = [
 const nextConfig: NextConfig = {
   // Keep Prisma out of the webpack bundle so the native query engine can
   // load. Without this, authorize() throws and Auth.js surfaces
-  // CallbackRouteError on /api/demo-enter.
+  // CallbackRouteError on credentials sign-in.
   serverExternalPackages: ["@prisma/client"],
   // Next matches these keys with picomatch { contains: true }. A "/*"
   // glob of the whole @prisma/client tree copied ~49 MB (two engines +

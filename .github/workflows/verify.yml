@@ -1,0 +1,39 @@
+name: Verify
+
+# Fast file and static checks. No database. Do not add live Neon jobs here.
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  static-verify:
+    name: Static verify scripts
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ""
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Multi-pool
+        run: npm run verify:multi-pool
+
+      - name: Pool invite
+        run: npm run verify:pool-invite
+
+      - name: PWA install
+        run: npm run verify:pwa-install
+
+      - name: Login screen
+        run: npm run verify:login-screen

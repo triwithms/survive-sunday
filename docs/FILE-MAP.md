@@ -90,7 +90,7 @@ Same role. No new role. User-facing copy says **Admin** (screen/nav) or **Admini
 - Components: `CommissionerAccountPanel`, `CommissionerLoginForm`, `CommissionerSignOut`, `TransferCommissionerForm`
 - Helpers / keys: `poolHasRealCommissioner`, `hasRealCommissioner`, `CLAIM_ERRORS.commissionerSeat` / `alreadyCommissioner`, `commissionerSeat` vars
 - Audit actions: `commissioner_account_set`, `transfer_commissioner`, `newCommissionerStaysOnBoard`
-- Demo seed no longer creates a Commissioner person (`demo-account.ts` / `prisma/seed.ts`). Users/Pool people lists hide spectator `role=admin` seats. Gams is Player + Administrator.
+- Demo sign-in routes are removed (`/api/demo-enter`, `/api/demo-login`, `demo-account.ts`). `prisma/seed.ts` still does not create a Commissioner person. Users/Pool people lists hide spectator `role=admin` seats.
 
 ## CRITICAL — never run these from a Vercel build
 

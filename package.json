@@ -15,7 +15,6 @@
     "setup": "prisma generate && tsx scripts/guard-db-mutation.ts setup && prisma db push && tsx prisma/seed.ts",
     "verify:session": "node scripts/verify-session-identity.mjs",
     "verify:auth-https": "node scripts/verify-auth-https-cookies.mjs",
-    "verify:demo-enter": "node scripts/verify-demo-enter.mjs",
     "verify:credentials-authorize": "tsx scripts/verify-credentials-authorize.ts",
     "verify:password-reset": "tsx scripts/verify-password-reset.ts",
     "verify:reset-admins": "tsx scripts/verify-reset-admins.ts",

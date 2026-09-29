@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
-import { signInDemoCredentials } from "@/lib/demo-session";
+import { signInWithCredentials } from "@/lib/credentials-sign-in";
 import {
   loginFailurePath,
   safeLoginCallbackPath,
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     redirect(loginFailurePath("MissingFields", email));
   }
 
-  const result = await signInDemoCredentials(email, password, callbackUrl);
+  const result = await signInWithCredentials(email, password, callbackUrl);
   if (!result.ok) {
     if (wantsJson) {
       return NextResponse.json(

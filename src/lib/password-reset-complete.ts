@@ -21,7 +21,7 @@ export async function resetPasswordWithCode(
     const code = normalizeOtpInput(typeof rawCode === "string" ? rawCode : "");
     const password = typeof rawPassword === "string" ? rawPassword : "";
     if (isDemoEmail(email)) {
-      return { ok: false, error: "Demo seats always use password demo1234." };
+      return { ok: false, error: "Practice seats cannot reset a password here." };
     }
     if (!isValidOtpShape(code)) {
       return { ok: false, error: "Enter the 6-digit code." };
