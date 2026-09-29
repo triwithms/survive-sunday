@@ -77,5 +77,6 @@ export function assembleBoardPage(args: {
         winners.officialEligible.length === 0 &&
         args.participants.some((m) => isAlive(m.status)),
     },
+    startNotice: null,
   };
 }

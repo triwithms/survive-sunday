@@ -10,7 +10,7 @@ import {
   isPlayerPickWeek,
   resolvePlayerPickWeek,
 } from "../src/lib/next-week-picks";
-import { shouldApplyMissedPick } from "../src/lib/pool-rules";
+import { nextPlayingWeek, shouldApplyMissedPick } from "../src/lib/pool-rules";
 import {
   earliestPlayableWeek,
   futureStartWeekChoices,
@@ -21,6 +21,7 @@ import {
   pickBeforePoolStartError,
   picksOpenAtForStart,
   poolStartBanner,
+  quietLeaderboardPage,
   seatPlayingFromWeek,
   weekCountsForPool,
   weeksFromPoolStart,
@@ -233,6 +234,126 @@ function assertChoicesAndBanner() {
   );
 }
 
+function populatedBoard() {
+  return {
+    rows: [{ id: "a", nickname: "Pat" }],
+    heading: {
+      weekLabel: "Week 4",
+      stillInCount: 8,
+      undefeatedCount: 6,
+      eliminatedCount: 2,
+      pickRowCount: 8,
+      lockLine: "Lock: Thu",
+      sortLine: "Season race: still in, then out.",
+      cta: { href: "/pick", label: "Pick" },
+    },
+    tiebreak: {
+      soleNickname: "Pat",
+      sharedNicknames: ["Sam"],
+      showNoOfficial: true,
+    },
+  };
+}
+
+function assertLeaderboardQuiet() {
+  const banner = "This pool starts Week 6. Picks open Thu, Oct 8.";
+  const quiet = quietLeaderboardPage(populatedBoard(), {
+    startWeek: 6,
+    viewedWeek: 4,
+    banner,
+  });
+  assert.deepEqual(quiet.rows, []);
+  assert.equal(quiet.startNotice, banner);
+  assert.equal(quiet.heading.lockLine, banner);
+  assert.equal(quiet.heading.weekLabel, "Week 6");
+  assert.equal(quiet.heading.stillInCount, 0);
+  assert.equal(quiet.heading.undefeatedCount, 0);
+  assert.equal(quiet.heading.eliminatedCount, 0);
+  assert.equal(quiet.heading.pickRowCount, 0);
+  assert.equal(quiet.heading.sortLine, "");
+  assert.equal(quiet.heading.cta, null);
+  assert.equal(quiet.tiebreak.soleNickname, null);
+  assert.deepEqual(quiet.tiebreak.sharedNicknames, []);
+  assert.equal(quiet.tiebreak.showNoOfficial, false);
+
+  const picksOpen = quietLeaderboardPage(populatedBoard(), {
+    startWeek: 6,
+    viewedWeek: 5,
+    banner: null,
+  });
+  assert.deepEqual(picksOpen.rows, []);
+  assert.equal(picksOpen.tiebreak.soleNickname, null);
+  assert.match(picksOpen.startNotice ?? "", /Week 6/);
+  assert.match(picksOpen.startNotice ?? "", /Earlier weeks do not count/);
+
+  const started = quietLeaderboardPage(populatedBoard(), {
+    startWeek: 6,
+    viewedWeek: 6,
+    banner: null,
+  });
+  assert.equal(started.rows.length, 1);
+  assert.equal(started.tiebreak.soleNickname, "Pat");
+  assert.equal(started.heading.stillInCount, 8);
+  assert.equal(started.startNotice, null);
+
+  const family = quietLeaderboardPage(populatedBoard(), {
+    startWeek: null,
+    viewedWeek: 4,
+    banner: "This pool starts Week 6. Picks open soon.",
+  });
+  assert.equal(family.rows.length, 1);
+  assert.equal(family.tiebreak.soleNickname, "Pat");
+  assert.deepEqual(family.tiebreak.sharedNicknames, ["Sam"]);
+  assert.equal(family.heading.stillInCount, 8);
+  assert.equal(family.heading.lockLine, "Lock: Thu");
+  assert.equal(family.startNotice, null);
+}
+
+function assertAdminOnlySeat() {
+  assert.equal(
+    seatPlayingFromWeek({
+      startWeek: 6,
+      lateJoinWeek: nextPlayingWeek({ currentWeek: 4, weekLocked: false }),
+    }),
+    6,
+    "administrator-only seat waits for the pool's first week"
+  );
+  assert.equal(
+    seatPlayingFromWeek({
+      startWeek: 6,
+      lateJoinWeek: nextPlayingWeek({ currentWeek: 8, weekLocked: true }),
+    }),
+    9,
+    "a later late-join week still wins"
+  );
+  assert.equal(
+    seatPlayingFromWeek({
+      startWeek: null,
+      lateJoinWeek: nextPlayingWeek({ currentWeek: 4, weekLocked: true }),
+    }),
+    5,
+    "family pool keeps the late-join week only"
+  );
+  assert.equal(
+    seatPlayingFromWeek({
+      startWeek: null,
+      lateJoinWeek: nextPlayingWeek({ currentWeek: 3, weekLocked: false }),
+    }),
+    3
+  );
+  const transfer = readFileSync(
+    "src/app/api/admin/transfer-commissioner/route.ts",
+    "utf8"
+  );
+  assert.match(transfer, /outgoingPlayerSeat\.playingFromWeek/);
+  assert.match(transfer, /seatPlayingFromWeek\(\{[\s\S]*?startWeek:\s*admin\.membership\.pool\.startWeek/);
+  assert.match(
+    transfer,
+    /lateJoinWeek:\s*nextPlayingWeek\(\{\s*currentWeek,\s*weekLocked\s*\}\)/
+  );
+  assert.doesNotMatch(transfer, /["'`][^"'`]*Commissioner[^"'`]*["'`]/);
+}
+
 function assertWiring() {
   const read = (path: string) => readFileSync(path, "utf8");
   const schema = read("prisma/schema.prisma");
@@ -246,6 +367,7 @@ function assertWiring() {
     "src/lib/add-user-db.ts",
     "src/lib/pool-invite-join.ts",
     "src/lib/claim-seat-db.ts",
+    "src/app/api/admin/transfer-commissioner/route.ts",
   ]) {
     assert.match(read(path), /seatPlayingFromWeek/, path);
   }
@@ -266,6 +388,13 @@ function assertWiring() {
   assert.match(read(".github/workflows/verify.yml"), /verify:start-week/);
   assert.match(read("src/components/features/help/HelpRules.tsx"), /Weeks before that first week/);
   assert.match(read("src/components/features/help/HelpForAdmins.tsx"), /first/);
+  const board = read("src/components/features/board/load-board.ts");
+  assert.match(board, /return quietLeaderboardPage\(page,/);
+  assert.doesNotMatch(board, /page\.heading\.lockLine = startNotice/);
+  const screen = read("src/components/features/board/BoardScreen.tsx");
+  assert.match(screen, /data-testid="pool-start-banner"/);
+  assert.match(screen, /if \(startNotice\)/);
+  assert.doesNotMatch(screen, /Commissioner/);
 }
 
 assertNoLossesBeforeStart();
@@ -275,5 +404,7 @@ assertNavRemindersWrap();
 assertFamilyUnchanged();
 assertMulligan();
 assertChoicesAndBanner();
+assertLeaderboardQuiet();
+assertAdminOnlySeat();
 assertWiring();
 console.log("verify-start-week: ok");

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/session";
 import { isWeekLocked } from "@/lib/grading";
 import { nextPlayingWeek, nicknamesMatch } from "@/lib/pool-rules";
+import { seatPlayingFromWeek } from "@/lib/pool-start-week";
 import { isPlayerSeat, POOL_ROLES } from "@/lib/roles";
 import { grantPoolRole, revokePoolRole } from "@/lib/roles-db";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
@@ -88,7 +89,10 @@ export async function POST(req: Request) {
   const outgoingSpectatorSeats = outgoingSeats.filter((m) => m.role === "admin");
   const playingFromWeek = outgoingPlayerSeat
     ? outgoingPlayerSeat.playingFromWeek
-    : nextPlayingWeek({ currentWeek, weekLocked });
+    : seatPlayingFromWeek({
+        startWeek: admin.membership.pool.startWeek,
+        lateJoinWeek: nextPlayingWeek({ currentWeek, weekLocked }),
+      });
 
   await grantPoolRole(prisma, {
     poolId,

@@ -48,4 +48,6 @@ export type BoardScreenProps = {
   canChangePick: boolean;
   oneAndDone: boolean;
   tiebreak: BoardTiebreakProps;
+  /** Set before the pool’s first week. The screen shows only this line. */
+  startNotice: string | null;
 };
