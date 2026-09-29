@@ -1,5 +1,5 @@
 /**
- * End-to-end: demo login still one-step; a real account can reset via OTP.
+ * End-to-end: demo sign-in routes are gone; a real account can reset via OTP.
  *
  *   BASE_URL=http://127.0.0.1:3000 node scripts/verify-password-reset-flow.mjs
  */
@@ -72,28 +72,28 @@ async function credentialsLogin(jar, email, password) {
 async function main() {
   console.log(`verify-password-reset-flow against ${BASE}\n`);
 
-  const demoJar = new Map();
-  const enter = await request(demoJar, "/api/demo-enter", {
-    method: "POST",
-    headers: { "content-type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      email: "gams@survivesunday.demo",
-      password: "demo1234",
-    }),
-  });
-  assert([302, 303, 307].includes(enter.status), `demo-enter ${enter.status}`);
-  const loc = enter.headers.get("location") || "";
-  assert(!loc.includes("/login/verify"), `demo must not hit 2FA, got ${loc}`);
-  const demoPool = await request(demoJar, "/pool", { headers: { accept: "text/html" } });
-  assert(demoPool.status === 200, `demo /pool ${demoPool.status}`);
+  for (const path of ["/api/demo-enter", "/api/demo-login"]) {
+    const gone = await request(new Map(), path, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        email: "player@survivesunday.demo",
+        password: "not-a-login",
+      }),
+    });
+    assert(gone.status === 404, `${path} must be gone, got ${gone.status}`);
+  }
   const demoForgot = await request(new Map(), "/api/password/forgot", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ email: "gams@survivesunday.demo" }),
+    body: JSON.stringify({ email: "player@survivesunday.demo" }),
   });
   const demoForgotBody = await demoForgot.json();
-  assert(demoForgot.ok && demoForgotBody.demo === true, "demo forgot is informational");
-  console.log("PASS  demo login is one-step; demo reset is skipped");
+  assert(demoForgot.ok && demoForgotBody.demo === true, "practice forgot is informational");
+  console.log("PASS  demo sign-in routes are gone; practice reset is skipped");
 
   const stamp = Date.now();
   const email = `qa-reset-${stamp}@example.com`;

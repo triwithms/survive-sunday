@@ -15,7 +15,7 @@ export async function sendForgotCode(
       kind: "demo",
       message:
         (typeof data.message === "string" && data.message) ||
-        "Demo seats always use password demo1234.",
+        "Practice seats cannot reset a password here. Ask the administrator.",
     };
   }
   const status = challengeFrom(data);

@@ -59,6 +59,32 @@ function main() {
   assert(!login.includes("Use password instead"), "no password toggle");
   assert(!login.includes("DemoEnter"), "no demo picker");
   assert(!page.includes("demoMode"), "login page does not load demo picker");
+  assert(!login.includes("/api/demo-enter"), "Sign in does not post to demo-enter");
+  assert(!login.includes("/api/demo-login"), "Sign in does not post to demo-login");
+  assert(
+    !existsSync(join("src/app/api/demo-enter/route.ts")),
+    "demo-enter route removed"
+  );
+  assert(
+    !existsSync(join("src/app/api/demo-login/route.ts")),
+    "demo-login route removed"
+  );
+  assert(!existsSync(join("src/lib/demo-account.ts")), "demo account seeder removed");
+  assert(!existsSync(join("src/lib/demo-session.ts")), "demo session helper removed");
+  assert(
+    !existsSync(join("scripts/verify-demo-enter.mjs")),
+    "demo-enter verify script removed"
+  );
+  assert(loginApi.includes("signInWithCredentials"), "live login uses credentials sign-in");
+  assert(!loginApi.includes("demo-session"), "login API does not use the demo helper");
+  const resetCopy = readFileSync(join("src/lib/password-reset.ts"), "utf8");
+  const forgotSend = readFileSync(
+    join("src/components/features/login/forgot-send.ts"),
+    "utf8"
+  );
+  assert(!resetCopy.includes("demo1234"), "reset copy does not publish a practice password");
+  assert(!/picker/i.test(resetCopy), "reset copy does not point at a demo picker");
+  assert(!forgotSend.includes("demo1234"), "forgot UI does not publish a practice password");
   assert(/spam\/junk/.test(copy), "forgot copy mentions spam/junk");
   assert(!/Send to my phone/i.test(actions), "no SMS-first toggle on Forgot");
   assert(!/Google|userFromSignInOtp|\botp\b/.test(auth), "auth is password-only");

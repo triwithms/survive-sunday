@@ -2,7 +2,7 @@ import { AuthError } from "next-auth";
 import { signIn } from "@/lib/auth";
 import { DEFAULT_SIGNED_IN_PATH } from "@/lib/app-paths";
 
-export type DemoSignInResult =
+export type CredentialsSignInResult =
   | { ok: true }
   | { ok: false; error: string };
 
@@ -16,7 +16,7 @@ function errorFromResultUrl(result: unknown): string | undefined {
 }
 
 /**
- * Establish an Auth.js credentials session.
+ * Establish an Auth.js credentials session for email + password sign-in.
  *
  * Must be called from a Route Handler or Server Action so `cookies().set()`
  * from Auth.js is applied to the outgoing response. Use `redirect()` from
@@ -24,13 +24,13 @@ function errorFromResultUrl(result: unknown): string | undefined {
  * drops those cookies, which is what produced `?error=NoSession`.
  *
  * `redirect: false` so we can detect CredentialsSignin and map it to
- * `/?error=…` instead of Auth.js sending the user to `/login`.
+ * the login error page instead of Auth.js sending the user to `/login`.
  */
-export async function signInDemoCredentials(
+export async function signInWithCredentials(
   email: string,
   password: string,
   redirectTo = DEFAULT_SIGNED_IN_PATH
-): Promise<DemoSignInResult> {
+): Promise<CredentialsSignInResult> {
   try {
     const result = await signIn("credentials", {
       email,

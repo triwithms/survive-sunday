@@ -5,7 +5,7 @@
  *   npx tsx scripts/verify-admin-user-profile.ts
  */
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "fs";
+import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
 import {
   CELL_ALREADY_USED,
@@ -205,10 +205,7 @@ function main() {
     isVisibleAdminPerson({ role: "member", nickname: "Commissioner" }),
     false
   );
-  assert.doesNotMatch(
-    readFileSync("src/lib/demo-account.ts", "utf8"),
-    /nickname: "Commissioner"/
-  );
+  assert.equal(existsSync("src/lib/demo-account.ts"), false, "demo account seeder removed");
   assert.doesNotMatch(
     readFileSync("prisma/seed.ts", "utf8"),
     /nickname: "Commissioner"/

@@ -41,6 +41,7 @@ This is the **keep-up guide** for the pool app. It is written for a **non-coder*
 - **CRITICAL — production data:** A Vercel Production build is `npm run build` → `next build` only. It does **not** run `ensure-production-db`, `prisma db push`, or seeds. Scheduled jobs (missing-pick reminders, ensure-week) do **not** wipe or reseed the pool. Never reattach those scripts to the build. Details: [DEPLOY.md](../DEPLOY.md) section 4.
 - **Game-day error page (27 Sep 2026):** At the 1 p.m. kickoff, two players saw **Something went wrong** and had to reopen the app. A second score sync tried to record a notice that was already recorded. That duplicate is now treated as **already sent** (no second email or text, and it does not throw) — [#175](https://github.com/triwithms/survive-sunday/pull/175). Score sync and grading that start when a page opens can no longer take down My pick, Selections, Scores, Schedule, or Standings — the page still paints from the database. Admin → System → **Server errors** keeps those messages for 14 days, because Vercel Hobby only shows about the last hour of logs. Session polling stays off ([#174](https://github.com/triwithms/survive-sunday/pull/174)).
 - **More than one pool:** A signed-in person can start their own pool from **Settings** (name + mulligan). They become that pool’s administrator. The family pool is unchanged, and it stays the pool they see until they switch. A pool switcher appears on Settings only when that login is in more than one pool. NFL schedule and scores stay one shared slate. Sign in stays email + password. Apply the database migration once before relying on this (see [DEPLOY.md](../DEPLOY.md) section 4). A normal Redeploy does not run it. Selling a pool, including both ways to add players (you set the password, or one shared join link), is [docs/OPERATOR-ONBOARDING.md](OPERATOR-ONBOARDING.md).
+- **Selling the code:** The scrub of current files did not clean older commits. At sale time, hand over a fresh repository (or rewrite history) rather than this public git history as-is. Details: [docs/OPERATOR-ONBOARDING.md](OPERATOR-ONBOARDING.md) section 10.
 
 - **A claimed friend can be stuck if email codes fail.** Use Admin → **Set a temporary password**, text that password yourself, and have them change it after Sign in. Do not put the password in git, chat, or this file. A Redeploy does **not** rewrite passwords. Sign in: [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login). The sign-in email is on **Admin → Players**.
 
@@ -541,7 +542,7 @@ Friends land on `/?error=NoSession`. `/api/auth/session` or `/api/auth/csrf` may
 
 - Missing `AUTH_SECRET` → Auth.js cannot mint a session (`MissingSecret`).
 - Custom cookie names fought Auth.js HTTPS defaults (`authjs.*` vs `__Secure-` / `__Host-`). The repo now uses Auth.js defaults: HTTP → `authjs.*`, HTTPS → `__Secure-` / `__Host-`.
-- `/api/demo-enter` used a hand-built redirect that **dropped** the session cookie. It now uses `redirect()` from Next.js so the cookie is kept.
+- Live sign-in is `/api/login`. It uses `redirect()` from Next.js so the session cookie is kept. The old `/api/demo-enter` and `/api/demo-login` shortcuts are removed.
 
 **B. `CallbackRouteError` (or “Configuration” on the login page)**
 
@@ -631,7 +632,7 @@ You are free Grok or a basic paid Grok / xAI chat — not paid Grok Bot.
 Then only these paths unless a listed open PR is the task:
 - src/lib/auth.ts
 - src/lib/credentials-user.ts
-- src/lib/demo-session.ts
+- src/lib/credentials-sign-in.ts
 - src/lib/request-host.ts
 - src/lib/otp.ts
 - src/lib/otp-delivery.ts
@@ -639,7 +640,7 @@ Then only these paths unless a listed open PR is the task:
 - src/app/api/auth/[...nextauth]/route.ts
 - src/app/api/password/forgot/route.ts
 - src/app/api/password/reset/route.ts
-- src/app/api/demo-enter/route.ts
+- src/app/api/login/route.ts
 - src/lib/pool-mode.ts
 - src/lib/pool-mode-db.ts
 - src/app/login/page.tsx

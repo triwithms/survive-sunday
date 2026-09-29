@@ -102,6 +102,12 @@ Charging other organizers is also a hosting choice. Vercel’s free Hobby plan i
 9. **What address do we send?** [https://survive-sunday.vercel.app](https://survive-sunday.vercel.app)
 10. **Who do players contact if they are locked out?** Their pool administrator.
 
+## 10. Git history when you sell the code
+
+The scrub of the shareable tree (pull request 176) cleaned personal names and emails out of the **current files** only. It did not rewrite older commits. Those commits can still contain names and emails.
+
+When you hand the product to a buyer, give them a **fresh repository**, or rewrite history first. Do not hand over this public git history as-is.
+
 ## Appendix A: Welcome email (Robert → new administrator)
 
 Email can be a normal letter. The subject has no emoji.

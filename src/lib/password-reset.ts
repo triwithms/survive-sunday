@@ -41,7 +41,7 @@ export async function requestPasswordReset(
         ok: true,
         demo: true,
         message:
-          "Demo seats always use password demo1234. Use the picker on the home page — no reset needed.",
+          "Practice seats cannot reset a password here. Ask the administrator.",
       };
     }
 
