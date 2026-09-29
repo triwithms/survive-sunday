@@ -4,14 +4,9 @@
  *   npx tsx scripts/verify-pending-practice-email.ts
  */
 import assert from "node:assert/strict";
-import {
-  CLAIMED_GAMS_EMAIL,
-  planPendingPracticeRestore,
-} from "../src/lib/pending-practice-email";
+import { planPendingPracticeRestore } from "../src/lib/pending-practice-email";
 import { isSeatClaimed } from "../src/lib/claim-seat";
 import { practiceEmailFromPlaceholder } from "../src/lib/pool-mode";
-
-assert.equal(CLAIMED_GAMS_EMAIL, "robertgama@gmail.com");
 
 assert.deepEqual(
   planPendingPracticeRestore({
@@ -39,7 +34,7 @@ assert.deepEqual(
 
 assert.equal(
   planPendingPracticeRestore({
-    email: "robertgama@gmail.com",
+    email: "organizer@example.com",
     userId: "u-gams",
   }).action,
   "skip"
@@ -77,7 +72,7 @@ assert.deepEqual(
 
 assert.equal(isSeatClaimed("go-giants@survivesunday.demo"), false);
 assert.equal(isSeatClaimed("the-boss@survivesunday.demo"), false);
-assert.equal(isSeatClaimed(CLAIMED_GAMS_EMAIL), true);
+assert.equal(isSeatClaimed("organizer@example.com"), true);
 assert.equal(
   practiceEmailFromPlaceholder("player@staging.survivesunday.local"),
   "player@survivesunday.demo"

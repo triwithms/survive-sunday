@@ -92,16 +92,16 @@ const seats: ClaimableSeat[] = [
   {
     membershipId: "open-1",
     nickname: "Cannoli Stuffer",
-    realName: "Michael Frigo",
+    realName: "Sam Player",
     claimed: false,
-    label: "Cannoli Stuffer (Michael Frigo)",
+    label: "Cannoli Stuffer (Sam Player)",
   },
   {
     membershipId: "claimed-1",
     nickname: "Gams",
-    realName: "Robert Gama",
+    realName: "Alex Player",
     claimed: true,
-    label: "Gams (Robert Gama)",
+    label: "Gams (Alex Player)",
   },
 ];
 

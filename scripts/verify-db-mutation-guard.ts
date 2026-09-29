@@ -8,10 +8,11 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { PROD_DB_BREAK_GLASS } from "./assert-not-production";
 
-const PROD =
-  "postgresql://u:p@ep-falling-flower-avkrw34u.us-east-1.aws.neon.tech/neondb";
+const PROD_ID = "ep-prod-guard-example";
+const PROD = `postgresql://u:p@${PROD_ID}.us-east-1.aws.neon.tech/neondb`;
 const OTHER = "postgresql://u:p@ep-other-branch.neon.tech/neondb";
 const LOCAL = "postgresql://u:p@localhost:5432/neondb";
+const NAMED = { PROD_DB_ENDPOINT: PROD_ID };
 
 function run(script: string, env: NodeJS.ProcessEnv, extra: string[] = []) {
   return spawnSync("npx", ["tsx", script, ...extra], {
@@ -37,21 +38,25 @@ function main() {
   const verify = "scripts/_dangerous/verify-ensure-production-db.ts";
   const glass = { [PROD_DB_BREAK_GLASS]: "1" };
 
-  let r = run(guard, { DATABASE_URL: PROD }, ["db:push"]);
+  let r = run(guard, { DATABASE_URL: PROD, ...NAMED }, ["db:push"]);
   assert.notEqual(r.status, 0);
   assert.match(out(r), /BLOCKED|PRODUCTION/);
 
-  r = run(guard, { DATABASE_URL: PROD, ...glass }, ["db:push"]);
+  r = run(guard, { DATABASE_URL: OTHER }, ["db:push"]);
+  assert.notEqual(r.status, 0, "unset PROD_DB_ENDPOINT refuses every Neon host");
+  assert.match(out(r), /BLOCKED|PRODUCTION/);
+
+  r = run(guard, { DATABASE_URL: PROD, ...NAMED, ...glass }, ["db:push"]);
   assert.equal(r.status, 0);
   assert.match(out(r), /bypassed/);
 
-  r = run(guard, { DATABASE_URL: LOCAL, DIRECT_URL: PROD }, ["db:push"]);
+  r = run(guard, { DATABASE_URL: LOCAL, DIRECT_URL: PROD, ...NAMED }, ["db:push"]);
   assert.notEqual(r.status, 0);
   assert.match(out(r), /BLOCKED|PRODUCTION/);
 
   r = run(
     guard,
-    { DATABASE_URL: PROD, ...glass, VERCEL: "1" },
+    { DATABASE_URL: PROD, ...NAMED, ...glass, VERCEL: "1" },
     ["db:push"]
   );
   assert.notEqual(r.status, 0);
@@ -60,22 +65,22 @@ function main() {
   r = run(guard, { DATABASE_URL: LOCAL }, ["db:push"]);
   assert.equal(r.status, 0);
 
-  r = run(guard, { DATABASE_URL: OTHER }, ["setup"]);
+  r = run(guard, { DATABASE_URL: OTHER, ...NAMED }, ["setup"]);
   assert.equal(r.status, 0);
 
   r = run(stub, { DATABASE_URL: LOCAL });
   assert.notEqual(r.status, 0);
   assert.match(out(r), /_dangerous/);
 
-  r = run(ensure, { DATABASE_URL: PROD });
+  r = run(ensure, { DATABASE_URL: PROD, ...NAMED });
   assert.notEqual(r.status, 0);
   assert.match(out(r), /BLOCKED|PRODUCTION/);
 
-  r = run(ensure, { DATABASE_URL: OTHER });
+  r = run(ensure, { DATABASE_URL: OTHER, ...NAMED });
   assert.notEqual(r.status, 0);
   assert.match(out(r), /not an approved target/);
 
-  r = run(verify, { DATABASE_URL: PROD });
+  r = run(verify, { DATABASE_URL: PROD, ...NAMED });
   assert.notEqual(r.status, 0);
   assert.match(out(r), /BLOCKED|PRODUCTION/);
 

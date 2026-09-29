@@ -101,7 +101,7 @@ assert.equal(bad.ok, false);
 console.log("PASS  merge + parse");
 
 assert.equal(isDemoRecipient("gams@survivesunday.demo"), true);
-assert.equal(isDemoRecipient("robertgama@gmail.com"), false);
+assert.equal(isDemoRecipient("organizer@example.com"), false);
 
 const emailOn = shouldSendPoolEmail({
   email: "pat@example.com",

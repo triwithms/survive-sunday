@@ -41,7 +41,7 @@ The pool is **live-only**. There is no Demo↔Real switch on Admin. Friends see 
 
 Week 1 is the current board week. Week 2 stays on the schedule. Playbook: [`docs/REAL-MODE.md`](docs/REAL-MODE.md).
 
-Live roster names (Long Snapper → John Stilo, Steve → Steve Venerus) are patched on the production database at deploy — seed-only is not enough.
+Legal names live in the database (**Admin → Players**), not in this repo. Sample files use placeholders such as Alex Player.
 
 ## Join / claim a seat
 

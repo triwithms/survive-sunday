@@ -40,7 +40,7 @@ export function RosterContactFields({
           className="mt-1"
           autoComplete="off"
           inputMode="tel"
-          placeholder="(416) 951-4262"
+          placeholder="(416) 555-0100"
           data-testid="roster-phone"
         />
       </label>

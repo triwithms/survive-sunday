@@ -43,7 +43,7 @@ const member: RosterMember = {
     id: "1",
     userId: "u-1",
     nickname: "Pauli",
-    realName: "Paul Gama",
+    realName: "Reese Nolan",
     status: "active",
     role: "member",
     email: "paul@example.com",
@@ -67,7 +67,7 @@ function main() {
   const parsed = parseRosterProfile({
     membershipId: "seat-1",
     nickname: "Pauli",
-    realName: "Paul Gama",
+    realName: "Reese Nolan",
     email: " Paul@Example.com ",
     phone: "(416) 555-1234",
   });
@@ -75,7 +75,7 @@ function main() {
   if (parsed.ok) {
     assert.equal(parsed.value.email, "paul@example.com");
     assert.equal(parsed.value.phoneE164, "+14165551234");
-    assert.equal(parsed.value.realName, "Paul Gama");
+    assert.equal(parsed.value.realName, "Reese Nolan");
   }
 
   const noPhone = parseRosterProfile({
@@ -157,7 +157,7 @@ function main() {
   assert.equal(rosterMatches(member, "416"), true);
   assert.equal(rosterDraftDirty( {
     nickname: "Pauli",
-    realName: "Paul Gama",
+    realName: "Reese Nolan",
     email: "paul@example.com",
     phone: "+1 (416) 555-1234",
   }, member), false);
@@ -181,7 +181,7 @@ function main() {
     id: "admin-1",
     userId: "u-admin",
     nickname: "Commissioner",
-    realName: "Robert Gama",
+    realName: "Alex Player",
     status: "undefeated",
     role: "admin",
     pickBackup: null,

@@ -1,12 +1,12 @@
 # Week 1 picks collection
 
 ## In
-- **Deep and Delicious** (Kent Richmond) → `JAX`
-- **JimmyC** (Jim Coulson) → `JAX`
-- **Colin** (Colin Malone) → `LAC`
-- **Cannoli Stuffer** (Michael Frigo) → `LAC`
-- **Daddy Chill** (Joachim Kuzel) → `SEA`
-- **Gams** (Robert Gama) → `KC`
+- **Deep and Delicious** (Quinn Harper) → `JAX`
+- **JimmyC** (Drew Patel) → `JAX`
+- **Colin** (Casey Morgan) → `LAC`
+- **Cannoli Stuffer** (Sam Player) → `LAC`
+- **Daddy Chill** (Riley Chen) → `SEA`
+- **Gams** (Alex Player) → `KC`
 
 ## Still waiting
 - Black Cobra

@@ -6,9 +6,6 @@ import {
 
 export const PENDING_PRACTICE_EMAIL_AUDIT = "pending_practice_emails_restored";
 
-/** Real claimed login — never convert this back to a practice address. */
-export const CLAIMED_GAMS_EMAIL = "robertgama@gmail.com";
-
 export type PendingRestoreRow = {
   userId: string;
   nickname: string | null;
@@ -31,9 +28,6 @@ export function planPendingPracticeRestore(args: {
 }): PendingRestorePlan {
   const from = (args.email ?? "").trim();
   if (!from) return { action: "skip", reason: "empty" };
-  if (from.toLowerCase() === CLAIMED_GAMS_EMAIL) {
-    return { action: "skip", reason: "claimed-gams" };
-  }
   if (!isPendingPlaceholderEmail(from)) {
     return { action: "skip", reason: "not-pending" };
   }
@@ -55,7 +49,7 @@ export type PendingRestoreResult = {
  * back to `@survivesunday.demo` practice emails. Nicknames, real names,
  * and picks stay on the same membership/user rows.
  *
- * Does not touch real claimed logins (including Gams / robertgama@gmail.com).
+ * Does not touch real claimed logins. Only leftover pending placeholders move.
  */
 export async function restorePendingPracticeEmails(
   db: PrismaClient,

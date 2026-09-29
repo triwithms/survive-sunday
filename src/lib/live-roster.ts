@@ -23,7 +23,7 @@ export type CanonicalLiveSeat = {
 /** Sister seat — Join-claimable practice email, Week 1 DAL. */
 export const JAJA_SEAT: CanonicalLiveSeat = {
   nickname: "JaJa",
-  realName: "Jacquie Gama",
+  realName: "Morgan Lee",
   practiceEmail: `jaja${DEMO_EMAIL_SUFFIX}`,
   week1Team: "DAL",
 };

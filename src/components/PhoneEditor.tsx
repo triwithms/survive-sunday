@@ -182,7 +182,7 @@ export function PhoneEditor({
               <>
                 Used for missing-pick SMS if that type is Email, SMS, or both
                 under Account → Notification preferences. Canadian and
-                US numbers welcome — e.g. (416) 951-4262 or +1…
+                US numbers welcome — e.g. (416) 555-0100 or +1…
               </>
             )}
           </p>
@@ -196,7 +196,7 @@ export function PhoneEditor({
               className="mt-1 w-full"
               autoComplete="tel"
               inputMode="tel"
-              placeholder="(416) 951-4262"
+              placeholder="(416) 555-0100"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();

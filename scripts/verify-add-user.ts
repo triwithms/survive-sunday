@@ -44,7 +44,7 @@ function main() {
   }
 
   const parsed = parseAddUser({
-    realName: "Sam Gama",
+    realName: "Sam Player",
     email: " Sam@Example.com ",
     invite: true,
   });
@@ -58,7 +58,7 @@ function main() {
   const commish = parseAddUser({ nickname: "Commissioner" });
   assert.equal(commish.ok, false);
 
-  assert.equal(deriveAddUserNickname({ nickname: "", realName: "Paul Gama", email: "" }), "Paul");
+  assert.equal(deriveAddUserNickname({ nickname: "", realName: "Reese Nolan", email: "" }), "Reese");
   assert.match(placeholderEmailFor("Pauli", "ab12"), /@pending\.survivesunday\.local$/);
 
   const users = readFileSync(`${dir}/UsersScreen.tsx`, "utf8");

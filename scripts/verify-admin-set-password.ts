@@ -16,14 +16,14 @@ import {
 import {
   CANNOLI_NICKNAME,
   CANNOLI_ONESHOT_AUDIT,
-  CANNOLI_TEMP_PASSWORD,
+  applyCannoliTempPasswordOneshot,
 } from "../src/lib/oneshot-cannoli-password";
 
 function assert(cond: unknown, msg: string): asserts cond {
   if (!cond) throw new Error(msg);
 }
 
-function main() {
+async function main() {
   assert(ADMIN_SET_PASSWORD_AUDIT === "member_temp_password_set", "audit name");
   assert(TEMP_PASSWORD_MIN === 6, "min length matches Join");
 
@@ -31,7 +31,7 @@ function main() {
     id: "mem_cannoli",
     nickname: "Cannoli Stuffer",
     role: "member",
-    email: "mike.frigo@example.com",
+    email: "sam.player@example.com",
   };
 
   const ok = checkSetMemberPassword({
@@ -41,7 +41,7 @@ function main() {
     member: claimed,
   });
   assert(ok.ok && ok.nickname === "Cannoli Stuffer", "claimed + nickname match");
-  assert(ok.ok && ok.email === "mike.frigo@example.com", "email kept");
+  assert(ok.ok && ok.email === "sam.player@example.com", "email kept");
 
   const embeddedBlank = confirmNicknameForSave(true, "", "Cannoli Stuffer");
   assert(embeddedBlank === "Cannoli Stuffer", "Users Edit auto-confirms nickname");
@@ -73,7 +73,7 @@ function main() {
       id: "mem_admin",
       nickname: "Commissioner",
       role: "admin",
-      email: "robertgama@gmail.com",
+      email: "organizer@example.com",
     },
   });
   assert(!spectator.ok && /spectator/.test(spectator.error), spectator.error);
@@ -103,11 +103,14 @@ function main() {
   assert(!missing.ok && /couldn’t find/i.test(missing.error), missing.error);
 
   assert(CANNOLI_NICKNAME === "Cannoli Stuffer", "oneshot nickname");
-  assert(CANNOLI_TEMP_PASSWORD === "Cannoli1!", "oneshot password");
   assert(
     CANNOLI_ONESHOT_AUDIT === "oneshot_cannoli_temp_password_20260914",
     "oneshot audit"
   );
+  const retired = await applyCannoliTempPasswordOneshot(
+    null as unknown as Parameters<typeof applyCannoliTempPasswordOneshot>[0]
+  );
+  assert(retired.status === "skipped" && retired.reason === "retired", "oneshot retired");
 
   const share = memberPasswordShareText({
     email: "jim@example.com",
@@ -122,4 +125,7 @@ function main() {
   console.log("verify-admin-set-password OK");
 }
 
-main();
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

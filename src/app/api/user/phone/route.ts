@@ -43,7 +43,7 @@ export async function PATCH(req: Request) {
     return NextResponse.json(
       {
         error:
-          "Enter a valid Canadian or US number, e.g. (416) 951-4262 or +1…",
+          "Enter a valid Canadian or US number, e.g. (416) 555-0100 or +1…",
       },
       { status: 400 }
     );

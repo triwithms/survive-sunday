@@ -13,9 +13,9 @@ import {
 
 const full = {
   nickname: "Gams",
-  realName: "Robert Gama",
-  userName: "Robert Gama",
-  phoneE164: "+14169514262",
+  realName: "Alex Player",
+  userName: "Alex Player",
+  phoneE164: "+14165550100",
 };
 
 assert.deepEqual(missingProfileFields(full), []);
@@ -30,7 +30,7 @@ assert.deepEqual(
   ["fullName"]
 );
 assert.deepEqual(
-  missingProfileFields({ ...full, realName: "", userName: "Robert" }),
+  missingProfileFields({ ...full, realName: "", userName: "Alex" }),
   [],
   "user.name counts as full name"
 );

@@ -8,26 +8,44 @@ import {
   ROSTER_NAME_FIXES,
   normalizePersonName,
   shouldReplaceRealName,
+  type RosterNameFix,
 } from "../src/lib/roster-name-patch";
 
-const longSnapper = ROSTER_NAME_FIXES.find((f) => f.nickname === "Long Snapper");
-const steve = ROSTER_NAME_FIXES.find((f) => f.nickname === "Steve");
-const gdogss = ROSTER_NAME_FIXES.find((f) => f.nickname === "Gdogss");
-assert.ok(longSnapper && steve && gdogss);
+assert.deepEqual(
+  ROSTER_NAME_FIXES,
+  [],
+  "legal names stay in the database, not in the shipped fix list"
+);
+
+const longSnapper: RosterNameFix = {
+  nickname: "Long Snapper",
+  realName: "Jamie Cole",
+  stale: ["J S", "JS", "J.S.", "J. S.", "Long Snapper"],
+};
+const steve: RosterNameFix = {
+  nickname: "Steve",
+  realName: "Taylor Nguyen",
+  stale: ["Steve"],
+};
+const gdogss: RosterNameFix = {
+  nickname: "Sample Seat",
+  realName: "Avery Brooks",
+  stale: ["Sample Seat"],
+};
 
 assert.equal(normalizePersonName("J S"), "j s");
 assert.equal(normalizePersonName("J.S."), "js");
-assert.equal(normalizePersonName(" John Stilo "), "john stilo");
+assert.equal(normalizePersonName(" Jamie Cole "), "jamie cole");
 
 assert.equal(shouldReplaceRealName("J S", longSnapper, false), true);
 assert.equal(shouldReplaceRealName("js", longSnapper, false), true);
-assert.equal(shouldReplaceRealName("John Stilo", longSnapper, false), false);
+assert.equal(shouldReplaceRealName("Jamie Cole", longSnapper, false), false);
 assert.equal(shouldReplaceRealName(null, longSnapper, false), true);
 assert.equal(shouldReplaceRealName("Steve", steve, false), true);
-assert.equal(shouldReplaceRealName("Steve Venerus", steve, false), false);
+assert.equal(shouldReplaceRealName("Taylor Nguyen", steve, false), false);
 assert.equal(shouldReplaceRealName("Custom Name", steve, false), false);
 assert.equal(shouldReplaceRealName("Custom Name", steve, true), true);
-assert.equal(shouldReplaceRealName("Gdogss", gdogss, false), true);
-assert.equal(shouldReplaceRealName("Tony Gyuro", gdogss, false), false);
+assert.equal(shouldReplaceRealName("Sample Seat", gdogss, false), true);
+assert.equal(shouldReplaceRealName("Avery Brooks", gdogss, false), false);
 
 console.log("verify-roster-name-patch OK");
