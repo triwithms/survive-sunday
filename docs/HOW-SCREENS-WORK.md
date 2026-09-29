@@ -98,6 +98,6 @@ Files: `src/components/features/team/` — [FILE-MAP](FILE-MAP.md).
 - **Help** (`/help`) — header **?**. Topic menu: tap one topic (or a hash) to see only that section + **Back to Help topics**. How-to. Not a pool screen.
 - **Videos** (`/videos`) — leftover deep link. Clips also sit in Scores / Schedule **Details**.
 - **Share** (header, beside Help) — opens a short-lived panel with this page’s full URL (the installed icon has no address bar), **Copy**, and Send when the phone can share. Hidden on Admin and Account/settings. Game **Details** sheets use the same panel for the matchup URL.
-- **Account** (top right) — opens **Settings** (`/account`). Notify prefs, pick backup, install, Help, report a bug or idea, sign out.
+- **Account** (top right) — opens **Settings** (`/account`). Notify prefs, pick backup, install, Help, report a bug or idea, sign out. If that login is in more than one pool, a switcher is here. **Start a pool** is here too.
 
 Do not invent Admin tabs or admin click-paths in this file. Admin tools are a separate topic (`HANDOFF` §8).

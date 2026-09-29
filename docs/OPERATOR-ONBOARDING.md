@@ -53,7 +53,7 @@ You only see the pool you are in. You cannot open another pool’s roster or pic
 
 ## 5. How players get in
 
-- They open the same website and sign in with **email and password**. Returning players always use Sign in, plus **Forgot password** if they need it.
+- They open the same website and sign in with **email and password**. Returning players always use Sign in, plus **Forgot password** if they need it. The same steps are in the app under **Help → How to sign in** (players) and **Help → For Administrators**.
 - Two ways in, both optional:
   - The administrator creates the account and texts a temporary password.
   - Or the administrator shares one pool join link. The player opens it and chooses their own email, password, and display name. That link joins only that pool. It is not a code, and it does not show a list of people.
@@ -91,7 +91,7 @@ Charging other organizers is also a hosting choice. Vercel’s free Hobby plan i
 ## 9. Short FAQ
 
 1. **Can players in one pool see picks in another?** No.
-2. **How do players sign in?** Email and the password their administrator gave them.
+2. **How do players sign in?** Email and password on Sign in, or **Forgot password**. If the administrator texted a temporary password, they use that. If they got a shared join link, they open it once and choose email and password. There is no people list and no pool-code login.
 3. **What if they forget it?** **Forgot password** on the Sign in page. The code comes by email.
 4. **How do I collect entry fees?** Outside the app. This version does not take payment.
 5. **Can an administrator set a player’s password?** Yes. **Admin → Players**, that person, **Set a password**. Copy the text and send it. The app does not email it. If that email already signs in, leave the password blank unless you mean to change it for every pool on that login.
