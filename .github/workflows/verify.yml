@@ -43,3 +43,6 @@ jobs:
 
       - name: Login screen
         run: npm run verify:login-screen
+
+      - name: Crash walls
+        run: npm run verify:crash-walls

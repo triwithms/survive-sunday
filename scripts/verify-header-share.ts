@@ -132,7 +132,10 @@ const header = src("src/components/AppHeader.tsx");
 assert.match(header, /HeaderShareButton/);
 assert.match(header, /HeaderHelpLink/);
 assert.match(header, /AccountMenu/);
-assert.match(header, /<HeaderShareButton \/>\s*<HeaderHelpLink \/>/);
+assert.match(
+  header,
+  /<HeaderShareButton \/>\s*(?:<\/SectionBoundary>\s*)?<HeaderHelpLink \/>/
+);
 
 const btn = src("src/components/HeaderShareButton.tsx");
 assert.match(btn, /ShareLinkButton/);
