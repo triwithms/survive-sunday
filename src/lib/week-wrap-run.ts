@@ -6,12 +6,14 @@ import { ensureWeekWrapTable } from "./week-wrap-schema";
 import { sendWeekWrap, type WeekWrapSendCounts } from "./week-wrap-send";
 import { shouldAutoSend } from "./week-wrap-status";
 import { allGamesFinal, isNoonDayAfterKickoff } from "./week-wrap-when";
+import { weekCountsForPool } from "./pool-start-week";
 
 export async function runDueWeekWraps(now = new Date()) {
   await ensureWeekWrapTable(prisma);
   const pools = await prisma.pool.findMany({
     select: {
       id: true,
+      startWeek: true,
       weekWrapSetting: { select: { skippedWeeksJson: true } },
       slatePoolId: true,
       weeks: {
@@ -30,6 +32,7 @@ export async function runDueWeekWraps(now = new Date()) {
     const needsSlate = pool.weeks.some((week) => week.games.length === 0);
     const slate = needsSlate ? await slateGamesByNumber(pool.id) : null;
     for (const week of pool.weeks) {
+      if (!weekCountsForPool(pool.startWeek, week.number)) continue;
       if (skippedWeeks.includes(week.number)) continue;
       const shared = week.games.length > 0 ? week.games : (slate?.get(week.number) ?? []);
       if (!isNoonDayAfterKickoff(shared, now)) continue;

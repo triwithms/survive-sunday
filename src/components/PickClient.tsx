@@ -9,11 +9,12 @@ import {
   pickEmptyMessage,
   type PickClientProps,
 } from "@/components/features/pick/pick-copy";
+import { PoolStartQuiet } from "@/components/features/pick/PoolStartQuiet";
 import { usePickSubmit } from "@/components/features/pick/use-pick-submit";
 
 export function PickClient({
   weekNumber, decision, locked, canChange, eliminated,
-  spectator = false, currentPick, games,
+  spectator = false, startNotice = null, currentPick, games,
 }: PickClientProps) {
   const copy = pickScreenCopy({
     weekNumber, decision, locked, canChange, eliminated, spectator,
@@ -26,6 +27,10 @@ export function PickClient({
 
   if (eliminated) {
     return <PickOutOverlay />;
+  }
+
+  if (startNotice) {
+    return <PoolStartQuiet weekNumber={weekNumber} notice={startNotice} />;
   }
 
   return (

@@ -8,6 +8,14 @@ import { POOL_ROLES } from "./roles";
 import { deriveAddUserNickname } from "./add-user";
 import { MAX_NICKNAME } from "./roster-profile";
 import { parseMulliganChoice, parseNewPoolName } from "./create-pool-input";
+import {
+  earliestPlayableWeek,
+  futureStartWeekChoices,
+  mulliganAppliesFrom,
+  parseStartWeekChoice,
+  seatPlayingFromWeek,
+} from "./pool-start-week";
+import { findSharedSlate, slateKickoffWeeks } from "./pool-start-slate";
 
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ2345679";
 
@@ -54,6 +62,7 @@ export async function createOrganizerPool(args: {
   userId: string;
   name: unknown;
   mulligan: unknown;
+  startWeek?: unknown;
 }): Promise<CreatePoolResult> {
   const name = parseNewPoolName(args.name);
   if (!name) return { ok: false, error: "Name the pool (2–48 characters)." };
@@ -79,16 +88,7 @@ export async function createOrganizerPool(args: {
     seats,
   });
 
-  const slate =
-    (await prisma.pool.findUnique({
-      where: { inviteCode: INVITE_CODE },
-      include: { weeks: { orderBy: { number: "asc" } } },
-    })) ??
-    (await prisma.pool.findFirst({
-      where: { slatePoolId: null, weeks: { some: { games: { some: {} } } } },
-      orderBy: { createdAt: "asc" },
-      include: { weeks: { orderBy: { number: "asc" } } },
-    }));
+  const slate = await findSharedSlate();
   if (!slate || slate.weeks.length === 0) {
     return {
       ok: false,
@@ -96,12 +96,40 @@ export async function createOrganizerPool(args: {
     };
   }
 
+  const kickoffs = slateKickoffWeeks(slate.weeks);
+  const earliest = earliestPlayableWeek({
+    currentWeek: slate.currentWeek,
+    weeks: kickoffs,
+  });
+  const choices = futureStartWeekChoices(earliest);
+  if (earliest == null || choices.length === 0) {
+    return {
+      ok: false,
+      error: "No regular-season week is still open to start.",
+    };
+  }
+  const chosen =
+    args.startWeek == null || args.startWeek === ""
+      ? earliest
+      : parseStartWeekChoice(args.startWeek, choices);
+  if (chosen == null) {
+    return {
+      ok: false,
+      error: "Choose a first week that has not started yet.",
+    };
+  }
+  const singleEliminationFromWeek = mulliganAppliesFrom(mulligan, chosen);
+
   const currentWeekRow =
     slate.weeks.find((week) => week.number === slate.currentWeek) ??
     slate.weeks[0];
-  const playingFromWeek = nextPlayingWeek({
+  const lateJoinWeek = nextPlayingWeek({
     currentWeek: slate.currentWeek >= 1 ? slate.currentWeek : currentWeekRow.number,
     weekLocked: currentWeekRow ? isWeekLocked(currentWeekRow) : false,
+  });
+  const playingFromWeek = seatPlayingFromWeek({
+    startWeek: chosen,
+    lateJoinWeek,
   });
 
   let inviteCode = "";
@@ -128,7 +156,8 @@ export async function createOrganizerPool(args: {
         inviteCode,
         currentWeek: slate.currentWeek,
         mode: "live",
-        singleEliminationFromWeek: mulligan,
+        singleEliminationFromWeek,
+        startWeek: chosen,
         slatePoolId: slate.id,
       },
     });
@@ -174,7 +203,8 @@ export async function createOrganizerPool(args: {
         details: JSON.stringify({
           name,
           slatePoolId: slate.id,
-          mulligan,
+          mulligan: singleEliminationFromWeek,
+          startWeek: chosen,
         }),
       },
     });

@@ -13,6 +13,11 @@ import {
 } from "@/lib/grading";
 import { canEditExistingPick, gameForPick } from "@/lib/pick-change";
 import { isPlayerPickWeek } from "@/lib/next-week-picks";
+import {
+  picksOpenAtForStart,
+  poolStartBanner,
+  weeksFromPoolStart,
+} from "@/lib/pool-start-week";
 import { shouldPollLiveScores } from "@/lib/live-scores";
 import { syncWeekEspnForPage } from "@/lib/week-espn-refresh";
 import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
@@ -29,8 +34,19 @@ export async function loadPickPage(searchParams?: {
   const me = await requireMembership();
   const { currentWeek, weeks } = await loadParticipantWeeks(me);
   const decision = playerPickDecision(me, weeks, currentWeek);
+  const visibleWeeks = weeksFromPoolStart(weeks, me.pool.startWeek);
+  const startNotice = poolStartBanner({
+    startWeek: me.pool.startWeek,
+    poolCurrentWeek: currentWeek,
+    canPickStartWeek:
+      me.pool.startWeek != null && isPlayerPickWeek(decision, me.pool.startWeek),
+    picksOpenAt:
+      me.pool.startWeek != null
+        ? picksOpenAtForStart(me.pool.startWeek, weeks)
+        : null,
+  });
   const weekRef = selectPageWeek({
-    weeks, requested: searchParams?.week, basePath: "/pick",
+    weeks: visibleWeeks, requested: searchParams?.week, basePath: "/pick",
     currentWeek, actionWeek: decision.actionWeek,
     allowFuture: true, fallbackFirst: false,
   });
@@ -77,6 +93,7 @@ export async function loadPickPage(searchParams?: {
   ]);
   return {
     weekNumber: week.number, decision, locked, canChange, eliminated, spectator,
+    startNotice,
     currentPick: currentAbbr,
     games: pickMatchupsFromGames(
       week.games,

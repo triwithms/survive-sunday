@@ -8,6 +8,7 @@ export type PickClientProps = {
   canChange: boolean;
   eliminated: boolean;
   spectator?: boolean;
+  startNotice?: string | null;
   currentPick: string | null;
   games: PickMatchup[];
 };

@@ -13,11 +13,13 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as {
     name?: unknown;
     mulligan?: unknown;
+    startWeek?: unknown;
   };
   const result = await createOrganizerPool({
     userId: user.id,
     name: body.name,
     mulligan: body.mulligan,
+    startWeek: body.startWeek,
   });
   if (!result.ok) {
     return NextResponse.json({ error: result.error }, { status: 400 });

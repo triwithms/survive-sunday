@@ -2,10 +2,18 @@
 
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui";
+import { CreatePoolStartWeek } from "./CreatePoolStartWeek";
 
-export function CreatePoolForm() {
+export function CreatePoolForm({
+  startWeeks,
+  defaultStartWeek,
+}: {
+  startWeeks: number[];
+  defaultStartWeek: number | null;
+}) {
   const [name, setName] = useState("");
   const [mulligan, setMulligan] = useState("classic");
+  const [startWeek, setStartWeek] = useState(defaultStartWeek != null ? String(defaultStartWeek) : "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,7 +26,7 @@ export function CreatePoolForm() {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, mulligan }),
+        body: JSON.stringify({ name, mulligan, startWeek: Number(startWeek) }),
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
@@ -71,8 +79,19 @@ export function CreatePoolForm() {
           <option value="none">No mulligan — one loss and you are out</option>
         </select>
       </label>
+      <CreatePoolStartWeek
+        startWeeks={startWeeks}
+        defaultStartWeek={defaultStartWeek}
+        startWeek={startWeek}
+        busy={busy}
+        onChange={setStartWeek}
+      />
       {error ? <p className="text-xs text-crimson-400">{error}</p> : null}
-      <Button type="submit" pending={busy} disabled={busy || name.trim().length < 2}>
+      <Button
+        type="submit"
+        pending={busy}
+        disabled={busy || name.trim().length < 2 || startWeek === ""}
+      >
         Create pool
       </Button>
     </form>

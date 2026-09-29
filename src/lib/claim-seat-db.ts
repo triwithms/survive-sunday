@@ -24,6 +24,7 @@ import { POOL_ROLES } from "./roles";
 import { grantPoolRole } from "./roles-db";
 import { isWeekLocked } from "./grading";
 import { nextPlayingWeek } from "./pool-rules";
+import { seatPlayingFromWeek } from "./pool-start-week";
 
 async function primaryPool() {
   const pool = await prisma.pool.findUnique({ where: { inviteCode: INVITE_CODE } });
@@ -335,6 +336,7 @@ async function joinAsNewPlayer(args: {
   poolId: string;
   mode: string;
   storedCurrentWeek: number;
+  startWeek: number | null;
   email: string;
   password: string;
   nickname: string;
@@ -389,9 +391,13 @@ async function joinAsNewPlayer(args: {
     select: { lockAt: true, lockOverrideAt: true },
   });
   const weekLocked = currentWeekRow ? isWeekLocked(currentWeekRow) : false;
-  const playingFromWeek = weekLocked
+  const lateJoinWeek = weekLocked
     ? nextPlayingWeek({ currentWeek, weekLocked })
     : null;
+  const playingFromWeek = seatPlayingFromWeek({
+    startWeek: args.startWeek,
+    lateJoinWeek,
+  });
 
   const membership = await prisma.membership.create({
     data: {
@@ -474,6 +480,7 @@ export async function joinOrClaimSeat(
     poolId: pool.id,
     mode: pool.mode,
     storedCurrentWeek: pool.currentWeek,
+    startWeek: pool.startWeek,
     email,
     password,
     nickname,

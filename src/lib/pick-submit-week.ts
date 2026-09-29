@@ -8,6 +8,7 @@ import {
   playerPickWeekError,
   resolvePlayerPickWeekFromLoaded,
 } from "./next-week-picks";
+import { pickBeforePoolStartError } from "./pool-start-week";
 
 export type SubmitMembership = {
   id: string;
@@ -15,7 +16,7 @@ export type SubmitMembership = {
   playingFromWeek: number | null;
   usedTeamsJson: string;
   nickname: string;
-  pool: { mode: string | null; currentWeek: number };
+  pool: { mode: string | null; currentWeek: number; startWeek?: number | null };
   user: { id: string; email: string | null; phoneE164?: string | null };
 };
 
@@ -70,6 +71,13 @@ export async function loadEligibleWeek(
         },
       })
     : null;
+  const beforeStart = pickBeforePoolStartError(
+    membership.pool.startWeek,
+    weekNumber
+  );
+  if (beforeStart) {
+    return { ok: false as const, error: beforeStart, status: 403 };
+  }
   const decision = resolvePlayerPickWeekFromLoaded({
     poolCurrentWeek: currentWeek,
     weeks: relatedWeeks.map((row) => ({

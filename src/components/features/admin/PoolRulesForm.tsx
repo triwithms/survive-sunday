@@ -6,19 +6,22 @@ import { Button, Card } from "@/components/ui";
 import { PoolRulesHelp } from "./PoolRulesHelp";
 
 export function PoolRulesForm({
-  currentWeek, singleEliminationFromWeek, oneLossCount, undefeatedCount,
+  currentWeek, startWeek, singleEliminationFromWeek, oneLossCount, undefeatedCount,
 }: {
   currentWeek: number;
+  startWeek: number | null;
   singleEliminationFromWeek: number | null;
   oneLossCount: number;
   undefeatedCount: number;
 }) {
   const router = useRouter();
+  const first = Math.max(startWeek ?? 1, 1);
+  const choices = Array.from({ length: 19 - first }, (_, i) => first + i);
+  const floor = Math.max(currentWeek, first);
   const [enabled, setEnabled] = useState(singleEliminationFromWeek != null);
-  const [fromWeek, setFromWeek] = useState(singleEliminationFromWeek ?? currentWeek);
+  const [fromWeek, setFromWeek] = useState(Math.max(singleEliminationFromWeek ?? currentWeek, first));
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
-  const choices = Array.from({ length: 18 }, (_, i) => i + 1);
 
   async function save() {
     const next = enabled ? fromWeek : null;
@@ -59,7 +62,7 @@ export function PoolRulesForm({
           checked={enabled}
           onChange={(e) => {
             setEnabled(e.target.checked);
-            if (e.target.checked && fromWeek < currentWeek) setFromWeek(currentWeek);
+            if (e.target.checked && fromWeek < floor) setFromWeek(floor);
           }}
         />
         <span>Turn off the free mulligan from a chosen week.</span>
@@ -74,11 +77,7 @@ export function PoolRulesForm({
           >
             {choices.map((n) => (
               <option key={n} value={n}>
-                {n < currentWeek
-                  ? `Week ${n} (already started — old results stay)`
-                  : n === currentWeek
-                    ? `This week (Week ${n}) — immediately`
-                    : `Week ${n}`}
+                {n < currentWeek ? `Week ${n} (already started — old results stay)` : n === currentWeek ? `This week (Week ${n}) — immediately` : `Week ${n}`}
               </option>
             ))}
           </select>

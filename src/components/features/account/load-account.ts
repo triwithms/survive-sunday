@@ -5,6 +5,11 @@ import { auth } from "@/lib/auth";
 import { profileIsComplete, snapshotFromMember } from "@/lib/profile-complete";
 import { isPlayerSeat, ROLE_VIEW_COOKIE, resolveRoleView } from "@/lib/roles";
 import { entryFeeForViewer } from "@/lib/payment-tracking";
+import {
+  earliestPlayableWeek,
+  futureStartWeekChoices,
+} from "@/lib/pool-start-week";
+import { findSharedSlate, slateKickoffWeeks } from "@/lib/pool-start-slate";
 import { getUserPoolContext } from "@/lib/session";
 import type { AccountScreenProps } from "./types";
 
@@ -21,6 +26,13 @@ export async function loadAccountPage(): Promise<AccountScreenProps> {
     isAdmin: ctx.isAdmin,
     requested: cookieStore.get(ROLE_VIEW_COOKIE)?.value,
   });
+  const slate = await findSharedSlate();
+  const earliest = slate
+    ? earliestPlayableWeek({
+        currentWeek: slate.currentWeek,
+        weeks: slateKickoffWeeks(slate.weeks),
+      })
+    : null;
   return {
     nickname: me.nickname,
     statusLabel: me.status.replace("_", " "),
@@ -31,6 +43,9 @@ export async function loadAccountPage(): Promise<AccountScreenProps> {
     phoneE164: me.user.phoneE164,
     pools: ctx.pools,
     activePoolId: ctx.activePoolId,
+    poolStartWeek: me.pool.startWeek,
+    startWeeks: futureStartWeekChoices(earliest),
+    defaultStartWeek: earliest,
     entryFee: entryFeeForViewer(session.user.id, {
       userId: me.userId,
       enabled: me.pool.paymentTrackingEnabled,

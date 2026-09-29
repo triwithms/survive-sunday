@@ -1,5 +1,7 @@
 /** Pool-level survival rules. Pure helpers — no database. */
 
+import { weekCountsForPool } from "./pool-start-week";
+
 export type LossDecision = {
   status: "one_loss" | "eliminated";
   mulliganRemaining: boolean;
@@ -90,8 +92,10 @@ export function shouldApplyMissedPick(
     status: string;
     playingFromWeek?: number | null;
   },
-  weekNumber: number
+  weekNumber: number,
+  poolStartWeek?: number | null
 ): boolean {
+  if (!weekCountsForPool(poolStartWeek, weekNumber)) return false;
   if (!isPoolParticipant(member)) return false;
   if (member.status === "eliminated") return false;
   if (

@@ -107,6 +107,8 @@ model Pool {
   mode        String       @default("demo") // demo | live
   /// null = classic one-mulligan season. N = from week N onward, one loss = out.
   singleEliminationFromWeek Int?
+  /// null = classic Week 1 (existing pools). N = first regular-season week that counts.
+  startWeek       Int?
   /// Null = this pool owns its Game rows (the live family pool).
   /// Set = read NFL games and scores from that pool's weeks (same week number).
   /// Picks, locks, and memberships stay on this pool. Do not chain copies.

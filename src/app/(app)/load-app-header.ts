@@ -7,6 +7,7 @@ import {
   resolvedPoolWeek,
 } from "@/lib/pool-current-week-db";
 import { weeksForParticipants } from "@/lib/pool-mode";
+import { weeksFromPoolStart } from "@/lib/pool-start-week";
 import type { HeaderWeek, NextOpenDeadline } from "@/components/HeaderWeekNav";
 import { loadAppMembership, type AppMembership } from "./load-app-membership";
 import type { RoleView } from "@/lib/roles";
@@ -85,7 +86,7 @@ export async function loadAppHeader(): Promise<AppHeaderData> {
   return {
     ...chromeFromMembership(me),
     currentWeek,
-    weekNav: weeks.map((row) => ({
+    weekNav: weeksFromPoolStart(weeks, me.poolStartWeek).map((row) => ({
       number: row.number,
       label: row.label,
       hasGames: row.games.length > 0,

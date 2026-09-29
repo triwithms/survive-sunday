@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { isWeekLocked } from "@/lib/grading";
 import { overlayPoolWeeks } from "@/lib/slate-games";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { weeksFromPoolStart } from "@/lib/pool-start-week";
 import { toEnterPickMember, weekBits, weekTeamOptions } from "./enter-pick-map";
 import type { EnterPickData } from "./enter-pick-types";
 
@@ -55,6 +56,10 @@ export async function loadEnterPick(
     prisma.team.findMany({ select: { abbr: true, name: true } }),
   ]);
   const names = new Map(teams.map((t) => [t.abbr, t.name]));
+  const pool = await prisma.pool.findUnique({
+    where: { id: poolId },
+    select: { startWeek: true },
+  });
   const slateWeeks = await overlayPoolWeeks(poolId, weeks);
   const bits = weekBits(slateWeeks);
   const current = slateWeeks.find((week) => week.number === currentWeek);
@@ -64,9 +69,9 @@ export async function loadEnterPick(
       current && current.status === "open" && !isWeekLocked(current)
     ),
     members: members.filter(isPoolParticipant).map((m) =>
-      toEnterPickMember(m, currentWeek, bits)
+      toEnterPickMember(m, currentWeek, bits, pool?.startWeek)
     ),
-    weeks: slateWeeks.map((w) => ({
+    weeks: weeksFromPoolStart(slateWeeks, pool?.startWeek).map((w) => ({
       number: w.number,
       teams: weekTeamOptions(w.games, names),
     })),

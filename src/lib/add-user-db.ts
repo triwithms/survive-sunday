@@ -9,6 +9,7 @@ import { ensureUserEmailNullable } from "./user-email-schema";
 import { isWeekLocked } from "./grading";
 import { effectiveCurrentWeek } from "./pool-mode";
 import { nextPlayingWeek } from "./pool-rules";
+import { seatPlayingFromWeek } from "./pool-start-week";
 import { uniqueContactFail } from "./contact-taken";
 import { addUserContactClash } from "./contact-taken-db";
 import {
@@ -28,7 +29,7 @@ export async function createAddUser(
 ): Promise<AddUserResult> {
   const pool = await prisma.pool.findUniqueOrThrow({
     where: { id: admin.membership.poolId },
-    select: { id: true, mode: true, currentWeek: true, slatePoolId: true },
+    select: { id: true, mode: true, currentWeek: true, slatePoolId: true, startWeek: true },
   });
   const nickname = await uniqueAddUserNick(pool.id, value.nickname);
   const email = resolveAddUserEmail(value);
@@ -42,8 +43,11 @@ export async function createAddUser(
     where: { poolId_number: { poolId: pool.id, number: currentWeek } },
     select: { lockAt: true, lockOverrideAt: true },
   });
-  const locked = week ? isWeekLocked(week) : false;
-  const playingFromWeek = locked ? nextPlayingWeek({ currentWeek, weekLocked: true }) : pool.slatePoolId ? currentWeek : null;
+  const locked = Boolean(week && isWeekLocked(week));
+  const lateJoinWeek = locked
+    ? nextPlayingWeek({ currentWeek, weekLocked: true })
+    : pool.slatePoolId ? currentWeek : null;
+  const playingFromWeek = seatPlayingFromWeek({ startWeek: pool.startWeek, lateJoinWeek });
   try {
     const createData = {
       email,
@@ -77,11 +81,8 @@ export async function createAddUser(
     const inviteUrl = minted ? joinUrl(appOrigin(), inviteLoginPath(minted.token)) : null;
     await prisma.auditLog.create({
       data: {
-        poolId: pool.id,
-        actorId: admin.user.id,
-        action: "add_user",
-        targetType: "membership",
-        targetId: membership.id,
+        poolId: pool.id, actorId: admin.user.id, action: "add_user",
+        targetType: "membership", targetId: membership.id,
         details: JSON.stringify({ nickname, invite: Boolean(inviteUrl) }),
       },
     });

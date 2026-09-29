@@ -15,6 +15,7 @@ import {
 } from "./pick-mirror";
 import { shouldStampAutoPick } from "./auto-pick-stamps";
 import { isPlayerSeat } from "./roles";
+import { shouldApplyMissedPick } from "./pool-rules";
 
 export const RANKED_PICK_AUDIT = "pick_ranked_auto";
 export const MIRROR_PREF_AUDIT = "mirror_from_updated";
@@ -117,6 +118,7 @@ export async function applyMirrorPicksForWeek(
 
   for (const member of week.pool.memberships) {
     if (!isPlayerSeat(member)) continue;
+    if (!shouldApplyMissedPick(member, week.number, week.pool.startWeek)) continue;
     const mode = resolvePickBackupMode(
       member.pickBackup,
       member.mirrorFromMembershipId

@@ -23,7 +23,7 @@ One web address hosts more than one NFL survivor pool.
 Follow this when you sell a pool. Payment stays outside the app (e-transfer, cash, or whatever you already use).
 
 1. **Agree and get paid.** Confirm the pool name, size, and mulligan (one free loss, or no mulligan). Collect payment. Write down the administrator’s real email, and whether they already sign in to Survive Sunday. Do not add their players to the family pool.
-2. **Start the pool.** Sign in with your own email and password. Open **Settings → Start a pool**. Enter their name and mulligan. Tap **Create pool**. You land in the new pool as its administrator and as a player. The family pool is unchanged. A switcher appears on Settings because you are now in more than one pool. Stay on the new pool while you add people. A person who can already sign in can also open **Settings → Start a pool** themselves. You do not have to start it for them if you would rather they own it from the first tap.
+2. **Start the pool.** Sign in with your own email and password. Open **Settings → Start a pool**. Enter their name, mulligan, and **first week** (the earliest week still open, or any later regular-season week). Weeks before that do not count. Tap **Create pool**. You land in the new pool as its administrator and as a player. The family pool is unchanged. A switcher appears on Settings because you are now in more than one pool. Stay on the new pool while you add people. A person who can already sign in can also open **Settings → Start a pool** themselves. You do not have to start it for them if you would rather they own it from the first tap.
 3. **Create their login** (when you started the pool). **Admin → Players → Add user.**
    - New person: their email and a temporary password. Copy the text the form gives you and text it yourself. The app does not email passwords. Do not put the password in git, chat, or this file.
    - Person who already signs in: use that same email and leave the password blank. Typing a password here changes it for every pool on that login.
@@ -42,7 +42,7 @@ Then switch back to the family pool and confirm its players and picks look the s
 
 1. Open [survive-sunday.vercel.app/login](https://survive-sunday.vercel.app/login). Sign in with the email and temporary password Robert sent. If you already had a login, use that password.
 2. Settings has no password box. To choose your own password, sign out and use **Forgot password** on Sign in. A 6-digit code arrives by email. Check spam.
-3. If Robert told you to start the pool yourself: **Settings → Start a pool** (name and mulligan). You become the administrator.
+3. If Robert told you to start the pool yourself: **Settings → Start a pool** (name, mulligan, and first week). You become the administrator.
 4. If you are in more than one pool, the switcher is on Settings. Pick your pool before you add anyone. If the screen says you are playing, switch to **Admin tools**. Admin in the bottom bar is only for a pool you administer.
 5. Add players either way, or both. They are optional, not a choice you have to make once.
    - **You set the password:** **Admin → Players → Add user**. Nickname, email, and a temporary password. Text each person their own login (Appendix B, plus the password in a separate direct message). If that email already signs in somewhere else, leave the password blank.

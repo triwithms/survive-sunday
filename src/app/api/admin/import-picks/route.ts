@@ -4,6 +4,7 @@ import { importPickConfirmedChange } from "@/lib/import-pick-notify";
 import { schedulePickConfirmed } from "@/lib/notification-events";
 import { requireAdmin } from "@/lib/session";
 import { withSlateGames } from "@/lib/slate-games";
+import { pickBeforePoolStartError } from "@/lib/pool-start-week";
 import {
   gradeWeekPicks,
   gradePickFromScore,
@@ -47,6 +48,13 @@ export async function POST(req: Request) {
 
   const body = await req.json();
   const weekNumber = Number(body.weekNumber ?? 1);
+  const beforeStart = pickBeforePoolStartError(
+    admin.membership.pool.startWeek,
+    weekNumber
+  );
+  if (beforeStart) {
+    return NextResponse.json({ error: beforeStart }, { status: 400 });
+  }
   if (body.enterPick === true) {
     const { assertEnterPickWeek } = await import("@/lib/enter-pick-week-db");
     const nick =

@@ -69,4 +69,5 @@ export type HomeScreenProps = {
   games: HomeGame[];
   rows: HomeRow[];
   selfId: string;
+  startNotice: string | null;
 };

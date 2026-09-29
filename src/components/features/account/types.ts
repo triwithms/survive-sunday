@@ -14,6 +14,9 @@ export type AccountScreenProps = {
   pools: PoolChoice[];
   activePoolId: string | null;
   entryFee: PlayerEntryFee | null;
+  poolStartWeek: number | null;
+  startWeeks: number[];
+  defaultStartWeek: number | null;
 };
 
 export type AccountMirrorProps = {

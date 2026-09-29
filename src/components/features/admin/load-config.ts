@@ -24,6 +24,7 @@ export async function loadConfigPage(): Promise<
       poolId: me.poolId,
       poolName: me.pool.name,
       currentWeek: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
+      startWeek: me.pool.startWeek,
       singleEliminationFromWeek: me.pool.singleEliminationFromWeek,
       ...counts,
       transferMembers: toTransferMembers(members, gate.userId),

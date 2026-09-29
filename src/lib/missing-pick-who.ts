@@ -56,12 +56,13 @@ export function weekAllowsMissingPickRemind(opts: {
 export function seatsMissingPick(
   seats: RemindSeat[],
   weekNumber: number,
-  picked: ReadonlySet<string>
+  picked: ReadonlySet<string>,
+  poolStartWeek?: number | null
 ): RemindSeat[] {
   return seats
     .filter((seat) => {
       if (!isPlayerSeat(seat)) return false;
-      if (!shouldApplyMissedPick(seat, weekNumber)) return false;
+      if (!shouldApplyMissedPick(seat, weekNumber, poolStartWeek)) return false;
       return !picked.has(seat.membershipId);
     })
     .sort((a, b) =>

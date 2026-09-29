@@ -6,6 +6,7 @@ import {
   decideStatusAfterLoss,
   shouldApplyMissedPick,
 } from "./pool-rules";
+import { weekCountsForPool } from "./pool-start-week";
 
 export type GradeResult = "win" | "loss" | "push";
 
@@ -79,6 +80,9 @@ export async function applyLossToMembership(
     include: { pool: true },
   });
   if (m.status === "eliminated") return { ...m, newlyEliminated: false };
+  if (!weekCountsForPool(m.pool.startWeek, weekNumber)) {
+    return { ...m, newlyEliminated: false };
+  }
 
   const decision = decideStatusAfterLoss({
     currentStatus: m.status,
@@ -239,6 +243,8 @@ export async function applyMissedPicks(weekId: string) {
     },
   });
 
+  if (!weekCountsForPool(week.pool.startWeek, week.number)) return [];
+
   // Week-level short-circuit when every eligible member already handled
   const picked = new Set(week.picks.map((p) => p.membershipId));
   const applied: string[] = [];
@@ -249,7 +255,7 @@ export async function applyMissedPicks(weekId: string) {
   }> = [];
 
   for (const m of week.pool.memberships) {
-    if (!shouldApplyMissedPick(m, week.number)) continue;
+    if (!shouldApplyMissedPick(m, week.number, week.pool.startWeek)) continue;
     if (picked.has(m.id)) continue;
 
     try {
