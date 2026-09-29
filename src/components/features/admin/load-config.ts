@@ -21,6 +21,8 @@ export async function loadConfigPage(): Promise<
   return {
     ok: true,
     props: {
+      poolId: me.poolId,
+      poolName: me.pool.name,
       currentWeek: effectiveCurrentWeek(me.pool.mode, me.pool.currentWeek),
       singleEliminationFromWeek: me.pool.singleEliminationFromWeek,
       ...counts,

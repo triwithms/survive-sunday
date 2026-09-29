@@ -46,6 +46,7 @@
     "verify:pool-rules": "tsx scripts/verify-pool-rules.ts",
     "verify:multi-pool": "tsx scripts/verify-multi-pool.ts",
     "verify:pool-invite": "tsx scripts/verify-pool-invite.ts",
+    "verify:delete-pool": "tsx scripts/verify-delete-pool.ts",
     "verify:pick-census": "tsx scripts/verify-pick-census.ts",
     "verify:enter-pick": "tsx scripts/verify-enter-pick.ts",
     "verify:import-pick-notify": "tsx scripts/verify-import-pick-notify.ts",

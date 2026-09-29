@@ -1,6 +1,7 @@
 import { AdminDetails } from "./AdminDetails";
 import { AdminRolesPanel } from "./AdminRolesPanel";
 import { AdminHeading } from "./AdminHeading";
+import { DeletePoolPanel } from "./DeletePoolPanel";
 import { PoolInviteCard } from "./PoolInviteCard";
 import { PoolRulesForm } from "./PoolRulesForm";
 import { ResetPoolPanel } from "./ResetPoolPanel";
@@ -12,7 +13,7 @@ export function ConfigScreen(props: ConfigScreenProps) {
     <div className="space-y-4">
       <AdminHeading title="Pool">
         Mulligan rules and Hand the pool. Administrators are listed here.
-        Reset is last.
+        Reset and Delete are last.
       </AdminHeading>
       <PoolInviteCard active={props.poolInviteActive} />
       <PoolRulesForm
@@ -25,6 +26,9 @@ export function ConfigScreen(props: ConfigScreenProps) {
       <TransferCommissionerForm members={props.transferMembers} />
       <AdminDetails title="Danger — reset the pool" danger testId="pool-danger">
         <ResetPoolPanel />
+      </AdminDetails>
+      <AdminDetails title="Danger — delete this pool" danger testId="pool-delete">
+        <DeletePoolPanel poolId={props.poolId} poolName={props.poolName} />
       </AdminDetails>
     </div>
   );

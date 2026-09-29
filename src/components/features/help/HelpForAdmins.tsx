@@ -53,8 +53,13 @@ export function HelpForAdmins() {
         <li className="text-[var(--text-primary)]">
           Personal Join links: <strong>Copy join link</strong> on each Players
           row. Do not paste one link in the group chat. Filters: All, No pick,
-          One loss, Out. Pool → <strong>Reset pool</strong> is last and needs
-          RESET typed.
+          One loss, Out. Pool → <strong>Reset pool</strong> needs RESET typed.{" "}
+          <strong>Delete pool</strong> is last. Type this pool’s name. It
+          removes only the pool you are in. If other pools use it for the NFL
+          schedule, delete is blocked. You then land in a pool you still
+          belong to (the family pool when you still have it). If it was your
+          only pool, you are signed out. Email and password stay. Sign in to
+          start another pool.
         </li>
         <li className="text-[var(--text-primary)]">
           This Week → <strong>Enter a friend’s pick</strong> for this week or a
