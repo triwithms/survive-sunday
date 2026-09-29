@@ -1,1 +1,348 @@
-PLACEHOLDER
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String?   @unique
+  emailVerified  DateTime?
+  name           String?
+  passwordHash   String?
+  image          String?
+  phoneE164      String?   // SMS missing-pick reminders (+1XXXXXXXXXX)
+  phoneSkippedAt DateTime? // soft-prompt skip; null = never asked
+  /// email | sms | both | none. Channel for GAME notices. See notify-channels.ts.
+  notifyPref     String    @default("none")
+  createdAt      DateTime  @default(now())
+  accounts       Account[]
+  sessions       Session[]
+  memberships    Membership[]
+  poolAccessRoles PoolAccessRole[]
+  auditLogs      AuditLog[] @relation("AuditActor")
+  otpChallenges  OtpChallenge[]
+  notificationPreference NotificationPreference?
+  notificationSends      NotificationSend[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+/// Hashed one-time codes (password reset). Plaintext is never stored.
+model OtpChallenge {
+  id          String    @id @default(cuid())
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  email       String
+  purpose     String    // password_reset
+  codeHash    String
+  channel     String    // email | sms
+  destination String
+  expiresAt   DateTime
+  attempts    Int       @default(0)
+  consumedAt  DateTime?
+  lastSentAt  DateTime
+  createdAt   DateTime  @default(now())
+
+  @@index([email, purpose, createdAt])
+  @@index([userId, purpose, createdAt])
+}
+
+/// One-time personal invite. Store HMAC hash + expiry only — never plaintext.
+model InviteToken {
+  id           String      @id @default(cuid())
+  tokenHash    String      @unique
+  membershipId String
+  membership   Membership  @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  expiresAt    DateTime
+  consumedAt   DateTime?
+  createdAt    DateTime    @default(now())
+
+  @@index([membershipId])
+}
+
+model Pool {
+  id          String       @id @default(cuid())
+  name        String
+  season      String
+  inviteCode  String       @unique
+  currentWeek Int          @default(1)
+  /// demo = practise picker / demo copy. live = real private pool (no participant "demo" UX).
+  mode        String       @default("demo") // demo | live
+  /// null = classic one-mulligan season. N = from week N onward, one loss = out.
+  singleEliminationFromWeek Int?
+  /// Null = this pool owns its Game rows (the live family pool).
+  /// Set = read NFL games and scores from that pool's weeks (same week number).
+  /// Picks, locks, and memberships stay on this pool. Do not chain copies.
+  slatePoolId String?
+  createdAt   DateTime     @default(now())
+  slatePool       Pool?            @relation("PoolSlate", fields: [slatePoolId], references: [id], onDelete: Restrict)
+  slateFor        Pool[]           @relation("PoolSlate")
+  memberships     Membership[]
+  poolAccessRoles PoolAccessRole[]
+  weeks           Week[]
+  auditLogs       AuditLog[]
+  weekWrapSetting WeekWrapSetting?
+  poolInvites     PoolInvite[]
+
+  @@index([slatePoolId])
+}
+
+/// Shared join link for one pool. Store the HMAC hash only.
+/// Revoke or rotate from Admin. Plaintext exists only when minted.
+model PoolInvite {
+  id        String    @id @default(cuid())
+  poolId    String
+  tokenHash String    @unique
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  pool      Pool      @relation(fields: [poolId], references: [id], onDelete: Cascade)
+
+  @@index([poolId, revokedAt])
+}
+
+model Membership {
+  id                String           @id @default(cuid())
+  poolId            String
+  userId            String
+  nickname          String
+  realName          String?
+  role              String           @default("member") // admin | member
+  /// Denormalized mirror of PoolAccessRole administrator on this seat.
+  /// Source of truth is PoolAccessRole. role=admin is still the spectator
+  /// commissioner seat (not on the board).
+  isAdmin           Boolean          @default(false)
+  status            String           @default("undefeated") // undefeated | one_loss | eliminated
+  mulliganRemaining Boolean          @default(true)
+  /// false = spectator commissioner (not on the player board, no missed-pick losses)
+  isParticipant     Boolean          @default(true)
+  /// Skip missed-pick losses for weeks before this (spectator → player after transfer)
+  playingFromWeek   Int?
+  losses            Int              @default(0)
+  weeksSurvived     Int              @default(0)
+  usedTeamsJson     String           @default("[]") // JSON string[] of abbrs
+  /// off | ranked. Default ranked. Leftover “mirror” reads as ranked.
+  pickBackup        String           @default("ranked")
+  /// Ranked leftover auto-picks (~5 min) this season. Official winner
+  /// must stay 0. Manual / import never increment.
+  autoPickStamps    Int              @default(0)
+  /// Leftover copy-from pointer. Unused. Do not drop (shared Neon).
+  mirrorFromMembershipId String?
+  createdAt         DateTime         @default(now())
+  pool              Pool             @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  picks             Pick[]
+  inviteTokens      InviteToken[]
+  mirrorFrom        Membership?      @relation("PickMirror", fields: [mirrorFromMembershipId], references: [id], onDelete: SetNull)
+  mirroredBy        Membership[]     @relation("PickMirror")
+
+  /// A user may hold the commissioner spectator seat and a player seat
+  /// (e.g. Gams) in the same pool. Lookups use this index.
+  @@index([poolId, userId])
+  @@index([mirrorFromMembershipId])
+  @@unique([poolId, nickname])
+}
+
+/// NetSuite-style access roles. One login may hold several in the same pool.
+/// Shipped now: player, administrator.
+/// Reserved (do not grant in UI yet): watcher — follow board + chat later,
+/// no picks / no buy-in.
+model PoolAccessRole {
+  id        String   @id @default(cuid())
+  poolId    String
+  userId    String
+  role      String // player | administrator | watcher
+  createdAt DateTime @default(now())
+  pool      Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([poolId, userId, role])
+  @@index([userId])
+  @@index([poolId, role])
+}
+
+model Team {
+  abbr          String  @id
+  name          String
+  city          String
+  nickname      String
+  conference    String
+  division      String
+  primaryColor  String?
+  logoUrl       String?
+  priorYearRank Int?
+  wins          Int     @default(0)
+  losses        Int     @default(0)
+  ties          Int     @default(0)
+  divisionRank  Int?
+  pointsFor     Int     @default(0)
+  pointsAgainst Int     @default(0)
+}
+
+model Week {
+  id                   String    @id @default(cuid())
+  poolId               String
+  number               Int
+  label                String
+  lockAt               DateTime
+  lockOverrideAt       DateTime?
+  status               String    @default("open") // open | locked | graded
+  missedPicksAppliedAt DateTime? // idempotent natural/admin missed-pick pass
+  pool                 Pool      @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  games                Game[]
+  picks                Pick[]
+
+  @@unique([poolId, number])
+}
+
+model Game {
+  id          String  @id // e.g. 2026-w1-01
+  weekId      String
+  awayAbbr    String
+  homeAbbr    String
+  kickoff     DateTime
+  network     String?
+  spreadHome  Float?
+  spreadAway  Float?
+  mlHome      Int?
+  mlAway      Int?
+  status      String  @default("scheduled") // scheduled | live | final
+  scoreAway   Int?
+  scoreHome   Int?
+  note        String?
+  week        Week    @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  picks       Pick[]
+}
+
+model Pick {
+  id           String      @id @default(cuid())
+  membershipId String
+  weekId       String
+  teamAbbr     String
+  gameId       String?
+  result       String?     // win | loss | push | pending
+  source       String      @default("user") // user | imported | admin
+  submittedAt  DateTime    @default(now())
+  gradedAt     DateTime?
+  membership   Membership  @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  week         Week        @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  game         Game?       @relation(fields: [gameId], references: [id])
+
+  @@unique([membershipId, weekId])
+}
+
+/// Per-user alert types. Password-reset codes are NOT gated by this row.
+model NotificationPreference {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  missingPickReminder  Boolean  @default(true)
+  pickConfirmed        Boolean  @default(true)
+  resultsGraded        Boolean  @default(true)
+  eliminationMulligan  Boolean  @default(true)
+  poolAnnouncements    Boolean  @default(true)
+  scoreUpdates         Boolean  @default(false)
+  injuryNotes          Boolean  @default(false)
+  /// Stored only — PWA web push is not wired yet.
+  pushEnabled          Boolean  @default(false)
+  /// GAME master. Off skips player notices. SECURITY still sends.
+  masterOn             Boolean  @default(true)
+  /// JSON { type: email|sms|both|off }. Empty → product defaults.
+  channelsJson         String   @default("{}")
+  updatedAt            DateTime @updatedAt
+}
+
+/// Admin defaults for the automatic week-wrap note. Created at boot, not by the Vercel build.
+model WeekWrapSetting {
+  poolId           String   @id
+  pool             Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  /// funny | facts | short
+  tone             String   @default("facts")
+  showRoster       Boolean  @default(true)
+  showPicks        Boolean  @default(true)
+  showBoardLink    Boolean  @default(true)
+  showDrama        Boolean  @default(true)
+  emailOverride    String   @default("")
+  smsOverride      String   @default("")
+  /// JSON number[] — weeks the admin skipped (automatic cron only).
+  skippedWeeksJson String   @default("[]")
+  updatedAt        DateTime @updatedAt
+}
+
+/// Idempotency log so reminders / grade emails do not fire twice.
+model NotificationSend {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  dedupeKey String
+  channel   String
+  /// sent | skipped_pref | no_contact | dry_run
+  outcome   String   @default("sent")
+  createdAt DateTime @default(now())
+
+  @@unique([userId, type, dedupeKey])
+  @@index([userId, createdAt])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  poolId     String
+  actorId    String?
+  action     String
+  targetType String?
+  targetId   String?
+  details    String?  // JSON string
+  createdAt  DateTime @default(now())
+  pool       Pool     @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id])
+}
+
+/// Short-lived server errors. Hobby function logs expire after about an hour.
+/// Additive table, created at boot — never dropped by the Vercel build.
+model ServerError {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  route     String
+  message   String
+  digest    String?
+  source    String   @default("request")
+
+  @@index([createdAt])
+}
