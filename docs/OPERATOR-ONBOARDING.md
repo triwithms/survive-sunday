@@ -23,7 +23,7 @@ One web address hosts more than one NFL survivor pool.
 Follow this when you sell a pool. Payment stays outside the app (e-transfer, cash, or whatever you already use).
 
 1. **Agree and get paid.** Confirm the pool name, size, and mulligan (one free loss, or no mulligan). Collect payment. Write down the administrator’s real email, and whether they already sign in to Survive Sunday. Do not add their players to the family pool.
-2. **Start the pool.** Sign in with your own email and password. Open **Settings → Start a pool**. Enter their name, mulligan, and **first week** (the earliest week still open, or any later regular-season week). Weeks before that do not count. Tap **Create pool**. You land in the new pool as its administrator and as a player. The family pool is unchanged. A switcher appears on Settings because you are now in more than one pool. Stay on the new pool while you add people. A person who can already sign in can also open **Settings → Start a pool** themselves. You do not have to start it for them if you would rather they own it from the first tap.
+2. **Start the pool.** Sign in with your own email and password. Open **Settings → Start a pool**. Enter their name, mulligan, and **first week** (the earliest week still open, or any later regular-season week). Weeks before that stay on the shared NFL schedule but do not count for this pool: no picks, no missed-pick losses, no reminders, no week wrap. New players start at that week or later. Tap **Create pool**. You land in the new pool as its administrator and as a player. The family pool is unchanged. A switcher appears on Settings because you are now in more than one pool. Stay on the new pool while you add people. A person who can already sign in can also open **Settings → Start a pool** themselves. You do not have to start it for them if you would rather they own it from the first tap.
 3. **Create their login** (when you started the pool). **Admin → Players → Add user.**
    - New person: their email and a temporary password. Copy the text the form gives you and text it yourself. The app does not email passwords. Do not put the password in git, chat, or this file.
    - Person who already signs in: use that same email and leave the password blank. Typing a password here changes it for every pool on that login.
@@ -48,7 +48,7 @@ Then switch back to the family pool and confirm its players and picks look the s
    - **You set the password:** **Admin → Players → Add user**. Nickname, email, and a temporary password. Text each person their own login (Appendix B, plus the password in a separate direct message). If that email already signs in somewhere else, leave the password blank.
    - **They set the password:** **Admin → Pool → Shared join link → Create link**. Copy that one link and send it to the group. Each person opens it, enters their own email, password, and display name, and lands in this pool only. **New link** replaces the old one. **Turn off** stops it. You cannot copy the old link again after you leave the page.
 6. Mulligan changes live under **Admin → Pool**.
-7. If you want to track who has paid: **Admin → Pool → Entry fees**. Turn it on, set the amount and how to pay (for example an e-Transfer note). Mark people Paid as the money arrives. **This Week → Remind unpaid** texts or emails only people still marked Unpaid. The app never handles money.
+7. If you want to track who has paid: **Admin → Pool → Entry fees**. Turn it on, set the amount and how to pay (for example an e-Transfer note). Mark people Paid as the money arrives. **This Week → Remind unpaid** reaches only people still marked Unpaid whose notification settings allow it. The app never handles money.
 
 You only see the pool you are in. You cannot open another pool’s roster or picks.
 
@@ -70,6 +70,7 @@ You only see the pool you are in. You cannot open another pool’s roster or pic
 - Robert has no extra screen that lists every pool. He only sees a pool he has a seat in.
 - The family pool stays separate. Do not reset it when you set up a sold pool. It has no shared join link until an administrator creates one. Leave that off.
 - NFL schedule and scores are shared. Rosters, picks, locks, and mulligan are not.
+- **No moving people between pools.** There is no invite-from-another-pool or transfer. To put someone in a second pool, add them there with **Add user** or send that pool’s shared join link. If their email already signs in, they use the same password.
 - **Delete pool** (Admin → Pool, last, type the pool name) removes that pool only. It is blocked while another pool uses it for the NFL schedule. The person who deletes it stays on another pool they belong to, with the family pool preferred. If it was their only pool, they are signed out. Email and password stay. Sign in again to start a pool. Other people who were only in the deleted pool keep their login; the next page sends them to Join because they are in no pool.
 
 ## 7. Support
@@ -85,6 +86,7 @@ You only see the pool you are in. You cannot open another pool’s roster or pic
 | Starting a pool | A signed-in person uses **Settings → Start a pool**. When you sell one, you still do that and create their login. | A public signup page |
 | Players | Administrator adds them and texts a password, or shares one pool join link so they choose their own email and password. A personal link can still claim a seat the administrator already created. | A public people list, or a code that signs you into every pool |
 | Web address | One shared URL | A different web address per pool |
+| Second pool for the same people | Add each person to the new pool with Add user, or share its join link | Inviting or copying people from another pool |
 
 No checkout and no extra sign-in method are part of this version. **Hand the pool** is already how Admin moves to an existing member.
 
@@ -102,6 +104,7 @@ Charging other organizers is also a hosting choice. Vercel’s free Hobby plan i
 8. **Can players sign themselves up?** Only if their administrator shares the pool join link from **Admin → Pool**. That page asks for email, password, and display name. It does not list people, and it does not accept a pool code. Otherwise the administrator creates the account and texts a password. Returning players use Sign in.
 9. **What address do we send?** [https://survive-sunday.vercel.app](https://survive-sunday.vercel.app)
 10. **Who do players contact if they are locked out?** Their pool administrator.
+11. **Can I start a pool partway through the season?** Yes. **Settings → Start a pool → First week** (any regular-season week that has not started). Earlier weeks do not count for that pool. To bring people in, use **Add user** or the pool’s shared join link. There is no way to copy people from another pool.
 
 ## 10. Git history when you sell the code
 
