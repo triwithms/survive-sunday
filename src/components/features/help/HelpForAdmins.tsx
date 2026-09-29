@@ -11,9 +11,14 @@ export function HelpForAdmins() {
         </li>
         <li className="text-[var(--text-primary)]">
           <strong>Settings → Start a pool</strong> (name, mulligan, and first
-          week). Weeks before that first week do not count. You
-          become that pool’s administrator. A switcher appears on Settings only
-          when you are in more than one pool.
+          week). First week is a regular-season week that has not started.
+          Weeks before it stay on the NFL schedule but do not count for this
+          pool: no picks, no missed-pick losses, no reminders, no week wrap.
+          New players start at that week or later. You become that pool’s
+          administrator. A switcher appears on Settings only when you are in
+          more than one pool. Each pool keeps its own players and picks;
+          there is no way to invite or move people from another pool. Use
+          Add user or the shared join link.
         </li>
         <li className="text-[var(--text-primary)]">
           Two ways to add players. <strong>Add user</strong> on Players: you
@@ -68,17 +73,19 @@ export function HelpForAdmins() {
           Changes are audit-logged.
         </li>
         <li className="text-[var(--text-primary)]">
-          Turn the mulligan off from a chosen week (one-and-done).
-          Already-scored weeks stay.
+          Turn the mulligan off from a chosen week (one-and-done). It cannot
+          start before this pool’s first week. Already-scored weeks stay.
         </li>
         <li className="text-[var(--text-primary)]">
           <strong>Entry fees</strong> on Pool is off until you turn it on.
           Optional amount, how to pay in plain words, and an https link.
           On Players, each row shows Paid, Unpaid, or Waived — a label you set,
           with an Unpaid filter. This Week
-          → <strong>Unpaid entry fees</strong> → <strong>Remind unpaid</strong>.
-          A player sees only their own status and How to pay. The app never
-          handles money.
+          → <strong>Unpaid entry fees</strong> → <strong>Remind unpaid</strong>{" "}
+          follows each person’s notification settings, so someone with
+          notices off will not get it. A player sees only their own status and
+          How to pay. The app never handles money: no checkout, cards, or
+          payouts. Collect fees the way you already do.
         </li>
         <li className="text-[var(--text-primary)]">
           On a player’s record, <strong>Make administrator</strong> adds Admin

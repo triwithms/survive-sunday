@@ -19,9 +19,15 @@ export function HelpAccount() {
           every time. There is no people list and no pool code.
         </li>
         <li className="text-[var(--text-primary)]">
-          More than one pool shows a switcher on Settings.{" "}
+          More than one pool shows a switcher on Settings. Each pool has its
+          own players, picks, and rules; only the NFL schedule is shared.{" "}
           <strong>Start a pool</strong> is there too. Administrator tools apply
           only to the pool you are in.
+        </li>
+        <li className="text-[var(--text-primary)]">
+          If your administrator tracks entry fees, Settings shows your own
+          status (Paid, Unpaid, or Waived) and How to pay. Nobody else sees
+          yours. You pay outside the app.
         </li>
         <li className="text-[var(--text-primary)]">
           <strong>Forgot password?</strong> is under Sign in. We email a 6-digit

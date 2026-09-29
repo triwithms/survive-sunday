@@ -505,14 +505,18 @@ Re-checked against GitHub `main` and the live site. **Do not describe an open PR
 | Account notifyPref + NOTIFY_MODE | [#133](https://github.com/triwithms/survive-sunday/pull/133) | Email / SMS / both / none on Account; Admin **Send test to me**; `NOTIFY_MODE` `dryrun` \| `allowlist` \| `live`. Production is **allowlist** — keep it until Robert says **`live`**. |
 | Chief of Staff takeover doc | [#135](https://github.com/triwithms/survive-sunday/pull/135) | [`docs/CHIEF-OF-STAFF-TAKEOVER.md`](CHIEF-OF-STAFF-TAKEOVER.md) — crash-recovery playbook for a new CoS. |
 | Game-day error page | [#175](https://github.com/triwithms/survive-sunday/pull/175) | Duplicate notice is “already sent” (no second email/text, no throw). Opening a tab no longer fails the page if score sync or grading hits a unique-key race. Admin → System → **Server errors** keeps the message for 14 days. |
-| Entry fee tracking (no money in the app) | this PR | **Admin → Pool → Entry fees**, off until that pool’s administrator turns it on. Paid / Unpaid / Waived is a label. Players see only their own status and How to pay. **Remind unpaid** follows notification preferences and `NOTIFY_MODE`. Migration `20260929200000_entry_fee_payment_tracking` — run `npx prisma migrate deploy` once. A Redeploy does not. |
+| Entry fee tracking (no money in the app) | [#180](https://github.com/triwithms/survive-sunday/pull/180) | **Admin → Pool → Entry fees**, off until that pool’s administrator turns it on. Paid / Unpaid / Waived is a label. Players see only their own status and How to pay. **Remind unpaid** follows notification preferences and `NOTIFY_MODE`. Migration `20260929200000_entry_fee_payment_tracking` — run `npx prisma migrate deploy` once. A Redeploy does not. |
+| Scrub personal data | [#176](https://github.com/triwithms/survive-sunday/pull/176) | Current files use placeholders. Older commits still hold names and emails — give a buyer a fresh repo (see OPERATOR-ONBOARDING §10). |
+| Multi-pool MVP | [#177](https://github.com/triwithms/survive-sunday/pull/177) | **Settings → Start a pool**, switcher, shared NFL slate, optional shared join link. |
+| Remove demo sign-in + CI | [#178](https://github.com/triwithms/survive-sunday/pull/178) | Demo routes gone. Static verify scripts run on every push. |
+| Delete pool | [#179](https://github.com/triwithms/survive-sunday/pull/179) | Admin → Pool, last; type the pool name. Blocked while other pools use it as the NFL slate. |
+| Start a pool on a later week | [#181](https://github.com/triwithms/survive-sunday/pull/181) | **First week** on Start a pool. Earlier weeks do not count. `Pool.startWeek` null = Week 1. No invite-from-another-pool. |
 
 ### Open — not on `main` yet
 
 | Work | PR | Notes |
 |------|-----|-------|
 | Team page full-season schedule | [#132](https://github.com/triwithms/survive-sunday/pull/132) | **HOLD** — not live. Do not document as shipped. Merge only when Robert says go. |
-| Player UX Batch A v2 (perf-first) | [#169](https://github.com/triwithms/survive-sunday/pull/169) | **DO NOT MERGE** until Robert phone-tests Preview. Rebased on #170 / #171 (paint-first ESPN and deferred lock effects are already on `main`). Adds ET labels, standings swipe cue, Schedule wrap, one change-until-kickoff line, gold Questionable chip, and a non-blocking NFL Standings refresh. |
 
 Closed and **not** merged: [PR #5](https://github.com/triwithms/survive-sunday/pull/5) (code after every sign-in). Do not rebuild it.
 
