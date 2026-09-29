@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { reportClientError } from "@/lib/client-error-report";
 
 export default function Error({
   error,
@@ -12,6 +13,7 @@ export default function Error({
 }) {
   useEffect(() => {
     console.error(error);
+    if (!error?.digest) reportClientError("root", error);
   }, [error]);
 
   return (
@@ -27,7 +29,7 @@ export default function Error({
       </p>
       <div className="flex flex-wrap gap-3">
         <button type="button" className="btn-primary" onClick={() => reset()}>
-          Try again
+          Retry
         </button>
         <Link href="/pick" className="btn-secondary inline-flex items-center justify-center">
           My pick

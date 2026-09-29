@@ -8,7 +8,8 @@ export function ServerErrorList({ rows }: { rows: ServerErrorItem[] }) {
       <h2 className="font-semibold mb-1">Server errors</h2>
       <p className="text-xs text-[var(--text-muted)] mb-2">
         Kept here for 14 days. Vercel Hobby only shows about the last hour of
-        function logs.
+        function logs. “client” rows are player-screen panels that crashed
+        and showed Retry; the route is the page and panel.
       </p>
       {rows.length === 0 ? (
         <p className="text-sm text-[var(--text-muted)]">None recorded.</p>

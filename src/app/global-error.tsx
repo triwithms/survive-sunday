@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
+import { reportClientError } from "@/lib/client-error-report";
 
 export default function GlobalError({
   error,
@@ -9,6 +11,10 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    if (!error?.digest) reportClientError("global", error);
+  }, [error]);
+
   return (
     <html lang="en-CA" className="dark">
       <body
@@ -63,7 +69,7 @@ export default function GlobalError({
                 cursor: "pointer",
               }}
             >
-              Try again
+              Retry
             </button>
             <Link
               href="/"
