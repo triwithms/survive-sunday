@@ -10,7 +10,7 @@ One web address hosts more than one NFL survivor pool.
 
 - **Separate pools.** One pool cannot see another pool’s players, roster, or picks.
 - **Shared schedule.** Every pool uses the same NFL schedule, teams, and scores. Nobody enters scores by hand.
-- **Family pool.** The live family pool stays as it is. Selling another pool does not change its players or picks. Switch back and look before you tell a buyer they are live. Do not reset it.
+- **Family pool.** The live family pool stays as it is. Selling another pool does not change its players or picks. Switch back and look before you tell a buyer they are live. Do not reset it. Do not delete it while another pool still uses its NFL schedule.
 
 ## 2. Who does what
 
@@ -69,6 +69,7 @@ You only see the pool you are in. You cannot open another pool’s roster or pic
 - Robert has no extra screen that lists every pool. He only sees a pool he has a seat in.
 - The family pool stays separate. Do not reset it when you set up a sold pool. It has no shared join link until an administrator creates one. Leave that off.
 - NFL schedule and scores are shared. Rosters, picks, locks, and mulligan are not.
+- **Delete pool** (Admin → Pool, last, type the pool name) removes that pool only. It is blocked while another pool uses it for the NFL schedule. The person who deletes it stays on another pool they belong to, with the family pool preferred. If it was their only pool, they are signed out. Email and password stay. Sign in again to start a pool. Other people who were only in the deleted pool keep their login; the next page sends them to Join because they are in no pool.
 
 ## 7. Support
 
@@ -136,4 +137,4 @@ One text, 160 characters or fewer, plain GSM-7 (no emoji). This one is 147 chara
 1. **Passwords travel in texts and email.** Send each password in a direct message to that person. Do not drop passwords in a group chat, a screenshot, git, or this file.
 2. **Admin stays on one pool.** Before you sell the next one, sign in as that administrator and confirm they cannot see the family pool’s roster or picks.
 3. **Players will still write to you if nobody told them otherwise.** The welcome email says players ask their own administrator.
-4. **There is no backup button for a pool administrator.** Keep the database backups you already have. Removing a player deletes that seat’s picks.
+4. **Delete pool removes one whole pool** after the administrator types its name (Admin → Pool, last). It will not remove the schedule owner while other pools still use that schedule. Keep the database backups you already have. Removing a player deletes that seat’s picks. There is no undo.

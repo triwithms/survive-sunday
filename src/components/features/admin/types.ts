@@ -45,6 +45,8 @@ export type UsersScreenProps = {
 };
 
 export type ConfigScreenProps = {
+  poolId: string;
+  poolName: string;
   currentWeek: number;
   singleEliminationFromWeek: number | null;
   oneLossCount: number;
