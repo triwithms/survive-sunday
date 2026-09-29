@@ -5,6 +5,7 @@ import { isWeekLocked } from "./grading";
 import { allowedEnterPickWeeks } from "./enter-pick-week";
 import { enterPickStatusError } from "./enter-pick-status";
 import { effectiveCurrentWeek } from "./pool-mode";
+import { pickBeforePoolStartError } from "./pool-start-week";
 
 export async function assertEnterPickWeek(opts: {
   poolId: string;
@@ -14,6 +15,12 @@ export async function assertEnterPickWeek(opts: {
   nickname: string;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   const currentWeek = effectiveCurrentWeek(opts.mode, opts.storedCurrentWeek);
+  const pool = await prisma.pool.findUnique({
+    where: { id: opts.poolId },
+    select: { startWeek: true },
+  });
+  const beforeStart = pickBeforePoolStartError(pool?.startWeek, opts.weekNumber);
+  if (beforeStart) return { ok: false, error: beforeStart };
   if (opts.weekNumber > currentWeek + 1) {
     return { ok: false, error: "Far-future weeks are not open for override." };
   }
@@ -65,6 +72,7 @@ export async function assertEnterPickWeek(opts: {
       locked: isWeekLocked(w),
       games: w.games,
     })),
+    startWeek: pool?.startWeek,
     member: {
       playingFromWeek: member.playingFromWeek,
       picks: member.picks.map((p) => ({

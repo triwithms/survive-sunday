@@ -5,6 +5,7 @@ import { DeletePoolPanel } from "./DeletePoolPanel";
 import { EntryFeeCard } from "./EntryFeeCard";
 import { PoolInviteCard } from "./PoolInviteCard";
 import { PoolRulesForm } from "./PoolRulesForm";
+import { PoolStartWeekCard } from "./PoolStartWeekCard";
 import { ResetPoolPanel } from "./ResetPoolPanel";
 import { TransferCommissionerForm } from "./TransferCommissionerForm";
 import type { ConfigScreenProps } from "./types";
@@ -17,8 +18,10 @@ export function ConfigScreen(props: ConfigScreenProps) {
         listed here. Reset and Delete are last.
       </AdminHeading>
       <PoolInviteCard active={props.poolInviteActive} />
+      <PoolStartWeekCard startWeek={props.startWeek} />
       <PoolRulesForm
         currentWeek={props.currentWeek}
+        startWeek={props.startWeek}
         singleEliminationFromWeek={props.singleEliminationFromWeek}
         oneLossCount={props.oneLossCount}
         undefeatedCount={props.undefeatedCount}

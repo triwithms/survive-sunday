@@ -112,6 +112,22 @@ export function resolvePlayerPickWeek(input: {
     };
   }
 
+  // A pool (or seat) that starts more than one week ahead must not open
+  // the weeks in between. A one-week late join still falls through.
+  if (
+    input.playingFromWeek != null &&
+    poolCurrentWeek < input.playingFromWeek &&
+    nextWeek < input.playingFromWeek
+  ) {
+    return {
+      ...base,
+      actionWeek: input.playingFromWeek,
+      nextWeekOpen: false,
+      slateReady: false,
+      reason: "late_start",
+    };
+  }
+
   if (canChangeLockedNextWeek) {
     return {
       ...base,
@@ -262,6 +278,20 @@ export function pickScreenCopy(input: {
 
   const onActionWeek = weekNumber === decision.actionWeek;
   const onCurrent = weekNumber === decision.poolCurrentWeek;
+
+  if (
+    onActionWeek &&
+    decision.reason === "late_start" &&
+    !decision.nextWeekOpen &&
+    !decision.canStillPlayCurrentWeek
+  ) {
+    return {
+      kicker: "Picks are not open yet.",
+      banner: null,
+      showWeek1ChangeCard: false,
+      showDismissibleTip: false,
+    };
+  }
   const onNext = weekNumber === decision.nextWeek;
   const pendingOwnGame =
     onActionWeek &&
@@ -420,6 +450,14 @@ export function homeEmptyPickCopy(decision: PlayerPickWeek): {
       message: "Make your pick before kickoff—don’t leave your mates hanging.",
       ctaLabel: "Pick now",
       href: pickHrefForWeek(decision.poolCurrentWeek),
+      missed: false,
+    };
+  }
+  if (decision.reason === "late_start" && !decision.nextWeekOpen) {
+    return {
+      message: `This pool starts Week ${decision.actionWeek}.`,
+      ctaLabel: null,
+      href: null,
       missed: false,
     };
   }

@@ -17,4 +17,7 @@ export async function ensurePoolRulesColumns(prisma: SchemaClient) {
   await prisma.$executeRawUnsafe(`
     ALTER TABLE "Membership" ADD COLUMN IF NOT EXISTS "playingFromWeek" INTEGER
   `);
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "Pool" ADD COLUMN IF NOT EXISTS "startWeek" INTEGER
+  `);
 }

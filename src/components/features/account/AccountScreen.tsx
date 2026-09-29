@@ -31,6 +31,14 @@ export function AccountScreen(p: AccountScreenProps) {
           <p className="text-sm text-[var(--text-muted)] capitalize mt-0.5">
             {p.statusLabel}
           </p>
+          {p.poolStartWeek != null ? (
+            <p
+              className="text-sm text-[var(--text-muted)] mt-1"
+              data-testid="pool-start-week"
+            >
+              This pool starts Week {p.poolStartWeek}.
+            </p>
+          ) : null}
           <EntryFeeLine fee={p.entryFee} />
         </div>
         {p.pools.length > 1 ? (
@@ -49,7 +57,10 @@ export function AccountScreen(p: AccountScreenProps) {
         />
         <SignOutButton next="/login" className="btn-danger w-full" />
       </div>
-      <CreatePoolForm />
+      <CreatePoolForm
+        startWeeks={p.startWeeks}
+        defaultStartWeek={p.defaultStartWeek}
+      />
     </div>
   );
 }

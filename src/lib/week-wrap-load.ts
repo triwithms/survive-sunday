@@ -13,6 +13,7 @@ import {
 } from "./week-wrap-types";
 import { allGamesFinal, isEligibleNoonDayAfter } from "./week-wrap-when";
 import { overlayPoolWeeks } from "./slate-games";
+import { weekCountsForPool } from "./pool-start-week";
 
 export async function loadWeekWrapPanel(
   poolId: string,
@@ -31,6 +32,10 @@ async function loadWeekWrapPanelUnsafe(
   now: Date
 ): Promise<WeekWrapPanelData> {
   const settings = await loadWeekWrapSettings(poolId);
+  const pool = await prisma.pool.findUnique({
+    where: { id: poolId },
+    select: { startWeek: true },
+  });
   const [members, weeks, sends, board, nfl] = await Promise.all([
     prisma.membership.findMany({
       where: { poolId },
@@ -69,7 +74,9 @@ async function loadWeekWrapPanelUnsafe(
     poolId
   );
   const skipped = new Set(settings.skippedWeeks);
-  const options: WeekWrapWeekOption[] = slateWeeks.map((week) => ({
+  const options: WeekWrapWeekOption[] = slateWeeks
+    .filter((week) => weekCountsForPool(pool?.startWeek, week.number))
+    .map((week) => ({
     number: week.number,
     allFinal: allGamesFinal(week.games),
     eligible: isEligibleNoonDayAfter(week.games, now),

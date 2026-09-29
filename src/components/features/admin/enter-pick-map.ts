@@ -66,7 +66,8 @@ export function weekBits(weeks: WeekRow[]): EnterPickWeekBits[] {
 export function toEnterPickMember(
   m: MemberRow,
   currentWeek: number,
-  bits: EnterPickWeekBits[]
+  bits: EnterPickWeekBits[],
+  startWeek?: number | null
 ): EnterPickMember {
   const picks = m.picks
     .filter((p) => p.source !== "missed" && p.teamAbbr !== MISSED_TEAM)
@@ -86,6 +87,7 @@ export function toEnterPickMember(
     allowedWeeks: allowedEnterPickWeeks({
       currentWeek,
       weeks: bits,
+      startWeek,
       member: { playingFromWeek: m.playingFromWeek, picks },
     }),
   };

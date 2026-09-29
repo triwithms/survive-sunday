@@ -6,6 +6,13 @@ import { resolvedPoolWeek } from "@/lib/pool-current-week-db";
 import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
 import { isPoolParticipant } from "@/lib/pool-rules";
+import { isPlayerPickWeek, resolvePlayerPickWeekFromLoaded } from "@/lib/next-week-picks";
+import {
+  leaderboardWeekChip,
+  picksOpenAtForStart,
+  poolStartBanner,
+  weekCountsForPool,
+} from "@/lib/pool-start-week";
 import { assembleBoardPage } from "./assemble-board";
 import { sortBoard } from "./sort-board";
 import { winMarginByMember } from "./win-margin";
@@ -33,7 +40,7 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
     where: { poolId: me.poolId, number: currentWeek },
     select: { id: true },
   });
-  if (weekRef) {
+  if (weekRef && weekCountsForPool(me.pool.startWeek, currentWeek)) {
     deferWeekLockedEffects(weekRef.id);
   }
   const loadedWeek = weekRef
@@ -89,8 +96,40 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
       ? await prisma.team.findMany({ where: { abbr: { in: teamAbbrs } }, select: { abbr: true, logoUrl: true } })
       : []).map((t) => [t.abbr, t.logoUrl])
   );
-  return assembleBoardPage({
+  const page = assembleBoardPage({
     me, currentWeek, week, sorted, participants, pickByMember, logoByAbbr,
     locked, canChangePick,
   });
+  const chip = leaderboardWeekChip(currentWeek, me.pool.startWeek, page.heading.weekLabel);
+  const decision = resolvePlayerPickWeekFromLoaded({
+    poolCurrentWeek: currentWeek,
+    weeks: slate.map((row) => ({
+      number: row.number,
+      locked: false,
+      games: row.games.map((game) => ({
+        id: "slate",
+        awayAbbr: "",
+        homeAbbr: "",
+        kickoff: game.kickoff,
+        status: game.status,
+      })),
+    })),
+    currentPick: null,
+    playingFromWeek: me.playingFromWeek,
+  });
+  const startNotice = poolStartBanner({
+    startWeek: me.pool.startWeek,
+    poolCurrentWeek: currentWeek,
+    canPickStartWeek:
+      me.pool.startWeek != null && isPlayerPickWeek(decision, me.pool.startWeek),
+    picksOpenAt:
+      me.pool.startWeek != null ? picksOpenAtForStart(me.pool.startWeek, slate) : null,
+  });
+  if (startNotice) {
+    page.heading.lockLine = startNotice;
+    page.heading.weekLabel = chip ?? `Week ${me.pool.startWeek}`;
+  } else if (chip == null) {
+    page.heading.weekLabel = me.pool.startWeek != null ? `Week ${me.pool.startWeek}` : page.heading.weekLabel;
+  }
+  return page;
 }

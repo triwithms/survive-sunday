@@ -9,6 +9,7 @@ import {
   type RemindSeat,
 } from "./missing-pick-who";
 import { effectiveCurrentWeek } from "./pool-mode";
+import { weekCountsForPool } from "./pool-start-week";
 
 export type LoadedRemindWeek = {
   id: string;
@@ -52,6 +53,7 @@ export async function loadRemindWeeks(opts: {
   const ready: LoadedRemindWeek[] = [];
   for (const week of weeks) {
     const lockAt = effectiveLockAt(week);
+    if (!weekCountsForPool(week.pool.startWeek, week.number)) continue;
     if (
       !weekAllowsMissingPickRemind({
         mode: opts.mode,
@@ -74,7 +76,8 @@ export async function loadRemindWeeks(opts: {
       blanks: seatsMissingPick(
         week.pool.memberships.map(toRemindSeat),
         week.number,
-        picked
+        picked,
+        week.pool.startWeek
       ),
     });
   }

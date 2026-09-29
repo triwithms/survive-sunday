@@ -7,6 +7,7 @@ import { uniqueContactFail } from "./contact-taken";
 import { effectiveCurrentWeek } from "./pool-mode";
 import { isWeekLocked } from "./grading";
 import { nextPlayingWeek } from "./pool-rules";
+import { seatPlayingFromWeek } from "./pool-start-week";
 import { grantPoolRole } from "./roles-db";
 import { POOL_ROLES } from "./roles";
 import { parsePoolJoin } from "./pool-invite";
@@ -20,7 +21,7 @@ const KEEP_PASSWORD =
 async function playingStart(poolId: string): Promise<number | null> {
   const pool = await prisma.pool.findUniqueOrThrow({
     where: { id: poolId },
-    select: { mode: true, currentWeek: true, slatePoolId: true },
+    select: { mode: true, currentWeek: true, slatePoolId: true, startWeek: true },
   });
   const currentWeek = effectiveCurrentWeek(pool.mode, pool.currentWeek);
   const week = await prisma.week.findUnique({
@@ -28,8 +29,12 @@ async function playingStart(poolId: string): Promise<number | null> {
     select: { lockAt: true, lockOverrideAt: true },
   });
   const locked = week ? isWeekLocked(week) : false;
-  if (locked) return nextPlayingWeek({ currentWeek, weekLocked: true });
-  return pool.slatePoolId ? currentWeek : null;
+  const lateJoinWeek = locked
+    ? nextPlayingWeek({ currentWeek, weekLocked: true })
+    : pool.slatePoolId
+      ? currentWeek
+      : null;
+  return seatPlayingFromWeek({ startWeek: pool.startWeek, lateJoinWeek });
 }
 
 export async function joinViaPoolInvite(body: unknown) {

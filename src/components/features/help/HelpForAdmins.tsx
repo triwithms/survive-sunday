@@ -10,7 +10,8 @@ export function HelpForAdmins() {
           only to the pool you are in.
         </li>
         <li className="text-[var(--text-primary)]">
-          <strong>Settings → Start a pool</strong> (name and mulligan). You
+          <strong>Settings → Start a pool</strong> (name, mulligan, and first
+          week). Weeks before that first week do not count. You
           become that pool’s administrator. A switcher appears on Settings only
           when you are in more than one pool.
         </li>

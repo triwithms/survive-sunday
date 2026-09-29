@@ -19,6 +19,7 @@ export type AppMembership = {
   playingFromWeek: number | null;
   poolMode: string;
   poolCurrentWeek: number;
+  poolStartWeek: number | null;
   singleEliminationFromWeek: number | null;
   isPlayer: boolean;
   isAdmin: boolean;
@@ -55,6 +56,7 @@ export async function loadAppMembership(): Promise<AppMembership> {
     playingFromWeek: membership.playingFromWeek,
     poolMode: membership.pool.mode,
     poolCurrentWeek: membership.pool.currentWeek,
+    poolStartWeek: membership.pool.startWeek,
     singleEliminationFromWeek: membership.pool.singleEliminationFromWeek,
     isPlayer: ctx.isPlayer,
     isAdmin: ctx.isAdmin,

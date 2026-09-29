@@ -35,6 +35,9 @@ jobs:
       - name: Payment tracking
         run: npm run verify:payment-tracking
 
+      - name: Start week
+        run: npm run verify:start-week
+
       - name: PWA install
         run: npm run verify:pwa-install
 

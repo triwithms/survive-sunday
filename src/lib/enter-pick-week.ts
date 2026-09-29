@@ -5,6 +5,7 @@ import {
   type GameStartBits,
 } from "./pick-change";
 import { isPlayerPickWeek, resolvePlayerPickWeek } from "./next-week-picks";
+import { weekCountsForPool } from "./pool-start-week";
 
 export type EnterPickWeekGame = GameStartBits & {
   id: string;
@@ -32,6 +33,7 @@ export function allowedEnterPickWeeks(opts: {
   currentWeek: number;
   weeks: EnterPickWeekBits[];
   member: EnterPickMemberBits;
+  startWeek?: number | null;
   now?: Date;
 }): number[] {
   const current = opts.weeks.find((w) => w.number === opts.currentWeek);
@@ -59,6 +61,7 @@ export function allowedEnterPickWeeks(opts: {
   return opts.weeks
     .filter((w) => w.games.length > 0)
     .map((w) => w.number)
+    .filter((n) => weekCountsForPool(opts.startWeek, n))
     .filter((n) => n <= opts.currentWeek || (offerNext && n === nextNum))
     .sort((a, b) => a - b);
 }

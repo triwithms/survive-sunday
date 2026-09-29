@@ -14,6 +14,10 @@ export function HelpRules() {
           No team reuse. Bye-week teams are off the board.
         </li>
         <li className="text-[var(--text-primary)]">
+          A pool can start after Week 1. Weeks before that first week do not
+          count — no pick and no loss.
+        </li>
+        <li className="text-[var(--text-primary)]">
           <strong>Mulligan:</strong> one, unless the administrator turns it off.
           First loss or missed pick at lock burns it — you’re still in with one
           loss. A second loss eliminates you. One-and-done shows as{" "}

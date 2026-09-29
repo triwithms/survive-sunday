@@ -6,6 +6,7 @@ import {
   poolRulesAdminSummary,
   poolRulesPlayerLabel,
 } from "@/lib/pool-rules";
+import { mulliganBeforePoolStart } from "@/lib/pool-start-week";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
 
 export async function GET() {
@@ -40,6 +41,19 @@ export async function POST(req: Request) {
 
   const nextFromWeek =
     body.singleEliminationFromWeek === null ? null : parsed ?? null;
+
+  const pool = await prisma.pool.findUnique({
+    where: { id: admin.membership.poolId },
+    select: { startWeek: true },
+  });
+  if (mulliganBeforePoolStart(nextFromWeek, pool?.startWeek)) {
+    return NextResponse.json(
+      {
+        error: `One-and-done cannot start before Week ${pool?.startWeek}. That is this pool’s first week.`,
+      },
+      { status: 400 }
+    );
+  }
 
   const updated = await prisma.pool.update({
     where: { id: admin.membership.poolId },
