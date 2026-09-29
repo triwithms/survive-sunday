@@ -1,4 +1,6 @@
 import "server-only";
+import { unstable_rethrow } from "next/navigation";
+import { after } from "next/server";
 import { prisma } from "@/lib/db";
 import { effectiveLockAt, isWeekLocked } from "@/lib/grading";
 import { resolvePlayerPickWeekFromLoaded } from "@/lib/next-week-picks";
@@ -11,6 +13,7 @@ import { weeksFromPoolStart } from "@/lib/pool-start-week";
 import type { HeaderWeek, NextOpenDeadline } from "@/components/HeaderWeekNav";
 import { loadAppMembership, type AppMembership } from "./load-app-membership";
 import type { RoleView } from "@/lib/roles";
+import { recordServerError } from "@/lib/server-error-log";
 import { overlayPoolWeeks } from "@/lib/slate-games";
 
 export type AppHeaderData = {
@@ -46,8 +49,49 @@ function chromeFromMembership(me: AppMembership) {
   };
 }
 
+type WeekChrome = Pick<
+  AppHeaderData,
+  "currentWeek" | "weekNav" | "pickActionWeek" | "lockIso" | "nextOpen"
+>;
+
+/** Header and tabs still paint (stored week, no countdown) if week reads fail. */
+export function fallbackWeekChrome(me: Pick<AppMembership, "poolCurrentWeek">): WeekChrome {
+  return {
+    currentWeek: me.poolCurrentWeek,
+    weekNav: [],
+    pickActionWeek: me.poolCurrentWeek,
+    lockIso: null,
+    nextOpen: null,
+  };
+}
+
+/**
+ * The layout wraps every tab and sits above (app)/error.tsx, so a throw
+ * here reaches the root error page with no header or tabs. Only the
+ * membership load (auth + redirects) may fail the shell.
+ */
 export async function loadAppHeader(): Promise<AppHeaderData> {
   const me = await loadAppMembership();
+  let chrome: WeekChrome;
+  try {
+    chrome = await loadWeekChrome(me);
+  } catch (error) {
+    unstable_rethrow(error);
+    console.error("[layout] week chrome skipped", error);
+    const message = error instanceof Error ? error.message : String(error);
+    const record = () =>
+      recordServerError({ route: "layout week chrome", message, source: "layout" });
+    try {
+      after(record);
+    } catch {
+      void record();
+    }
+    chrome = fallbackWeekChrome(me);
+  }
+  return { ...chromeFromMembership(me), ...chrome };
+}
+
+async function loadWeekChrome(me: AppMembership): Promise<WeekChrome> {
   const weeks = weeksForParticipants(
     me.poolMode,
     await overlayPoolWeeks(
@@ -84,7 +128,6 @@ export async function loadAppHeader(): Promise<AppHeaderData> {
   const nextWeekRow = weeks.find((row) => row.number === decision.nextWeek);
 
   return {
-    ...chromeFromMembership(me),
     currentWeek,
     weekNav: weeksFromPoolStart(weeks, me.poolStartWeek).map((row) => ({
       number: row.number,

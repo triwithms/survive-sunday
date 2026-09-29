@@ -1,6 +1,7 @@
 import { EmptyWeeksNotice } from "@/components/EmptyWeeksNotice";
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import { PickClient } from "@/components/PickClient";
+import { SectionBoundary } from "@/components/SectionBoundary";
 import { loadPickPage } from "@/components/features/pick/load-pick";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +19,9 @@ export default async function PickPage({
   const { poll, ...client } = data;
   return (
     <>
-      <LiveScoresRefresh weekNumber={client.weekNumber} poll={poll} />
+      <SectionBoundary name="pick-live-refresh" variant="inline" message="Live score refresh paused.">
+        <LiveScoresRefresh weekNumber={client.weekNumber} poll={poll} />
+      </SectionBoundary>
       <PickClient key={client.weekNumber} {...client} />
     </>
   );
