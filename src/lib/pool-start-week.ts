@@ -136,6 +136,73 @@ export function leaderboardWeekChip(
   return label;
 }
 
+export type LeaderboardHeadingBits = {
+  weekLabel: string;
+  stillInCount: number;
+  undefeatedCount: number;
+  eliminatedCount: number;
+  pickRowCount: number;
+  lockLine: string;
+  sortLine: string;
+  cta: unknown;
+};
+
+export type LeaderboardTiebreakBits = {
+  soleNickname: string | null;
+  sharedNicknames: string[];
+  showNoOfficial: boolean;
+};
+
+/** Line when picks for the first week are already open, but this week still does not count. */
+export function leaderboardBeforeStartNotice(startWeek: number): string {
+  return `This pool starts Week ${startWeek}. Earlier weeks do not count.`;
+}
+
+/**
+ * Before the first week, the Leaderboard is quiet: no rows, no counts, no tiebreak.
+ * A null start week (the family pool) is returned unchanged.
+ */
+export function quietLeaderboardPage<
+  T extends {
+    rows: unknown[];
+    heading: LeaderboardHeadingBits;
+    tiebreak: LeaderboardTiebreakBits;
+  },
+>(
+  page: T,
+  args: {
+    startWeek: number | null | undefined;
+    viewedWeek: number;
+    banner: string | null;
+  }
+): T & { startNotice: string | null } {
+  if (args.startWeek == null || weekCountsForPool(args.startWeek, args.viewedWeek)) {
+    return { ...page, startNotice: null };
+  }
+  const notice = args.banner ?? leaderboardBeforeStartNotice(args.startWeek);
+  return {
+    ...page,
+    rows: [],
+    startNotice: notice,
+    heading: {
+      ...page.heading,
+      weekLabel: `Week ${args.startWeek}`,
+      stillInCount: 0,
+      undefeatedCount: 0,
+      eliminatedCount: 0,
+      pickRowCount: 0,
+      lockLine: notice,
+      sortLine: "",
+      cta: null,
+    },
+    tiebreak: {
+      soleNickname: null,
+      sharedNicknames: [],
+      showNoOfficial: false,
+    },
+  };
+}
+
 /**
  * When Week N picks become available: the first kickoff of the week before,
  * which is when this app opens the next week. Falls back to Week N's first game.
