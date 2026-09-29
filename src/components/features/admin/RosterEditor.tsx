@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import { entryFeeSummaryLine } from "@/lib/payment-tracking";
 import { Card } from "@/components/ui";
 import type { EnterPickData } from "./enter-pick-types";
 import { rosterEmptyCopy, rosterFilterCounts, type RosterFilterId } from "./roster-needs-you";
@@ -17,10 +18,16 @@ export function RosterEditor({
   members,
   enterPick,
   openMemberId = null,
+  tracking = false,
+  entryFeeCents = null,
+  entryFeeCurrency = "CAD",
 }: {
   members: RosterMember[];
   enterPick: EnterPickData;
   openMemberId?: string | null;
+  tracking?: boolean;
+  entryFeeCents?: number | null;
+  entryFeeCurrency?: string;
 }) {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
@@ -55,6 +62,17 @@ export function RosterEditor({
           Tap a person to edit their profile or set a password. Copy join link
           shares a Sign in link. One open at a time.
         </p>
+        {tracking ? (
+          <p className="mt-2 text-sm" data-testid="entry-fee-summary">
+            {entryFeeSummaryLine(
+              members.map((member) => ({
+                paymentStatus: member.paymentStatus ?? "unpaid",
+              })),
+              entryFeeCents,
+              entryFeeCurrency
+            )}
+          </p>
+        ) : null}
       </div>
       <label className="block text-sm space-y-1">
         <span className="sr-only">Find a friend</span>
@@ -68,7 +86,12 @@ export function RosterEditor({
           className="w-full min-h-11"
         />
       </label>
-      <RosterFilters value={filter} counts={counts} onChange={setFilter} />
+      <RosterFilters
+        value={filter}
+        counts={counts}
+        onChange={setFilter}
+        showUnpaid={tracking}
+      />
       <RosterOpenScroll memberId={openMemberId} />
       {msg ? <p className="text-sm text-field-400" role="status">{msg}</p> : null}
       {err ? <p className="text-sm text-crimson-400" role="alert">{err}</p> : null}
@@ -90,6 +113,7 @@ export function RosterEditor({
               onBusy={(busy) => setBusyId(busy ? row.member.id : null)}
               onMsg={setMsg}
               onErr={setErr}
+              tracking={tracking}
             />
           ))}
         </ul>

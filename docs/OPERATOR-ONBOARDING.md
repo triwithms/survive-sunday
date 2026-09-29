@@ -48,6 +48,7 @@ Then switch back to the family pool and confirm its players and picks look the s
    - **You set the password:** **Admin → Players → Add user**. Nickname, email, and a temporary password. Text each person their own login (Appendix B, plus the password in a separate direct message). If that email already signs in somewhere else, leave the password blank.
    - **They set the password:** **Admin → Pool → Shared join link → Create link**. Copy that one link and send it to the group. Each person opens it, enters their own email, password, and display name, and lands in this pool only. **New link** replaces the old one. **Turn off** stops it. You cannot copy the old link again after you leave the page.
 6. Mulligan changes live under **Admin → Pool**.
+7. If you want to track who has paid: **Admin → Pool → Entry fees**. Turn it on, set the amount and how to pay (for example an e-Transfer note). Mark people Paid as the money arrives. **This Week → Remind unpaid** texts or emails only people still marked Unpaid. The app never handles money.
 
 You only see the pool you are in. You cannot open another pool’s roster or picks.
 
@@ -80,7 +81,7 @@ You only see the pool you are in. You cannot open another pool’s roster or pic
 
 | | Today | Not in this version |
 |---|---|---|
-| Payment | Outside the app | In-app checkout |
+| Payment | Outside the app. Optional **Entry fees** labels (Paid / Unpaid / Waived) and a reminder. The app never handles money. | In-app checkout, cards, or payouts |
 | Starting a pool | A signed-in person uses **Settings → Start a pool**. When you sell one, you still do that and create their login. | A public signup page |
 | Players | Administrator adds them and texts a password, or shares one pool join link so they choose their own email and password. A personal link can still claim a seat the administrator already created. | A public people list, or a code that signs you into every pool |
 | Web address | One shared URL | A different web address per pool |
@@ -94,7 +95,7 @@ Charging other organizers is also a hosting choice. Vercel’s free Hobby plan i
 1. **Can players in one pool see picks in another?** No.
 2. **How do players sign in?** Email and password on Sign in, or **Forgot password**. If the administrator texted a temporary password, they use that. If they got a shared join link, they open it once and choose email and password. There is no people list and no pool-code login.
 3. **What if they forget it?** **Forgot password** on the Sign in page. The code comes by email.
-4. **How do I collect entry fees?** Outside the app. This version does not take payment.
+4. **How do I collect entry fees?** Outside the app (e-Transfer, cash, or whatever you already use). **Admin → Pool → Entry fees** can track Paid, Unpaid, or Waived and remind people who have not paid. The app never handles money. It does not take cards or send payouts.
 5. **Can an administrator set a player’s password?** Yes. **Admin → Players**, that person, **Set a password**. Copy the text and send it. The app does not email it. If that email already signs in, leave the password blank unless you mean to change it for every pool on that login.
 6. **Is the family pool mixed in with a sold pool?** No. It stays separate. Do not reset it.
 7. **How do scores update?** From the shared NFL schedule. You do not type them in.

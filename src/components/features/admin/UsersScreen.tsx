@@ -15,6 +15,9 @@ export function UsersScreen(props: UsersScreenProps & { openMemberId?: string | 
         members={props.rosterMembers}
         enterPick={props.enterPick}
         openMemberId={props.openMemberId ?? null}
+        tracking={props.paymentTrackingEnabled}
+        entryFeeCents={props.entryFeeCents}
+        entryFeeCurrency={props.entryFeeCurrency}
       />
     </div>
   );

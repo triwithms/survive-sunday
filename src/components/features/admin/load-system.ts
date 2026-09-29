@@ -2,6 +2,7 @@ import "server-only";
 import { prisma } from "@/lib/db";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
 import { listAdminMissingPicks } from "@/lib/missing-pick-list";
+import { loadUnpaidFeePanel } from "@/lib/payment-remind";
 import { listRecentServerErrors } from "@/lib/server-error-log";
 import { loadWeekWrapPanel } from "@/lib/week-wrap-load";
 import { loadAdminGate } from "./load-admin";
@@ -14,7 +15,7 @@ export async function loadSystemPage(): Promise<
   const gate = await loadAdminGate();
   if (!gate.ok) return { ok: false, isDemo: gate.isDemo };
   const weekNumber = effectiveCurrentWeek(gate.me.pool.mode, gate.me.pool.currentWeek);
-  const [logs, enterPick, weekWrap, missingPicks, serverErrors] =
+  const [logs, enterPick, weekWrap, missingPicks, serverErrors, unpaidFees] =
     await Promise.all([
       prisma.auditLog.findMany({
         where: { poolId: gate.me.poolId },
@@ -25,6 +26,7 @@ export async function loadSystemPage(): Promise<
       loadWeekWrapPanel(gate.me.poolId),
       listAdminMissingPicks(gate.me.poolId),
       listRecentServerErrors(),
+      loadUnpaidFeePanel(gate.me.poolId),
     ]);
   return {
     ok: true,
@@ -40,6 +42,7 @@ export async function loadSystemPage(): Promise<
         details: row.details,
       })),
       serverErrors,
+      unpaidFees,
     },
   };
 }

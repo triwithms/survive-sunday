@@ -111,6 +111,15 @@ model Pool {
   /// Set = read NFL games and scores from that pool's weeks (same week number).
   /// Picks, locks, and memberships stay on this pool. Do not chain copies.
   slatePoolId String?
+  /// Off until an administrator turns it on. Labels only — no money moves.
+  paymentTrackingEnabled Boolean @default(false)
+  /// Optional. Shown as a total only. Null = do not show an amount.
+  entryFeeCents Int?
+  entryFeeCurrency String @default("CAD")
+  /// Plain how-to-pay text. Never a card or bank number.
+  paymentInstructions String?
+  /// Optional https link (for example PayPal.me). http is rejected.
+  paymentLink String?
   createdAt   DateTime     @default(now())
   slatePool       Pool?            @relation("PoolSlate", fields: [slatePoolId], references: [id], onDelete: Restrict)
   slateFor        Pool[]           @relation("PoolSlate")
@@ -164,6 +173,9 @@ model Membership {
   autoPickStamps    Int              @default(0)
   /// Leftover copy-from pointer. Unused. Do not drop (shared Neon).
   mirrorFromMembershipId String?
+  paymentStatus     String           @default("unpaid") // unpaid | paid | waived
+  paymentMarkedAt   DateTime?
+  paymentNote       String?
   createdAt         DateTime         @default(now())
   pool              Pool             @relation(fields: [poolId], references: [id], onDelete: Cascade)
   user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)

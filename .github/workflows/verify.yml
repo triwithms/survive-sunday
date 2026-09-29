@@ -32,6 +32,9 @@ jobs:
       - name: Pool invite
         run: npm run verify:pool-invite
 
+      - name: Payment tracking
+        run: npm run verify:payment-tracking
+
       - name: PWA install
         run: npm run verify:pwa-install
 

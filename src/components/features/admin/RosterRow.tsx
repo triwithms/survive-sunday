@@ -3,6 +3,8 @@
 import { TeamLogo } from "@/components/TeamLogo";
 import { StatusBadge } from "@/components/ui";
 import { InviteJoinButtons } from "./InviteJoinButtons";
+import { MarkPaidButton } from "./MarkPaidButton";
+import { PaymentStatusChip } from "./PaymentStatusChip";
 import { needsEmailToLogIn, rosterRowSubtitle } from "./roster-row-meta";
 import { isRosterLifeStatus, rosterStatusLabel } from "./roster-status";
 import type { RosterMember } from "./roster-types";
@@ -12,6 +14,7 @@ type Props = {
   weekPick: string | null;
   open: boolean;
   onToggle: () => void;
+  tracking?: boolean;
   children: React.ReactNode;
 };
 
@@ -20,6 +23,7 @@ export function RosterRow({
   weekPick,
   open,
   onToggle,
+  tracking = false,
   children,
 }: Props) {
   const editorId = `roster-editor-${member.id}`;
@@ -75,6 +79,14 @@ export function RosterRow({
           {open ? "Close" : "Edit"}
         </button>
       </div>
+      {tracking ? (
+        <div className="flex items-center gap-2 pb-1 pl-8">
+          <PaymentStatusChip status={member.paymentStatus ?? "unpaid"} />
+          {open || member.paymentStatus !== "unpaid" ? null : (
+            <MarkPaidButton membershipId={member.id} />
+          )}
+        </div>
+      ) : null}
       {needsEmail ? (
         <p className="pb-1 text-xs text-[var(--text-muted)]" data-testid="needs-email">
           Needs email to log in

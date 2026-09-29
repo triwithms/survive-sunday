@@ -30,6 +30,11 @@ export async function loadConfigPage(): Promise<
       roleMembers: toRoleMembers(members, adminIds, gate.userId),
       canDemoteMembershipIds: toDemoteIds(members, adminIds, grants),
       poolInviteActive: await poolInviteIsActive(me.poolId),
+      paymentTrackingEnabled: me.pool.paymentTrackingEnabled,
+      entryFeeCents: me.pool.entryFeeCents,
+      entryFeeCurrency: me.pool.entryFeeCurrency,
+      paymentInstructions: me.pool.paymentInstructions,
+      paymentLink: me.pool.paymentLink,
     },
   };
 }

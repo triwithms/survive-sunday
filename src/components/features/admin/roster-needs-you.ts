@@ -1,4 +1,4 @@
-export type RosterFilterId = "all" | "no_pick" | "one_loss" | "out";
+export type RosterFilterId = "all" | "no_pick" | "one_loss" | "out" | "unpaid";
 
 export type RosterSortRow = {
   id: string;
@@ -10,6 +10,7 @@ export type RosterSortRow = {
    * Leave unset when no channel-status field exists — that skips the tier.
    */
   channelNeedsYou?: boolean;
+  paymentStatus?: string;
 };
 
 export function isRosterOut(status: string): boolean {
@@ -39,6 +40,7 @@ export function passesRosterFilter(
   filter: RosterFilterId
 ): boolean {
   if (filter === "all") return true;
+  if (filter === "unpaid") return row.paymentStatus === "unpaid";
   if (filter === "out") return isRosterOut(row.status);
   if (filter === "one_loss") return row.status === "one_loss";
   return !isRosterOut(row.status) && !row.hasWeekPick;
@@ -52,6 +54,7 @@ export function rosterFilterCounts(
     no_pick: rows.filter((row) => passesRosterFilter(row, "no_pick")).length,
     one_loss: rows.filter((row) => passesRosterFilter(row, "one_loss")).length,
     out: rows.filter((row) => passesRosterFilter(row, "out")).length,
+    unpaid: rows.filter((row) => passesRosterFilter(row, "unpaid")).length,
   };
 }
 
@@ -64,5 +67,6 @@ export function rosterEmptyCopy(
   if (filter === "no_pick") return `Everyone has a pick for Week ${week}.`;
   if (filter === "out") return "No one is out yet.";
   if (filter === "one_loss") return "No one is on one loss.";
+  if (filter === "unpaid") return "No one is unpaid.";
   return "No one on the roster.";
 }

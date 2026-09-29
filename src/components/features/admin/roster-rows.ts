@@ -22,6 +22,7 @@ export function buildRosterRows(
     hasWeekPick: Boolean(
       memberWeekPick(enterPick.members, member.id, enterPick.currentWeek)
     ),
+    paymentStatus: member.paymentStatus,
     member,
   }));
 }

@@ -1,4 +1,5 @@
 import type { MissingPickPanelData } from "@/lib/missing-pick-who";
+import type { NoticeCounts } from "@/lib/notice-audience";
 import type { WeekWrapPanelData } from "@/lib/week-wrap-types";
 import type { EnterPickData } from "./enter-pick-types";
 import type { AdminRoleRow } from "./admin-role-types";
@@ -15,6 +16,9 @@ export type MemberRow = {
   isParticipant?: boolean;
   pickBackup: string | null;
   mirrorFromMembershipId: string | null;
+  paymentStatus?: string;
+  paymentNote?: string | null;
+  paymentMarkedAt?: Date | null;
   user: {
     email: string | null;
     phoneE164: string | null;
@@ -42,6 +46,9 @@ export type UsersScreenProps = {
   rosterMembers: RosterMember[];
   removeMembers: RemoveMember[];
   enterPick: EnterPickData;
+  paymentTrackingEnabled: boolean;
+  entryFeeCents: number | null;
+  entryFeeCurrency: string;
 };
 
 export type ConfigScreenProps = {
@@ -55,6 +62,11 @@ export type ConfigScreenProps = {
   roleMembers: AdminRoleRow[];
   canDemoteMembershipIds: string[];
   poolInviteActive: boolean;
+  paymentTrackingEnabled: boolean;
+  entryFeeCents: number | null;
+  entryFeeCurrency: string;
+  paymentInstructions: string | null;
+  paymentLink: string | null;
 };
 
 export type AuditLogRow = {
@@ -79,4 +91,5 @@ export type SystemScreenProps = {
   weekWrap: WeekWrapPanelData;
   logs: AuditLogRow[];
   serverErrors: ServerErrorItem[];
+  unpaidFees: { count: number; plan: NoticeCounts } | null;
 };

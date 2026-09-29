@@ -71,6 +71,15 @@ export function HelpForAdmins() {
           Already-scored weeks stay.
         </li>
         <li className="text-[var(--text-primary)]">
+          <strong>Entry fees</strong> on Pool is off until you turn it on.
+          Optional amount, how to pay in plain words, and an https link.
+          On Players, each row shows Paid, Unpaid, or Waived — a label you set,
+          with an Unpaid filter. This Week
+          → <strong>Unpaid entry fees</strong> → <strong>Remind unpaid</strong>.
+          A player sees only their own status and How to pay. The app never
+          handles money.
+        </li>
+        <li className="text-[var(--text-primary)]">
           On a player’s record, <strong>Make administrator</strong> adds Admin
           tools. Pool lists administrators. <strong>Hand the pool</strong>{" "}
           gives Admin to someone else and you stay as a player.

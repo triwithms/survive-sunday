@@ -3,6 +3,7 @@ import { RoleSwitcher } from "@/components/RoleSwitcher";
 import { SignOutButton } from "@/components/SignOutButton";
 import { Card } from "@/components/ui";
 import { AccountHubLinks } from "./AccountHubLinks";
+import { EntryFeeLine } from "./EntryFeeLine";
 import { AccountNicknameSheet } from "./AccountNicknameSheet";
 import { AccountPhoneRow } from "./AccountPhoneRow";
 import { CreatePoolForm } from "./CreatePoolForm";
@@ -30,6 +31,7 @@ export function AccountScreen(p: AccountScreenProps) {
           <p className="text-sm text-[var(--text-muted)] capitalize mt-0.5">
             {p.statusLabel}
           </p>
+          <EntryFeeLine fee={p.entryFee} />
         </div>
         {p.pools.length > 1 ? (
           <PoolSwitcher pools={p.pools} activePoolId={p.activePoolId} />

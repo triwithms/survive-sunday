@@ -18,6 +18,9 @@ export type RosterMember = {
   isPoolAdmin?: boolean;
   /** False when this person is the last administrator. */
   canChangeAdmin?: boolean;
+  paymentStatus?: string;
+  paymentNote?: string | null;
+  paymentMarkedAt?: string | null;
 };
 
 export type RosterMirrorOption = MirrorOption;
