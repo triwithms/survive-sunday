@@ -77,6 +77,11 @@ for (const [alias, target] of [
 ] as const) {
   assert.equal(TEAM_ABBR_ALIASES[alias], target, `${alias} → ${target}`);
 }
+// Blockers blank `/helmets/ne.png`; NE must stay on a longer stem.
+assert.equal(TEAM_HELMET_FILES.NE, "nwe", "NE helmet file is nwe.png");
+assert.equal(localHelmetSrc("NE"), "/helmets/nwe.png");
+assert.equal(localHelmetSrc("NWE"), "/helmets/nwe.png");
+assert.equal(fs.existsSync(path.join(helmetDir, "ne.png")), false, "no blocker-prone ne.png");
 
 // --- Every spelling × casing × wrapper resolves to the mapped, existing PNG.
 function variants(s: string): string[] {
