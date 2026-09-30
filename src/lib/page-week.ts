@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/db";
-import { slateGamesByNumber, slateSourcePoolId } from "@/lib/slate-games";
+import { findPoolGame, slateGamesByNumber } from "@/lib/slate-games";
 import { overlayGamesByNumber } from "@/lib/slate-overlay";
 import { isWeekLocked } from "@/lib/grading";
 import {
@@ -165,16 +165,5 @@ export async function pageWeekNumberForGame(
   gameId: string | null
 ): Promise<number | undefined> {
   if (!gameId) return undefined;
-  const game = await prisma.game.findFirst({
-    where: { id: gameId, week: { poolId } },
-    select: { week: { select: { number: true } } },
-  });
-  if (game) return game.week.number;
-  const source = await slateSourcePoolId(poolId);
-  if (!source || source === poolId) return undefined;
-  const shared = await prisma.game.findFirst({
-    where: { id: gameId, week: { poolId: source } },
-    select: { week: { select: { number: true } } },
-  });
-  return shared?.week.number;
+  return (await findPoolGame(poolId, gameId))?.week.number;
 }
