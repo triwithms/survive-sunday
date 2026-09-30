@@ -44,13 +44,11 @@ jobs:
       - name: Login screen
         run: npm run verify:login-screen
 
-<<<<<<< HEAD
       - name: Crash walls
         run: npm run verify:crash-walls
-=======
+
       - name: Team logos
         run: npm run verify:team-logo
 
       - name: Helmet aliases
         run: npm run verify:helmet-aliases
->>>>>>> 5eb707b (Verify every club and alias resolves to a local helmet; run logo checks in CI)
