@@ -97,7 +97,7 @@ Rules the live app already enforces:
 - Bye-week teams are off the board.
 - **Administrator** is a role on a user (merged PR #19), not a special account. The same person can play (e.g. Gams) and use Admin tools. A leftover spectator administrator seat stays off the player board. **Hand the pool** gives Admin to another existing member; they keep playing; you stay as a player and lose Admin.
 
-Entertainment among friends. Not a gambling service. Team names and logos are trademarks of their owners.
+Entertainment among friends. Not a gambling service. Not affiliated with or endorsed by the NFL. Team names and logos are trademarks of their owners.
 
 ---
 
