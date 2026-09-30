@@ -1,4 +1,5 @@
 import { WEEK_WRAP_BOARD_URL } from "./week-wrap-sections";
+import { showTeamLogosFor } from "./team-logos";
 import {
   DEFAULT_WEEK_WRAP_SETTINGS,
   type WeekWrapPanelData,
@@ -16,5 +17,6 @@ export function emptyWeekWrapPanel(): WeekWrapPanelData {
     board: [],
     nfl: null,
     audience: { email: 0, sms: 0, skippedOff: 0, nicknames: [] },
+    teamLogos: showTeamLogosFor(null),
   };
 }

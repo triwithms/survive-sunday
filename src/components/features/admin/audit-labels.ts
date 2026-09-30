@@ -7,6 +7,7 @@ const TITLES: Record<string, string> = {
   transfer_commissioner: "Handed the pool",
   commissioner_account_set: "Saved administrator login",
   pool_rules_mulligan: "Changed pool rules",
+  pool_team_logos: "Changed team logos",
   entry_fee_settings: "Saved entry fees",
   entry_fee_status: "Marked an entry fee",
   entry_fee_reminders: "Sent entry-fee reminders",

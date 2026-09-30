@@ -3,6 +3,7 @@ import { poolInviteIsActive } from "@/lib/pool-invite-db";
 import { listPoolRoleGrants } from "@/lib/roles-db";
 import { prisma } from "@/lib/db";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
+import { showTeamLogosFor, teamLogosForcedOff } from "@/lib/team-logos";
 import { loadAdminGate, loadPoolMembers } from "./load-admin";
 import { survivalCounts, toTransferMembers } from "./map-config";
 import { adminUserIdSet, toDemoteIds, toRoleMembers } from "./map-users";
@@ -36,6 +37,8 @@ export async function loadConfigPage(): Promise<
       entryFeeCurrency: me.pool.entryFeeCurrency,
       paymentInstructions: me.pool.paymentInstructions,
       paymentLink: me.pool.paymentLink,
+      showTeamLogos: showTeamLogosFor(me.pool.showTeamLogos, {}),
+      teamLogosForcedOff: teamLogosForcedOff(),
     },
   };
 }

@@ -68,6 +68,9 @@ export type ConfigScreenProps = {
   entryFeeCurrency: string;
   paymentInstructions: string | null;
   paymentLink: string | null;
+  /** Stored pool switch (null = on). The env override is separate. */
+  showTeamLogos: boolean;
+  teamLogosForcedOff: boolean;
 };
 
 export type AuditLogRow = {

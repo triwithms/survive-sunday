@@ -2,6 +2,7 @@
 
 import { PUBLIC_APP_ORIGIN } from "./invite-link";
 import { localHelmetSrc } from "./team-helmets";
+import { teamMarkFontPx, teamMarkText } from "./team-logos";
 
 export const WRAP_BG = "#0b0e12";
 export const WRAP_PANEL = "#141922";
@@ -31,6 +32,17 @@ export function helmetUrl(abbr: string): string {
 export function helmetImg(abbr: string, size = 24): string {
   const alt = escapeHtml(abbr.trim().toUpperCase());
   return `<img src="${escapeHtml(helmetUrl(abbr))}" width="${size}" height="${size}" alt="${alt}" style="display:block;border:0;outline:none;width:${size}px;height:${size}px;" />`;
+}
+
+/** Same square as `helmetImg`, neutral colours only. A table so Outlook keeps the size. */
+export function teamBadgeHtml(abbr: string, size = 24): string {
+  const text = escapeHtml(teamMarkText(abbr));
+  return `<table role="presentation" width="${size}" height="${size}" cellpadding="0" cellspacing="0" border="0" style="width:${size}px;height:${size}px;border-collapse:separate;"><tr><td align="center" valign="middle" bgcolor="${WRAP_LINE}" style="width:${size}px;height:${size}px;background:${WRAP_LINE};border-radius:4px;font-family:${WRAP_FONT};font-size:${teamMarkFontPx(size)}px;line-height:${size}px;font-weight:bold;color:${WRAP_TEXT};white-space:nowrap;">${text}</td></tr></table>`;
+}
+
+/** Helmet, or the abbreviation badge when the pool has team logos off. */
+export function teamMarkHtml(abbr: string, size: number, logos: boolean): string {
+  return logos ? helmetImg(abbr, size) : teamBadgeHtml(abbr, size);
 }
 
 /** Titled card. Callers pass `<tr>` rows for the inner table. */

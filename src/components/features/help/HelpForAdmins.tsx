@@ -87,6 +87,7 @@ export function HelpForAdmins() {
           How to pay. The app never handles money: no checkout, cards, or
           payouts. Collect fees the way you already do.
         </li>
+        <li className="text-[var(--text-primary)]">Team logos can be turned off in <strong>Admin → Pool</strong>.</li>
         <li className="text-[var(--text-primary)]">
           On a player’s record, <strong>Make administrator</strong> adds Admin
           tools. Pool lists administrators. <strong>Hand the pool</strong>{" "}

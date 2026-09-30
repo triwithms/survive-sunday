@@ -7,13 +7,11 @@ import { loadWeekWrapSettings } from "./week-wrap-settings";
 import { preferredWrapWeek } from "./week-wrap-status";
 import { emptyWeekWrapPanel } from "./week-wrap-empty";
 import { loadWrapAudience } from "./week-wrap-audience";
-import {
-  type WeekWrapPanelData,
-  type WeekWrapWeekOption,
-} from "./week-wrap-types";
+import type { WeekWrapPanelData, WeekWrapWeekOption } from "./week-wrap-types";
 import { allGamesFinal, isEligibleNoonDayAfter } from "./week-wrap-when";
 import { overlayPoolWeeks } from "./slate-games";
 import { weekCountsForPool } from "./pool-start-week";
+import { showTeamLogosFor } from "./team-logos";
 
 export async function loadWeekWrapPanel(
   poolId: string,
@@ -34,7 +32,7 @@ async function loadWeekWrapPanelUnsafe(
   const settings = await loadWeekWrapSettings(poolId);
   const pool = await prisma.pool.findUnique({
     where: { id: poolId },
-    select: { startWeek: true },
+    select: { startWeek: true, showTeamLogos: true },
   });
   const [members, weeks, sends, board, nfl] = await Promise.all([
     prisma.membership.findMany({
@@ -95,5 +93,6 @@ async function loadWeekWrapPanelUnsafe(
     board,
     nfl,
     audience: await loadWrapAudience(poolId),
+    teamLogos: showTeamLogosFor(pool?.showTeamLogos),
   };
 }
