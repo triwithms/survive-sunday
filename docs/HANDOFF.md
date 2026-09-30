@@ -99,6 +99,8 @@ Rules the live app already enforces:
 
 Entertainment among friends. Not a gambling service.
 
+Not affiliated with or endorsed by the NFL. Team names and logos are trademarks of their owners.
+
 ---
 
 ## 2. Where things live

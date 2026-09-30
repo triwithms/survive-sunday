@@ -163,3 +163,5 @@ Seed JSON lives in `/workspace/survive-sunday/data/` (symlinked as `./data`).
 ## Disclaimer
 
 For entertainment among friends. Not a gambling service. Spreads/moneylines are informational only.
+
+Not affiliated with or endorsed by the NFL. Team names and logos are trademarks of their owners.
