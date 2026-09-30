@@ -6,13 +6,16 @@ import {
   recomputeWeeksSurvived,
 } from "@/lib/grading";
 import { normAbbr } from "@/lib/espn";
-import { syncTeamStandingsFromEspn } from "@/lib/espn-standings";
+import { syncTeamStandingsIfStale } from "@/lib/espn-standings";
 import { scheduleScoreUpdate } from "@/lib/notification-events";
 import { syncOddsFromEspnSnapshots } from "@/lib/espn-odds";
 import {
   fetchEspnWeekScoreboard,
+  freshScoreboardFetchedAt,
   type EspnGameSnapshot,
 } from "@/lib/espn-scoreboard";
+import { resolveSlateWeek, slateRefresher } from "@/lib/slate-refresh";
+import { enqueueWeekWork } from "@/lib/week-work-queue";
 
 export type { EspnGameSnapshot };
 export { fetchEspnWeekScoreboard };
@@ -41,13 +44,14 @@ export function buildEspnGameNote(
 export type WeekScoreSyncOpts = {
   /** Pending finals → results. Default true for cron and the sync API. */
   grade?: boolean;
-  /** ESPN W-L pull. Default true; player tabs pass false. */
+  /** ESPN W-L pull, capped by the Standings TTL. Default true; player tabs pass false. */
   standings?: boolean;
 };
 
 /**
- * Pull ESPN scoreboard into our Game rows for a pool week.
+ * Pull ESPN scoreboard into the Game rows of the week that owns them.
  * Overwrites demo/fake live scores. Does not invent scores — scheduled clears them.
+ * Call through `syncPoolWeekFromEspn`, which keys this by the slate owner's week.
  */
 export async function syncWeekScoresFromEspn(
   weekId: string,
@@ -58,7 +62,10 @@ export async function syncWeekScoresFromEspn(
   final: number;
   scheduled: number;
   graded: string[];
+  gradeRan: boolean;
   standingsUpdated: number;
+  /** Fetch time of the fresh scoreboard these rows came from; null after an ESPN failure. */
+  scoreboardAt: number | null;
   source: "espn";
 }> {
   const week = await prisma.week.findUniqueOrThrow({
@@ -67,6 +74,7 @@ export async function syncWeekScoresFromEspn(
   });
   const seasonYear = Number(String(week.pool.season).slice(0, 4)) || 2026;
   const snapshots = await fetchEspnWeekScoreboard(week.number, seasonYear);
+  const scoreboardAt = freshScoreboardFetchedAt(week.number, seasonYear);
   const byMatch = new Map(
     snapshots.map((s) => [matchKey(s.awayAbbr, s.homeAbbr), s] as const)
   );
@@ -145,35 +153,11 @@ export async function syncWeekScoresFromEspn(
     console.error("espn odds sync skipped", e);
   }
 
-  const grade = opts.grade !== false;
-  let graded: string[] = [];
-  if (grade) {
-    // Ungrade picks whose game is no longer final (e.g. premature demo finals).
-    const picks = await prisma.pick.findMany({
-      where: {
-        weekId,
-        result: { in: ["win", "loss", "push"] },
-        NOT: { source: "missed" },
-      },
-      include: { game: true },
-    });
-    for (const pick of picks) {
-      if (!pick.game || pick.game.status === "final") continue;
-      await undoPickMembershipEffect(pick.membershipId, pick.result);
-      await prisma.pick.update({
-        where: { id: pick.id },
-        data: { result: "pending", gradedAt: null },
-      });
-    }
+  const gradeRan = opts.grade !== false;
+  const graded = gradeRan ? await gradePoolWeek(weekId, week.poolId) : [];
 
-    graded = await gradeWeekPicks(weekId);
-    await recomputeWeeksSurvived(week.poolId);
-  }
-
-  const standings =
-    opts.standings === false
-      ? { updated: 0 }
-      : await syncTeamStandingsFromEspn();
+  const standingsUpdated =
+    opts.standings === false ? 0 : await syncTeamStandingsIfStale();
 
   return {
     updated,
@@ -181,47 +165,80 @@ export async function syncWeekScoresFromEspn(
     final,
     scheduled,
     graded,
-    standingsUpdated: standings.updated,
+    gradeRan,
+    standingsUpdated,
+    scoreboardAt,
     source: "espn",
   };
 }
 
+/** Grade one pool's week against whatever Game rows its picks point at. */
+async function gradePoolWeek(weekId: string, poolId: string): Promise<string[]> {
+  // Ungrade picks whose game is no longer final (e.g. premature demo finals).
+  const picks = await prisma.pick.findMany({
+    where: {
+      weekId,
+      result: { in: ["win", "loss", "push"] },
+      NOT: { source: "missed" },
+    },
+    include: { game: true },
+  });
+  for (const pick of picks) {
+    if (!pick.game || pick.game.status === "final") continue;
+    await undoPickMembershipEffect(pick.membershipId, pick.result);
+    await prisma.pick.update({
+      where: { id: pick.id },
+      data: { result: "pending", gradedAt: null },
+    });
+  }
+
+  const graded = await gradeWeekPicks(weekId);
+  await recomputeWeeksSurvived(poolId);
+  return graded;
+}
+
 /**
- * Score sync for the week the viewer is in. The live pool owns the Game
- * rows, so this is the existing sync. A pool that shares the slate updates
- * those same rows, then grades its own picks.
+ * Score sync for the week the viewer is in. Every caller (player tabs, the
+ * live poll, cron, week wrap) comes through here so the ESPN → Game write is
+ * keyed by the slate owner's Week: pools that borrow the slate share one write
+ * per scoreboard fetch, then grade only their own picks.
  */
 export async function syncPoolWeekFromEspn(
   viewerWeekId: string,
   opts: WeekScoreSyncOpts = {}
 ) {
-  const week = await prisma.week.findUnique({
-    where: { id: viewerWeekId },
-    select: {
-      id: true,
-      number: true,
-      poolId: true,
-      pool: { select: { slatePoolId: true } },
-      _count: { select: { games: true } },
-    },
-  });
-  if (!week) throw new Error("Week not found");
-  if (!week.pool.slatePoolId || week._count.games > 0) {
-    return syncWeekScoresFromEspn(viewerWeekId, opts);
+  const target = await resolveSlateWeek(viewerWeekId);
+  if (!target) throw new Error("Week not found");
+  const grade = opts.grade !== false;
+  const slate = await slateRefresher.run(target, () =>
+    enqueueWeekWork(target.slateWeekId, () =>
+      syncWeekScoresFromEspn(target.slateWeekId, { grade, standings: false })
+    )
+  );
+
+  const graded = new Set(slate?.graded ?? []);
+  if (grade && (target.borrowed || !slate?.gradeRan)) {
+    const own = await enqueueWeekWork(viewerWeekId, () =>
+      gradePoolWeek(viewerWeekId, target.viewerPoolId)
+    );
+    for (const id of own) graded.add(id);
   }
-  const slate = await prisma.week.findUnique({
-    where: {
-      poolId_number: { poolId: week.pool.slatePoolId, number: week.number },
-    },
-    select: { id: true },
-  });
-  const synced = await syncWeekScoresFromEspn(slate?.id ?? viewerWeekId, opts);
-  if (!slate || slate.id === viewerWeekId) return synced;
-  const extra = await gradeWeekPicks(viewerWeekId);
-  await recomputeWeeksSurvived(week.poolId);
+
+  const standingsUpdated =
+    opts.standings === false ? 0 : await syncTeamStandingsIfStale();
+
   return {
-    ...synced,
-    graded: [...new Set([...synced.graded, ...extra])],
+    updated: slate?.updated ?? 0,
+    live: slate?.live ?? 0,
+    final: slate?.final ?? 0,
+    scheduled: slate?.scheduled ?? 0,
+    graded: [...graded],
+    standingsUpdated,
+    slateWeekId: target.slateWeekId,
+    borrowed: target.borrowed,
+    /** False when the slate rows were already current and ESPN was not read. */
+    slateRefreshed: slate !== null,
+    source: "espn" as const,
   };
 }
 

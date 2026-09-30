@@ -1,4 +1,4 @@
-import { DISCLAIMER } from "@/lib/constants";
+import { DISCLAIMER, NFL_DISCLAIMER } from "@/lib/constants";
 
 export function FooterDisclaimer() {
   return (
@@ -6,7 +6,7 @@ export function FooterDisclaimer() {
       data-share-chrome=""
       className="text-center text-xs text-[var(--text-muted)] px-4 py-6 max-w-prose mx-auto"
     >
-      {DISCLAIMER}
+      {DISCLAIMER} {NFL_DISCLAIMER}
     </p>
   );
 }

@@ -1,3 +1,4 @@
+import { SectionBoundary } from "@/components/SectionBoundary";
 import { PickConfirmPanel } from "./PickConfirmPanel";
 import { PickCurrentCard } from "./PickCurrentCard";
 import { PickGameList } from "./PickGameList";
@@ -50,22 +51,29 @@ export function PickScreen({
   return (
     <div className="space-y-4">
       <PickHeader weekNumber={weekNumber} kicker={copy.kicker} />
-      <PickCurrentCard
-        games={list}
-        selectedAbbr={selectedAbbr}
-        readOnly={readOnly}
-        changeHint={changeHint}
-        emptyMessage={emptyMessage}
-        saving={busy}
-      />
-      <PickNotices
-        spectator={spectator}
-        week1Change={copy.showWeek1ChangeCard}
-        tipWeek={tipWeek}
-        banner={copy.banner}
-        msg={msg}
-        redirectIn={redirectIn}
-      />
+      <SectionBoundary
+        name="pick-current"
+        message="Your pick summary didn’t load. Your saved pick is safe — the games below still work."
+      >
+        <PickCurrentCard
+          games={list}
+          selectedAbbr={selectedAbbr}
+          readOnly={readOnly}
+          changeHint={changeHint}
+          emptyMessage={emptyMessage}
+          saving={busy}
+        />
+      </SectionBoundary>
+      <SectionBoundary name="pick-notices" variant="inline" message="Notices didn’t load.">
+        <PickNotices
+          spectator={spectator}
+          week1Change={copy.showWeek1ChangeCard}
+          tipWeek={tipWeek}
+          banner={copy.banner}
+          msg={msg}
+          redirectIn={redirectIn}
+        />
+      </SectionBoundary>
       <PickGameList
         weekNumber={weekNumber}
         games={list}

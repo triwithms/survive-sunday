@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
-import { prisma } from "@/lib/db";
+import { findPoolGame } from "@/lib/slate-games";
 import { loadGameVideos } from "@/lib/youtube-videos";
 import { youtubeSearchUrl } from "@/lib/youtube-parse";
 
@@ -24,11 +24,8 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing gameId" }, { status: 400 });
   }
 
-  const game = await prisma.game.findUnique({
-    where: { id: gameId },
-    include: { week: true },
-  });
-  if (!game || game.week.poolId !== me.poolId) {
+  const game = await findPoolGame(me.poolId, gameId);
+  if (!game) {
     return NextResponse.json({ error: "Game not found" }, { status: 404 });
   }
 

@@ -21,6 +21,7 @@ export function GameHighlights({
 }) {
   const [data, setData] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(0);
   const live = status === "live";
   const final = status === "final";
   const phase = data?.phase ?? (live || final ? "highlight" : "preview");
@@ -54,9 +55,9 @@ export function GameHighlights({
     return () => {
       cancelled = true;
     };
-  }, [gameId, live, final]);
+  }, [gameId, live, final, reload]);
 
-  const videos = data?.videos ?? [];
+  const videos = Array.isArray(data?.videos) ? data.videos : [];
 
   return (
     <section>
@@ -93,6 +94,15 @@ export function GameHighlights({
             >
               Watch on YouTube
             </a>
+          ) : null}
+          {data?.unavailable ? (
+            <button
+              type="button"
+              onClick={() => setReload((n) => n + 1)}
+              className="ml-1 inline-flex min-h-11 items-center px-1 font-semibold text-gold-400 underline-offset-2 hover:underline"
+            >
+              Retry
+            </button>
           ) : null}
         </p>
       )}

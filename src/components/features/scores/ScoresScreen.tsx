@@ -1,3 +1,4 @@
+import { SectionBoundary } from "@/components/SectionBoundary";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
 import { ScoreGameCard } from "./ScoreGameCard";
 import { ScoresHeading } from "./ScoresHeading";
@@ -31,32 +32,44 @@ export function ScoresScreen(props: ScoresScreenProps) {
           back when the games are available.
         </div>
       ) : (
-        <ul className="space-y-2" data-share-section="games">
-          {props.games.map((game) => (
-            <ScoreGameCard
-              key={game.id}
-              game={game}
-              weekNumber={props.selectedWeek}
-              startOpen={game.id === props.openGameId}
-            />
-          ))}
-        </ul>
+        <SectionBoundary
+          name="scores-games"
+          message="Scores didn’t load. Participants’ picks below still work."
+          resetKey={props.selectedWeek}
+        >
+          <ul className="space-y-2" data-share-section="games">
+            {props.games.map((game) => (
+              <ScoreGameCard
+                key={game.id}
+                game={game}
+                weekNumber={props.selectedWeek}
+                startOpen={game.id === props.openGameId}
+              />
+            ))}
+          </ul>
+        </SectionBoundary>
       )}
-      <section className="space-y-3" data-share-section="picks">
-        <div className="flex flex-wrap items-baseline gap-2" data-share-chunk="">
-          <h2 className="font-display text-xl text-gold-400 tracking-wide">
-            Participants&apos; picks
-          </h2>
-          <span className="text-xs text-[var(--text-muted)]">
-            {props.revealAllPicks ? "Picks revealed" : "Others reveal after kickoff"}
-          </span>
-        </div>
-        <ul className="space-y-2">
-          {props.rows.map((row) => (
-            <ScoresPickRow key={row.id} row={row} />
-          ))}
-        </ul>
-      </section>
+      <SectionBoundary
+        name="scores-picks"
+        message="Participants’ picks didn’t load."
+        resetKey={props.selectedWeek}
+      >
+        <section className="space-y-3" data-share-section="picks">
+          <div className="flex flex-wrap items-baseline gap-2" data-share-chunk="">
+            <h2 className="font-display text-xl text-gold-400 tracking-wide">
+              Participants&apos; picks
+            </h2>
+            <span className="text-xs text-[var(--text-muted)]">
+              {props.revealAllPicks ? "Picks revealed" : "Others reveal after kickoff"}
+            </span>
+          </div>
+          <ul className="space-y-2">
+            {props.rows.map((row) => (
+              <ScoresPickRow key={row.id} row={row} />
+            ))}
+          </ul>
+        </section>
+      </SectionBoundary>
       <p data-share-stamp="" className="text-[11px] text-[var(--text-muted)] pt-1">
         Survive Sunday · {props.heading.weekLabel} · for friends, not betting
       </p>

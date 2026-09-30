@@ -4,6 +4,7 @@ export {
   TEAM_HELMET_PLACEHOLDER,
 } from "./team-helmets";
 export type { BrokenLogoSrcs } from "./team-helmets";
+import { canonicalTeamAbbr } from "./team-abbr";
 
 /** App abbr (WAS) → ESPN team id. Safe for parser tests (no server-only). */
 export const ESPN_TEAM_IDS: Record<string, string> = {
@@ -45,9 +46,9 @@ const ESPN_ID_TO_ABBR: Record<string, string> = Object.fromEntries(
   Object.entries(ESPN_TEAM_IDS).map(([abbr, id]) => [id, abbr])
 );
 
+/** Any feed spelling (WSH, LA, JAC, …) → app abbr. Aliases live in `team-abbr.ts`. */
 export function normAbbr(abbr: string): string {
-  const u = abbr.trim().toUpperCase();
-  return u === "WSH" ? "WAS" : u;
+  return canonicalTeamAbbr(abbr);
 }
 
 /** App abbr (WAS) → ESPN site abbreviation (WSH). */

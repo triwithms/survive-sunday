@@ -1,5 +1,6 @@
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
+import { SectionBoundary } from "@/components/SectionBoundary";
 import { Chip } from "@/components/ui";
 import { ScheduleGameRow } from "./ScheduleGameRow";
 import type { ScheduleScreenProps } from "./types";
@@ -26,7 +27,14 @@ export function ScheduleScreen(props: ScheduleScreenProps) {
         allowFuture
       />
 
-      <LiveScoresRefresh weekNumber={props.selectedWeek} poll={props.poll} />
+      <SectionBoundary
+        name="schedule-live-refresh"
+        variant="inline"
+        message="Live score refresh paused."
+        resetKey={props.selectedWeek}
+      >
+        <LiveScoresRefresh weekNumber={props.selectedWeek} poll={props.poll} />
+      </SectionBoundary>
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-baseline gap-2">

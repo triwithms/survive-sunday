@@ -1,4 +1,5 @@
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
+import { SectionBoundary } from "@/components/SectionBoundary";
 import { WeekSwitcher } from "@/components/WeekSwitcher";
 import { HomeWeekHeader } from "./HomeWeekHeader";
 import { SelectionsList } from "./SelectionsList";
@@ -21,11 +22,13 @@ export function HomeScreen(props: HomeScreenProps) {
           </p>
         </div>
       ) : (
-        <HomeWeekHeader
-          label={props.weekLabel}
-          lockAt={props.lockAt}
-          revealAllPicks={props.revealAllPicks}
-        />
+        <SectionBoundary name="home-week-header" variant="inline" resetKey={props.selectedWeek}>
+          <HomeWeekHeader
+            label={props.weekLabel}
+            lockAt={props.lockAt}
+            revealAllPicks={props.revealAllPicks}
+          />
+        </SectionBoundary>
       )}
       {props.startNotice ? null : (
       <WeekSwitcher
@@ -36,7 +39,14 @@ export function HomeScreen(props: HomeScreenProps) {
       />
       )}
       {props.startNotice ? null : (
-        <LiveScoresRefresh weekNumber={props.selectedWeek} poll={props.poll} />
+        <SectionBoundary
+          name="home-live-refresh"
+          variant="inline"
+          message="Live score refresh paused."
+          resetKey={props.selectedWeek}
+        >
+          <LiveScoresRefresh weekNumber={props.selectedWeek} poll={props.poll} />
+        </SectionBoundary>
       )}
       {props.startNotice ? null : (
       <SelectionsList

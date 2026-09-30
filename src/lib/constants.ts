@@ -14,4 +14,7 @@ export const STATUS_LABELS: Record<string, string> = {
 };
 
 export const DISCLAIMER =
-  "For entertainment among friends. Not a gambling service. Spreads and moneylines are informational only.";
+  "For entertainment among friends. Not a gambling service.";
+
+export const NFL_DISCLAIMER =
+  "Not affiliated with or endorsed by the NFL. Team names and logos are trademarks of their owners.";

@@ -11,6 +11,25 @@ export async function slateSourcePoolId(poolId: string): Promise<string | null> 
   return pool?.slatePoolId ?? null;
 }
 
+const poolGameInclude = {
+  week: { include: { pool: { select: { season: true } } } },
+} as const;
+
+/** A game this pool can show: its own row, else one on the slate it borrows. */
+export async function findPoolGame(poolId: string, gameId: string) {
+  const own = await prisma.game.findFirst({
+    where: { id: gameId, week: { poolId } },
+    include: poolGameInclude,
+  });
+  if (own) return own;
+  const source = await slateSourcePoolId(poolId);
+  if (!source || source === poolId) return null;
+  return prisma.game.findFirst({
+    where: { id: gameId, week: { poolId: source } },
+    include: poolGameInclude,
+  });
+}
+
 /** Games keyed by week number from the shared slate. Null if this pool owns them. */
 export async function slateGamesByNumber(poolId: string) {
   const source = await slateSourcePoolId(poolId);

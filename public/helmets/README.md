@@ -9,8 +9,15 @@ Committed NFL team marks for all 32 clubs used in Survive Sunday.
   already include an outline in the art so they stay readable on dark Scores cards.
 - `_placeholder.svg` is a neutral helmet graphic (no letters) if a local PNG fails.
 
-`TeamLogo` uses `/helmets/{abbr}.png` only, then this placeholder. No ESPN/CDN lookup.
+`TeamLogo` uses `/helmets/{file}.png` only, then this placeholder. No ESPN/CDN lookup.
 It never shows abbreviation letter badges.
+
+Abbreviation → file lives in one place: `src/lib/team-abbr.ts`. `TEAM_HELMET_FILES`
+maps the 32 app abbrs to these files; `TEAM_ABBR_ALIASES` maps every other feed
+spelling (WSH→WAS, LA/STL→LAR, JAC→JAX, SD→LAC, OAK/LVR→LV, …). Input is trimmed
+and case-folded first. If a new feed spelling shows a placeholder, add it to
+`TEAM_ABBR_ALIASES` — never add a duplicate PNG. `npm run verify:helmet-aliases`
+checks that every club and alias resolves to a file here.
 
 The repo owner accepts responsibility for storing these local/saved helmet image backups.
 

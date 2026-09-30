@@ -29,6 +29,12 @@ jobs:
       - name: Multi-pool
         run: npm run verify:multi-pool
 
+      - name: Slate refresh
+        run: npm run verify:slate-refresh
+
+      - name: Static cache
+        run: npm run verify:static-cache
+
       - name: Pool invite
         run: npm run verify:pool-invite
 
@@ -43,6 +49,15 @@ jobs:
 
       - name: Login screen
         run: npm run verify:login-screen
+
+      - name: Crash walls
+        run: npm run verify:crash-walls
+
+      - name: Team logos
+        run: npm run verify:team-logo
+
+      - name: Helmet aliases
+        run: npm run verify:helmet-aliases
 
       - name: App chrome and scroll
         run: npm run verify:app-chrome
