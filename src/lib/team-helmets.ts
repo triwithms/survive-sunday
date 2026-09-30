@@ -1,5 +1,7 @@
 /** Local committed helmet backups. App abbr (WAS), not ESPN (WSH). */
 
+import { canonicalTeamAbbr } from "./team-abbr";
+
 export const TEAM_HELMET_PLACEHOLDER = "/helmets/_placeholder.svg";
 
 const LOCAL_HELMET_PATH = /^\/helmets\/[^/?#]+\.png$/i;
@@ -12,30 +14,36 @@ export function isLocalHelmetPath(src: string): boolean {
 }
 
 /**
- * Always `/helmets/{appAbbr}.png` in lowercase.
- * WAS file, not WSH; never an uppercase filename.
+ * Always `/helmets/{appAbbr}.png` in lowercase. Aliases (WSH, LA, JAC, team
+ * names…) map through `TEAM_ABBR_ALIASES` in `team-abbr.ts`.
  */
 export function localHelmetSrc(abbr: string): string {
-  return `/helmets/${helmetFileStem(abbr)}.png`;
+  const stem = helmetFileStem(abbr);
+  const key = canonicalTeamAbbr(stem) ?? stem;
+  return `/helmets/${key.toLowerCase()}.png`;
+}
+
+/** Local PNG for a known team; null when no committed helmet can match. */
+export function knownHelmetSrc(abbr: string | null | undefined): string | null {
+  if (!abbr) return null;
+  return canonicalTeamAbbr(helmetFileStem(abbr)) ? localHelmetSrc(abbr) : null;
 }
 
 /** Local helmet, then local placeholder. No CDN / stored URL. */
 export function resolveTeamLogoSrc(
-  abbr: string,
+  abbr: string | null | undefined,
   _stored: string | null | undefined,
   broken: BrokenLogoSrcs
 ): string {
-  const local = localHelmetSrc(abbr);
+  const local = knownHelmetSrc(abbr);
   const failed = new Set(
     broken == null ? [] : typeof broken === "string" ? [broken] : broken
   );
-  if (!failed.has(local)) return local;
+  if (local && !failed.has(local)) return local;
   return TEAM_HELMET_PLACEHOLDER;
 }
 
 function helmetFileStem(abbr: string): string {
   const leaf = abbr.trim().split(/[/\\]/).pop() ?? "";
-  const stem = leaf.replace(/\.png$/i, "").trim();
-  const key = stem.toUpperCase() === "WSH" ? "WAS" : stem.toUpperCase();
-  return key.toLowerCase();
+  return leaf.replace(/\.png$/i, "").trim();
 }

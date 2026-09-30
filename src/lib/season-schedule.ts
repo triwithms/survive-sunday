@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { normalizeTeamAbbr } from "./team-abbr";
 
 export type SeasonGameIn = {
   away: string;
@@ -43,16 +44,8 @@ export const SEASON_DATA_DIRS = [
   path.resolve("/workspace/survive-sunday/data"),
 ];
 
-const ABBR_ALIASES: Record<string, string> = {
-  WSH: "WAS",
-  WFT: "WAS",
-  JAC: "JAX",
-  LA: "LAR",
-};
-
 export function normalizeAbbr(abbr: string): string {
-  const a = abbr.trim().toUpperCase();
-  return ABBR_ALIASES[a] ?? a;
+  return normalizeTeamAbbr(abbr);
 }
 
 /** ESPN Week 18 flex slots often land at Sunday 05:00Z (midnight ET). Use 1pm ET. */

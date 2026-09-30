@@ -43,3 +43,9 @@ jobs:
 
       - name: Login screen
         run: npm run verify:login-screen
+
+      - name: Team logo
+        run: npm run verify:team-logo
+
+      - name: Helmet aliases
+        run: npm run verify:helmet-aliases
