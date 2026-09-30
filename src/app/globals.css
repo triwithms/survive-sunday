@@ -95,14 +95,15 @@ body {
 }
 
 /* Popups: the card scrolls on its own and its first child (title + Close)
-   stays pinned. Margins reach into the card padding so nothing moves at rest. */
+   stays pinned. Margins reach into the card padding so nothing moves at rest;
+   sticky offsets count from inside the card padding, hence top: -pad. */
 .popup-card {
   overflow-y: auto;
   overscroll-behavior: contain;
 }
 .popup-card > :first-child {
   position: sticky;
-  top: 0;
+  top: calc(-1 * var(--popup-pad, 1.25rem));
   z-index: 10;
   margin: calc(-1 * var(--popup-pad, 1.25rem)) calc(-1 * var(--popup-pad, 1.25rem)) -0.5rem;
   padding: var(--popup-pad, 1.25rem) var(--popup-pad, 1.25rem) 0.5rem;
@@ -114,7 +115,7 @@ body {
 /* A bottom action row that holds Close stays pinned to the card's bottom. */
 .popup-card > .popup-footer:last-child {
   position: sticky;
-  bottom: var(--popup-pad, 1.25rem);
+  bottom: 0;
   z-index: 10;
   background: var(--popup-bg, var(--stadium-800));
   box-shadow: 0 var(--popup-pad, 1.25rem) 0 0 var(--popup-bg, var(--stadium-800));
