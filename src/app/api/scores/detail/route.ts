@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getMembershipForUser } from "@/lib/session";
-import { prisma } from "@/lib/db";
+import { findPoolGame } from "@/lib/slate-games";
 import { fetchEspnGameDetail } from "@/lib/espn-game-detail";
 
 export const dynamic = "force-dynamic";
@@ -23,11 +23,8 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing gameId" }, { status: 400 });
   }
 
-  const game = await prisma.game.findUnique({
-    where: { id: gameId },
-    include: { week: { include: { pool: true } } },
-  });
-  if (!game || game.week.poolId !== me.poolId) {
+  const game = await findPoolGame(me.poolId, gameId);
+  if (!game) {
     return NextResponse.json({ error: "Game not found" }, { status: 404 });
   }
 

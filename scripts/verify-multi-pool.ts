@@ -66,6 +66,21 @@ function assertSlateOverlay() {
   assert.equal(overlayGamesByNumber(empty, null)[0]?.games.length, 0);
 }
 
+function assertGameLookupsFollowSlate() {
+  const slate = readFileSync("src/lib/slate-games.ts", "utf8");
+  assert.match(slate, /export async function findPoolGame/);
+  assert.match(slate, /slateSourcePoolId\(poolId\)/);
+  for (const file of [
+    "src/app/api/scores/detail/route.ts",
+    "src/app/api/videos/game/route.ts",
+    "src/lib/page-week.ts",
+  ]) {
+    const source = readFileSync(file, "utf8");
+    assert.match(source, /findPoolGame\(/, file);
+    assert.doesNotMatch(source, /week\.poolId !== me\.poolId/, file);
+  }
+}
+
 function assertJoinLink() {
   const url = personalInviteUrl(
     "https://survive-sunday.vercel.app",
@@ -99,6 +114,7 @@ function assertMigrationIsAdditive() {
 assertActivePool();
 assertCreateInput();
 assertSlateOverlay();
+assertGameLookupsFollowSlate();
 assertJoinLink();
 assertMigrationIsAdditive();
 console.log("verify-multi-pool OK");
