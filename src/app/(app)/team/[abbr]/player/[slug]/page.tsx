@@ -15,7 +15,7 @@ import {
 import { getTeamInjuries } from "@/lib/live-injuries";
 import { roleLabel, sideLabel } from "@/lib/nfl-player";
 import { formatKickoff } from "@/lib/utils";
-import { normAbbr, teamLogoUrl } from "@/lib/espn-teams";
+import { normAbbr } from "@/lib/espn-teams";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -48,7 +48,10 @@ export default async function NflPlayerPage({
   const { abbr: rawAbbr, slug: rawSlug } = await params;
   const abbr = normAbbr(rawAbbr);
   const slug = decodeURIComponent(rawSlug || "");
-  const team = await prisma.team.findUnique({ where: { abbr } });
+  const team = await prisma.team.findUnique({
+    where: { abbr },
+    select: { abbr: true, name: true },
+  });
   if (!team) notFound();
 
   const found = findKeyOrRosterPlayer(abbr, slug);
@@ -102,7 +105,7 @@ export default async function NflPlayerPage({
       <header className="card-glass p-4 flex items-start gap-3 min-w-0">
         <TeamLogo
           abbr={team.abbr}
-          logoUrl={teamLogoUrl(team.abbr, team.logoUrl)}
+          logoUrl={null}
           size={TEAM_LOGO_SIZE.featured}
         />
         <div className="min-w-0 flex-1">

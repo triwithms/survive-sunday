@@ -63,6 +63,10 @@ export async function syncWeekScoresFromEspn(
   scheduled: number;
   graded: string[];
   gradeRan: boolean;
+  /** Games whose status flipped to final on this pull. */
+  justFinished: number;
+  /** True when this pull graded every pool that shares the slate. */
+  gradedAllPools: boolean;
   standingsUpdated: number;
   /** Fetch time of the fresh scoreboard these rows came from; null after an ESPN failure. */
   scoreboardAt: number | null;
@@ -83,6 +87,7 @@ export async function syncWeekScoresFromEspn(
   let live = 0;
   let final = 0;
   let scheduled = 0;
+  let justFinished = 0;
 
   for (const game of week.games) {
     const snap = byMatch.get(matchKey(game.awayAbbr, game.homeAbbr));
@@ -109,6 +114,7 @@ export async function syncWeekScoresFromEspn(
       game.note !== note;
 
     if (!changed) continue;
+    if (snap.status === "final" && game.status !== "final") justFinished += 1;
 
     await prisma.game.update({
       where: { id: game.id },
@@ -153,8 +159,18 @@ export async function syncWeekScoresFromEspn(
     console.error("espn odds sync skipped", e);
   }
 
-  const gradeRan = opts.grade !== false;
-  const graded = gradeRan ? await gradePoolWeek(weekId, week.poolId) : [];
+  const fullGrade = opts.grade !== false;
+  let graded: string[] = [];
+  let gradeRan = false;
+  let gradedAllPools = false;
+  if (fullGrade) {
+    graded = await gradePoolWeek(weekId, week.poolId);
+    gradeRan = true;
+  } else if (justFinished > 0) {
+    graded = await gradePoolsOnSlate(week.poolId, week.number);
+    gradeRan = true;
+    gradedAllPools = true;
+  }
 
   const standingsUpdated =
     opts.standings === false ? 0 : await syncTeamStandingsIfStale();
@@ -166,6 +182,8 @@ export async function syncWeekScoresFromEspn(
     scheduled,
     graded,
     gradeRan,
+    justFinished,
+    gradedAllPools,
     standingsUpdated,
     scoreboardAt,
     source: "espn",
@@ -197,6 +215,23 @@ async function gradePoolWeek(weekId: string, poolId: string): Promise<string[]> 
   return graded;
 }
 
+/** Owner week plus every pool that borrows this slate, for one finish. */
+async function gradePoolsOnSlate(poolId: string, weekNumber: number): Promise<string[]> {
+  const pools = await prisma.pool.findMany({
+    where: { OR: [{ id: poolId }, { slatePoolId: poolId }] },
+    select: { id: true },
+  });
+  const weeks = await prisma.week.findMany({
+    where: { number: weekNumber, poolId: { in: pools.map((pool) => pool.id) } },
+    select: { id: true, poolId: true },
+  });
+  const graded: string[] = [];
+  for (const row of weeks) {
+    graded.push(...(await gradePoolWeek(row.id, row.poolId)));
+  }
+  return graded;
+}
+
 /**
  * Score sync for the week the viewer is in. Every caller (player tabs, the
  * live poll, cron, week wrap) comes through here so the ESPN → Game write is
@@ -216,8 +251,9 @@ export async function syncPoolWeekFromEspn(
     )
   );
 
+  const justFinished = slate?.justFinished ?? 0;
   const graded = new Set(slate?.graded ?? []);
-  if (grade && (target.borrowed || !slate?.gradeRan)) {
+  if (grade && !slate?.gradedAllPools && (target.borrowed || !slate?.gradeRan)) {
     const own = await enqueueWeekWork(viewerWeekId, () =>
       gradePoolWeek(viewerWeekId, target.viewerPoolId)
     );
@@ -225,7 +261,9 @@ export async function syncPoolWeekFromEspn(
   }
 
   const standingsUpdated =
-    opts.standings === false ? 0 : await syncTeamStandingsIfStale();
+    opts.standings === false && justFinished === 0
+      ? 0
+      : await syncTeamStandingsIfStale();
 
   return {
     updated: slate?.updated ?? 0,
@@ -233,6 +271,7 @@ export async function syncPoolWeekFromEspn(
     final: slate?.final ?? 0,
     scheduled: slate?.scheduled ?? 0,
     graded: [...graded],
+    justFinished,
     standingsUpdated,
     slateWeekId: target.slateWeekId,
     borrowed: target.borrowed,

@@ -1,7 +1,7 @@
 import "server-only";
 import { prisma } from "@/lib/db";
 import { requireMembership } from "@/lib/require-membership";
-import { isWeekLocked, MISSED_TEAM } from "@/lib/grading";
+import { isWeekLocked } from "@/lib/grading";
 import { resolvedPoolWeek } from "@/lib/pool-current-week-db";
 import { deferWeekLockedEffects } from "@/lib/week-lock-effects";
 import { gameForPick, playerCanChangeCurrentPick } from "@/lib/pick-change";
@@ -88,16 +88,8 @@ export async function loadBoardPage(): Promise<BoardScreenProps> {
         existingGame: gameForPick(myBoardPick, week.games),
       })
     : false;
-  const teamAbbrs = [...new Set((week?.picks ?? [])
-    .filter((p) => p.source !== "missed" && p.teamAbbr !== MISSED_TEAM)
-    .map((p) => p.teamAbbr))];
-  const logoByAbbr = new Map(
-    (teamAbbrs.length
-      ? await prisma.team.findMany({ where: { abbr: { in: teamAbbrs } }, select: { abbr: true, logoUrl: true } })
-      : []).map((t) => [t.abbr, t.logoUrl])
-  );
   const page = assembleBoardPage({
-    me, currentWeek, week, sorted, participants, pickByMember, logoByAbbr,
+    me, currentWeek, week, sorted, participants, pickByMember,
     locked, canChangePick,
   });
   const decision = resolvePlayerPickWeekFromLoaded({

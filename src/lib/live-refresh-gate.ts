@@ -13,3 +13,14 @@ export function shouldRunLiveScoreSync(opts: {
   if (!opts.visible) return false;
   return opts.now - opts.lastSyncAt >= opts.intervalMs;
 }
+
+/** True when the Sunday poll should re-render the open tab. */
+export function scoreSyncShouldRefresh(
+  body: { changed?: boolean; updated?: number; mirrored?: number } | null
+): boolean {
+  if (!body || typeof body !== "object") return false;
+  if (body.changed === true) return true;
+  if ((body.updated ?? 0) > 0) return true;
+  if ((body.mirrored ?? 0) > 0) return true;
+  return false;
+}

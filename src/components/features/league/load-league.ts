@@ -2,7 +2,6 @@ import "server-only";
 import { prisma } from "@/lib/db";
 import { requireMembership } from "@/lib/require-membership";
 import { scheduleTeamStandingsRefresh } from "@/lib/espn-standings";
-import { teamLogoUrl } from "@/lib/espn-teams";
 import type { StandingRow } from "@/components/NflStandingsClient";
 
 export type LeaguePageData = {
@@ -16,12 +15,25 @@ export async function loadLeaguePage(): Promise<LeaguePageData> {
   scheduleTeamStandingsRefresh();
   const teams = await prisma.team.findMany({
     orderBy: [{ conference: "asc" }, { division: "asc" }, { divisionRank: "asc" }],
+    select: {
+      abbr: true,
+      name: true,
+      conference: true,
+      division: true,
+      wins: true,
+      losses: true,
+      ties: true,
+      divisionRank: true,
+      pointsFor: true,
+      pointsAgainst: true,
+      priorYearRank: true,
+    },
   });
   return {
     teams: teams.map((t) => ({
       abbr: t.abbr,
       name: t.name,
-      logoUrl: teamLogoUrl(t.abbr, t.logoUrl),
+      logoUrl: null,
       conference: t.conference,
       division: t.division,
       wins: t.wins,

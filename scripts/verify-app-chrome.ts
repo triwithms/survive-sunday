@@ -39,6 +39,10 @@ assert.doesNotMatch(
 assert.match(nav, /z-40/);
 assert.match(nav, /pb-\[env\(safe-area-inset-bottom\)\]/);
 assert.match(nav, /bg-stadium-900\/95/);
+assert.match(nav, /prefetch=\{false\}/);
+assert.doesNotMatch(nav, /prefetch=\{true\}/);
+assert.match(nav, /useLinkStatus/);
+assert.match(nav, /data-nav-pending/);
 assert.match(nav, /My pick/);
 assert.match(nav, /Selections/);
 assert.match(nav, /Leaderboard/);

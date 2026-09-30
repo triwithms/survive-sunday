@@ -42,6 +42,7 @@ export async function submitPickForMembership(input: {
       membershipId_weekId: { membershipId: membership.id, weekId: week.id },
     },
   });
+  // Server lock. A cached My pick / Scores tab cannot skip this.
   const change = evaluatePickChange({
     weekNumber,
     weekLocked: isWeekLocked(week),

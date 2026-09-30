@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   LIVE_SCORE_POLL_MS,
+  scoreSyncShouldRefresh,
   shouldRunLiveScoreSync,
 } from "@/lib/live-refresh-gate";
 
@@ -50,12 +51,21 @@ export function LiveScoresRefresh({
       lastLiveSyncAt = Date.now();
       setPending(true);
       try {
-        await fetch("/api/scores/sync", {
+        const res = await fetch("/api/scores/sync", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ week: weekNumber }),
         });
-        router.refresh();
+        const data = res.ok
+          ? ((await res.json().catch(() => null)) as {
+              changed?: boolean;
+              updated?: number;
+              mirrored?: number;
+            } | null)
+          : null;
+        // Unchanged scoreboard: do not refresh. That would re-read Neon
+        // for a tab that already shows the saved rows.
+        if (scoreSyncShouldRefresh(data)) router.refresh();
       } catch {
         // keep last paint — next visible tick retries
       } finally {

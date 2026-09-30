@@ -56,6 +56,9 @@ jobs:
       - name: Team logos
         run: npm run verify:team-logo
 
+      - name: Tab cache
+        run: npm run verify:tab-cache
+
       - name: Helmet aliases
         run: npm run verify:helmet-aliases
 

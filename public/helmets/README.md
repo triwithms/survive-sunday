@@ -3,6 +3,7 @@
 Committed NFL team marks for all 32 clubs used in Survive Sunday.
 
 - Files: `{abbr}.png` using **app** abbreviations (`was.png`, not ESPN’s `wsh.png`).
+- Size: **256×256** PNG so the mark stays sharp at the 44–96px UI sizes (2× retina of the 96px hero, and under a 256px cap). `nyj.png` is the same size as the other clubs.
 - Source (downloaded once, stored here): ESPN NFL 500 marks. Runtime never fetches the CDN.
   - Washington CDN slug is `wsh`; we save it as `was.png`.
 - Marks use a transparent background (no white rounded plates). Navy / thin marks
