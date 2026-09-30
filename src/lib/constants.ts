@@ -17,4 +17,4 @@ export const DISCLAIMER =
   "For entertainment among friends. Not a gambling service.";
 
 export const NFL_DISCLAIMER =
-  "Team names and logos are trademarks of their owners.";
+  "Not affiliated with or endorsed by the NFL. Team names and logos are trademarks of their owners.";
