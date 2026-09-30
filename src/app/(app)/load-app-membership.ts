@@ -8,6 +8,7 @@ import {
   profileIsComplete,
   snapshotFromMember,
 } from "@/lib/profile-complete";
+import { showTeamLogosFor } from "@/lib/team-logos";
 
 export type AppMembership = {
   userId: string;
@@ -21,6 +22,8 @@ export type AppMembership = {
   poolCurrentWeek: number;
   poolStartWeek: number | null;
   singleEliminationFromWeek: number | null;
+  /** Pool switch after TEAM_LOGOS_DISABLED. */
+  showTeamLogos: boolean;
   isPlayer: boolean;
   isAdmin: boolean;
   roleView: RoleView;
@@ -58,6 +61,7 @@ export async function loadAppMembership(): Promise<AppMembership> {
     poolCurrentWeek: membership.pool.currentWeek,
     poolStartWeek: membership.pool.startWeek,
     singleEliminationFromWeek: membership.pool.singleEliminationFromWeek,
+    showTeamLogos: showTeamLogosFor(membership.pool.showTeamLogos),
     isPlayer: ctx.isPlayer,
     isAdmin: ctx.isAdmin,
     roleView,

@@ -1,7 +1,7 @@
 import {
   escapeHtml,
-  helmetImg,
   mutedRow,
+  teamMarkHtml,
   WRAP_FONT,
   WRAP_LOSS,
   WRAP_MUTED,
@@ -21,10 +21,10 @@ const CELL = `padding:6px 0;font-family:${WRAP_FONT};vertical-align:middle;`;
 
 function playerRow(
   player: WeekWrapPlayer,
-  opts: { logos: boolean; color: string; note?: string }
+  opts: { logos: boolean; teamLogos: boolean; color: string; note?: string }
 ): string {
   const pick = hasTeamPick(player);
-  const logo = opts.logos && pick ? helmetImg(player.teamAbbr ?? "", 28) : "";
+  const logo = opts.logos && pick ? teamMarkHtml(player.teamAbbr ?? "", 28, opts.teamLogos) : "";
   const abbr = opts.logos
     ? pick ? escapeHtml((player.teamAbbr ?? "").toUpperCase()) : "No pick"
     : "";
@@ -46,16 +46,17 @@ function rows(
 /** Won, Lost, Eliminated (only when someone went out), then any ungraded seats. */
 export function wrapResultsHtml(
   players: WeekWrapPlayer[],
-  blocks: WeekWrapBlocks
+  blocks: WeekWrapBlocks,
+  teamLogos: boolean
 ): string {
   if (!showWrapResults(blocks)) return "";
   const logos = blocks.picks;
   const groups = wrapResultGroups(players);
   const won = rows(groups.won, "Nobody this week.", (p) =>
-    playerRow(p, { logos, color: WRAP_WIN })
+    playerRow(p, { logos, teamLogos, color: WRAP_WIN })
   );
   const lost = rows(groups.lost, "Nobody lost this week.", (p) =>
-    playerRow(p, { logos, color: WRAP_LOSS, note: lostStillIn(p) ? "still in" : undefined })
+    playerRow(p, { logos, teamLogos, color: WRAP_LOSS, note: lostStillIn(p) ? "still in" : undefined })
   );
   const parts = [
     wrapSection("Won this week", won),
@@ -65,7 +66,7 @@ export function wrapResultsHtml(
     parts.push(
       wrapSection(
         "Eliminated this week",
-        groups.out.map((p) => playerRow(p, { logos, color: WRAP_LOSS })).join("")
+        groups.out.map((p) => playerRow(p, { logos, teamLogos, color: WRAP_LOSS })).join("")
       )
     );
   }
@@ -73,7 +74,7 @@ export function wrapResultsHtml(
     parts.push(
       wrapSection(
         "No result yet",
-        groups.pending.map((p) => playerRow(p, { logos, color: WRAP_MUTED })).join("")
+        groups.pending.map((p) => playerRow(p, { logos, teamLogos, color: WRAP_MUTED })).join("")
       )
     );
   }

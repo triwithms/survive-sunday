@@ -26,11 +26,12 @@ function boardCta(url: string): string {
  */
 export function weekWrapBodyHtml(parts: WeekWrapEmailParts): string {
   const { blocks, facts } = parts;
+  const teamLogos = facts.teamLogos !== false;
   const out = [`<div style="margin:0 0 16px;">${paragraphs(parts.intro)}</div>`];
-  out.push(wrapResultsHtml(facts.players, blocks));
+  out.push(wrapResultsHtml(facts.players, blocks, teamLogos));
   if (blocks.board) {
-    out.push(wrapBoardHtml(facts.board, facts.players));
-    out.push(wrapNflHtml(facts.nfl));
+    out.push(wrapBoardHtml(facts.board, facts.players, teamLogos));
+    out.push(wrapNflHtml(facts.nfl, teamLogos));
   }
   if (parts.drama) out.push(paragraphs(parts.drama));
   out.push(touchdownEmailHtml(parts.clip));

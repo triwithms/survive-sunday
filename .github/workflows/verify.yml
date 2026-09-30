@@ -58,3 +58,6 @@ jobs:
 
       - name: Helmet aliases
         run: npm run verify:helmet-aliases
+
+      - name: Team logos setting
+        run: npm run verify:team-logos-setting

@@ -31,11 +31,15 @@ export function useWeekWrap(data: WeekWrapPanelData) {
         boardUrl: data.boardUrl,
         board: data.board,
         nfl: data.nfl,
+        teamLogos: data.teamLogos,
       },
       emailOverride,
       smsOverride,
     });
-  }, [week, tone, blocks, emailOverride, smsOverride, data.boardUrl, data.board, data.nfl]);
+  }, [
+    week, tone, blocks, emailOverride, smsOverride,
+    data.boardUrl, data.board, data.nfl, data.teamLogos,
+  ]);
 
   function toggle(key: keyof WeekWrapBlocks) {
     setBlocks((prev) => ({ ...prev, [key]: !prev[key] }));

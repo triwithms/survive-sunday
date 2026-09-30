@@ -7,6 +7,7 @@ import { PoolInviteCard } from "./PoolInviteCard";
 import { PoolRulesForm } from "./PoolRulesForm";
 import { PoolStartWeekCard } from "./PoolStartWeekCard";
 import { ResetPoolPanel } from "./ResetPoolPanel";
+import { TeamLogosCard } from "./TeamLogosCard";
 import { TransferCommissionerForm } from "./TransferCommissionerForm";
 import type { ConfigScreenProps } from "./types";
 
@@ -32,6 +33,10 @@ export function ConfigScreen(props: ConfigScreenProps) {
         currency={props.entryFeeCurrency}
         instructions={props.paymentInstructions}
         link={props.paymentLink}
+      />
+      <TeamLogosCard
+        showTeamLogos={props.showTeamLogos}
+        forcedOff={props.teamLogosForcedOff}
       />
       <AdminRolesPanel members={props.roleMembers} />
       <TransferCommissionerForm members={props.transferMembers} />

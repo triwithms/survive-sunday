@@ -122,6 +122,9 @@ model Pool {
   paymentInstructions String?
   /// Optional https link (for example PayPal.me). http is rejected.
   paymentLink String?
+  /// Helmets on app screens and emails. False = abbreviation badges.
+  /// Null (rows before this column) = on. TEAM_LOGOS_DISABLED=true overrides.
+  showTeamLogos Boolean? @default(true)
   createdAt   DateTime     @default(now())
   slatePool       Pool?            @relation("PoolSlate", fields: [slatePoolId], references: [id], onDelete: Restrict)
   slateFor        Pool[]           @relation("PoolSlate")

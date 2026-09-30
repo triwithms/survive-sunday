@@ -40,6 +40,7 @@ export type WeekWrapFacts = {
   board?: WeekWrapBoardRow[];
   /** Null or missing (ESPN down) → no NFL section; the wrap still sends. */
   nfl?: WeekWrapNflDivision[] | null;
+  teamLogos?: boolean; // false → abbreviation badges instead of helmets; missing = on
 };
 
 export type WeekWrapSettings = {
@@ -85,6 +86,7 @@ export type WeekWrapPanelData = {
   board: WeekWrapBoardRow[];
   nfl: WeekWrapNflDivision[] | null;
   audience: WeekWrapAudience;
+  teamLogos: boolean; // pool switch after TEAM_LOGOS_DISABLED, resolved on the server
 };
 
 export function weekWrapDedupeKey(poolId: string, weekNumber: number): string {
