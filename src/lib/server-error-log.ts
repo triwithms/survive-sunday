@@ -1,4 +1,5 @@
 import { prisma } from "./db";
+import { scrubPii } from "./client-error";
 import { ensureServerErrorTable } from "./server-error-schema";
 
 const MAX_MESSAGE = 500;
@@ -36,11 +37,14 @@ export async function recordServerError(input: {
   recording = true;
   try {
     await ensureOnce();
-    const message = input.message.replace(/\s+/g, " ").trim().slice(0, MAX_MESSAGE);
+    const message = scrubPii(input.message.replace(/\s+/g, " ").trim()).slice(
+      0,
+      MAX_MESSAGE
+    );
     if (!message) return;
     await prisma.serverError.create({
       data: {
-        route: (input.route || "unknown").slice(0, MAX_ROUTE),
+        route: scrubPii(input.route || "unknown").slice(0, MAX_ROUTE),
         message,
         digest: input.digest ? input.digest.slice(0, 80) : null,
         source: (input.source || "request").slice(0, 40),

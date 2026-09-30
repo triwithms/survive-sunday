@@ -1,4 +1,5 @@
 import { LiveScoresRefresh } from "@/components/LiveScoresRefresh";
+import { SectionBoundary } from "@/components/SectionBoundary";
 import { ShareExport } from "@/components/ShareExport";
 import type { ScoresHeadingProps } from "./screen-types";
 
@@ -12,21 +13,30 @@ export function ScoresHeading(
       data-share-section="heading"
     >
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-        <ShareExport
-          surface="scores"
-          rootId="share-scores"
-          weekLabel={props.weekLabel}
-          titleRest=" scores"
-          gameCount={props.gameCount}
-          liveGameCount={props.liveCount}
-          pickRowCount={props.pickRowCount}
-        />
-        <div className="shrink-0" data-share-chrome="">
-          <LiveScoresRefresh
-            weekNumber={props.weekNumber}
-            poll={props.poll}
-            showRefresh
+        <SectionBoundary name="scores-share" variant="inline" message="Share didn’t load.">
+          <ShareExport
+            surface="scores"
+            rootId="share-scores"
+            weekLabel={props.weekLabel}
+            titleRest=" scores"
+            gameCount={props.gameCount}
+            liveGameCount={props.liveCount}
+            pickRowCount={props.pickRowCount}
           />
+        </SectionBoundary>
+        <div className="shrink-0" data-share-chrome="">
+          <SectionBoundary
+            name="scores-live-refresh"
+            variant="inline"
+            message="Live score refresh paused."
+            resetKey={props.weekNumber}
+          >
+            <LiveScoresRefresh
+              weekNumber={props.weekNumber}
+              poll={props.poll}
+              showRefresh
+            />
+          </SectionBoundary>
         </div>
       </div>
       <p className="text-sm text-[var(--text-muted)] mt-1">
