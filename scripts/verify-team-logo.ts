@@ -16,6 +16,7 @@ import {
   TEAM_HELMET_PLACEHOLDER,
   teamLogoUrl,
 } from "../src/lib/espn-teams";
+import { TEAM_HELMET_FILES, type TeamAbbr } from "../src/lib/team-abbr";
 import { TEAM_LOGO_SIZE } from "../src/lib/team-logo-size";
 
 assert.equal(
@@ -201,8 +202,9 @@ for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
     /^https:\/\/a\.espncdn\.com\/i\/teamlogos\/nfl\/500\/[a-z]{2,3}\.png$/,
     `${abbr} logo url`
   );
+  const stem = TEAM_HELMET_FILES[abbr as TeamAbbr];
   const local = localHelmetSrc(abbr);
-  assert.equal(local, `/helmets/${abbr.toLowerCase()}.png`, `${abbr} local path`);
+  assert.equal(local, `/helmets/${stem}.png`, `${abbr} local path`);
   assert.equal(local, localHelmetSrc(abbr.toLowerCase()));
   assert.equal(local, local.toLowerCase(), `${abbr} path is lowercase`);
   assert.doesNotMatch(local, /[A-Z]/, `${abbr} never uppercase path`);
@@ -210,7 +212,7 @@ for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
   const file = path.join(
     process.cwd(),
     "public/helmets",
-    `${abbr.toLowerCase()}.png`
+    `${stem}.png`
   );
   assert.equal(fs.existsSync(file), true, `${abbr} local helmet`);
   const bytes = fs.readFileSync(file);
@@ -238,7 +240,7 @@ const helmetReadme = fs.readFileSync(
 assert.match(helmetReadme, /transparent background/);
 assert.match(helmetReadme, /no white rounded plates/);
 assert.equal(helmetReadme.includes("ne.png and cle.png are the same marks"), false);
-const neFile = path.join(process.cwd(), "public/helmets/ne.png");
+const neFile = path.join(process.cwd(), "public/helmets/nwe.png");
 const cleFile = path.join(process.cwd(), "public/helmets/cle.png");
 
 function isNearWhiteOpaque(

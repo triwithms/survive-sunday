@@ -4,6 +4,7 @@
  * used for the same club. Safe for client, server, and scripts.
  */
 
+// Very short stems (`ne`, `ad`) can be blanked by client ad/content filters; prefer longer ones.
 export const TEAM_HELMET_FILES = {
   ARI: "ari",
   ATL: "atl",
@@ -26,7 +27,7 @@ export const TEAM_HELMET_FILES = {
   LV: "lv",
   MIA: "mia",
   MIN: "min",
-  NE: "ne",
+  NE: "nwe",
   NO: "no",
   NYG: "nyg",
   NYJ: "nyj",
