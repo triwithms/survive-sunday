@@ -41,10 +41,14 @@ function ttlFor(data: EspnGameSnapshot[], now = Date.now()): number {
   return scoreboardTtlMs(liveWindow, SCOREBOARD_LIVE_TTL_MS, SCOREBOARD_SLATE_TTL_MS);
 }
 
-export function isWeekScoreboardFresh(weekNumber: number, year = 2026, now = Date.now()): boolean {
+/** When the in-memory scoreboard still inside its TTL was fetched, else null. */
+export function freshScoreboardFetchedAt(weekNumber: number, year = 2026, now = Date.now()): number | null {
   const hit = byWeek.get(weekKey(weekNumber, year));
-  if (!hit) return false;
-  return isLastGoodFresh(hit, now, ttlFor(hit.value, now));
+  return hit && isLastGoodFresh(hit, now, ttlFor(hit.value, now)) ? hit.fetchedAt : null;
+}
+
+export function isWeekScoreboardFresh(weekNumber: number, year = 2026, now = Date.now()): boolean {
+  return freshScoreboardFetchedAt(weekNumber, year, now) !== null;
 }
 
 /** In-memory last-good only — never fetches ESPN. */

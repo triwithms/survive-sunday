@@ -147,26 +147,30 @@ export async function syncTeamStandingsFromEspn(): Promise<{
 }
 
 let standingsFreshUntil = 0;
-let standingsInflight: Promise<void> | null = null;
+let standingsInflight: Promise<number> | null = null;
+
+function refreshStandingsOnce(): Promise<number> {
+  if (standingsInflight) return standingsInflight;
+  const job: Promise<number> = syncTeamStandingsFromEspn()
+    .then((result) => {
+      standingsFreshUntil = Date.now() + STANDINGS_TTL_MS;
+      return result.updated;
+    })
+    .finally(() => {
+      if (standingsInflight === job) standingsInflight = null;
+    });
+  standingsInflight = job;
+  return job;
+}
 
 /** NFL Standings paints stored W-L first. ESPN refresh does not block the tab. */
 export function scheduleTeamStandingsRefresh(): void {
   if (Date.now() < standingsFreshUntil || standingsInflight) return;
-  deferAfter("standings refresh", () => {
-    if (standingsInflight) return standingsInflight;
-    let settled: Promise<void> = Promise.resolve();
-    const job = syncTeamStandingsFromEspn()
-      .then(() => {
-        standingsFreshUntil = Date.now() + STANDINGS_TTL_MS;
-      })
-      .finally(() => {
-        if (standingsInflight === settled) standingsInflight = null;
-      });
-    settled = job.then(
-      () => undefined,
-      () => undefined
-    );
-    standingsInflight = settled;
-    return job;
-  });
+  deferAfter("standings refresh", refreshStandingsOnce);
+}
+
+/** Score syncs share the Standings tab cap: one ESPN standings pull per TTL per instance. */
+export async function syncTeamStandingsIfStale(): Promise<number> {
+  if (Date.now() < standingsFreshUntil) return 0;
+  return refreshStandingsOnce();
 }
