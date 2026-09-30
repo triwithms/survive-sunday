@@ -46,3 +46,9 @@ jobs:
 
       - name: Crash walls
         run: npm run verify:crash-walls
+
+      - name: Team logo
+        run: npm run verify:team-logo
+
+      - name: Helmet aliases
+        run: npm run verify:helmet-aliases

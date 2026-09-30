@@ -1,3 +1,5 @@
+import { normalizeTeamAbbr } from "./team-abbr";
+
 export {
   localHelmetSrc,
   resolveTeamLogoSrc,
@@ -45,9 +47,9 @@ const ESPN_ID_TO_ABBR: Record<string, string> = Object.fromEntries(
   Object.entries(ESPN_TEAM_IDS).map(([abbr, id]) => [id, abbr])
 );
 
+/** ESPN / feed code → app abbr (WSH→WAS, LA→LAR, JAC→JAX, …). See `team-abbr.ts`. */
 export function normAbbr(abbr: string): string {
-  const u = abbr.trim().toUpperCase();
-  return u === "WSH" ? "WAS" : u;
+  return normalizeTeamAbbr(abbr);
 }
 
 /** App abbr (WAS) → ESPN site abbreviation (WSH). */

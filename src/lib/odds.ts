@@ -1,5 +1,7 @@
 /** Informational NFL lines. Never invent a spread when odds are missing. */
 
+import { normalizeTeamAbbr } from "./team-abbr";
+
 export type GameOdds = {
   spreadHome: number | null;
   spreadAway: number | null;
@@ -277,11 +279,7 @@ export function parseEspnSummaryOdds(
 }
 
 function oddsAbbr(abbr: string): string {
-  const u = abbr.trim().toUpperCase();
-  if (u === "WSH" || u === "WFT") return "WAS";
-  if (u === "JAC") return "JAX";
-  if (u === "LA") return "LAR";
-  return u;
+  return normalizeTeamAbbr(abbr);
 }
 
 /**

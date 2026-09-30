@@ -12,6 +12,12 @@ Committed NFL team marks for all 32 clubs used in Survive Sunday.
 `TeamLogo` uses `/helmets/{abbr}.png` only, then this placeholder. No ESPN/CDN lookup.
 It never shows abbreviation letter badges.
 
+Aliases live in one place: `src/lib/team-abbr.ts` (`TEAM_ABBR_ALIASES`, plus team
+names / slugs from `nfl-team-meta.ts`). `WSH`→`was.png`, `LA`→`lar.png`, `JAC`→`jax.png`, etc.
+Every renderer goes through `localHelmetSrc` / `resolveTeamLogoSrc` in `src/lib/team-helmets.ts`;
+unknown codes go straight to the placeholder. `npm run verify:helmet-aliases` checks
+all 32 teams and every alias land on a file here.
+
 The repo owner accepts responsibility for storing these local/saved helmet image backups.
 
 Team marks © the respective NFL clubs / ESPN. Cached here as display backups for a private friends pool.
