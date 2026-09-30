@@ -2,6 +2,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { ChromeInsets } from "@/components/ChromeInsets";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { AppHeader } from "@/components/AppHeader";
+import { SectionBoundary } from "@/components/SectionBoundary";
 import { A2hsNudge } from "@/components/features/a2hs";
 import { loadAppHeader } from "./load-app-header";
 
@@ -29,11 +30,17 @@ export default async function AppLayout({
         <div className="mx-auto w-full max-w-pool px-3 sm:px-4 py-5 min-w-0">
           {children}
         </div>
-        <FooterDisclaimer />
+        <SectionBoundary name="footer" variant="quiet">
+          <FooterDisclaimer />
+        </SectionBoundary>
       </div>
       <BottomNav isAdmin={chrome.showAdminChrome} />
-      <A2hsNudge />
-      <ChromeInsets />
+      <SectionBoundary name="a2hs-nudge" variant="quiet">
+        <A2hsNudge />
+      </SectionBoundary>
+      <SectionBoundary name="chrome-insets" variant="quiet">
+        <ChromeInsets />
+      </SectionBoundary>
     </div>
   );
 }

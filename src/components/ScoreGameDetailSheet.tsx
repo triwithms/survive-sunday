@@ -12,6 +12,7 @@ import {
 import type { GameDetailDto } from "@/lib/espn-game-detail-parse";
 import { GameHighlights } from "@/components/GameHighlights";
 import { ScoreGameSheetBar } from "@/components/ScoreGameSheetBar";
+import { SectionBoundary } from "@/components/SectionBoundary";
 
 type SheetGame = {
   id: string;
@@ -48,6 +49,23 @@ function Empty({ children }: { children: string }) {
   return <p className="text-xs text-[var(--text-muted)]">{children}</p>;
 }
 
+function list<T>(value: T[] | null | undefined): T[] {
+  return Array.isArray(value) ? value : [];
+}
+
+/** A partial ESPN payload renders as "not published yet", never a throw. */
+export function normalizeGameDetail(json: Partial<GameDetailDto>): GameDetailDto {
+  return {
+    ...(json as GameDetailDto),
+    scoringPlays: list(json.scoringPlays),
+    recentDrives: list(json.recentDrives),
+    leaders: list(json.leaders),
+    currentDrive: json.currentDrive ?? null,
+    timeoutsAway: json.timeoutsAway ?? null,
+    timeoutsHome: json.timeoutsHome ?? null,
+  };
+}
+
 export function ScoreGameDetailSheet({
   game,
   weekNumber,
@@ -58,9 +76,28 @@ export function ScoreGameDetailSheet({
   onClose: () => void;
 }) {
   const titleId = useId();
+  return (
+    <ModalDialog labelledBy={titleId} placement="sheet" onBackdropClick={onClose}>
+      <ScoreGameSheetBar
+        titleId={titleId}
+        awayAbbr={game.awayAbbr}
+        homeAbbr={game.homeAbbr}
+        gameId={game.id}
+        weekNumber={weekNumber}
+        onClose={onClose}
+      />
+      <SectionBoundary name="game-detail" message="Game details didn’t load.">
+        <GameDetailBody game={game} />
+      </SectionBoundary>
+    </ModalDialog>
+  );
+}
+
+function GameDetailBody({ game }: { game: SheetGame }) {
   const [data, setData] = useState<GameDetailDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,9 +109,11 @@ export function ScoreGameDetailSheet({
           `/api/scores/detail?gameId=${encodeURIComponent(game.id)}`,
           { cache: "no-store" }
         );
-        const json = (await res.json()) as GameDetailDto & { error?: string };
+        const json = (await res.json().catch(() => ({}))) as Partial<GameDetailDto> & {
+          error?: string;
+        };
         if (!res.ok) throw new Error(json.error || "Couldn’t load ESPN details");
-        if (!cancelled) setData(json);
+        if (!cancelled) setData(normalizeGameDetail(json));
       } catch (e) {
         if (!cancelled) {
           setError(e instanceof Error ? e.message : "Couldn’t load ESPN details");
@@ -87,7 +126,7 @@ export function ScoreGameDetailSheet({
     return () => {
       cancelled = true;
     };
-  }, [game.id]);
+  }, [game.id, reload]);
 
   const note = data?.note ?? game.note;
   const status = data?.status ?? game.status;
@@ -104,16 +143,7 @@ export function ScoreGameDetailSheet({
   });
 
   return (
-    <ModalDialog labelledBy={titleId} placement="sheet" onBackdropClick={onClose}>
-      <ScoreGameSheetBar
-        titleId={titleId}
-        awayAbbr={game.awayAbbr}
-        homeAbbr={game.homeAbbr}
-        gameId={game.id}
-        weekNumber={weekNumber}
-        onClose={onClose}
-      />
-
+    <>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <TeamLogo abbr={game.awayAbbr} logoUrl={game.awayLogoUrl} size={TEAM_LOGO_SIZE.row} />
@@ -167,9 +197,23 @@ export function ScoreGameDetailSheet({
       {loading ? (
         <Empty>Loading ESPN details…</Empty>
       ) : error ? (
-        <p className="text-xs text-crimson-400">{error}</p>
+        <p role="alert" className="flex flex-wrap items-center gap-x-2 text-xs">
+          <span className="text-crimson-400">{error}</span>
+          <button
+            type="button"
+            onClick={() => setReload((n) => n + 1)}
+            className="inline-flex min-h-11 items-center px-1 font-semibold text-gold-400 underline-offset-2 hover:underline"
+          >
+            Retry
+          </button>
+        </p>
       ) : (
-        <>
+        <SectionBoundary
+          name="game-detail-espn"
+          variant="inline"
+          message="ESPN details didn’t load."
+          resetKey={reload}
+        >
           <section>
             <h3 className="text-xs font-semibold uppercase tracking-wide text-gold-400 mb-1.5">
               Timeouts
@@ -266,16 +310,18 @@ export function ScoreGameDetailSheet({
               </ul>
             )}
           </section>
-        </>
+        </SectionBoundary>
       )}
 
-      <GameHighlights gameId={game.id} status={status} />
+      <SectionBoundary name="game-highlights" variant="inline" message="Videos didn’t load.">
+        <GameHighlights gameId={game.id} status={status} />
+      </SectionBoundary>
 
       {!live && header.kind === "scheduled" ? (
         <p className="text-[10px] text-[var(--text-muted)]">
           Kickoff {formatKickoffForScores(game.kickoff)}
         </p>
       ) : null}
-    </ModalDialog>
+    </>
   );
 }
