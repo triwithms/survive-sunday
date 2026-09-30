@@ -115,7 +115,7 @@ export async function signInCredentials(
 
 /**
  * Full document load after identity change so App Router / SW cannot
- * reuse another user's RSC payload (prefetch + layout cache).
+ * reuse another user's RSC payload (prefetch + the short tab cache).
  * Always stays on the current origin — never follow a localhost leftover.
  */
 export function afterAuthNavigate(path: string) {

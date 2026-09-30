@@ -142,8 +142,17 @@ assert.match(league, /scheduleTeamStandingsRefresh/);
 assert.doesNotMatch(league, /await syncTeamStandingsFromEspn/);
 
 const heavy = readFileSync("src/app/api/scores/sync/route.ts", "utf8");
-assert.match(heavy, /syncPoolWeekFromEspn\(week\.id\)|syncWeekScoresFromEspn\(week\.id\)/);
-assert.doesNotMatch(heavy, /standings:\s*false/);
+assert.match(heavy, /syncPoolWeekFromEspn\(week\.id/);
+assert.match(heavy, /grade:\s*false/);
+assert.match(heavy, /standings:\s*false/);
+assert.match(heavy, /changed/);
+const liveScores = readFileSync("src/lib/live-scores.ts", "utf8");
+assert.match(liveScores, /justFinished/);
+assert.match(liveScores, /gradePoolsOnSlate/);
+assert.match(
+  readFileSync("src/components/LiveScoresRefresh.tsx", "utf8"),
+  /scoreSyncShouldRefresh/
+);
 
 const deferredLockEffects = readFileSync("src/lib/week-lock-effects.ts", "utf8");
 assert.match(deferredLockEffects, /deferAfter\(/);

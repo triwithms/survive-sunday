@@ -19,7 +19,22 @@ import { withSlateGames } from "@/lib/slate-games";
 export async function loadTeamPage(raw: string): Promise<TeamPageData> {
   const me = await requireMembership();
   const abbr = teamAbbr(raw);
-  const team = await prisma.team.findUnique({ where: { abbr } });
+  const team = await prisma.team.findUnique({
+    where: { abbr },
+    select: {
+      abbr: true,
+      name: true,
+      conference: true,
+      division: true,
+      wins: true,
+      losses: true,
+      ties: true,
+      divisionRank: true,
+      pointsFor: true,
+      pointsAgainst: true,
+      priorYearRank: true,
+    },
+  });
   if (!team) notFound();
 
   const [news, injuries, coach] = await Promise.all([

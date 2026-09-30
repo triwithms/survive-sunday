@@ -47,10 +47,17 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "upload.wikimedia.org" },
     ],
   },
-  // Do not reuse another user's RSC payload on client-side nav.
+  // In-memory cache of tabs this browser already opened (~45s, inside
+  // the 30–60s window). A bottom-nav flip paints that payload and does
+  // not hit Neon. Unopened tabs stay unfetched (`prefetch={false}`).
+  // Responses stay `private, no-store`, so this is not a shared cache.
+  // Sign-in, pool switch, and role switch full-reload (form POST /
+  // `window.location`), which drops it. Pick saves and Admin edits that
+  // players can see call `router.refresh()`, which drops the whole client
+  // cache. Kickoff locks stay in `submitPickForMembership` on the server.
   experimental: {
     staleTimes: {
-      dynamic: 0,
+      dynamic: 45,
       static: 0,
     },
   },

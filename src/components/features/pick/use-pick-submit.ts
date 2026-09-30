@@ -51,6 +51,7 @@ export function usePickSubmit(
         const outcome = applyPickSave(data, currentPick, abbr);
         if (outcome.kind !== "ok") {
           setMsg(outcome.message);
+          // Drops every visited tab, not only My pick.
           if (outcome.kind === "locked") router.refresh();
           return;
         }
@@ -58,7 +59,7 @@ export function usePickSubmit(
         setConfirm(null);
         setMsg(pickSavedMessage(outcome.changed));
         setRedirectIn(2);
-        router.refresh();
+        router.refresh(); // clear visited tabs so Selections is not stale
       } catch {
         setMsg("Could not save pick");
       } finally {

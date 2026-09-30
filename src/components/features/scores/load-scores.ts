@@ -50,15 +50,6 @@ export async function loadScoresPage(searchParams?: {
     console.error("espn score sync skipped", e);
     espnSyncError = "Couldn’t refresh ESPN right now — showing last saved scores.";
   }
-  const teamAbbrs = [...new Set(week.games.flatMap((g) => [g.awayAbbr, g.homeAbbr]))];
-  const logoByAbbr = new Map(
-    (teamAbbrs.length
-      ? await prisma.team.findMany({
-          where: { abbr: { in: teamAbbrs } },
-          select: { abbr: true, logoUrl: true },
-        })
-      : []).map((t) => [t.abbr, t.logoUrl])
-  );
   const locked = isWeekLocked(week);
   const revealAllPicks = locked || week.number < currentWeek;
   const members = await prisma.membership.findMany({
@@ -81,9 +72,9 @@ export async function loadScoresPage(searchParams?: {
     selectedWeek: week.number,
     focusWeek: decision.actionWeek,
     poll: shouldPollLiveScores(games),
-    games: scoreCardGames(games, logoByAbbr),
+    games: scoreCardGames(games),
     openGameId,
     revealAllPicks,
-    rows: scoresPickRows(participants, me.id, revealAllPicks, logoByAbbr),
+    rows: scoresPickRows(participants, me.id, revealAllPicks),
   };
 }

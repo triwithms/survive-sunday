@@ -815,6 +815,16 @@ My problem: [PR number and what GitHub shows — conflicts / failed checks]
 
 ---
 
+## 12b. Parked performance follow-ups (do not build until asked)
+
+Left over from the tab-speed / Neon pass. Not in this version. The short visited-tab cache (~45 seconds), Sunday poll skip, helmet size, and unused `Team.logoUrl` reads are already shipped — do not redo them, and do not turn link prefetch on. Sign-in, switching pools, and switching Player / Administrator already reload the whole page, which clears that cache. Saving a pick or an Admin change that players can see also clears it. Kickoff locks stay on the server.
+
+- **Share week reads (#2).** Each bottom-nav tab still loads its own week and membership rows (`loadParticipantWeeks` in `src/lib/page-week.ts`, then the screen loader). A later pass can share that read across My pick, Selections, Scores, and Schedule.
+- **Team page paint-first ESPN (#5).** `src/components/features/team/load-team.ts` still waits on injuries, news, and coach before the team page paints. My pick / Selections / Scores / Schedule already paint from Postgres and refresh ESPN after the response (#170 / #171). Do not undo that. Team-page paint-first is later.
+- **Mirror and lock while a tab is open (#7).** Opening a tab still schedules week-lock effects (`deferWeekLockedEffects`). The Sunday poll still runs pick-backup mirror (`applyMirrorPicksForWeek`) before it answers. A later pass can keep mirror and lock off the open-tab path.
+- **Admin in one request (#8).** Admin Players, This Week, and Pool each run their own loader (`load-users.ts`, `load-system.ts`, `load-config.ts`). A later pass can collapse one Admin screen into one request.
+- **Store win margin (#9).** Leaderboard adds up win margin from every season pick on each load (`src/components/features/board/win-margin.ts`, `load-board.ts`). A later pass can store that margin instead of recomputing it.
+
 ## 13. Tiny glossary
 
 | Word | Meaning |

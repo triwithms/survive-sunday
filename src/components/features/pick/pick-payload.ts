@@ -1,12 +1,10 @@
 import { MISSED_TEAM } from "@/lib/grading";
-import { teamLogoUrl } from "@/lib/espn-teams";
 import { sanitizeGameOdds } from "@/lib/odds";
 import type { PickMatchup } from "./types";
 
 type TeamRow = {
   abbr: string;
   name: string;
-  logoUrl: string | null;
   priorYearRank: number | null;
   wins: number;
   losses: number;
@@ -52,7 +50,7 @@ export function pickMatchupsFromGames(
     return {
       abbr,
       name: team?.name ?? abbr,
-      logoUrl: teamLogoUrl(abbr, team?.logoUrl),
+      logoUrl: null,
       alreadyUsed: used.includes(abbr),
       priorYearRank: team?.priorYearRank ?? null,
       standing: team

@@ -37,12 +37,19 @@ export async function POST(req: Request) {
 
   try {
     const mirrored = await applyMirrorPicksForWeek(week.id);
-    const result = await syncPoolWeekFromEspn(week.id);
+    // Grade and standings only when this pull flips a game to final.
+    // Score ticks still return `updated` so the client can refresh.
+    const result = await syncPoolWeekFromEspn(week.id, {
+      grade: false,
+      standings: false,
+    });
+    const changed = result.updated > 0 || mirrored.copied.length > 0;
     return NextResponse.json({
       ok: true,
       weekNumber,
       mirrored: mirrored.copied.length,
       ...result,
+      changed,
     });
   } catch (e) {
     console.error("scores sync failed", e);

@@ -129,7 +129,7 @@ assert.equal(
 assert.doesNotMatch(resolveTeamLogoSrc("NE", espnTeamLogoUrl("NE"), null), /^https?:/i);
 assert.doesNotMatch(resolveTeamLogoSrc("CLE", stale, null), /^https?:/i);
 
-/** Decode one RGBA pixel. Stops after that row so 4096² NYJ stays cheap. */
+/** Decode one RGBA pixel. Stops after that row. */
 function pngRgbaAt(
   file: string,
   x: number,
@@ -192,6 +192,20 @@ function pngRgbaAt(
   return [row[o], row[o + 1], row[o + 2], row[o + 3]];
 }
 
+function pngSize(file: string): { w: number; h: number } {
+  const buf = fs.readFileSync(file);
+  let pos = 8;
+  while (pos < buf.length) {
+    const len = buf.readUInt32BE(pos);
+    const type = buf.toString("latin1", pos + 4, pos + 8);
+    if (type === "IHDR") {
+      return { w: buf.readUInt32BE(pos + 8), h: buf.readUInt32BE(pos + 12) };
+    }
+    pos += 12 + len;
+  }
+  throw new Error(`${file} missing IHDR`);
+}
+
 assert.equal(Object.keys(ESPN_TEAM_IDS).length, 32);
 const localHashes = new Set<string>();
 for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
@@ -216,11 +230,16 @@ for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
   const bytes = fs.readFileSync(file);
   assert.ok(bytes.length > 1000, `${abbr} local helmet has bytes`);
   assert.equal(bytes[0], 0x89, `${abbr} is PNG`);
+  const { w, h } = pngSize(file);
+  assert.equal(w, 256, `${abbr} helmet is 256px wide`);
+  assert.equal(h, 256, `${abbr} helmet is 256px tall`);
+  assert.ok(Math.max(w, h) <= 256, `${abbr} helmet stays within 256px`);
+  const pad = Math.round(40 * (w / 500));
   assert.equal(pngRgbaAt(file, 0, 0)[3], 0, `${abbr} corner transparent`);
   assert.equal(
-    pngRgbaAt(file, 40, 40)[3],
+    pngRgbaAt(file, pad, pad)[3],
     0,
-    `${abbr} has no white plate at (40,40)`
+    `${abbr} has no white plate at the old (40,40) padding`
   );
   localHashes.add(createHash("sha256").update(bytes).digest("hex"));
 }
@@ -259,18 +278,18 @@ function assertTransparent(
   assert.equal(isNearWhiteOpaque(px), false, `${label} @ (${x},${y}) is not a white plate`);
 }
 
-/** #124 restored ESPN marks whose corners/(40,40) are clear but a thick
- *  white sticker stroke still reads as a rounded plate at 44px Scores.
- *  These samples sit in that stroke on the pre-fix files. */
-assertTransparent(neFile, 25, 200, "NE plate");
-assertTransparent(neFile, 300, 140, "NE plate");
-assertTransparent(cleFile, 30, 200, "CLE plate");
-assertTransparent(cleFile, 25, 200, "CLE plate");
-const neMark = pngRgbaAt(neFile, 320, 220);
+/** #124 restored ESPN marks whose corners are clear but a thick white
+ *  sticker stroke still reads as a rounded plate at 44px Scores.
+ *  Samples are on the 256px files (padding outside the helmet). */
+assertTransparent(neFile, 8, 110, "NE plate");
+assertTransparent(neFile, 240, 70, "NE plate");
+assertTransparent(cleFile, 8, 102, "CLE plate");
+assertTransparent(cleFile, 200, 40, "CLE plate");
+const neMark = pngRgbaAt(neFile, 164, 113);
 assert.ok(neMark[3] > 200, "NE mark is opaque at the helmet");
 assert.equal(isNearWhiteOpaque(neMark), false, "NE mark is not a white plate");
 assert.ok(neMark[2] > neMark[0], "NE mark is navy");
-const cleMark = pngRgbaAt(cleFile, 250, 250);
+const cleMark = pngRgbaAt(cleFile, 128, 128);
 assert.ok(cleMark[3] > 200, "CLE mark is opaque at centre");
 assert.equal(isNearWhiteOpaque(cleMark), false, "CLE mark is not a white plate");
 assert.ok(cleMark[0] > 200 && cleMark[1] < 80, "CLE mark is orange");
@@ -280,9 +299,9 @@ function sampleAtDisplay(
   file: string,
   sx: number,
   sy: number,
-  display = 44,
-  source = 500
+  display = 44
 ): [number, number, number, number] {
+  const source = pngSize(file).w;
   const x = Math.min(source - 1, Math.round((sx + 0.5) * (source / display) - 0.5));
   const y = Math.min(source - 1, Math.round((sy + 0.5) * (source / display) - 0.5));
   return pngRgbaAt(file, x, y);
@@ -400,11 +419,20 @@ const scheduleSrc = fs.readFileSync(
 );
 assert.match(scheduleSrc, /<TeamLogo/);
 assert.match(scheduleSrc, /TEAM_LOGO_SIZE\.compact/);
-const scheduleLoadSrc = fs.readFileSync(
-  path.join(process.cwd(), "src/components/features/schedule/load-schedule.ts"),
-  "utf8"
-);
-assert.match(scheduleLoadSrc, /logoByAbbr/);
+for (const loader of [
+  "src/components/features/schedule/load-schedule.ts",
+  "src/components/features/scores/load-scores.ts",
+  "src/components/features/board/load-board.ts",
+  "src/components/features/league/load-league.ts",
+  "src/components/features/pick/load-pick.ts",
+]) {
+  const loaderSrc = fs.readFileSync(path.join(process.cwd(), loader), "utf8");
+  assert.doesNotMatch(
+    loaderSrc,
+    /logoUrl:\s*true|team\.logoUrl|t\.logoUrl/,
+    `${loader} must not read Team.logoUrl`
+  );
+}
 
 for (const abbr of Object.keys(ESPN_TEAM_IDS)) {
   const src = resolveTeamLogoSrc(abbr, espnTeamLogoUrl(abbr), null);
