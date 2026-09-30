@@ -1,12 +1,12 @@
 import "server-only";
 
-const queues = new Map<string, Promise<void>>();
+const queues = new Map<string, Promise<unknown>>();
 
 /** Serialize deferred writes for one week inside a warm server instance. */
-export function enqueueWeekWork(
+export function enqueueWeekWork<T>(
   weekId: string,
-  work: () => Promise<void>
-): Promise<void> {
+  work: () => Promise<T>
+): Promise<T> {
   const previous = queues.get(weekId) ?? Promise.resolve();
   const job = previous.catch(() => undefined).then(work);
   queues.set(weekId, job);

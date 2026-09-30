@@ -29,6 +29,12 @@ jobs:
       - name: Multi-pool
         run: npm run verify:multi-pool
 
+      - name: Slate refresh
+        run: npm run verify:slate-refresh
+
+      - name: Static cache
+        run: npm run verify:static-cache
+
       - name: Pool invite
         run: npm run verify:pool-invite
 

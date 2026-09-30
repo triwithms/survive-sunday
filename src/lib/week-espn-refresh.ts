@@ -2,47 +2,24 @@ import "server-only";
 import { prisma } from "@/lib/db";
 import { deferAfter } from "@/lib/defer-after";
 import { shouldPollLiveScores } from "@/lib/game-display";
-import { isWeekScoreboardFresh } from "@/lib/espn-scoreboard";
-import { syncPoolWeekFromEspn, syncWeekScoresFromEspn } from "@/lib/live-scores";
+import { syncPoolWeekFromEspn } from "@/lib/live-scores";
+import { slateRefresher } from "@/lib/slate-refresh";
 import { pageEspnRefreshShape } from "@/lib/static-cache-ttl";
-import { enqueueWeekWork } from "@/lib/week-work-queue";
 
 /**
  * Player tabs read Postgres and return. ESPN runs after the response via
  * `after` (Vercel waitUntil) so a cold isolate still finishes the write.
- * The scoreboard TTL applies during the live window too.
+ * The write is keyed by the slate owner's Week, so a pool that borrows the
+ * slate reuses the owner's rows instead of syncing its own empty week.
  * A failure is logged and never fails the page.
  */
-const inflight = new Map<string, Promise<void>>();
 type WeekRefreshSnapshot = {
   number: number;
-  games: Array<{ status: string; kickoff: Date | string }>;
+  /** Overlaid games carry the slate owner's weekId. */
+  games: Array<{ status: string; kickoff: Date | string; weekId?: string }>;
 };
 
-function scheduleWeekEspnRefresh(
-  weekId: string,
-  shape: { standings: false; grade: boolean }
-) {
-  deferAfter("page espn refresh", () => {
-    const pending = inflight.get(weekId);
-    if (pending) return pending;
-
-    let settled: Promise<void> = Promise.resolve();
-    const job = enqueueWeekWork(weekId, () =>
-      syncWeekScoresFromEspn(weekId, shape).then(() => undefined)
-    ).finally(() => {
-      if (inflight.get(weekId) === settled) inflight.delete(weekId);
-    });
-    settled = job.then(
-      () => undefined,
-      () => undefined
-    );
-    inflight.set(weekId, settled);
-    return job;
-  });
-}
-
-/** Gates on the scoreboard TTL and never waits on ESPN. Never throws. */
+/** Gates on the shared slate write and never waits on ESPN. Never throws. */
 export async function syncWeekEspnForPage(
   weekId: string,
   loadedWeek?: WeekRefreshSnapshot
@@ -54,22 +31,17 @@ export async function syncWeekEspnForPage(
         where: { id: weekId },
         select: {
           number: true,
-          games: { select: { status: true, kickoff: true } },
+          games: { select: { status: true, kickoff: true, weekId: true } },
         },
       }));
     if (!week) return;
-    if (week.games.length === 0) {
-      deferAfter("slate pool scores", () =>
-        syncPoolWeekFromEspn(weekId, { standings: false, grade: true }).then(
-          () => undefined
-        )
-      );
+    const slateWeekId = week.games[0]?.weekId;
+    if (slateWeekId && slateRefresher.isSettled({ slateWeekId, number: week.number, year: 2026 })) {
       return;
     }
-    if (isWeekScoreboardFresh(week.number)) return;
 
     const shape = pageEspnRefreshShape(shouldPollLiveScores(week.games));
-    scheduleWeekEspnRefresh(weekId, shape);
+    deferAfter("page espn refresh", () => syncPoolWeekFromEspn(weekId, shape));
   } catch (error) {
     console.error("page espn refresh schedule skipped", error);
   }

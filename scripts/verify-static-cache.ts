@@ -116,9 +116,9 @@ assert.doesNotMatch(
 const refresh = readFileSync("src/lib/week-espn-refresh.ts", "utf8");
 assert.match(refresh, /deferAfter\(/);
 assert.match(readFileSync("src/lib/defer-after.ts", "utf8"), /after\(/);
-assert.match(refresh, /enqueueWeekWork/);
-assert.match(refresh, /if \(isWeekScoreboardFresh\(week\.number\)\) return;/);
-assert.doesNotMatch(refresh, /await syncWeekScoresFromEspn/);
+assert.match(readFileSync("src/lib/live-scores.ts", "utf8"), /enqueueWeekWork\(target\.slateWeekId/);
+assert.match(refresh, /slateRefresher\.isSettled\(/);
+assert.doesNotMatch(refresh, /syncWeekScoresFromEspn/);
 assert.match(refresh, /pageEspnRefreshShape/);
 
 for (const path of [
