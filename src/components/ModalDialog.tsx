@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { usePageScrollLock } from "@/lib/page-scroll-lock";
 
 type Props = {
   children: ReactNode;
@@ -27,14 +28,8 @@ export function ModalDialog({
 }: Props) {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prevOverflow;
-    };
-  }, []);
+  useEffect(() => setMounted(true), []);
+  usePageScrollLock();
 
   if (!mounted) return null;
 
@@ -43,7 +38,7 @@ export function ModalDialog({
   return createPortal(
     <div
       className={[
-        "fixed inset-0 z-[100] flex justify-center bg-black/60",
+        "fixed inset-0 z-[100] flex justify-center bg-black/60 overscroll-contain",
         "px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]",
         sheet ? "items-end sm:items-center" : "items-center",
       ].join(" ")}
@@ -57,8 +52,8 @@ export function ModalDialog({
     >
       <div
         className={[
-          "card-glass w-full max-w-sheet max-h-[85dvh] overflow-y-auto p-5 space-y-3",
-          sheet ? "rounded-t-2xl sm:rounded-xl" : "",
+          "card-glass popup-card w-full max-w-sheet p-5 space-y-3",
+          sheet ? "max-h-[min(90dvh,100%)] rounded-t-2xl sm:rounded-xl" : "max-h-full",
         ].join(" ")}
       >
         {children}

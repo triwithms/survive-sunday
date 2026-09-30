@@ -334,7 +334,7 @@ export function ShareExport({
             </div>
           ) : null}
 
-          <div className="flex flex-col sm:flex-row gap-2 pt-1">
+          <div className="popup-footer flex flex-col sm:flex-row gap-2 pt-1">
             <button
               type="button"
               className="btn-primary w-full sm:w-auto"

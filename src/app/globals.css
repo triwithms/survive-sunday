@@ -32,13 +32,93 @@ html {
   /* Set by ChromeInsets: keep scrollIntoView / #anchors clear of sticky chrome */
   scroll-padding-top: var(--app-header-h, 0px);
   scroll-padding-bottom: var(--app-nav-h, 0px);
+  /* Top offset for in-page sticky bars (0 when the app pane scrolls) */
+  --app-sticky-top: var(--app-header-h, 0px);
 }
 
 body {
   background: var(--stadium-950);
   color: var(--text-primary);
+  min-height: 100vh;
   min-height: 100dvh;
   max-width: 100%;
+}
+
+/* App shell (header, [data-app-main], BottomNav).
+   Mouse/trackpad: the document scrolls under sticky chrome (keyboard paging,
+   full-page capture). Touch screens (phones, tablets, Home Screen app): the
+   viewport is locked and only the pane scrolls, so rubber-band bounce and the
+   Safari toolbar never move the header or tab bar. */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 100%;
+}
+.app-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: clip;
+}
+@media (pointer: coarse) {
+  html:has(.app-shell),
+  html:has(.app-shell) body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  html:has(.app-shell) {
+    --app-sticky-top: 0px;
+  }
+  .app-shell {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .app-main {
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* iOS zooms the page into any field under 16px */
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 100%);
+  }
+  :is(input, textarea, select):is([class*="text-xs"], [class*="text-sm"]) {
+    font-size: 16px;
+  }
+}
+
+/* Popups: the card scrolls on its own and its first child (title + Close)
+   stays pinned. Margins reach into the card padding so nothing moves at rest;
+   sticky offsets count from inside the card padding, hence top: -pad. */
+.popup-card {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.popup-card > :first-child {
+  position: sticky;
+  top: calc(-1 * var(--popup-pad, 1.25rem));
+  z-index: 10;
+  margin: calc(-1 * var(--popup-pad, 1.25rem)) calc(-1 * var(--popup-pad, 1.25rem)) -0.5rem;
+  padding: var(--popup-pad, 1.25rem) var(--popup-pad, 1.25rem) 0.5rem;
+  background: var(--popup-bg, var(--stadium-800));
+}
+.card-glass.popup-card > :first-child {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+/* A bottom action row that holds Close stays pinned to the card's bottom. */
+.popup-card > .popup-footer:last-child {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: var(--popup-bg, var(--stadium-800));
+  box-shadow: 0 var(--popup-pad, 1.25rem) 0 0 var(--popup-bg, var(--stadium-800));
 }
 
 @layer utilities {

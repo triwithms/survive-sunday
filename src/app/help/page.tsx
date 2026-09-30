@@ -26,8 +26,8 @@ export default async function HelpPage() {
   });
 
   return (
-    <div className="min-h-dvh flex flex-col max-w-full">
-      <div className="flex-1 min-w-0 overflow-x-clip">
+    <div className="app-shell">
+      <div data-app-main="" className="app-main">
         <main className="mx-auto w-full max-w-pool pb-8 pt-[calc(2rem+env(safe-area-inset-top))] pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
           <Link
             href={membership ? "/pick" : "/"}

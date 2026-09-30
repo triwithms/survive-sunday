@@ -58,3 +58,6 @@ jobs:
 
       - name: Helmet aliases
         run: npm run verify:helmet-aliases
+
+      - name: App chrome and scroll
+        run: npm run verify:app-chrome

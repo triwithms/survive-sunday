@@ -11,10 +11,9 @@ export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
 /**
- * The document scrolls (Safari Full Page screenshots, status-bar tap to top).
- * Header and tab bar are sticky. No overflow hidden/auto on any ancestor of
- * them: that makes a scrollport and they stop pinning on iOS. overflow-x-clip
- * on the content pane does not create a scrollport.
+ * Scroll model lives in globals.css (.app-shell / .app-main). Touch screens:
+ * the viewport is locked and only [data-app-main] scrolls between the header
+ * and tab bar. Mouse/trackpad: the document scrolls under sticky chrome.
  */
 export default async function AppLayout({
   children,
@@ -24,9 +23,9 @@ export default async function AppLayout({
   const chrome = await loadAppHeader();
 
   return (
-    <div key={chrome.userId} className="min-h-dvh flex flex-col max-w-full">
+    <div key={chrome.userId} className="app-shell">
       <AppHeader {...chrome} />
-      <div className="flex-1 min-w-0 overflow-x-clip">
+      <div data-app-main="" className="app-main">
         <div className="mx-auto w-full max-w-pool px-3 sm:px-4 py-5 min-w-0">
           {children}
         </div>
