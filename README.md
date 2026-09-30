@@ -79,6 +79,7 @@ If they forget the password: **Sign in → Forgot password** → 6-digit code by
 - Season-end tiebreak helpers (clean record / no ranked auto-pick 💩 → fewest losses → weeks survived → nickname A–Z)
 - `/help` from HELP-COPY (+ importing prior picks); footer disclaimer
 - Team research: tap a club from My pick / Schedule / Standings / Scores; helmet, record, this week, style (above coach), then Offence / Defence / Special teams, injuries, and news. Tap an NFL player for college, depth role, and any ESPN injury note
+- Team logos are local files in `public/helmets/`. Every feed abbreviation (WSH, LA, JAC, …) maps to its file through `src/lib/team-abbr.ts`; see `public/helmets/README.md`
 - Dark stadium UI (gold/green); installable PWA shell
 - Seed via `npm run seed`
 
