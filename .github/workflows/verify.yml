@@ -43,3 +43,6 @@ jobs:
 
       - name: Login screen
         run: npm run verify:login-screen
+
+      - name: App chrome and scroll
+        run: npm run verify:app-chrome

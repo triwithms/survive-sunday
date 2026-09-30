@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HelpQuickTour } from "@/components/features/help/HelpQuickTour";
 import { HelpTopicMenu } from "@/components/features/help/HelpTopicMenu";
 import { topicForHash } from "@/components/features/help/topics";
+import { appScrollPane } from "@/lib/page-scroll-lock";
 
 function currentHash(): string {
   if (typeof window === "undefined") return "";
@@ -26,6 +27,7 @@ export function HelpContent() {
   }, []);
 
   useEffect(() => {
+    appScrollPane()?.scrollTo(0, 0);
     window.scrollTo(0, 0);
   }, [hash]);
 

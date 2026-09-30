@@ -9,6 +9,7 @@ import {
   copyText,
   shareCurrentPage,
 } from "@/lib/page-share";
+import { usePageScrollLock } from "@/lib/page-scroll-lock";
 
 /** Temporary share sheet: full URL for Home Screen (no address bar). */
 export function ShareLinkPanel({
@@ -26,6 +27,7 @@ export function ShareLinkPanel({
   const [copied, setCopied] = useState("");
   const status = copied || notice || "";
   const canSend = canUseWebShare({ title, text: title, url });
+  usePageScrollLock();
 
   async function onCopy() {
     setCopied((await copyText(url)) ? PAGE_SHARE_COPIED : PAGE_SHARE_FAILED);
@@ -39,7 +41,7 @@ export function ShareLinkPanel({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[120] flex items-end justify-center bg-black/60 px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] sm:items-center"
+      className="fixed inset-0 z-[120] flex items-end justify-center bg-black/60 overscroll-contain px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] sm:items-center"
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
@@ -48,7 +50,7 @@ export function ShareLinkPanel({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="card-glass w-full max-w-sheet space-y-3 rounded-t-2xl p-5 sm:rounded-xl">
+      <div className="card-glass popup-card w-full max-w-sheet max-h-[min(90dvh,100%)] space-y-3 rounded-t-2xl p-5 sm:rounded-xl">
         <div className="flex items-start justify-between gap-3">
           <h2 id={titleId} className="font-display text-lg tracking-wide text-gold-400">
             Share
