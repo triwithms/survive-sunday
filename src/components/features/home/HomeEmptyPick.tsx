@@ -23,14 +23,8 @@ export function HomeEmptyPick({
             Admin view — you&apos;re not required to pick.
           </p>
           <p className="text-sm text-[var(--text-muted)]">
-            Also a player?{" "}
-            <Link
-              href="/join"
-              className="text-gold-400 underline-offset-2 hover:underline"
-            >
-              Claim your name on Join
-            </Link>{" "}
-            with this same email so your picks stay with that seat.
+            Also a player? Ask the administrator for your personal join link.
+            There is no invite code to type.
           </p>
         </div>
       ) : locked || !isCurrentWeek ? (

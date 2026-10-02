@@ -4,8 +4,8 @@ export const CLAIM_PASSWORD_MIN = 6;
 
 /** INTERNAL keys commissionerSeat / alreadyCommissioner kept; strings say administrator. */
 export const CLAIM_ERRORS = {
-  missingFields: "Enter the invite code, your email, and a password.",
-  invalidInvite: "That invite code is not right. Ask the administrator for SUNDAY26.",
+  missingFields: "Enter your email and a password.",
+  invalidInvite: "That join link is not right. Ask the administrator for a new one.",
   poolMissing: "Pool not found — run seed",
   demoEmail: "Use your own email to join — not a practice address.",
   passwordShort: `Password must be at least ${CLAIM_PASSWORD_MIN} characters.`,

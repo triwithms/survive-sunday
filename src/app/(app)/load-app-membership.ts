@@ -37,7 +37,7 @@ export async function loadAppMembership(): Promise<AppMembership> {
 
   const ctx = await getUserPoolContext(session.user.id);
   const membership = ctx.membership;
-  if (!membership) redirect("/join");
+  if (!membership) redirect("/login");
   if (!profileIsComplete(snapshotFromMember(membership))) {
     redirect("/welcome");
   }

@@ -10,7 +10,7 @@ export async function loadAdminGate() {
   if (!userId) redirect("/login");
   const ctx = await getUserPoolContext(userId);
   const me = ctx.membership;
-  if (!me) redirect("/join");
+  if (!me) redirect("/login");
   if (!ctx.isAdmin) {
     return { ok: false as const, me, session, userId, isDemo: false };
   }

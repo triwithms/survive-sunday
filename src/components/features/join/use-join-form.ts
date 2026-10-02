@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { INVITE_CODE } from "@/lib/constants";
 import type { ClaimableSeat } from "@/lib/claim-seat";
 import { CLAIM_ERRORS } from "@/lib/claim-seat";
+import { loginReturnForInvite } from "@/lib/entry-path";
 import { joinInviteFromParams, joinSignInHref } from "./join-invite";
 import { runJoinSubmit } from "./join-run";
 
@@ -26,21 +27,32 @@ export function useJoinForm({ seats, signedIn, tokenSeatId }: Args) {
     signedInEmail: signedIn?.email,
   });
   const { invited, viaPersonal, sessionEmail } = invite;
-  const [inviteCode, setInviteCode] = useState(
-    (params.get("code") ?? "").trim().toUpperCase() || INVITE_CODE
-  );
+  const inviteCode = INVITE_CODE;
   const [email, setEmail] = useState(sessionEmail);
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
   const [realName, setRealName] = useState("");
   const [membershipId] = useState(invite.initialSeat);
-  const [newPlayer] = useState(seats.length === 0 && !viaPersonal);
+  const newPlayer = false;
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (sessionEmail && !email) setEmail(sessionEmail);
   }, [sessionEmail, email]);
+
+  useEffect(() => {
+    if (!viaPersonal) window.location.replace("/login");
+  }, [viaPersonal]);
+
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      window.location.assign("/login");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const selected = useMemo(
     () => seats.find((s) => s.membershipId === membershipId),
@@ -70,11 +82,17 @@ export function useJoinForm({ seats, signedIn, tokenSeatId }: Args) {
   }
 
   return {
-    invited, viaPersonal, inviteCode, setInviteCode, email, setEmail,
+    invited, viaPersonal, email, setEmail,
     password, setPassword, nickname, setNickname, realName, setRealName,
     newPlayer, err, busy, selected, claimed, canSubmit,
     showPassword: canSubmit, lockEmail: Boolean(sessionEmail),
     signInToClaimHref: joinSignInHref(membershipId), showSignInToClaim,
+    switchAccountHref: loginReturnForInvite({
+      token: tokenParam,
+      seat: params.get("seat") ?? "",
+      who: params.get("who") ?? "",
+      pool: params.get("pool") ?? "",
+    }),
     showClaimed: viaPersonal && invited?.claimed && !newPlayer, onSubmit,
   };
 }

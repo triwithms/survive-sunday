@@ -43,7 +43,7 @@ export default async function NflPlayerPage({
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
   const me = await getMembershipForUser(session.user.id);
-  if (!me) redirect("/join");
+  if (!me) redirect("/login");
 
   const { abbr: rawAbbr, slug: rawSlug } = await params;
   const abbr = normAbbr(rawAbbr);

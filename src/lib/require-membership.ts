@@ -7,6 +7,6 @@ export async function requireMembership() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
   const me = await getMembershipForUser(session.user.id);
-  if (!me) redirect("/join");
+  if (!me) redirect("/login");
   return me;
 }
