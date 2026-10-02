@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { JoinForm } from "@/components/JoinForm";
+import { loginReturnForInvite } from "@/lib/entry-path";
 import { peekInviteToken } from "@/lib/invite-token-db";
 import { resolveWhoJoinSeat } from "@/lib/join-target";
 
@@ -19,27 +20,34 @@ function first(value: string | string[] | undefined): string {
   return (Array.isArray(value) ? value[0] : value ?? "").trim();
 }
 
-/** Admin / already-signed-in deep link only. Cold entry is Sign in. */
+/**
+ * Token, seat, or nickname invite only.
+ * Bare /join (and any invite-code screen) is Sign in.
+ */
 export default async function JoinPage({
   searchParams,
 }: {
   searchParams?: Promise<JoinSearch>;
 }) {
   const session = await auth();
-  if (!session?.user?.id) redirect("/login");
-
   const params = searchParams ? await searchParams : undefined;
   const token = first(params?.t);
+  const seat = first(params?.seat);
+  const who = first(params?.who);
+  const pool = first(params?.pool);
+  const back = loginReturnForInvite({ token, seat, who, pool });
+
+  if (!session?.user?.id) redirect(back);
+
   const peeked = token
     ? await peekInviteToken(token).catch(() => null)
     : null;
   const whoSeat =
-    !peeked && !first(params?.seat)
-      ? await resolveWhoJoinSeat({
-          who: first(params?.who),
-          poolId: first(params?.pool),
-        }).catch(() => null)
+    !peeked && !seat
+      ? await resolveWhoJoinSeat({ who, poolId: pool }).catch(() => null)
       : null;
+  const inviteSeat = peeked?.membershipId || seat || whoSeat;
+  if (!inviteSeat) redirect("/login");
 
   return (
     <Suspense
@@ -55,7 +63,7 @@ export default async function JoinPage({
           email: session.user.email ?? "",
           userId: session.user.id,
         }}
-        tokenSeatId={peeked?.membershipId ?? whoSeat}
+        tokenSeatId={inviteSeat}
       />
     </Suspense>
   );

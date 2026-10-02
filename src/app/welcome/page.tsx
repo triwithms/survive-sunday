@@ -15,7 +15,7 @@ export default async function WelcomePage() {
   if (!session?.user?.id) redirect("/login");
 
   const ctx = await getUserPoolContext(session.user.id);
-  if (!ctx.membership) redirect("/join");
+  if (!ctx.membership) redirect("/login");
 
   const snap = snapshotFromMember(ctx.membership);
   const missing = missingProfileFields(snap);
