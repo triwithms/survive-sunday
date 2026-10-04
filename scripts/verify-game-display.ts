@@ -4,6 +4,7 @@
  *   npx tsx scripts/verify-game-display.ts
  */
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { formatKickoff } from "../src/lib/utils";
 import {
   espnClockFromNote,
@@ -18,7 +19,11 @@ import {
   possessionAbbrFromSituation,
   shouldPollLiveScores,
 } from "../src/lib/game-display";
-import { shouldRunLiveScoreSync } from "../src/lib/live-refresh-gate";
+import {
+  MANUAL_SCORE_REFRESH_MS,
+  manualScoreRefreshShouldFetch,
+  shouldRunLiveScoreSync,
+} from "../src/lib/live-refresh-gate";
 
 assert.equal(espnClockFromNote("Q3 4:21 · ESPN"), "Q3 4:21");
 assert.equal(espnClockFromNote("End of 2nd · ESPN"), "End of 2nd");
@@ -294,7 +299,35 @@ assert.equal(
     intervalMs: 600_000,
   }),
   true,
-  "Refresh button still runs"
+  "force still bypasses the 10 minute poll"
+);
+assert.equal(MANUAL_SCORE_REFRESH_MS, 30_000);
+assert.equal(manualScoreRefreshShouldFetch(null, 1_000_000), true, "no saved scoreboard → fetch");
+assert.equal(
+  manualScoreRefreshShouldFetch(1_000_000 - 29_000, 1_000_000),
+  false,
+  "Refresh inside 30s does not start another live fetch"
+);
+assert.equal(
+  manualScoreRefreshShouldFetch(1_000_000 - 30_000, 1_000_000),
+  true,
+  "Refresh at 30s pulls live scores"
+);
+assert.match(
+  readFileSync("src/components/LiveScoresRefresh.tsx", "utf8"),
+  /manualScoreRefreshShouldFetch/
+);
+assert.match(
+  readFileSync("src/app/api/scores/sync/route.ts", "utf8"),
+  /manual \? \{ maxAgeMs: MANUAL_SCORE_REFRESH_MS \}/
+);
+assert.match(
+  readFileSync("src/components/LiveScoresRefresh.tsx", "utf8"),
+  /force \|\| scoreSyncShouldRefresh\(data\)/
+);
+assert.doesNotMatch(
+  readFileSync("src/lib/week-espn-refresh.ts", "utf8"),
+  /maxAgeMs|manual:/
 );
 
 console.log("verify-game-display: ok");

@@ -85,19 +85,22 @@ async function assertBorrowersShareOneWrite() {
   for (let i = 0; i < viewers.length; i++) {
     assert.equal(await refresher.run(key("fam-w3"), write("fam-w3")), null);
   }
+  const forced = await refresher.run(key("fam-w3"), write("fam-w3"), { force: true });
+  assert.ok(forced, "Refresh can write even while the normal TTL still says current");
+  assert.deepEqual(writes, ["fam-w3", "fam-w3"]);
+  assert.equal(espn.espnCalls, 1, "a fresh scoreboard is not fetched twice");
   assert.equal(refresher.isSettled(key("fam-w3")), true);
-  assert.deepEqual(writes, ["fam-w3"], "inside the TTL borrowers reuse the owner's rows");
   assert.equal(espn.espnCalls, 1);
 
   espn.advance(20_000);
   assert.equal(refresher.isSettled(key("fam-w3")), false, "TTL expiry reopens the gate");
   await Promise.all(viewers.map(() => refresher.run(key("fam-w3"), write("fam-w3"))));
-  assert.deepEqual(writes, ["fam-w3", "fam-w3"], "one write per scoreboard fetch");
+  assert.deepEqual(writes, ["fam-w3", "fam-w3", "fam-w3"], "one write per scoreboard fetch");
   assert.equal(espn.espnCalls, 2);
 
   // A second pool that owns its own rows still gets them written, from the cached scoreboard.
   await refresher.run(key("test-w3"), write("test-w3"));
-  assert.deepEqual(writes, ["fam-w3", "fam-w3", "test-w3"]);
+  assert.deepEqual(writes, ["fam-w3", "fam-w3", "fam-w3", "test-w3"]);
   assert.equal(espn.espnCalls, 2, "the second owner reads the cached scoreboard");
 
   const failing = createSlateRefresher(() => espn.freshFetchedAt());

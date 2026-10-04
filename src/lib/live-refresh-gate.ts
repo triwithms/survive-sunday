@@ -1,6 +1,17 @@
 /** Client live-score poll. One sync per interval per browser, and only while the tab is visible. */
 
 export const LIVE_SCORE_POLL_MS = 10 * 60 * 1000;
+/** Scores Refresh pulls ESPN when the saved scoreboard is older than this. */
+export const MANUAL_SCORE_REFRESH_MS = 30_000;
+
+/** True when a Refresh press should start a live scoreboard fetch. */
+export function manualScoreRefreshShouldFetch(
+  fetchedAt: number | null,
+  now: number,
+  maxAgeMs = MANUAL_SCORE_REFRESH_MS
+): boolean {
+  return fetchedAt == null || now - fetchedAt >= maxAgeMs;
+}
 
 export function shouldRunLiveScoreSync(opts: {
   force?: boolean;

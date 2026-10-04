@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { syncPoolWeekFromEspn } from "@/lib/live-scores";
 import { applyMirrorPicksForWeek } from "@/lib/pick-mirror-db";
 import { effectiveCurrentWeek } from "@/lib/pool-mode";
+import { MANUAL_SCORE_REFRESH_MS } from "@/lib/live-refresh-gate";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -20,6 +21,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json().catch(() => ({}));
+  const manual = body.manual === true;
   const raw = body.week;
   const parsed = Number(raw);
   const weekNumber =
@@ -42,6 +44,7 @@ export async function POST(req: Request) {
     const result = await syncPoolWeekFromEspn(week.id, {
       grade: false,
       standings: false,
+      ...(manual ? { maxAgeMs: MANUAL_SCORE_REFRESH_MS } : {}),
     });
     const changed = result.updated > 0 || mirrored.copied.length > 0;
     return NextResponse.json({
