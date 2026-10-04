@@ -18,9 +18,9 @@ export function HelpScreens() {
           game sheet; Close keeps you on My pick. Pick stays the main action.
         </li>
         <li className="text-[var(--text-primary)]">
-          <strong>Selections</strong> — everyone’s picks this week. Hidden
-          until first kickoff. Same team together, then nickname A–Z. Not the
-          season race.
+          <strong>Selections</strong> — everyone’s picks for the week being
+          played. Hidden until first kickoff. Same team together, then
+          nickname A–Z. Not the season race.
         </li>
         <li className="text-[var(--text-primary)]">
           <strong>Leaderboard</strong> — season race: still in, then out;
@@ -28,8 +28,8 @@ export function HelpScreens() {
           record (no 💩), then win margin, then nickname. No week chip.
         </li>
         <li className="text-[var(--text-primary)]">
-          <strong>Scores</strong> — live and final games for{" "}
-          <strong>your current pick week</strong>. Tap Details for clips.
+          <strong>Scores</strong> — live and final games for the week being
+          played. Tap Details for clips.
         </li>
         <li className="text-[var(--text-primary)]">
           <strong>Schedule</strong> — browse any week. Tap Details for the
@@ -42,8 +42,8 @@ export function HelpScreens() {
         </li>
       </ul>
       <p className="text-[var(--text-muted)] mb-2">
-        My pick, Selections, Scores, and Schedule open on your current pick
-        week.
+        My pick and Schedule open on your current pick week. Selections and
+        Scores open on the week being played.
       </p>
       <div id="share-board-scores">
         <h3 className="text-lg font-semibold text-gold-400 mb-2">

@@ -25,6 +25,7 @@ export type ScoresScreenProps = {
   heading: ScoresHeadingProps;
   weekOptions: Array<{ number: number; label: string; hasGames: boolean }>;
   selectedWeek: number;
+  /** Pool week labeled “This week” — the games happening now. */
   focusWeek: number;
   poll: boolean;
   games: import("./types").ScoreGameCardGame[];

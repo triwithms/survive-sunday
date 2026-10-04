@@ -62,6 +62,7 @@ export type HomeScreenProps = {
   revealAllPicks: boolean;
   weekOptions: WeekNavOption[];
   selectedWeek: number;
+  /** Pool week labeled “This week” — the games happening now. */
   focusWeek: number;
   poll: boolean;
   hero: HomeHeroProps | null;

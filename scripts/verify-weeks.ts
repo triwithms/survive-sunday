@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { resolvePlayerPickWeek } from "../src/lib/next-week-picks";
 import { headerPoolWeekLabel } from "../src/lib/header-week-selection";
+import { derivePoolCurrentWeek } from "../src/lib/pool-current-week";
 import {
   WEEK_NAV_PATHS,
   defaultWeekForPath,
@@ -32,8 +33,8 @@ assert.equal(parseWeekParam(["3", "1"]), 3);
 assert.equal(parseWeekParam("nope"), null);
 
 assert.equal(usesPlayerPickWeekDefault("/pick"), true);
-assert.equal(usesPlayerPickWeekDefault("/scores"), true);
-assert.equal(usesPlayerPickWeekDefault("/pool"), true);
+assert.equal(usesPlayerPickWeekDefault("/scores"), false);
+assert.equal(usesPlayerPickWeekDefault("/pool"), false);
 assert.equal(usesPlayerPickWeekDefault("/videos"), true);
 assert.equal(usesPlayerPickWeekDefault("/schedule"), true);
 
@@ -114,7 +115,7 @@ assert.equal(
   1
 );
 
-// Already unlocked onto Week 2 picks → Scores opens Week 2 (not live Week 1).
+// Sunday, own game already live → pick week is next week. Scores stays on the live week.
 const unlocked = resolvePlayerPickWeek({
   poolCurrentWeek: 1,
   currentWeekLocked: true,
@@ -131,8 +132,8 @@ assert.equal(
     poolCurrentWeek: 1,
     pickActionWeek: unlocked.actionWeek,
   }),
-  2,
-  "Week 2 pickers → Scores defaults to Week 2"
+  1,
+  "Sunday games still on Week 1 → Scores stays on Week 1"
 );
 assert.equal(
   defaultWeekForPath({
@@ -142,14 +143,14 @@ assert.equal(
   }),
   2
 );
-assert.notEqual(
+assert.equal(
   defaultWeekForPath({
     basePath: "/scores",
     poolCurrentWeek: 1,
     pickActionWeek: unlocked.actionWeek,
   }),
   1,
-  "do not bounce Week 2 pickers to live Week 1 on Scores"
+  "Scores stays on the live week after the picker’s game starts"
 );
 
 assert.equal(
@@ -161,7 +162,7 @@ assert.equal(
     pickActionWeek: unlocked.actionWeek,
     allowFuture: false,
   }),
-  2
+  1
 );
 
 // Past weeks stay available on Scores.
@@ -188,8 +189,20 @@ assert.equal(
     pickActionWeek: unlocked.actionWeek,
     allowFuture: false,
   }),
-  2,
+  1,
   "Scores must not open a future week from ?week="
+);
+assert.equal(
+  resolvePageWeekNumber({
+    requested: 2,
+    weekNumbers,
+    basePath: "/scores",
+    poolCurrentWeek: 1,
+    pickActionWeek: unlocked.actionWeek,
+    allowFuture: false,
+  }),
+  1,
+  "Scores must not open next week while Week 1 is still the pool week"
 );
 assert.equal(
   resolvePageWeekNumber({
@@ -204,7 +217,8 @@ assert.equal(
   "Week 1 pickers cannot open Week 2 on Scores"
 );
 
-// Week 1 game done + Week 2 TNF already started → Home still opens Week 2.
+// Week 1 game done + Week 2 TNF already started → Pick still opens Week 2.
+// Selections and Scores follow the pool week, not that pick week.
 const afterTnf = resolvePlayerPickWeek({
   poolCurrentWeek: 1,
   currentWeekLocked: true,
@@ -224,8 +238,8 @@ assert.equal(
     poolCurrentWeek: 1,
     pickActionWeek: afterTnf.actionWeek,
   }),
-  2,
-  "Home defaults to Week 2 even when pool board week is still 1"
+  1,
+  "Selections stays on the pool week while that slate is still current"
 );
 assert.equal(
   defaultWeekForPath({
@@ -233,8 +247,26 @@ assert.equal(
     poolCurrentWeek: 1,
     pickActionWeek: afterTnf.actionWeek,
   }),
+  1,
+  "Scores stays on the pool week while that slate is still current"
+);
+assert.equal(
+  defaultWeekForPath({
+    basePath: "/pool",
+    poolCurrentWeek: 2,
+    pickActionWeek: afterTnf.actionWeek,
+  }),
   2,
-  "Scores defaults to Week 2 — not Week 1 scores"
+  "once the pool week is 2, Selections shows Week 2"
+);
+assert.equal(
+  defaultWeekForPath({
+    basePath: "/scores",
+    poolCurrentWeek: 2,
+    pickActionWeek: afterTnf.actionWeek,
+  }),
+  2,
+  "once the pool week is 2, Scores shows Week 2"
 );
 assert.equal(
   defaultWeekForPath({
@@ -254,8 +286,8 @@ assert.equal(
     pickActionWeek: afterTnf.actionWeek,
     allowFuture: false,
   }),
-  2,
-  "Scores with no ?week= opens Week 2"
+  1,
+  "Scores with no ?week= stays on the pool week"
 );
 assert.equal(
   resolvePageWeekNumber({
@@ -278,11 +310,11 @@ assert.equal(
     pickActionWeek: afterTnf.actionWeek,
     allowFuture: false,
   }),
-  2,
-  "Home must not open a future week"
+  1,
+  "Selections must not open a future week"
 );
 
-// Schedule matches Scores/Home default, but still browses every week.
+// Schedule still opens the pick week and browses every week.
 assert.equal(
   defaultWeekForPath({
     basePath: "/schedule",
@@ -364,8 +396,8 @@ assert.equal(
     poolCurrentWeek: 1,
     pickActionWeek: unlocked.actionWeek,
   }),
-  2,
-  "Week 2 pickers → Home defaults to Week 2"
+  1,
+  "Sunday games still on Week 1 → Selections stays on Week 1"
 );
 assert.equal(
   resolvePageWeekNumber({
@@ -376,7 +408,7 @@ assert.equal(
     pickActionWeek: unlocked.actionWeek,
     allowFuture: false,
   }),
-  2
+  1
 );
 assert.equal(
   resolvePageWeekNumber({
@@ -388,7 +420,7 @@ assert.equal(
     allowFuture: false,
   }),
   1,
-  "Home ?week=1 still browses a past week"
+  "Selections ?week=1 still browses a past week"
 );
 assert.equal(
   resolvePageWeekNumber({
@@ -399,8 +431,20 @@ assert.equal(
     pickActionWeek: unlocked.actionWeek,
     allowFuture: false,
   }),
-  2,
-  "Home must not open a future week from ?week="
+  1,
+  "Selections must not open a future week from ?week="
+);
+assert.equal(
+  resolvePageWeekNumber({
+    requested: 2,
+    weekNumbers,
+    basePath: "/pool",
+    poolCurrentWeek: 1,
+    pickActionWeek: unlocked.actionWeek,
+    allowFuture: false,
+  }),
+  1,
+  "Selections must not open next week while Week 1 is still the pool week"
 );
 assert.equal(
   resolvePageWeekNumber({
@@ -412,7 +456,7 @@ assert.equal(
     allowFuture: false,
   }),
   1,
-  "Week 1 pickers cannot open Week 2 on Home"
+  "Week 1 pickers cannot open Week 2 on Selections"
 );
 assert.equal(
   defaultWeekForPath({
@@ -421,7 +465,89 @@ assert.equal(
     pickActionWeek: robert.actionWeek,
   }),
   1,
-  "Robert still on Week 1 → Home defaults to Week 1"
+  "Robert still on Week 1 → Selections defaults to Week 1"
+);
+
+// Sunday 4 Oct 2026, during Week 4. Week 5’s first kickoff is Thu 8 Oct.
+// A friend’s Week 4 game has started, so their pick week is 5.
+const duringWeek4 = resolvePlayerPickWeek({
+  poolCurrentWeek: 4,
+  currentWeekLocked: true,
+  existingCurrentPick: { source: "user", teamAbbr: "BUF", result: "pending" },
+  existingCurrentGame: {
+    status: "live",
+    kickoff: new Date("2026-10-04T17:00:00.000Z"),
+  },
+  nextWeekHasGames: true,
+  nextWeekLocked: false,
+  now: new Date("2026-10-04T18:00:00.000Z"),
+});
+const seasonWeeks = [1, 2, 3, 4, 5];
+assert.equal(
+  derivePoolCurrentWeek(
+    4,
+    [
+      {
+        number: 4,
+        games: [
+          { status: "final", kickoff: new Date("2026-10-02T00:15:00.000Z") },
+          { status: "live", kickoff: new Date("2026-10-04T17:00:00.000Z") },
+          { status: "scheduled", kickoff: new Date("2026-10-06T00:15:00.000Z") },
+        ],
+      },
+      {
+        number: 5,
+        games: [
+          { status: "scheduled", kickoff: new Date("2026-10-09T00:15:00.000Z") },
+        ],
+      },
+    ],
+    new Date("2026-10-04T18:00:00.000Z")
+  ),
+  4,
+  "Sunday 4 Oct 2026: Week 4 still in progress, so the pool week stays 4"
+);
+assert.equal(duringWeek4.actionWeek, 5, "own Week 4 game started → pick week 5");
+for (const basePath of ["/scores", "/pool"] as const) {
+  assert.equal(
+    defaultWeekForPath({
+      basePath,
+      poolCurrentWeek: 4,
+      pickActionWeek: duringWeek4.actionWeek,
+    }),
+    4,
+    `${basePath} stays on Week 4 while those games are on`
+  );
+  assert.equal(
+    resolvePageWeekNumber({
+      requested: 5,
+      weekNumbers: seasonWeeks,
+      basePath,
+      poolCurrentWeek: 4,
+      pickActionWeek: duringWeek4.actionWeek,
+      allowFuture: false,
+    }),
+    4,
+    `${basePath} must not open Week 5 while Week 4 is current`
+  );
+}
+assert.equal(
+  defaultWeekForPath({
+    basePath: "/pick",
+    poolCurrentWeek: 4,
+    pickActionWeek: duringWeek4.actionWeek,
+  }),
+  5,
+  "Pick still opens the next pick week"
+);
+assert.equal(
+  defaultWeekForPath({
+    basePath: "/schedule",
+    poolCurrentWeek: 4,
+    pickActionWeek: duringWeek4.actionWeek,
+  }),
+  5,
+  "Schedule still opens the current pick week"
 );
 
 assert.equal(
@@ -495,9 +621,15 @@ mustInclude("src/lib/page-week.ts", [
 ]);
 mustInclude("src/components/features/scores/load-scores.ts", [
   'basePath: "/scores"',
-  "actionWeek: decision.actionWeek",
+  "actionWeek: currentWeek",
+  "focusWeek: currentWeek",
   "allowFuture: false",
 ]);
+mustNotMatch(
+  "src/components/features/scores/load-scores.ts",
+  /decision\.actionWeek/,
+  "Scores this week is the pool week, not the next pick week"
+);
 mustNotMatch(
   "src/components/features/scores/ScoresScreen.tsx",
   /allowFuture\s*$/m,
@@ -509,9 +641,15 @@ mustInclude("src/components/features/pick/load-pick.ts", [
 ]);
 mustInclude("src/components/features/home/load-home.ts", [
   'basePath: "/pool"',
-  "actionWeek: decision.actionWeek",
+  "actionWeek: currentWeek",
+  "focusWeek: currentWeek",
   "allowFuture: false",
 ]);
+mustNotMatch(
+  "src/components/features/home/load-home.ts",
+  /focusWeek:\s*decision\.actionWeek|actionWeek:\s*decision\.actionWeek/,
+  "Selections this week is the pool week, not the next pick week"
+);
 mustInclude("src/components/features/videos/load-videos.ts", [
   'basePath: "/videos"',
   "actionWeek: decision.actionWeek",
@@ -584,7 +722,7 @@ mustInclude("src/components/features/help/HelpScreens.tsx", [
   "Future weeks stay on",
 ]);
 mustInclude("docs/HANDOFF.md", [
-  "Home, Scores, Pick, and Schedule open on that friend’s current pick week",
+  "Selections and Scores open on the pool week",
   "future weeks stay on Schedule",
 ]);
 
