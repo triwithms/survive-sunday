@@ -4,7 +4,6 @@ import { requireMembership } from "@/lib/require-membership";
 import {
   loadParticipantWeeks,
   pageWeekNumberForGame,
-  playerPickDecision,
   selectPageWeek,
   weekNavOptions,
 } from "@/lib/page-week";
@@ -29,12 +28,12 @@ export async function loadScoresPage(searchParams?: {
     loadParticipantWeeks(me),
     pageWeekNumberForGame(me.poolId, openGameId),
   ]);
-  const decision = playerPickDecision(me, weeks, currentWeek);
   const selectedRef = selectPageWeek({
     weeks,
     requested: searchParams?.week ?? linkedWeek?.toString(),
     basePath: "/scores",
-    currentWeek, actionWeek: decision.actionWeek,
+    currentWeek,
+    actionWeek: currentWeek,
     allowFuture: false, fallbackFirst: true,
   });
   if (!selectedRef) return null;
@@ -70,7 +69,7 @@ export async function loadScoresPage(searchParams?: {
     },
     weekOptions: weekNavOptions(weeks),
     selectedWeek: week.number,
-    focusWeek: decision.actionWeek,
+    focusWeek: currentWeek,
     poll: shouldPollLiveScores(games),
     games: scoreCardGames(games),
     openGameId,

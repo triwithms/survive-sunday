@@ -42,7 +42,7 @@ Today’s pick screen at `/pick`. After Join or Sign in, you land here.
 
 Everyone’s picks for the week at `/pool` (old Home URL). Not the in/out race.
 
-- Opens on **your current pick week**. You can look back. **Future weeks stay on Schedule**.
+- Opens on the **week being played** (the pool’s current week). You can look back. **Future weeks stay on Schedule**.
 - Flat pick list (same team together, then nickname A–Z). No videos strip. No per-game logo clusters. No yellow Home pills.
 - Before lock: other friends stay hidden.
 - Files live under `src/components/features/home/` — see [FILE-MAP](FILE-MAP.md).
@@ -59,7 +59,7 @@ Files: `src/components/features/board/` — [FILE-MAP](FILE-MAP.md).
 
 ## Scores
 
-Live and final games for **your current pick week** (ESPN). Tap **Details ›** on a card for more (including clips). The sheet header has **Share** (matchup link) beside **Close**. After lock it also lists **Participants’ picks**.
+Live and final games for the **week being played** (the pool’s current week, ESPN). Tap **Details ›** on a card for more (including clips). The sheet header has **Share** (matchup link) beside **Close**. After lock it also lists **Participants’ picks**.
 
 A shared matchup URL is `/scores?week=N&game={id}` (existing Scores route + `week` + `game`). Opening it selects that week when Scores allows it and opens that game’s sheet.
 
