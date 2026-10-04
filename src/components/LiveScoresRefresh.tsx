@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   LIVE_SCORE_POLL_MS,
+  manualScoreRefreshShouldFetch,
   scoreSyncShouldRefresh,
   shouldRunLiveScoreSync,
 } from "@/lib/live-refresh-gate";
@@ -11,9 +12,11 @@ import {
 /**
  * While games are in a live kickoff window, poll ESPN sync and refresh Scores.
  * Shared across My pick / Selections / Scores / Schedule so tab hops do not
- * each POST. Hidden tabs do not sync. Optional Refresh works anytime.
+ * each POST. Hidden tabs do not sync. Refresh pulls live scores when the
+ * saved scoreboard is older than about 30 seconds.
  */
 let lastLiveSyncAt = 0;
+let lastManualSyncAt = 0;
 
 export function LiveScoresRefresh({
   weekNumber,
@@ -32,14 +35,16 @@ export function LiveScoresRefresh({
 
   const sync = useCallback(
     async (force = false) => {
+      const now = Date.now();
       const visible =
         typeof document === "undefined" ||
         document.visibilityState === "visible";
-      if (
+      if (force) {
+        if (!manualScoreRefreshShouldFetch(lastManualSyncAt || null, now)) return;
+      } else if (
         !shouldRunLiveScoreSync({
-          force,
           visible,
-          now: Date.now(),
+          now,
           lastSyncAt: lastLiveSyncAt,
           intervalMs,
         })
@@ -48,13 +53,14 @@ export function LiveScoresRefresh({
       }
       if (busy.current) return;
       busy.current = true;
-      lastLiveSyncAt = Date.now();
+      lastLiveSyncAt = now;
+      if (force) lastManualSyncAt = now;
       setPending(true);
       try {
         const res = await fetch("/api/scores/sync", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ week: weekNumber }),
+          body: JSON.stringify({ week: weekNumber, manual: force }),
         });
         const data = res.ok
           ? ((await res.json().catch(() => null)) as {
@@ -63,9 +69,9 @@ export function LiveScoresRefresh({
               mirrored?: number;
             } | null)
           : null;
-        // Unchanged scoreboard: do not refresh. That would re-read Neon
-        // for a tab that already shows the saved rows.
-        if (scoreSyncShouldRefresh(data)) router.refresh();
+        // Automatic poll: skip a Neon re-read when nothing changed.
+        // Refresh still repaints so the list catches up to the saved scores.
+        if (force || scoreSyncShouldRefresh(data)) router.refresh();
       } catch {
         // keep last paint — next visible tick retries
       } finally {

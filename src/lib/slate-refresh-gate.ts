@@ -47,11 +47,12 @@ export function createSlateRefresher(
      */
     run<T extends { scoreboardAt: number | null }>(
       key: SlateWeekKey,
-      write: () => Promise<T>
+      write: () => Promise<T>,
+      opts?: { force?: boolean }
     ): Promise<T | null> {
       const pending = inflight.get(key.slateWeekId);
       if (pending) return pending as Promise<T>;
-      if (isCurrent(key)) return Promise.resolve(null);
+      if (!opts?.force && isCurrent(key)) return Promise.resolve(null);
       const job: Promise<T> = write()
         .then((result) => {
           if (result.scoreboardAt !== null) {

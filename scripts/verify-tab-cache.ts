@@ -40,7 +40,8 @@ assert.equal(scoreSyncShouldRefresh({ mirrored: 1 }), true);
 
 const refresh = src("src/components/LiveScoresRefresh.tsx");
 assert.match(refresh, /scoreSyncShouldRefresh/);
-assert.match(refresh, /if \(scoreSyncShouldRefresh\(data\)\) router\.refresh\(\)/);
+assert.match(refresh, /force \|\| scoreSyncShouldRefresh\(data\)\) router\.refresh\(\)/);
+assert.match(refresh, /manual: force/);
 
 const route = src("src/app/api/scores/sync/route.ts");
 assert.match(route, /grade:\s*false/);

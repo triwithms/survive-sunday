@@ -12,8 +12,10 @@ import { syncOddsFromEspnSnapshots } from "@/lib/espn-odds";
 import {
   fetchEspnWeekScoreboard,
   freshScoreboardFetchedAt,
+  scoreboardFetchedAt,
   type EspnGameSnapshot,
 } from "@/lib/espn-scoreboard";
+import { manualScoreRefreshShouldFetch } from "@/lib/live-refresh-gate";
 import { resolveSlateWeek, slateRefresher } from "@/lib/slate-refresh";
 import { enqueueWeekWork } from "@/lib/week-work-queue";
 
@@ -46,6 +48,11 @@ export type WeekScoreSyncOpts = {
   grade?: boolean;
   /** ESPN W-L pull, capped by the Standings TTL. Default true; player tabs pass false. */
   standings?: boolean;
+  /**
+   * Scores Refresh only. Pull ESPN when the saved scoreboard is older than
+   * this. Background polls omit it and keep the normal TTL.
+   */
+  maxAgeMs?: number;
 };
 
 /**
@@ -77,7 +84,7 @@ export async function syncWeekScoresFromEspn(
     include: { games: true, pool: true },
   });
   const seasonYear = Number(String(week.pool.season).slice(0, 4)) || 2026;
-  const snapshots = await fetchEspnWeekScoreboard(week.number, seasonYear);
+  const snapshots = await fetchEspnWeekScoreboard(week.number, seasonYear, opts.maxAgeMs);
   const scoreboardAt = freshScoreboardFetchedAt(week.number, seasonYear);
   const byMatch = new Map(
     snapshots.map((s) => [matchKey(s.awayAbbr, s.homeAbbr), s] as const)
@@ -245,10 +252,23 @@ export async function syncPoolWeekFromEspn(
   const target = await resolveSlateWeek(viewerWeekId);
   if (!target) throw new Error("Week not found");
   const grade = opts.grade !== false;
+  const manualAge = opts.maxAgeMs;
+  const pullLive =
+    manualAge != null &&
+    manualScoreRefreshShouldFetch(
+      scoreboardFetchedAt(target.number, target.year),
+      Date.now(),
+      manualAge
+    );
   const slate = await slateRefresher.run(target, () =>
     enqueueWeekWork(target.slateWeekId, () =>
-      syncWeekScoresFromEspn(target.slateWeekId, { grade, standings: false })
-    )
+      syncWeekScoresFromEspn(target.slateWeekId, {
+        grade,
+        standings: false,
+        ...(manualAge != null ? { maxAgeMs: manualAge } : {}),
+      })
+    ),
+    pullLive ? { force: true } : undefined
   );
 
   const justFinished = slate?.justFinished ?? 0;
