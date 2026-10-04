@@ -1,6 +1,6 @@
 import {
   escapeHtml,
-  helmetImg,
+  teamMarkHtml,
   WRAP_FONT,
   WRAP_GOLD,
   WRAP_LOSS,
@@ -24,10 +24,11 @@ function statusColor(status: string): string {
 function boardRow(
   row: WeekWrapBoardRow,
   rank: number,
-  pick: WeekWrapPlayer | undefined
+  pick: WeekWrapPlayer | undefined,
+  teamLogos: boolean
 ): string {
   const out = row.status === "eliminated";
-  const logo = pick && hasTeamPick(pick) ? helmetImg(pick.teamAbbr ?? "", 24) : "";
+  const logo = pick && hasTeamPick(pick) ? teamMarkHtml(pick.teamAbbr ?? "", 24, teamLogos) : "";
   const meta = `Losses ${row.losses} · Weeks survived ${row.weeksSurvived}`;
   const name = out ? WRAP_MUTED : WRAP_TEXT;
   return `<tr><td width="28" style="${CELL}font-size:13px;color:${WRAP_MUTED};">${rank}</td><td width="32" style="${CELL}">${logo}</td><td style="${CELL}"><div style="font-size:15px;color:${name};">${escapeHtml(row.nickname)}</div><div style="font-size:12px;color:${WRAP_MUTED};">${meta}</div></td><td align="right" style="${CELL}font-size:12px;font-weight:bold;color:${statusColor(row.status)};">${escapeHtml(wrapStatusLabel(row.status))}</td></tr>`;
@@ -39,12 +40,13 @@ function boardRow(
  */
 export function wrapBoardHtml(
   board: WeekWrapBoardRow[] | undefined,
-  players: WeekWrapPlayer[]
+  players: WeekWrapPlayer[],
+  teamLogos: boolean
 ): string {
   if (!board?.length) return "";
   const pickById = new Map(players.map((player) => [player.id, player]));
   const rows = board
-    .map((row, index) => boardRow(row, index + 1, pickById.get(row.id)))
+    .map((row, index) => boardRow(row, index + 1, pickById.get(row.id), teamLogos))
     .join("");
   return wrapSection("Pool leaderboard", rows);
 }

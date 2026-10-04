@@ -1,4 +1,3 @@
-import { teamLogoUrl } from "@/lib/espn-teams";
 import { formatMatchupListLine } from "@/lib/game-display";
 import {
   formatCurrentStanding,
@@ -12,7 +11,6 @@ import type { TeamHeaderView, TeamThisWeekView } from "./types";
 type TeamRow = {
   abbr: string;
   name: string;
-  logoUrl: string | null;
   conference: string;
   division: string;
   wins: number;
@@ -55,7 +53,7 @@ export function buildTeamHeader(team: TeamRow): TeamHeaderView {
     name: team.name,
     conference: team.conference,
     division: team.division,
-    logoUrl: teamLogoUrl(team.abbr, team.logoUrl),
+    logoUrl: null,
     record,
     winPct: formatWinPct(team.wins, team.losses, team.ties),
     standing: formatCurrentStanding(standing),

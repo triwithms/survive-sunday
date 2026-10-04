@@ -80,7 +80,20 @@ export async function loadPickPage(searchParams?: {
   const abbrs = [...new Set(week.games.flatMap((g) => [g.awayAbbr, g.homeAbbr]))];
   const [teams, priorPicks] = await Promise.all([
     abbrs.length
-      ? prisma.team.findMany({ where: { abbr: { in: abbrs } } })
+      ? prisma.team.findMany({
+          where: { abbr: { in: abbrs } },
+          select: {
+            abbr: true,
+            name: true,
+            priorYearRank: true,
+            wins: true,
+            losses: true,
+            ties: true,
+            divisionRank: true,
+            conference: true,
+            division: true,
+          },
+        })
       : Promise.resolve([]),
     prisma.pick.findMany({
       where: {

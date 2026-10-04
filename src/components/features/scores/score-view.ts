@@ -1,5 +1,4 @@
 import { MISSED_TEAM } from "@/lib/grading";
-import { teamLogoUrl } from "@/lib/espn-teams";
 import type { ScoreGameCardGame } from "./types";
 import type { ScoresPickRowData } from "./screen-types";
 
@@ -30,8 +29,7 @@ export function scoreCardGames(
     note: string | null;
     kickoff: Date;
     network: string | null;
-  }>,
-  logoByAbbr: Map<string, string | null>
+  }>
 ): ScoreGameCardGame[] {
   return games.map((game) => ({
     id: game.id,
@@ -43,8 +41,9 @@ export function scoreCardGames(
     note: game.note,
     kickoff: game.kickoff,
     network: game.network,
-    awayLogoUrl: teamLogoUrl(game.awayAbbr, logoByAbbr.get(game.awayAbbr)),
-    homeLogoUrl: teamLogoUrl(game.homeAbbr, logoByAbbr.get(game.homeAbbr)),
+    // TeamLogo ignores logoUrl and uses /helmets/{file}.png.
+    awayLogoUrl: null,
+    homeLogoUrl: null,
   }));
 }
 
@@ -58,8 +57,7 @@ export function scoresPickRows(
     picks: Array<{ source: string; teamAbbr: string; result: string | null }>;
   }>,
   meId: string,
-  revealAllPicks: boolean,
-  logoByAbbr: Map<string, string | null>
+  revealAllPicks: boolean
 ): ScoresPickRowData[] {
   return participants.map((member) => {
     const rawPick = member.picks[0];
@@ -77,7 +75,7 @@ export function scoresPickRows(
       isSelf,
       showPick: revealAllPicks || isSelf,
       teamAbbr: pick?.teamAbbr ?? null,
-      logoUrl: pick ? teamLogoUrl(pick.teamAbbr, logoByAbbr.get(pick.teamAbbr)) : null,
+      logoUrl: null,
       result,
       noPickLabel: `No pick${rawPick?.result ? ` · ${result}` : ""}`,
     };

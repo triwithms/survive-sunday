@@ -4,7 +4,6 @@ import { requireMembership } from "@/lib/require-membership";
 import {
   loadParticipantWeeks,
   pageWeekNumberForGame,
-  playerPickDecision,
   selectPageWeek,
   weekNavOptions,
 } from "@/lib/page-week";
@@ -29,12 +28,12 @@ export async function loadScoresPage(searchParams?: {
     loadParticipantWeeks(me),
     pageWeekNumberForGame(me.poolId, openGameId),
   ]);
-  const decision = playerPickDecision(me, weeks, currentWeek);
   const selectedRef = selectPageWeek({
     weeks,
     requested: searchParams?.week ?? linkedWeek?.toString(),
     basePath: "/scores",
-    currentWeek, actionWeek: decision.actionWeek,
+    currentWeek,
+    actionWeek: currentWeek,
     allowFuture: false, fallbackFirst: true,
   });
   if (!selectedRef) return null;
@@ -50,15 +49,6 @@ export async function loadScoresPage(searchParams?: {
     console.error("espn score sync skipped", e);
     espnSyncError = "Couldn’t refresh ESPN right now — showing last saved scores.";
   }
-  const teamAbbrs = [...new Set(week.games.flatMap((g) => [g.awayAbbr, g.homeAbbr]))];
-  const logoByAbbr = new Map(
-    (teamAbbrs.length
-      ? await prisma.team.findMany({
-          where: { abbr: { in: teamAbbrs } },
-          select: { abbr: true, logoUrl: true },
-        })
-      : []).map((t) => [t.abbr, t.logoUrl])
-  );
   const locked = isWeekLocked(week);
   const revealAllPicks = locked || week.number < currentWeek;
   const members = await prisma.membership.findMany({
@@ -79,11 +69,11 @@ export async function loadScoresPage(searchParams?: {
     },
     weekOptions: weekNavOptions(weeks),
     selectedWeek: week.number,
-    focusWeek: decision.actionWeek,
+    focusWeek: currentWeek,
     poll: shouldPollLiveScores(games),
-    games: scoreCardGames(games, logoByAbbr),
+    games: scoreCardGames(games),
     openGameId,
     revealAllPicks,
-    rows: scoresPickRows(participants, me.id, revealAllPicks, logoByAbbr),
+    rows: scoresPickRows(participants, me.id, revealAllPicks),
   };
 }

@@ -41,32 +41,28 @@ function ttlFor(data: EspnGameSnapshot[], now = Date.now()): number {
   return scoreboardTtlMs(liveWindow, SCOREBOARD_LIVE_TTL_MS, SCOREBOARD_SLATE_TTL_MS);
 }
 
-/** When the in-memory scoreboard still inside its TTL was fetched, else null. */
 export function freshScoreboardFetchedAt(weekNumber: number, year = 2026, now = Date.now()): number | null {
   const hit = byWeek.get(weekKey(weekNumber, year));
   return hit && isLastGoodFresh(hit, now, ttlFor(hit.value, now)) ? hit.fetchedAt : null;
 }
 
-export function isWeekScoreboardFresh(weekNumber: number, year = 2026, now = Date.now()): boolean {
-  return freshScoreboardFetchedAt(weekNumber, year, now) !== null;
-}
-
-/** In-memory last-good only — never fetches ESPN. */
-export function peekCachedWeekScoreboard(
-  weekNumber: number,
-  year = 2026
-): EspnGameSnapshot[] | null {
+/** Last successful fetch, ignoring the normal TTL. Null after a failure. */
+export function scoreboardFetchedAt(weekNumber: number, year = 2026): number | null {
   const hit = byWeek.get(weekKey(weekNumber, year));
-  if (!hit || hit.failed) return null;
-  return hit.value;
+  return hit && !hit.failed ? hit.fetchedAt : null;
 }
 
-async function loadWeekScoreboard(weekNumber: number, year: number): Promise<EspnGameSnapshot[]> {
+export function peekCachedWeekScoreboard(weekNumber: number, year = 2026): EspnGameSnapshot[] | null {
+  const hit = byWeek.get(weekKey(weekNumber, year));
+  return hit && !hit.failed ? hit.value : null;
+}
+
+async function loadWeekScoreboard(weekNumber: number, year: number, maxAgeMs?: number): Promise<EspnGameSnapshot[]> {
   const key = weekKey(weekNumber, year);
   const now = Date.now();
   const hit = byWeek.get(key);
-  const ttl = hit ? ttlFor(hit.value, now) : SCOREBOARD_SLATE_TTL_MS;
-  const plan = lastGoodServePlan(hit, now, ttl, SCOREBOARD_FAIL_TTL_MS, ttl);
+  const ttl = maxAgeMs ?? (hit ? ttlFor(hit.value, now) : SCOREBOARD_SLATE_TTL_MS);
+  const plan = lastGoodServePlan(hit, now, ttl, maxAgeMs == null ? SCOREBOARD_FAIL_TTL_MS : 0, ttl);
   if (plan === "fresh" && hit) return hit.value;
   if (plan === "fail-wait" && hit) return hit.value;
 
@@ -87,11 +83,17 @@ async function loadWeekScoreboard(weekNumber: number, year: number): Promise<Esp
   }
 }
 
-export async function fetchEspnWeekScoreboard(weekNumber: number, year = 2026): Promise<EspnGameSnapshot[]> {
+export async function fetchEspnWeekScoreboard(weekNumber: number, year = 2026, maxAgeMs?: number): Promise<EspnGameSnapshot[]> {
   const key = weekKey(weekNumber, year);
+  const hit = byWeek.get(key);
+  if (maxAgeMs != null && hit && !hit.failed && Date.now() - hit.fetchedAt < maxAgeMs) {
+    return hit.value;
+  }
   const pending = inflight.get(key);
   if (pending) return pending;
-  const job = loadWeekScoreboard(weekNumber, year).finally(() => inflight.delete(key));
+  const job = loadWeekScoreboard(weekNumber, year, maxAgeMs).finally(() => {
+    if (inflight.get(key) === job) inflight.delete(key);
+  });
   inflight.set(key, job);
   return job;
 }

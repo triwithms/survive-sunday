@@ -1,7 +1,6 @@
 import { BoardPickCell } from "@/components/features/board/BoardPickCell";
 import { Card } from "@/components/ui";
 import { AutoPickStamps } from "@/components/AutoPickStamps";
-import { teamLogoUrl } from "@/lib/espn-teams";
 import { sortSelections } from "./sort-selections";
 import type { HomeRow } from "./types";
 
@@ -40,7 +39,7 @@ export function SelectionsList({
                     ? {
                         teamAbbr: row.pick.teamAbbr,
                         result: row.pick.result,
-                        logoUrl: teamLogoUrl(row.pick.teamAbbr),
+                        logoUrl: null,
                       }
                     : null
                 }

@@ -45,17 +45,6 @@ export async function loadSchedulePage(searchParams?: {
     console.error("schedule espn score sync skipped", e);
     return null;
   });
-  const teamAbbrs = [
-    ...new Set(week.games.flatMap((g) => [g.awayAbbr, g.homeAbbr])),
-  ];
-  const logoByAbbr = new Map(
-    (teamAbbrs.length
-      ? await prisma.team.findMany({
-          where: { abbr: { in: teamAbbrs } },
-          select: { abbr: true, logoUrl: true },
-        })
-      : []).map((t) => [t.abbr, t.logoUrl])
-  );
   return {
     weekLabel: week.label,
     weekOptions: weekNavOptions(weeks),
@@ -64,7 +53,7 @@ export async function loadSchedulePage(searchParams?: {
     poll: shouldPollLiveScores(week.games),
     lockLabel: formatKickoff(effectiveLockAt(week)),
     locked: isWeekLocked(week),
-    games: mapScheduleGames(week.games, logoByAbbr),
+    games: mapScheduleGames(week.games),
     openGameId,
   };
 }

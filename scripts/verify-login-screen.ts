@@ -5,6 +5,12 @@
  */
 import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
+import {
+  entryPathAvoidingJoinTrap,
+  isNextRedirect,
+  loginReturnForInvite,
+  signedInLoginRedirect,
+} from "../src/lib/entry-path";
 
 function assert(cond: unknown, msg: string): asserts cond {
   if (!cond) throw new Error(msg);
@@ -107,8 +113,102 @@ function main() {
     .join("\n");
 
   assert(landing.includes('redirect("/login")'), "cold / goes to Sign in");
+  assert(
+    landing.includes("entryPathAvoidingJoinTrap"),
+    "signed-in / does not send a seatless session to Join"
+  );
+  assert(landing.includes("isNextRedirect"), "home rethrows redirect()");
   assert(!/WhoAreYou|Who are you/.test(landing), "no people list on /");
   assert(joinPage.includes('redirect("/login")'), "signed-out /join → Sign in");
+  assert(
+    page.includes("signedInLoginRedirect"),
+    "Sign in stays when the only next step is Join"
+  );
+  assert(
+    !page.includes("redirect(await pathAfterLogin"),
+    "login does not always follow pathAfterLogin"
+  );
+  const joinForm = readFileSync(
+    join("src/components/features/join/JoinForm.tsx"),
+    "utf8"
+  );
+  const claimed = readFileSync(
+    join("src/components/features/join/JoinClaimedSeat.tsx"),
+    "utf8"
+  );
+  const joinHook = readFileSync(
+    join("src/components/features/join/use-join-form.ts"),
+    "utf8"
+  );
+  assert(joinForm.includes('href="/login"'), "Join Sign in and back use /login");
+  assert(!joinForm.includes('href="/"'), "Join back is not home");
+  assert(!joinForm.includes("next/link"), "Join exit is a full document load");
+  assert(claimed.includes('href="/login"'), "claimed seat exits to /login");
+  assert(!claimed.includes('href="/"'), "claimed seat back is not home");
+  assert(
+    joinHook.includes('window.location.assign("/login")'),
+    "Escape leaves Join for Sign in"
+  );
+  assert(entryPathAvoidingJoinTrap("/join") === "/login", "seatless entry is Sign in");
+  assert(
+    entryPathAvoidingJoinTrap("/join?who=gams") === "/login",
+    "seatless invite entry is Sign in"
+  );
+  assert(entryPathAvoidingJoinTrap("/pick") === "/pick", "pool seat still opens My pick");
+  assert(
+    entryPathAvoidingJoinTrap("/welcome") === "/welcome",
+    "incomplete profile still opens Welcome"
+  );
+  assert(signedInLoginRedirect("/join") === null, "Sign in does not bounce to Join");
+  assert(signedInLoginRedirect("/pick") === "/pick", "member leaves Sign in for My pick");
+  assert(
+    signedInLoginRedirect("/welcome") === "/welcome",
+    "incomplete profile leaves Sign in for Welcome"
+  );
+  assert(
+    isNextRedirect(
+      Object.assign(new Error("NEXT_REDIRECT"), {
+        digest: "NEXT_REDIRECT;replace;/pick;307;",
+      })
+    ),
+    "redirect() is rethrown"
+  );
+  assert(!isNextRedirect(new Error("db down")), "db errors are not redirects");
+  assert(loginReturnForInvite({}) === "/login", "bare Join returns to Sign in");
+  assert(
+    decodeURIComponent(loginReturnForInvite({ seat: "mem-1" })).includes(
+      "/join?seat=mem-1"
+    ),
+    "seat invite survives Sign in"
+  );
+  assert(
+    decodeURIComponent(loginReturnForInvite({ token: "abc" })).includes(
+      "/join?t=abc"
+    ),
+    "token invite survives Sign in"
+  );
+  const afterLogin = readFileSync(join("src/lib/path-after-login.ts"), "utf8");
+  assert(
+    !afterLogin.includes('return "/join"'),
+    "pathAfterLogin does not open the code Join screen"
+  );
+  assert(
+    afterLogin.includes("SIGNED_IN_NO_POOL_PATH"),
+    "no pool seat stays on Sign in"
+  );
+  const fields = readFileSync(
+    join("src/components/features/join/JoinFields.tsx"),
+    "utf8"
+  );
+  assert(!fields.includes("Invite code"), "no invite-code field");
+  assert(!joinSrc.includes("Choose a nickname"), "no public nickname join");
+  assert(!joinSrc.includes("Invite code"), "join UI has no invite code");
+  assert(joinSrc.includes('action="/api/logout"'), "Sign in on Join signs out first");
+  const appLoad = readFileSync(
+    join("src/app/(app)/load-app-membership.ts"),
+    "utf8"
+  );
+  assert(!appLoad.includes('redirect("/join")'), "app entry does not open Join");
   assert(!joinSrc.includes("WhoAreYouSelect"), "Join has no roster picker");
   assert(!joinSrc.includes("roster list"), "Join has no roster-list toggle");
   assert(!joinSrc.includes("oneTapClaim"), "Join has no one-tap claim");

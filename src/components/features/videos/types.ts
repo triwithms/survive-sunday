@@ -4,6 +4,6 @@ export type VideosScreenProps = {
   weekLabel: string;
   weekOptions: WeekNavOption[];
   selectedWeek: number;
-  /** Same current pick week Home / Scores use for “This week”. */
+  /** Current pick week this screen labels “This week”. */
   focusWeek: number;
 };

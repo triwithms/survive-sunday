@@ -18,7 +18,7 @@ export async function loadAccountPage(): Promise<AccountScreenProps> {
   if (!session?.user?.id) redirect("/login");
   const ctx = await getUserPoolContext(session.user.id);
   const me = ctx.membership;
-  if (!me) redirect("/join");
+  if (!me) redirect("/login");
   if (!profileIsComplete(snapshotFromMember(me))) redirect("/welcome");
   const cookieStore = await cookies();
   const roleView = resolveRoleView({

@@ -1,4 +1,3 @@
-import { teamLogoUrl } from "@/lib/espn-teams";
 import { MISSED_TEAM } from "@/lib/grading";
 import { isAlive, resolveSeasonWinners } from "@/lib/tiebreak";
 import { isSingleEliminationWeek } from "@/lib/pool-rules";
@@ -30,11 +29,10 @@ export function assembleBoardPage(args: {
   sorted: Member[];
   participants: Member[];
   pickByMember: Map<string, PickRow>;
-  logoByAbbr: Map<string, string | null>;
   locked: boolean;
   canChangePick: boolean;
 }): BoardScreenProps {
-  const { me, week, sorted, pickByMember, logoByAbbr } = args;
+  const { me, week, sorted, pickByMember } = args;
   const weekLabel = week?.label ?? `Week ${args.currentWeek}`;
   const winners = resolveSeasonWinners(args.participants);
   const revealAllPicks = args.locked;
@@ -49,7 +47,7 @@ export function assembleBoardPage(args: {
         ? {
             teamAbbr: pick.teamAbbr,
             result: pick.result,
-            logoUrl: teamLogoUrl(pick.teamAbbr, logoByAbbr.get(pick.teamAbbr)),
+            logoUrl: null,
           }
         : null,
     };

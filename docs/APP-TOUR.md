@@ -82,7 +82,7 @@ Browse the slate — including **future** weeks (Scores will not).
 
 ### Scores (`/scores`)
 
-This week’s scoreboard (your current pick week). Not a season browser.
+This week’s scoreboard (the week being played). Not a season browser.
 
 - Gold **Details ›** on a game. Same sheet: preview before kickoff, highlights after; **Participants’ picks** after lock.
 - Share the matchup URL `{origin}/scores?week={N}&game={gameId}` from the **sheet Share** (and you can still use header Share for the Scores page itself).
@@ -102,7 +102,7 @@ Not a screen — a short-lived panel.
 
 The group’s weekly picks. Not the season race.
 
-- Opens on your current pick week. You can look back. Future weeks stay on Schedule.
+- Opens on the week being played. You can look back. Future weeks stay on Schedule.
 - Flat list: same team together, then nickname A–Z.
 - Before lock: other friends stay hidden.
 
@@ -157,7 +157,7 @@ Questions, in this order: **What’s the score? Who’s hurt / who’s starting?
 
 UI after [#148](https://github.com/triwithms/survive-sunday/pull/148). Keep the taps honest even if VO stays sparse.
 
-1. **Already signed in.** Open from the Home Screen if you can. Cut to **Scores** on your current pick week. Find the relevant game (the one you picked, or the one you’re about to).
+1. **Already signed in.** Open from the Home Screen if you can. Cut to **Scores** on the week being played. Find the relevant game (the one you picked, or the one you’re about to).
 2. **What’s the score?** Tap gold **Details ›** on that game card. Peek the sheet (live, preview, or highlights). Don’t tour every clip.
 3. **Close** the sheet. **Who’s hurt / who’s starting?** Tap that team’s **logo or name** (Scores card — logos still open research). Glance injuries / starters. Don’t open every Look closer page.
 4. **Bottom nav → My pick.** **What’s my pick?** Scroll to that matchup card (away @ home). **Pick** sits on each team — don’t need to confirm a new pick on camera.
@@ -211,7 +211,7 @@ Punch up later with [`APP-TOUR-FREE-AI.md`](APP-TOUR-FREE-AI.md). Keep this orde
 5. “Sheet **Share** is beside Close. That’s the matchup link for the group chat.”
 6. “Header **Share** is the page you’re on. Same panel: full URL, Copy, Send. No address bar on the Home Screen icon — that’s why we show the link.”
 7. “**Schedule** is the whole slate. Future weeks live here. Gold **Details** — same sheet again.”
-8. “**Scores** is *this* pick week. **Details**, then Share, and the link looks like Scores, week, and game. After lock you’ll see who picked whom.”
+8. “**Scores** is the week being played. **Details**, then Share, and the link looks like Scores, week, and game. After lock you’ll see who picked whom.”
 9. “**Selections** is the weekly pick list. Same team together, then nicknames. Not the season race.”
 10. “**Leaderboard** *is* the season race. Still in, then out. Tiebreak at the bottom starts folded — tap it if you like rules.”
 11. “**Standings** — that’s NFL win-loss. Research. Tap a club if you want the helmet and the rest. The pool race stays on Leaderboard.”

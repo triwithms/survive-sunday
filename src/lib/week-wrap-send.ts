@@ -7,6 +7,7 @@ import { loadWrapBoard, loadWrapNfl } from "./week-wrap-extras";
 import { weekWrapPlayers } from "./week-wrap-players";
 import { WEEK_WRAP_BOARD_URL } from "./week-wrap-sections";
 import { loadWeekWrapSettings } from "./week-wrap-settings";
+import { showTeamLogosFor } from "./team-logos";
 import { findWeekTouchdownVideo } from "./week-wrap-youtube";
 
 export { weekWrapSendMessage } from "./week-wrap-deliver";
@@ -20,7 +21,7 @@ export async function sendWeekWrap(
 ): Promise<{ ok: true; counts: Awaited<ReturnType<typeof notifyWrapMembers>> } | { ok: false; error: string }> {
   const week = await prisma.week.findUnique({
     where: { poolId_number: { poolId, number: weekNumber } },
-    select: { id: true, pool: { select: { season: true } } },
+    select: { id: true, pool: { select: { season: true, showTeamLogos: true } } },
   });
   if (!week) return { ok: false, error: `No Week ${weekNumber} on this pool` };
   const seasonYear = Number(String(week.pool.season).slice(0, 4));
@@ -54,7 +55,14 @@ export async function sendWeekWrap(
   const content = weekWrapContent({
     tone: settings.tone,
     blocks: settings.blocks,
-    facts: { weekNumber, players, boardUrl: WEEK_WRAP_BOARD_URL, board, nfl },
+    facts: {
+      weekNumber,
+      players,
+      boardUrl: WEEK_WRAP_BOARD_URL,
+      board,
+      nfl,
+      teamLogos: showTeamLogosFor(week.pool.showTeamLogos),
+    },
     emailOverride: settings.emailOverride,
     smsOverride: settings.smsOverride,
     touchdown,

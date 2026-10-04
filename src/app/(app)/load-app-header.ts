@@ -27,6 +27,7 @@ export type AppHeaderData = {
   phoneE164: string | null;
   phoneSoftPrompt: boolean;
   singleEliminationFromWeek: number | null;
+  showTeamLogos: boolean;
   currentWeek: number;
   weekNav: HeaderWeek[];
   pickActionWeek: number;
@@ -46,6 +47,7 @@ function chromeFromMembership(me: AppMembership) {
     phoneE164: me.phoneE164,
     phoneSoftPrompt: me.phoneE164 == null && me.phoneSkippedAt == null,
     singleEliminationFromWeek: me.singleEliminationFromWeek,
+    showTeamLogos: me.showTeamLogos,
   };
 }
 

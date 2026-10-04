@@ -25,6 +25,8 @@ export function useAdminPost() {
             ? data.summary
             : "Saved."
       );
+      // `router.refresh()` drops the whole client tab cache, so a player
+      // tab opened a few seconds ago cannot keep a pre-edit payload.
       if (res.ok) router.refresh();
     } catch {
       setMsg("Network error — try again.");

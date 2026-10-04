@@ -10,7 +10,6 @@ import {
   pickHrefForWeek,
   type PlayerPickWeek,
 } from "@/lib/next-week-picks";
-import { teamLogoUrl } from "@/lib/espn-teams";
 import type { HomeHeroProps } from "./types";
 
 type HeroPick = {
@@ -43,6 +42,15 @@ export async function buildHomeHero(args: {
   const { myPick, decision } = args;
   const myTeam = await prisma.team.findUnique({
     where: { abbr: myPick.teamAbbr },
+    select: {
+      priorYearRank: true,
+      wins: true,
+      losses: true,
+      ties: true,
+      divisionRank: true,
+      conference: true,
+      division: true,
+    },
   });
   const favLabel = myPick.game ? playerSpreadLabel(myPick.game) : null;
   const nextOpen =
@@ -52,7 +60,7 @@ export async function buildHomeHero(args: {
       decision.reason === "next_game_pending");
   return {
     teamAbbr: myPick.teamAbbr,
-    logoUrl: teamLogoUrl(myPick.teamAbbr, myTeam?.logoUrl),
+    logoUrl: null,
     priorStanding:
       [formatPriorYearRank(myTeam?.priorYearRank), myTeam
         ? formatCurrentStanding({

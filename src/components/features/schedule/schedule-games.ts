@@ -1,7 +1,6 @@
 import { playerSpreadLabel } from "@/lib/matchup-meta";
 import { formatKickoff } from "@/lib/utils";
 import { formatMatchupListLine } from "@/lib/game-display";
-import { teamLogoUrl } from "@/lib/espn-teams";
 import type { ScheduleGame } from "./types";
 
 type GameBits = {
@@ -20,10 +19,7 @@ type GameBits = {
   network: string | null;
 };
 
-export function mapScheduleGames(
-  games: GameBits[],
-  logoByAbbr: Map<string, string | null>
-): ScheduleGame[] {
+export function mapScheduleGames(games: GameBits[]): ScheduleGame[] {
   return games.map((game) => ({
     id: game.id,
     awayAbbr: game.awayAbbr,
@@ -36,7 +32,7 @@ export function mapScheduleGames(
     network: game.network,
     scoreLine: formatMatchupListLine(game) || formatKickoff(game.kickoff),
     favouriteLabel: playerSpreadLabel(game),
-    awayLogoUrl: teamLogoUrl(game.awayAbbr, logoByAbbr.get(game.awayAbbr)),
-    homeLogoUrl: teamLogoUrl(game.homeAbbr, logoByAbbr.get(game.homeAbbr)),
+    awayLogoUrl: null,
+    homeLogoUrl: null,
   }));
 }

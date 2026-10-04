@@ -42,7 +42,7 @@ export async function loadHomePage(searchParams?: {
   });
   const selectedRef = selectPageWeek({
     weeks: visibleWeeks, requested: searchParams?.week, basePath: "/pool",
-    currentWeek, actionWeek: decision.actionWeek,
+    currentWeek, actionWeek: currentWeek,
     allowFuture: false, fallbackFirst: true,
   });
   if (!selectedRef) return null;
@@ -77,7 +77,7 @@ export async function loadHomePage(searchParams?: {
     weekLabel: week.label, lockAt: effectiveLockAt(week),
     revealAllPicks: locked || week.number < currentWeek,
     weekOptions: weekNavOptions(visibleWeeks), selectedWeek: week.number,
-    focusWeek: decision.actionWeek, poll: shouldPollLiveScores(week.games),
+    focusWeek: currentWeek, poll: shouldPollLiveScores(week.games),
     hero: null, empty: null,
     games: [...week.games].sort(
       (a, b) => new Date(a.kickoff).getTime() - new Date(b.kickoff).getTime()

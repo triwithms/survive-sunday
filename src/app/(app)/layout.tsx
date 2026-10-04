@@ -3,6 +3,7 @@ import { ChromeInsets } from "@/components/ChromeInsets";
 import { FooterDisclaimer } from "@/components/FooterDisclaimer";
 import { AppHeader } from "@/components/AppHeader";
 import { SectionBoundary } from "@/components/SectionBoundary";
+import { TeamLogosProvider } from "@/components/TeamLogosContext";
 import { A2hsNudge } from "@/components/features/a2hs";
 import { loadAppHeader } from "./load-app-header";
 
@@ -23,23 +24,25 @@ export default async function AppLayout({
   const chrome = await loadAppHeader();
 
   return (
-    <div key={chrome.userId} className="app-shell">
-      <AppHeader {...chrome} />
-      <div data-app-main="" className="app-main">
-        <div className="mx-auto w-full max-w-pool px-3 sm:px-4 py-5 min-w-0">
-          {children}
+    <TeamLogosProvider on={chrome.showTeamLogos}>
+      <div key={chrome.userId} className="app-shell">
+        <AppHeader {...chrome} />
+        <div data-app-main="" className="app-main">
+          <div className="mx-auto w-full max-w-pool px-3 sm:px-4 py-5 min-w-0">
+            {children}
+          </div>
+          <SectionBoundary name="footer" variant="quiet">
+            <FooterDisclaimer />
+          </SectionBoundary>
         </div>
-        <SectionBoundary name="footer" variant="quiet">
-          <FooterDisclaimer />
+        <BottomNav isAdmin={chrome.showAdminChrome} />
+        <SectionBoundary name="a2hs-nudge" variant="quiet">
+          <A2hsNudge />
+        </SectionBoundary>
+        <SectionBoundary name="chrome-insets" variant="quiet">
+          <ChromeInsets />
         </SectionBoundary>
       </div>
-      <BottomNav isAdmin={chrome.showAdminChrome} />
-      <SectionBoundary name="a2hs-nudge" variant="quiet">
-        <A2hsNudge />
-      </SectionBoundary>
-      <SectionBoundary name="chrome-insets" variant="quiet">
-        <ChromeInsets />
-      </SectionBoundary>
-    </div>
+    </TeamLogosProvider>
   );
 }
