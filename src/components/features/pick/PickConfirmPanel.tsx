@@ -1,5 +1,6 @@
 import { Button, Card } from "@/components/ui";
 import { TeamLogo, TEAM_LOGO_SIZE } from "@/components/TeamLogo";
+import { usePageScrollLock } from "@/lib/page-scroll-lock";
 import { formatKickoff } from "@/lib/utils";
 import { pickedSpreadLine, sideMeta } from "./pick-format";
 import type { PickMatchup, PickSide } from "./types";
@@ -25,10 +26,11 @@ export function PickConfirmPanel({
 }) {
   const spread = pickedSpreadLine(matchup, side.abbr);
   const meta = sideMeta(side);
+  usePageScrollLock();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-4">
-      <Card className="w-full max-w-sheet p-5 space-y-3">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 overscroll-contain px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <Card className="popup-card w-full max-w-sheet max-h-[min(90dvh,100%)] p-5 space-y-3">
         <h2 className="font-semibold text-lg">
           {busy ? "Saving pick…" : "Confirm pick"}
         </h2>

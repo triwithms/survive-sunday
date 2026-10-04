@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui";
+import { usePageScrollLock } from "@/lib/page-scroll-lock";
 
 type Props = {
   title: string;
@@ -14,8 +15,12 @@ type Props = {
 };
 
 export function ConfirmSheet(props: Props) {
+  usePageScrollLock();
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/60" data-testid={props.testId}>
+    <div
+      className="fixed inset-0 z-50 flex items-end bg-black/60 overscroll-contain pt-[env(safe-area-inset-top)]"
+      data-testid={props.testId}
+    >
       <button
         type="button"
         className="absolute inset-0 cursor-default"
@@ -26,7 +31,7 @@ export function ConfirmSheet(props: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-sheet-title"
-        className="relative w-full space-y-3 rounded-t-xl border-t border-stadium-border bg-stadium-900 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
+        className="popup-card relative w-full max-h-[min(90dvh,100%)] space-y-3 rounded-t-xl border-t border-stadium-border bg-stadium-900 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] [--popup-bg:var(--stadium-900)] [--popup-pad:1rem]"
       >
         <h2 id="confirm-sheet-title" className="text-sm font-semibold">
           {props.title}

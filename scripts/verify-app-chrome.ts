@@ -1,6 +1,7 @@
 /**
- * Phone chrome: document scroll + sticky header / BottomNav + read-only
- * header Week N. Safari Full Page screenshots need the document to scroll.
+ * Phone chrome: sticky header / BottomNav + read-only header Week N.
+ * Scroll model (globals.css): touch screens lock the viewport and only
+ * [data-app-main] scrolls; mouse/trackpad keeps document scroll.
  *
  *   npx tsx scripts/verify-app-chrome.ts
  */
@@ -11,22 +12,28 @@ function src(path: string) {
   return readFileSync(path, "utf8");
 }
 
-function assertDocumentScrollShell(file: string) {
+function cssBlock(css: string, selector: string): string {
+  const start = css.indexOf(`${selector} {`);
+  assert.ok(start >= 0, `globals.css: ${selector}`);
+  return css.slice(start, css.indexOf("}", start));
+}
+
+function assertAppShell(file: string) {
   const code = src(file);
   assert.match(code, /<BottomNav/, `${file}: BottomNav`);
   assert.match(code, /<ChromeInsets/, `${file}: ChromeInsets`);
-  assert.match(code, /min-h-dvh flex flex-col/, `${file}: shell grows with content`);
-  assert.match(code, /overflow-x-clip/, `${file}: clip (not hidden) sideways`);
+  assert.match(code, /className="app-shell"/, `${file}: .app-shell`);
+  assert.match(code, /data-app-main="" className="app-main"/, `${file}: one scroll pane`);
   assert.doesNotMatch(
     code,
-    /(?<![-\w])h-dvh|max-h-dvh|overflow-hidden|overflow-y-auto|overflow-x-hidden|overflow-auto/,
-    `${file}: a viewport-locked shell or inner scroll pane keeps document height at one screen (Safari Full Page)`
+    /(?<![-\w])h-dvh|h-screen|100vh|overflow-hidden|overflow-y-auto|overflow-auto/,
+    `${file}: scroll locks live in globals.css (.app-shell / .app-main), scoped to touch screens`
   );
-  assert.doesNotMatch(code, /pb-24/, `${file}: sticky tab bar must not use spacer padding`);
+  assert.doesNotMatch(code, /pb-24/, `${file}: tab bar must not use spacer padding`);
 }
 
-assertDocumentScrollShell("src/app/(app)/layout.tsx");
-assertDocumentScrollShell("src/app/help/page.tsx");
+assertAppShell("src/app/(app)/layout.tsx");
+assertAppShell("src/app/help/page.tsx");
 
 const nav = src("src/components/BottomNav.tsx");
 assert.match(nav, /sticky bottom-0 shrink-0/);
@@ -66,14 +73,65 @@ assert.match(css, /scroll-padding-top:\s*var\(--app-header-h/);
 assert.match(css, /scroll-padding-bottom:\s*var\(--app-nav-h/);
 assert.doesNotMatch(
   css,
-  /(html|body)\s*\{[^}]*(overflow(-y)?:\s*(hidden|auto|scroll|clip)|(?<![-\w])height:\s*100(d|s|l)?vh)/,
-  "html/body must not lock height or overflow (document must scroll)"
+  /(^|\n)(html|body)\s*\{[^}]*(overflow(-y)?:\s*(hidden|auto|scroll|clip)|(?<![-\w])height:\s*100(d|s|l)?vh)/,
+  "unscoped html/body locks break document scroll on desktop and sign-in pages"
 );
+assert.doesNotMatch(css, /(?<![-\w])100vh;\s*\n(?!\s*(min-)?height:\s*100dvh)/, "100vh only as a 100dvh fallback");
+
+const touch = css.slice(css.indexOf("@media (pointer: coarse)"));
+for (const file of ["src/components/BottomNav.tsx", "src/components/AppHeader.tsx"]) {
+  assert.doesNotMatch(src(file), /(?<![-\w])fixed(?![-\w])/, `${file}: chrome sits in the shell, not position:fixed`);
+}
+assert.ok(touch.length > 0, "touch-screen scroll lock");
+const lockedRoot = cssBlock(touch, "html:has(.app-shell) body");
+assert.match(lockedRoot, /height:\s*100%/);
+assert.match(lockedRoot, /overflow:\s*hidden/);
+assert.match(lockedRoot, /overscroll-behavior:\s*none/);
+const lockedShell = cssBlock(touch, ".app-shell");
+assert.match(lockedShell, /position:\s*fixed;\s*inset:\s*0/, "touch shell pinned to the screen, not a 100dvh box in the document");
+assert.match(lockedShell, /overflow:\s*hidden/);
+const pane = cssBlock(touch, ".app-main");
+assert.match(pane, /min-height:\s*0/);
+assert.match(pane, /overflow-y:\s*auto/);
+assert.match(pane, /overscroll-behavior:\s*contain/);
+assert.match(touch, /--app-sticky-top:\s*0px/, "in-pane sticky bars pin to the pane top");
+assert.match(touch, /font-size:\s*max\(16px, 100%\)/, "iOS focus zoom");
+const desktopPane = cssBlock(css, ".app-main");
+assert.match(desktopPane, /overflow-x:\s*clip/, "clip (not hidden) sideways keeps sticky chrome pinned");
+assert.doesNotMatch(desktopPane, /overflow-y/);
+
+const popup = cssBlock(css, ".popup-card");
+assert.match(popup, /overflow-y:\s*auto/);
+assert.match(popup, /overscroll-behavior:\s*contain/);
+assert.match(cssBlock(css, ".popup-card > :first-child"), /position:\s*sticky/, "popup title + Close pinned");
+
+const lock = src("src/lib/page-scroll-lock.ts");
+assert.match(lock, /\[data-app-main\]/);
+assert.match(lock, /scrollTop = s\.paneTop/, "closing a popup restores the pane offset");
+assert.match(lock, /window\.scrollTo\(0, s\.windowY\)/, "closing a popup restores the document offset");
+
+for (const file of [
+  "src/components/ModalDialog.tsx",
+  "src/components/ShareLinkPanel.tsx",
+  "src/components/features/pick/PickConfirmPanel.tsx",
+  "src/components/features/admin/ConfirmSheet.tsx",
+]) {
+  const code = src(file);
+  assert.match(code, /usePageScrollLock\(\)/, `${file}: page behind must not scroll`);
+  assert.match(code, /popup-card/, `${file}: popup scrolls inside itself`);
+  assert.match(code, /max-h-\[min\(90dvh,100%\)\]|max-h-full/, `${file}: popup height cap`);
+  assert.match(code, /env\(safe-area-inset-bottom\)/, `${file}: safe-area bottom`);
+  assert.match(code, /overscroll-contain/, `${file}: backdrop drags do not chain`);
+  assert.doesNotMatch(code, /body\.style\.overflow/, `${file}: use lockPageScroll`);
+}
+
+const insets = src("src/components/ChromeInsets.tsx");
+assert.match(insets, /appScrollPane\(\)\?\.scrollTo\(0, 0\)/, "tabs start at the top of the pane");
 
 const roster = src("src/components/features/admin/RosterRecordBar.tsx");
 assert.match(
   roster,
-  /sticky top-\[var\(--app-header-h,0px\)\]/,
+  /sticky top-\[var\(--app-sticky-top,0px\)\]/,
   "in-page sticky bars sit under the sticky header"
 );
 

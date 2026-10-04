@@ -64,3 +64,6 @@ jobs:
 
       - name: Team logos setting
         run: npm run verify:team-logos-setting
+
+      - name: App chrome and scroll
+        run: npm run verify:app-chrome
