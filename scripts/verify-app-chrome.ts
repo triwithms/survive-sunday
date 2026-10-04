@@ -79,13 +79,16 @@ assert.doesNotMatch(
 assert.doesNotMatch(css, /(?<![-\w])100vh;\s*\n(?!\s*(min-)?height:\s*100dvh)/, "100vh only as a 100dvh fallback");
 
 const touch = css.slice(css.indexOf("@media (pointer: coarse)"));
+for (const file of ["src/components/BottomNav.tsx", "src/components/AppHeader.tsx"]) {
+  assert.doesNotMatch(src(file), /(?<![-\w])fixed(?![-\w])/, `${file}: chrome sits in the shell, not position:fixed`);
+}
 assert.ok(touch.length > 0, "touch-screen scroll lock");
 const lockedRoot = cssBlock(touch, "html:has(.app-shell) body");
 assert.match(lockedRoot, /height:\s*100%/);
 assert.match(lockedRoot, /overflow:\s*hidden/);
 assert.match(lockedRoot, /overscroll-behavior:\s*none/);
 const lockedShell = cssBlock(touch, ".app-shell");
-assert.match(lockedShell, /height:\s*100vh;\s*height:\s*100dvh/);
+assert.match(lockedShell, /position:\s*fixed;\s*inset:\s*0/, "touch shell pinned to the screen, not a 100dvh box in the document");
 assert.match(lockedShell, /overflow:\s*hidden/);
 const pane = cssBlock(touch, ".app-main");
 assert.match(pane, /min-height:\s*0/);

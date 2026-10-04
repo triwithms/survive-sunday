@@ -71,9 +71,13 @@ body {
   html:has(.app-shell) {
     --app-sticky-top: 0px;
   }
+  /* Fixed to the viewport so the shell never depends on html/body height and
+     100dvh agreeing while Safari's toolbar moves. The document itself must
+     never scroll here: sticky chrome on a scrolling document is what Safari
+     strands mid-screen. */
   .app-shell {
-    height: 100vh;
-    height: 100dvh;
+    position: fixed;
+    inset: 0;
     min-height: 0;
     overflow: hidden;
   }
