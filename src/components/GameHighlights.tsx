@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
 import type { VideoClip } from "@/lib/youtube-parse";
+import { fetchJsonDeduped, VIDEO_JSON_MAX_AGE_MS } from "@/lib/client-get-json";
 
 type Payload = {
   ok: true;
@@ -30,11 +31,13 @@ export function GameHighlights({
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetch(`/api/videos/game?gameId=${encodeURIComponent(gameId)}`, {
-      cache: "no-store",
-    })
-      .then(async (res) => {
-        const json = (await res.json()) as Payload & { error?: string };
+    const phaseKey = live ? "live" : final ? "final" : "pre";
+    fetchJsonDeduped(
+      `/api/videos/game?gameId=${encodeURIComponent(gameId)}#${phaseKey}`,
+      { maxAgeMs: VIDEO_JSON_MAX_AGE_MS, fresh: reload > 0 }
+    )
+      .then((res) => {
+        const json = res.body as Payload & { error?: string };
         if (!res.ok) throw new Error(json.error || "Couldn’t load videos");
         if (!cancelled) setData(json);
       })

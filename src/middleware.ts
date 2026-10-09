@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+  isAppleTouchIconProbe,
+  isAppRoute,
+  publicMissHtml,
+} from "@/lib/public-miss";
 import { isLoopbackHost } from "@/lib/request-host";
 
 /**
@@ -7,8 +12,31 @@ import { isLoopbackHost } from "@/lib/request-host";
  * resolving the origin as localhost (listen address or leftover AUTH_URL).
  * When Host is a public hostname, force x-forwarded-host / proto so Auth.js
  * trustHost uses the request Host (e.g. *.trycloudflare.com).
+ *
+ * Unknown paths return the static miss page here. They must not reach the
+ * dynamic app: that render is a Function Invocation per probe.
  */
 export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (isAppleTouchIconProbe(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/icons/apple-touch-icon.png";
+    url.search = "";
+    return NextResponse.rewrite(url);
+  }
+
+  if (!isAppRoute(pathname)) {
+    return new NextResponse(publicMissHtml(), {
+      status: 404,
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "public, max-age=86400",
+        "x-robots-tag": "noindex, nofollow",
+      },
+    });
+  }
+
   const host = (request.headers.get("host") ?? "").split(",")[0].trim();
   if (!host || isLoopbackHost(host)) {
     return NextResponse.next();
@@ -33,10 +61,10 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Static files must not run middleware. Helmets are <img> on every tab;
-  // matching them turned each logo into an edge invocation, and no-store
-  // made the browser refetch the whole set on every paint.
+  // Known static dirs stay out of middleware (helmets are an <img> on every
+  // tab). Do not exclude every image extension: a missing png such as
+  // /apple-touch-icon.png would skip this file and boot the dynamic 404.
   matcher: [
-    "/((?!_next/static|_next/image|icons/|helmets/|favicon.ico|manifest.webmanifest|sw.js|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico)$).*)",
+    "/((?!_next/static|_next/image|icons/|helmets/|favicon.ico|manifest.webmanifest|sw.js|robots.txt).*)",
   ],
 };
