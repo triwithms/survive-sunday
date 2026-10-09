@@ -35,6 +35,9 @@ jobs:
       - name: Static cache
         run: npm run verify:static-cache
 
+      - name: Invocation guard
+        run: npm run verify:invocations
+
       - name: Pool invite
         run: npm run verify:pool-invite
 

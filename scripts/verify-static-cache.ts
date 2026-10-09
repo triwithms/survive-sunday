@@ -103,7 +103,12 @@ assert.match(readFileSync("public/sw.js", "utf8"), /\/api\/auth/);
 
 const middleware = readFileSync("src/middleware.ts", "utf8");
 assert.match(middleware, /helmets\//);
-assert.match(middleware, /png\|jpg\|jpeg/);
+assert.match(middleware, /icons\//);
+assert.doesNotMatch(
+  middleware,
+  /png\|jpg\|jpeg/,
+  "a blanket image exclusion sends missing png probes to the dynamic 404"
+);
 
 const nextConfig = readFileSync("next.config.ts", "utf8");
 assert.match(nextConfig, /\/helmets\/:path\*/);

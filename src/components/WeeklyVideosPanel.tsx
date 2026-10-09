@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { VideoClip, VideoGroups } from "@/lib/youtube-parse";
+import { fetchJsonDeduped, VIDEO_JSON_MAX_AGE_MS } from "@/lib/client-get-json";
 import { WeeklyVideoLists } from "@/components/WeeklyVideoLists";
 
 type WeekPayload = {
@@ -24,11 +25,11 @@ export function WeeklyVideosPanel({ week }: { week: number }) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetch(`/api/videos/week?week=${encodeURIComponent(String(week))}`, {
-      cache: "no-store",
+    fetchJsonDeduped(`/api/videos/week?week=${encodeURIComponent(String(week))}`, {
+      maxAgeMs: VIDEO_JSON_MAX_AGE_MS,
     })
-      .then(async (res) => {
-        const json = (await res.json()) as WeekPayload & { error?: string };
+      .then((res) => {
+        const json = res.body as WeekPayload & { error?: string };
         if (!res.ok) throw new Error(json.error || "Couldn’t load videos");
         if (!cancelled) setData(json);
       })
@@ -70,12 +71,12 @@ export function HomeVideosTeaser({ week }: { week: number }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/videos/week?week=${encodeURIComponent(String(week))}`, {
-      cache: "no-store",
+    fetchJsonDeduped(`/api/videos/week?week=${encodeURIComponent(String(week))}`, {
+      maxAgeMs: VIDEO_JSON_MAX_AGE_MS,
     })
-      .then(async (res) => {
+      .then((res) => {
         if (!res.ok) return;
-        const json = (await res.json()) as WeekPayload;
+        const json = res.body as WeekPayload;
         const list = [
           ...json.groups.short,
           ...json.groups.medium,
