@@ -17,7 +17,13 @@ const send = readFileSync("src/lib/week-wrap-send.ts", "utf8");
 assert.match(send, /notifyUser|notifyWrapMembers/);
 assert.match(send, /findWeekTouchdownVideo/);
 assert.match(send, /syncPoolWeekFromEspn|syncWeekScoresFromEspn/);
-assert.match(send, /loadWrapBoard\(poolId\)/);
+assert.match(send, /wrapWeekView\(season, weekNumber\)/);
+assert.ok(
+  send.indexOf("gradeWeekPicks") < send.indexOf("loadWrapSeason"),
+  "send grades this week before the wrap is built"
+);
+assert.match(readFileSync("src/lib/week-wrap-load.ts", "utf8"), /wrapWeekView/);
+assert.doesNotMatch(send, /weekWrapPlayers\(/);
 assert.match(send, /loadWrapNfl\(\{ sync: true \}\)/);
 const extras = readFileSync("src/lib/week-wrap-extras.ts", "utf8");
 assert.match(extras, /sortBoard/);

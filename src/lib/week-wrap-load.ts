@@ -1,17 +1,17 @@
 import { prisma } from "./db";
-import { loadWrapBoard, loadWrapNfl } from "./week-wrap-extras";
+import { weekCountsForPool } from "./pool-start-week";
+import { overlayPoolWeeks } from "./slate-games";
+import { showTeamLogosFor } from "./team-logos";
+import { loadWrapAudience } from "./week-wrap-audience";
+import { emptyWeekWrapPanel } from "./week-wrap-empty";
+import { loadWrapNfl } from "./week-wrap-extras";
 import { weekNumbersFromDedupeKeys } from "./week-wrap-parse";
-import { weekWrapPlayers } from "./week-wrap-players";
 import { WEEK_WRAP_BOARD_URL } from "./week-wrap-sections";
 import { loadWeekWrapSettings } from "./week-wrap-settings";
+import { loadWrapSeason, wrapWeekView } from "./week-wrap-snapshot";
 import { preferredWrapWeek } from "./week-wrap-status";
-import { emptyWeekWrapPanel } from "./week-wrap-empty";
-import { loadWrapAudience } from "./week-wrap-audience";
 import type { WeekWrapPanelData, WeekWrapWeekOption } from "./week-wrap-types";
 import { allGamesFinal, isEligibleNoonDayAfter } from "./week-wrap-when";
-import { overlayPoolWeeks } from "./slate-games";
-import { weekCountsForPool } from "./pool-start-week";
-import { showTeamLogosFor } from "./team-logos";
 
 export async function loadWeekWrapPanel(
   poolId: string,
@@ -30,40 +30,17 @@ async function loadWeekWrapPanelUnsafe(
   now: Date
 ): Promise<WeekWrapPanelData> {
   const settings = await loadWeekWrapSettings(poolId);
-  const pool = await prisma.pool.findUnique({
-    where: { id: poolId },
-    select: { startWeek: true, showTeamLogos: true },
-  });
-  const [members, weeks, sends, board, nfl] = await Promise.all([
-    prisma.membership.findMany({
-      where: { poolId },
-      select: {
-        id: true,
-        nickname: true,
-        status: true,
-        role: true,
-        isParticipant: true,
-      },
-    }),
+  const [season, weeks, sends, nfl] = await Promise.all([
+    loadWrapSeason(poolId),
     prisma.week.findMany({
       where: { poolId },
       orderBy: { number: "desc" },
-      select: {
-        number: true,
-        games: { select: { status: true, kickoff: true } },
-        picks: {
-          select: { membershipId: true, teamAbbr: true, result: true },
-        },
-      },
+      select: { number: true, games: { select: { status: true, kickoff: true } } },
     }),
     prisma.notificationSend.findMany({
-      where: {
-        type: "weekWrap",
-        dedupeKey: { startsWith: `wrap:${poolId}:w` },
-      },
+      where: { type: "weekWrap", dedupeKey: { startsWith: `wrap:${poolId}:w` } },
       select: { dedupeKey: true },
     }),
-    loadWrapBoard(poolId),
     loadWrapNfl({ sync: false }),
   ]);
   const slateWeeks = await overlayPoolWeeks(poolId, weeks);
@@ -73,26 +50,32 @@ async function loadWeekWrapPanelUnsafe(
   );
   const skipped = new Set(settings.skippedWeeks);
   const options: WeekWrapWeekOption[] = slateWeeks
-    .filter((week) => weekCountsForPool(pool?.startWeek, week.number))
-    .map((week) => ({
-    number: week.number,
-    allFinal: allGamesFinal(week.games),
-    eligible: isEligibleNoonDayAfter(week.games, now),
-    skipped: skipped.has(week.number),
-    sent: sent.has(week.number),
-    players: weekWrapPlayers(members, week.picks),
-  }));
+    .filter((week) => weekCountsForPool(season?.startWeek, week.number))
+    .map((week) => {
+      const view = season ? wrapWeekView(season, week.number) : { players: [], board: [] };
+      return {
+        number: week.number,
+        allFinal: allGamesFinal(week.games),
+        eligible: isEligibleNoonDayAfter(week.games, now),
+        skipped: skipped.has(week.number),
+        sent: sent.has(week.number),
+        players: view.players,
+        board: view.board,
+      };
+    });
+  const selectedWeek = preferredWrapWeek(options, options[0]?.number ?? 1);
+  const selected = options.find((week) => week.number === selectedWeek);
   return {
     boardUrl: WEEK_WRAP_BOARD_URL,
-    selectedWeek: preferredWrapWeek(options, options[0]?.number ?? 1),
+    selectedWeek,
     tone: settings.tone,
     blocks: settings.blocks,
     emailOverride: settings.emailOverride,
     smsOverride: settings.smsOverride,
     weeks: options,
-    board,
+    board: selected?.board ?? [],
     nfl,
     audience: await loadWrapAudience(poolId),
-    teamLogos: showTeamLogosFor(pool?.showTeamLogos),
+    teamLogos: season?.teamLogos ?? showTeamLogosFor(null),
   };
 }

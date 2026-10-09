@@ -7,6 +7,8 @@ export type WrapMember = {
   status: string;
   role?: string;
   isParticipant?: boolean;
+  /** Set when status was replayed through this week. */
+  outBeforeWeek?: boolean;
 };
 
 export type WrapPick = {
@@ -35,14 +37,18 @@ export function weekWrapPlayers(
       const pick = byMember.get(member.id);
       const teamAbbr = pick?.teamAbbr ?? null;
       const result = pick?.result ?? null;
+      const eliminatedThisWeek =
+        member.outBeforeWeek === true
+          ? false
+          : member.status === "eliminated" && isWrapLoss(teamAbbr, result);
       return {
         id: member.id,
         nickname: member.nickname,
         status: member.status,
         teamAbbr,
         result,
-        eliminatedThisWeek:
-          member.status === "eliminated" && isWrapLoss(teamAbbr, result),
+        outBeforeWeek: member.outBeforeWeek,
+        eliminatedThisWeek,
       };
     })
     .sort((a, b) => a.nickname.localeCompare(b.nickname));

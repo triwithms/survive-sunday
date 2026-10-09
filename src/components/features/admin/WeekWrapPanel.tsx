@@ -22,7 +22,7 @@ export function WeekWrapPanel({ data }: { data: WeekWrapPanelData }) {
         <h2 className="font-semibold">Week wrap</h2>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
           Automatic email at noon (America/Toronto) the day after the last
-          game is final. The email shows who won, lost, and went out with
+          game is final.           The email shows who won, lost, and went out that week, with
           team helmets, then the pool leaderboard and NFL division standings.
           If the NFL has posted “Every Touchdown of Week N”, that link is
           added when this sends. Texts stay short facts.

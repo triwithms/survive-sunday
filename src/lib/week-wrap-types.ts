@@ -30,6 +30,7 @@ export type WeekWrapPlayer = {
   teamAbbr: string | null;
   result: string | null;
   eliminatedThisWeek: boolean;
+  outBeforeWeek?: boolean;
 };
 
 export type WeekWrapFacts = {
@@ -66,6 +67,7 @@ export type WeekWrapWeekOption = {
   skipped: boolean;
   sent: boolean;
   players: WeekWrapPlayer[];
+  board?: WeekWrapBoardRow[];
 };
 
 export type WeekWrapAudience = {
@@ -92,8 +94,6 @@ export type WeekWrapPanelData = {
 export function weekWrapDedupeKey(poolId: string, weekNumber: number): string {
   return `wrap:${poolId}:w${weekNumber}`;
 }
-
-/** Channel suffixes match dispatchNotice claim keys. */
 export function weekWrapClaimKeys(poolId: string, weekNumber: number) {
   const base = weekWrapDedupeKey(poolId, weekNumber);
   return { base, email: `${base}:email`, sms: `${base}:sms` };
