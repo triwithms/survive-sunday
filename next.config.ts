@@ -63,7 +63,7 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     const dynamic =
-      "/((?!_next/static|_next/image|icons/|helmets/|favicon.ico|manifest.webmanifest|sw.js).*)";
+      "/((?!_next/static|_next/image|icons/|helmets/|favicon.ico|manifest.webmanifest|sw.js|robots.txt|.*\\.(?:png|jpg|jpeg|gif|webp|svg|ico|csv)$).*)";
     const immutable = "public, max-age=86400, stale-while-revalidate=604800";
     return [
       {
@@ -77,6 +77,18 @@ const nextConfig: NextConfig = {
             value: "private, no-store, no-cache, must-revalidate",
           },
         ],
+      },
+      {
+        source: "/robots.txt",
+        headers: [{ key: "Cache-Control", value: immutable }],
+      },
+      {
+        source: "/help/silver-fox.png",
+        headers: [{ key: "Cache-Control", value: immutable }],
+      },
+      {
+        source: "/examples/:file",
+        headers: [{ key: "Cache-Control", value: immutable }],
       },
       {
         source: "/helmets/:path*",

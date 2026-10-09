@@ -10,6 +10,10 @@ import {
   isLiveGame,
 } from "@/lib/game-display";
 import type { GameDetailDto } from "@/lib/espn-game-detail-parse";
+import {
+  fetchJsonDeduped,
+  SCORE_DETAIL_JSON_MAX_AGE_MS,
+} from "@/lib/client-get-json";
 import { GameHighlights } from "@/components/GameHighlights";
 import { ScoreGameSheetBar } from "@/components/ScoreGameSheetBar";
 import { SectionBoundary } from "@/components/SectionBoundary";
@@ -105,13 +109,11 @@ function GameDetailBody({ game }: { game: SheetGame }) {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(
+        const res = await fetchJsonDeduped(
           `/api/scores/detail?gameId=${encodeURIComponent(game.id)}`,
-          { cache: "no-store" }
+          { maxAgeMs: SCORE_DETAIL_JSON_MAX_AGE_MS, fresh: reload > 0 }
         );
-        const json = (await res.json().catch(() => ({}))) as Partial<GameDetailDto> & {
-          error?: string;
-        };
+        const json = (res.body ?? {}) as Partial<GameDetailDto> & { error?: string };
         if (!res.ok) throw new Error(json.error || "Couldn’t load ESPN details");
         if (!cancelled) setData(normalizeGameDetail(json));
       } catch (e) {
