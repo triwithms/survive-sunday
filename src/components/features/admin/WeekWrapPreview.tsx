@@ -16,7 +16,7 @@ export function WeekWrapPreview(props: {
         data-testid="week-wrap-email-html"
       />
       <p className="text-xs text-[var(--text-muted)]">
-        Leaderboard is the pool right now. NFL records are from the last sync;
+        Leaderboard is the pool at the end of this week, so a later elimination stays off this wrap. NFL records are from the last sync;
         Send refreshes them and drops that section if ESPN is down.
       </p>
       <details>

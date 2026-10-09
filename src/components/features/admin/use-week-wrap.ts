@@ -29,7 +29,7 @@ export function useWeekWrap(data: WeekWrapPanelData) {
         weekNumber: week.number,
         players: week.players,
         boardUrl: data.boardUrl,
-        board: data.board,
+        board: week.board ?? data.board,
         nfl: data.nfl,
         teamLogos: data.teamLogos,
       },

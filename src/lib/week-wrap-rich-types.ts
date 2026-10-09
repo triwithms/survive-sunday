@@ -1,7 +1,7 @@
 import type { TouchdownClip } from "./week-wrap-touchdown";
 import type { WeekWrapBlocks, WeekWrapFacts } from "./week-wrap-types";
 
-/** One pool seat in app Leaderboard order (`sortBoard`). Current season race. */
+/** One pool seat in app Leaderboard order (`sortBoard`) through this wrap week. */
 export type WeekWrapBoardRow = {
   id: string;
   nickname: string;

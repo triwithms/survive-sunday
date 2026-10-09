@@ -20,6 +20,7 @@ export function hasTeamPick(player: WeekWrapPlayer): boolean {
 
 /** Out before this week: never in Won / Lost / pending (no ghost picks). */
 function outEarlier(player: WeekWrapPlayer): boolean {
+  if (typeof player.outBeforeWeek === "boolean") return player.outBeforeWeek;
   return player.status === "eliminated" && !player.eliminatedThisWeek;
 }
 

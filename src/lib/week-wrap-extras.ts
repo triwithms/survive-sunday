@@ -6,7 +6,10 @@ import { isPoolParticipant } from "./pool-rules";
 import { wrapNflDivisions } from "./week-wrap-nfl";
 import type { WeekWrapBoardRow, WeekWrapNflDivision } from "./week-wrap-rich-types";
 
-/** Pool seats in the same order as the app Leaderboard. Empty on error. */
+/**
+ * Live season board, same order as the app Leaderboard. Empty on error.
+ * Week wraps do not call this. They replay picks through the wrap week.
+ */
 export async function loadWrapBoard(poolId: string): Promise<WeekWrapBoardRow[]> {
   try {
     const [members, seasonPicks] = await Promise.all([

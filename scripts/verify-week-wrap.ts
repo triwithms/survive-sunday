@@ -11,6 +11,7 @@ import "./week-wrap-verify/copy";
 import "./week-wrap-verify/auto";
 import "./week-wrap-verify/html";
 import "./week-wrap-verify/wiring";
+import "./week-wrap-verify/history";
 
 verifyTouchdownSearch()
   .then(() => {

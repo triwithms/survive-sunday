@@ -9,14 +9,19 @@ function names(list: string[]): string {
   return list.length ? list.join(", ") : "nobody";
 }
 
+function thisWeek(player: WeekWrapPlayer): boolean {
+  return player.outBeforeWeek !== true;
+}
+
 function rosterLines(facts: WeekWrapFacts): string[] {
-  const still = facts.players
+  const live = facts.players.filter(thisWeek);
+  const still = live
     .filter((player) => player.status !== "eliminated")
     .map((player) => player.nickname);
-  const lost = facts.players
+  const lost = live
     .filter((player) => isWrapLoss(player.teamAbbr, player.result))
     .map((player) => player.nickname);
-  const out = facts.players
+  const out = live
     .filter((player) => player.eliminatedThisWeek)
     .map((player) => player.nickname);
   return [
@@ -49,7 +54,7 @@ export function sectionLines(facts: WeekWrapFacts, blocks: WeekWrapBlocks): stri
   const lines: string[] = [];
   if (blocks.roster) lines.push(...rosterLines(facts));
   if (blocks.picks) {
-    const picks = facts.players.filter((player) => player.teamAbbr);
+    const picks = facts.players.filter((player) => thisWeek(player) && player.teamAbbr);
     lines.push(picks.length ? `Picks: ${pickPhrases(picks)}` : "Picks: none yet");
   }
   if (blocks.board) lines.push(`Leaderboard: ${facts.boardUrl}`);
