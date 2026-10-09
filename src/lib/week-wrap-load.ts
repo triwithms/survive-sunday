@@ -43,6 +43,7 @@ async function loadWeekWrapPanelUnsafe(
     }),
     loadWrapNfl({ sync: false }),
   ]);
+  const pool = season;
   const slateWeeks = await overlayPoolWeeks(poolId, weeks);
   const sent = weekNumbersFromDedupeKeys(
     sends.map((row) => row.dedupeKey),
@@ -50,9 +51,9 @@ async function loadWeekWrapPanelUnsafe(
   );
   const skipped = new Set(settings.skippedWeeks);
   const options: WeekWrapWeekOption[] = slateWeeks
-    .filter((week) => weekCountsForPool(season?.startWeek, week.number))
+    .filter((week) => weekCountsForPool(pool?.startWeek, week.number))
     .map((week) => {
-      const view = season ? wrapWeekView(season, week.number) : { players: [], board: [] };
+      const view = pool ? wrapWeekView(pool, week.number) : { players: [], board: [] };
       return {
         number: week.number,
         allFinal: allGamesFinal(week.games),
@@ -76,6 +77,6 @@ async function loadWeekWrapPanelUnsafe(
     board: selected?.board ?? [],
     nfl,
     audience: await loadWrapAudience(poolId),
-    teamLogos: season?.teamLogos ?? showTeamLogosFor(null),
+    teamLogos: showTeamLogosFor(pool?.showTeamLogos),
   };
 }

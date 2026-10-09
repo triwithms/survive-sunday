@@ -1,7 +1,6 @@
 import { pickWinMargin } from "../components/features/board/win-margin";
 import { prisma } from "./db";
 import { isWeekLocked } from "./grading";
-import { showTeamLogosFor } from "./team-logos";
 import { wrapWeekFromHistory } from "./week-wrap-as-of";
 import type { WrapHistoryPick, WrapRules, WrapSeat } from "./week-wrap-history";
 import type { WeekWrapBoardRow } from "./week-wrap-rich-types";
@@ -11,7 +10,8 @@ export type WrapSeason = {
   members: WrapSeat[];
   picks: WrapHistoryPick[];
   rules: WrapRules;
-  teamLogos: boolean;
+  /** Raw pool column. Callers resolve it with showTeamLogosFor. */
+  showTeamLogos: boolean | null;
   startWeek: number | null;
 };
 
@@ -80,7 +80,7 @@ export async function loadWrapSeason(poolId: string): Promise<WrapSeason | null>
       singleEliminationFromWeek: pool.singleEliminationFromWeek,
       lockedWeeks,
     },
-    teamLogos: showTeamLogosFor(pool.showTeamLogos),
+    showTeamLogos: pool.showTeamLogos,
     startWeek: pool.startWeek,
   };
 }

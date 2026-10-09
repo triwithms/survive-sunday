@@ -57,7 +57,7 @@ export async function sendWeekWrap(
       boardUrl: WEEK_WRAP_BOARD_URL,
       board: view.board,
       nfl,
-      teamLogos: season?.teamLogos ?? showTeamLogosFor(week.pool.showTeamLogos),
+      teamLogos: showTeamLogosFor(week.pool.showTeamLogos),
     },
     emailOverride: settings.emailOverride,
     smsOverride: settings.smsOverride,
